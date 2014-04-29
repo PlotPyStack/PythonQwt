@@ -3,8 +3,8 @@
 from qwt.qwt_painter import QwtPainter
 from qwt.qwt_text_engine import QwtPlainTextEngine, QwtRichTextEngine
 
-from qwt.qt.QtGui import (QPainter, QFrame, QSizePolicy, QPalette,
-                          QFontMetrics, QFont)
+from qwt.qt.QtGui import (QPainter, QFrame, QSizePolicy, QPalette, QFont,
+                          QFontMetrics, QApplication)
 from qwt.qt.QtCore import Qt, QSizeF, QSize, QRectF
 
 import math
@@ -208,7 +208,7 @@ class QwtText(object):
     def heightForWidth(self, width, defaultFont=None):
         if defaultFont is None:
             defaultFont = QFont()
-        font = self.usedFont(defaultFont)
+        font = QFont(self.usedFont(defaultFont), QApplication.desktop())
         h = 0
         if self.d_data.layoutAttributes & self.MinimumLayout:
             (left, right, top, bottom
@@ -223,7 +223,7 @@ class QwtText(object):
         return h
     
     def textSize(self, defaultFont):
-        font = self.usedFont(defaultFont)
+        font = QFont(self.usedFont(defaultFont), QApplication.desktop())
         if not self.d_layoutCache.textSize.isValid() or\
            self.d_layoutCache.font != font:
             self.d_layoutCache.textSize =\
@@ -259,7 +259,7 @@ class QwtText(object):
                 painter.setPen(self.d_data.color)
         expandedRect = rect
         if self.d_data.layoutAttributes & self.MinimumLayout:
-            font = self.usedFont(painter.font())
+            font = QFont(painter.font(), QApplication.desktop())
             (left, right, top, bottom
              ) = self.d_data.textEngine.textMargins(font)
             expandedRect.setTop(rect.top()-top)
