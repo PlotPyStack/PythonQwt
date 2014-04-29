@@ -166,6 +166,7 @@ class QwtAbstractScaleDraw(object):
             lbl = QwtText(self.label(value))
             lbl.setRenderFlags(0)
             lbl.setLayoutAttribute(QwtText.MinimumLayout)
+            lbl.textSize(font)
             self.d_data.labelCache[value] = lbl
         return lbl
             
