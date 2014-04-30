@@ -225,7 +225,7 @@ class QwtText(object):
     def textSize(self, defaultFont):
         font = QFont(self.usedFont(defaultFont), QApplication.desktop())
         if not self.d_layoutCache.textSize.isValid() or\
-           self.d_layoutCache.font != font:
+           self.d_layoutCache.font is not font:
             self.d_layoutCache.textSize =\
                 self.d_data.textEngine.textSize(font, self.d_data.renderFlags,
                                                 self.d_data.text)
