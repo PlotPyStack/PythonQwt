@@ -391,34 +391,33 @@ class QwtPlotLayout(object):
         dimAxis = [0 for axis in range(QwtPlot.axisCnt)]
         backboneOffset = [0 for _i in range(QwtPlot.axisCnt)]
         for axis in range(QwtPlot.axisCnt):
-            backboneOffset[axis] = 0
-            if not options & self.IgnoreFrames:
+            if not (options & self.IgnoreFrames):
                 backboneOffset[axis] += self.d_data.layoutData.canvas.contentsMargins[axis]
             if not self.d_data.alignCanvasToScales[axis]:
                 backboneOffset[axis] += self.d_data.canvasMargin[axis]
         done = False
         while not done:
             done = True
-            if not (options & self.IgnoreTitle or \
+            if not ((options & self.IgnoreTitle) or \
                     self.d_data.layoutData.title.text.isEmpty()):
                 w = rect.width()
                 if self.d_data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
                    self.d_data.layoutData.scale[QwtPlot.yRight].isEnabled:
                     w -= dimAxis[QwtPlot.yLeft]+dimAxis[QwtPlot.yRight]
                 d = np.ceil(self.d_data.layoutData.title.text.heightForWidth(w))
-                if not options & self.IgnoreFrames:
+                if not (options & self.IgnoreFrames):
                     d += 2*self.d_data.layoutData.title.frameWidth
                 if d > dimTitle:
                     dimTitle = d
                     done = False
-            if not (options & self.IgnoreFooter or \
+            if not ((options & self.IgnoreFooter) or \
                     self.d_data.layoutData.footer.text.isEmpty()):
                 w = rect.width()
                 if self.d_data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
                    self.d_data.layoutData.scale[QwtPlot.yRight].isEnabled:
                     w -= dimAxis[QwtPlot.yLeft]+dimAxis[QwtPlot.yRight]
                 d = np.ceil(self.d_data.layoutData.footer.text.heightForWidth(w))
-                if not options & self.IgnoreFrames:
+                if not (options & self.IgnoreFrames):
                     d += 2*self.d_data.layoutData.footer.frameWidth
                 if d > dimFooter:
                     dimFooter = d
@@ -589,7 +588,7 @@ class QwtPlotLayout(object):
         self.invalidate()
         rect = QRectF(plotRect)
         self.d_data.layoutData.init(plot, rect)
-        if not options & self.IgnoreLegend and plot.legend() and\
+        if not (options & self.IgnoreLegend) and plot.legend() and\
            not plot.legend().isEmpty():
             self.d_data.legendRect = self.layoutLegend(options, rect)
             region = QRegion(rect.toRect())

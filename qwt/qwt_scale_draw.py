@@ -10,7 +10,7 @@ from qwt.qt.QtGui import QPalette, QFontMetrics, QTransform
 from qwt.qt.QtCore import (Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect,
                            QPoint)
 
-import numpy as np
+from math import ceil, sin, pi, cos
 
 
 class QwtAbstractScaleDraw_PrivateData(object):
@@ -242,8 +242,8 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if e < 0.:
             e = 0.
         
-        start = np.ceil(s)
-        end = np.ceil(e)
+        start = ceil(s)
+        end = ceil(e)
         return start, end
     
     def minLabelDist(self, font):
@@ -283,15 +283,15 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             
         angle = qwtRadians(self.labelRotation())
         if vertical:
-            angle += np.pi/2
+            angle += pi/2
         
-        sinA = np.sin(angle)
+        sinA = sin(angle)
         if qFuzzyCompare(sinA+1., 1.):
-            return np.ceil(maxDist)
+            return ceil(maxDist)
         
         fmHeight = fm.ascent()-2
         
-        labelDist = fmHeight/np.sin(angle)*np.cos(angle)
+        labelDist = fmHeight/sin(angle)*cos(angle)
         if labelDist < 0:
             labelDist = -labelDist
         
@@ -301,7 +301,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if labelDist < fmHeight:
             labelDist = fmHeight
         
-        return np.ceil(labelDist)
+        return ceil(labelDist)
         
     def extent(self, font):
         d = 0.
@@ -332,7 +332,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         lengthForTicks = 0
         if self.hasComponent(QwtAbstractScaleDraw.Ticks):
             pw = max([1, self.penWidth()])
-            lengthForTicks = np.ceil((majorCount+minorCount)*(pw+1.))
+            lengthForTicks = ceil((majorCount+minorCount)*(pw+1.))
         return startDist + endDist + max([lengthForLabels, lengthForTicks])
     
     def labelPosition(self, value):
@@ -439,9 +439,14 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
                 y = round(y)
             QwtPainter().drawLine(painter, pos.x(), y, pos.x()+len_, y)
         
-    def move(self, pos):
-        self.d_data.pos = pos
-        self.updateMap()
+    def move(self, *args):
+        if len(args) == 2:
+            x, y = args
+            self.move(QPointF(x, y))
+        elif len(args) == 1:
+            pos, = args
+            self.d_data.pos = pos
+            self.updateMap()
     
     def pos(self):
         return self.d_data.pos
@@ -543,24 +548,14 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return self.d_data.labelAlignment
     
     def maxLabelWidth(self, font):
-        maxWidth = 0.
-        ticks = self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
-        for v in ticks:
-            if self.scaleDiv().contains(v):
-                w = self.labelSize(font, v).width()
-                if w > maxWidth:
-                    maxWidth = w
-        return np.ceil(maxWidth)
+        return ceil(max([self.labelSize(font, v).width()
+                         for v in self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
+                         if self.scaleDiv().contains(v)]))
     
     def maxLabelHeight(self, font):
-        maxHeight = 0.
-        ticks = self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
-        for v in ticks:
-            if self.scaleDiv().contains(v):
-                h = self.labelSize(font, v).height()
-                if h > maxHeight:
-                    maxHeight = h
-        return np.ceil(maxHeight)
+        return ceil(max([self.labelSize(font, v).height()
+                         for v in self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
+                         if self.scaleDiv().contains(v)]))
     
     def updateMap(self):
         pos = self.d_data.pos

@@ -10,7 +10,7 @@ from qwt.qwt_color_map import QwtColorMap
 
 from qwt.qt.QtGui import (QWidget, QSizePolicy, QPainter, QStyleOption, QStyle,
                           QPalette)
-from qwt.qt.QtCore import Qt, QRectF, QSize, SIGNAL, QPointF
+from qwt.qt.QtCore import Qt, QRectF, QSize, SIGNAL
 
 import numpy as np
 
@@ -269,7 +269,7 @@ class QwtScaleWidget(QWidget):
             else:
                 y = r.bottom() - 1. - self.d_data.margin - colorBarWidth
         
-        self.d_data.scaleDraw.move(QPointF(x, y))
+        self.d_data.scaleDraw.move(x, y)
         self.d_data.scaleDraw.setLength(length)
         
         extent = np.ceil(self.d_data.scaleDraw.extent(self.font()))
