@@ -32,7 +32,7 @@ class QwtScaleWidget_PrivateData(object):
         self.titleOffset = None
         self.spacing = None
         self.title = QwtText()
-        self.layoutFlags = 1
+        self.layoutFlags = None
         self.colorBar = ColorBar()
 
 
@@ -60,6 +60,7 @@ class QwtScaleWidget(QWidget):
         
     def initScale(self, align):
         self.d_data = QwtScaleWidget_PrivateData()
+        self.d_data.layoutFlags = 0
         if align == QwtScaleDraw.RightScale:
             self.d_data.layoutFlags |= self.TitleInverted
 
@@ -80,7 +81,7 @@ class QwtScaleWidget(QWidget):
         self.d_data.colorBar.isEnabled = False
         self.d_data.colorBar.width = 10
         
-        flags = Qt.AlignHCenter|Qt.TextExpandTabs|Qt.TextWordWrap
+        flags = int(Qt.AlignHCenter|Qt.TextExpandTabs|Qt.TextWordWrap)
         self.d_data.title.setRenderFlags(flags)
         self.d_data.title.setFont(self.font())
         
@@ -104,7 +105,7 @@ class QwtScaleWidget(QWidget):
     
     def setTitle(self, title):
         if isinstance(title, QwtText):
-            flags = title.renderFlags() & (not (Qt.AlignTop|Qt.AlignBottom))
+            flags = title.renderFlags() & (~ int(Qt.AlignTop|Qt.AlignBottom))
             title.setRenderFlags(flags)
             if title != self.d_data.title:
                 self.d_data.title = title
@@ -290,8 +291,8 @@ class QwtScaleWidget(QWidget):
     
     def drawTitle(self, painter, align, rect):
         r = rect
-        flags = self.d_data.title.renderFlags() &\
-                (not (Qt.AlignTop|Qt.AlignBottom|Qt.AlignVCenter))
+        flags = self.d_data.title.renderFlags()\
+                &(~ int(Qt.AlignTop|Qt.AlignBottom|Qt.AlignVCenter))
         if align == QwtScaleDraw.LeftScale:
             angle = -90.
             flags |= Qt.AlignTop
@@ -306,7 +307,7 @@ class QwtScaleWidget(QWidget):
             angle = 0.
             flags |= Qt.AlignBottom
             r.setTop(r.top()+self.d_data.titleOffset)
-        elif align == QwtScaleDraw.TopScale:
+        else:
             angle = 0.
             flags |= Qt.AlignTop
             r.setBottom(r.bottom()-self.d_data.titleOffset)
