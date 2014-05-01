@@ -148,7 +148,7 @@ class QwtScaleEngine(object):
         if on:
             self.d_data.attributes |= attribute
         else:
-            self.d_data.attributes &= not attribute
+            self.d_data.attributes &= ~attribute
     
     def testAttribute(self, attribute):
         return self.d_data.attributes & attribute

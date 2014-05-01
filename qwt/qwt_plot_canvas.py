@@ -322,7 +322,7 @@ class QwtPlotCanvas(QFrame):
         if on:
             self.d_data.paintAttributes |= attribute
         else:
-            self.d_data.paintAttributes &= not attribute
+            self.d_data.paintAttributes &= ~attribute
         if attribute == self.BackingStore:
             if on:
                 if self.d_data.backingStore is None:

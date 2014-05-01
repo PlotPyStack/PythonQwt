@@ -45,7 +45,7 @@ class QwtAbstractScaleDraw(object):
         if enable:
             self.d_data.components |= component
         else:
-            self.d_data.components &= not component
+            self.d_data.components &= ~component
     
     def hasComponent(self, component):
         return self.d_data.components & component

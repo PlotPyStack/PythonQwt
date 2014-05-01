@@ -190,7 +190,7 @@ class QwtText(object):
         if on:
             self.d_data.paintAttributes |= attribute
         else:
-            self.d_data.paintAttributes &= not attribute
+            self.d_data.paintAttributes &= ~attribute
     
     def testPaintAttribute(self, attribute):
         return self.d_data.paintAttributes & attribute
@@ -200,7 +200,7 @@ class QwtText(object):
         if on:
             self.d_data.layoutAttributes |= attribute
         else:
-            self.d_data.layoutAttributes &= not attribute
+            self.d_data.layoutAttributes &= ~attribute
     
     def testLayoutAttribute(self, attribute):
         return self.d_data.layoutAttributes & attribute

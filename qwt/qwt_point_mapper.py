@@ -143,7 +143,7 @@ class QwtPointMapper(object):
         if on:
             self.d_data.flags |= flag
         else:
-            self.d_data.flags &= not flag
+            self.d_data.flags &= ~flag
     
     def testFlag(self, flag):
         return self.d_data.flags & flag

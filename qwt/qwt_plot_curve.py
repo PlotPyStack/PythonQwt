@@ -89,7 +89,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if on:
             self.d_data.paintAttributes |= attribute
         else:
-            self.d_data.paintAttributes &= not attribute
+            self.d_data.paintAttributes &= ~attribute
     
     def testPaintAttribute(self, attribute):
         return self.d_data.paintAttributes & attribute
@@ -99,7 +99,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             if on:
                 self.d_data.legendAttributes |= attribute
             else:
-                self.d_data.legendAttributes &= not attribute
+                self.d_data.legendAttributes &= ~attribute
             qwtUpdateLegendIconSize(self)
             self.legendChanged()
     

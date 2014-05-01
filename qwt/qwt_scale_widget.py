@@ -98,7 +98,7 @@ class QwtScaleWidget(QWidget):
             if on:
                 self.d_data.layoutFlags |= flag
             else:
-                self.d_data.layoutFlags &= not flag
+                self.d_data.layoutFlags &= ~flag
     
     def testLayoutFlag(self, flag):
         return self.d_data.layoutFlags & flag

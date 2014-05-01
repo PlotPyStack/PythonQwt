@@ -355,7 +355,7 @@ class QwtPlotLayout(object):
         hint = self.d_data.layoutData.legend.hint
         if self.d_data.legendPos in (QwtPlot.LeftLegend, QwtPlot.RightLegend):
             dim = min([hint.width(), int(rect.width()*self.d_data.legendRatio)])
-            if not options & self.IgnoreScrollbars:
+            if not (options & self.IgnoreScrollbars):
                 if hint.height() > rect.height():
                     dim += self.d_data.layoutData.legend.hScrollExtent
         else:

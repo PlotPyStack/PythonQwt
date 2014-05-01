@@ -871,7 +871,7 @@ class QwtPlotItem(object):
             if on:
                 self.d_data.attributes |= attribute
             else:
-                self.d_data.attributes &= not attribute
+                self.d_data.attributes &= ~attribute
             if attribute == QwtPlotItem.Legend:
                 self.legendChanged()
             self.itemChanged()
@@ -884,7 +884,7 @@ class QwtPlotItem(object):
             if on:
                 self.d_data.interests |= interest
             else:
-                self.d_data.interests &= not interest
+                self.d_data.interests &= ~interest
             self.itemChanged()
     
     def testItemInterest(self, interest):
@@ -895,7 +895,7 @@ class QwtPlotItem(object):
             if on:
                 self.d_data.renderHints |= hint
             else:
-                self.d_data.renderHints &= not hint
+                self.d_data.renderHints &= ~hint
             self.itemChanged()
     
     def testRenderHint(self, hint):
