@@ -236,6 +236,12 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             
             e = self.labelRect(font, maxTick).bottom()
             e -= abs(maxPos - self.scaleMap().p1())
+        else:
+            s = -self.labelRect(font, minTick).left()
+            s -= abs(minPos - self.scaleMap().p1())
+            
+            e = self.labelRect(font, maxTick).right()
+            e -= abs(maxPos - self.scaleMap().p2())
         
         if s < 0.:
             s = 0.
