@@ -12,7 +12,7 @@ from qwt.qt.QtGui import (QWidget, QSizePolicy, QPainter, QStyleOption, QStyle,
                           QPalette)
 from qwt.qt.QtCore import Qt, QRectF, QSize, SIGNAL
 
-import numpy as np
+from math import ceil
 
 
 class ColorBar(object):
@@ -273,7 +273,7 @@ class QwtScaleWidget(QWidget):
         self.d_data.scaleDraw.move(x, y)
         self.d_data.scaleDraw.setLength(length)
         
-        extent = np.ceil(self.d_data.scaleDraw.extent(self.font()))
+        extent = ceil(self.d_data.scaleDraw.extent(self.font()))
         self.d_data.titleOffset = self.d_data.margin + self.d_data.spacing +\
                                   colorBarWidth + extent
         
@@ -359,10 +359,10 @@ class QwtScaleWidget(QWidget):
         return size + QSize(left + right, top + bottom)
     
     def titleHeightForWidth(self, width):
-        return np.ceil(self.d_data.title.heightForWidth(width, self.font()))
+        return ceil(self.d_data.title.heightForWidth(width, self.font()))
     
     def dimForLength(self, length, scaleFont):
-        extent = np.ceil(self.d_data.scaleDraw.extent(scaleFont))
+        extent = ceil(self.d_data.scaleDraw.extent(scaleFont))
         dim = self.d_data.margin + extent + 1
         if not self.d_data.title.isEmpty():
             dim += self.titleHeightForWidth(length)+self.d_data.spacing

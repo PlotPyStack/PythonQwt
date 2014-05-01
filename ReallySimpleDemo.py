@@ -62,6 +62,8 @@ def main(args):
         sd = demo.axisScaleDiv(axisId)
 #        print('scaleDiv(%d): %r' % (axisId, sd.ticks(sd.MediumTick)))
 #        print('scaleDiv(%d): %r' % (axisId, sd.ticks(sd.MinorTick)))
+#    canvas = demo.canvas()
+#    print(canvas.testPaintAttribute(canvas.BackingStore))
     sys.exit(app.exec_())
 
 if __name__ == '__main__':

@@ -583,7 +583,7 @@ class QwtPainter(object):
         painter = QPainter(pixmap)
         painter.translate(-offset)
         autoFillBrush = widget.palette().brush(widget.backgroundRole())
-        if widget.autoFillBackground() or autoFillBrush.isOpaque():
+        if not (widget.autoFillBackground() and autoFillBrush.isOpaque()):
             bg = widget.palette().brush(QPalette.Window)
             qwtFillRect(widget, painter, rect, bg)
         if widget.autoFillBackground():

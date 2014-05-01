@@ -448,7 +448,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         return ok
 
     def eventFilter(self, obj, event):
-        if obj == self.d_data.canvas:
+        if obj is self.d_data.canvas:
             if event.type() == QEvent.Resize:
                 self.updateCanvasMargins()
             elif event.type() == 178:#QEvent.ContentsRectChange:
