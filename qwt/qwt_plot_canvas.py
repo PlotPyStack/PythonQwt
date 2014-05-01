@@ -309,7 +309,7 @@ class QwtPlotCanvas(QFrame):
         self.d_data = QwtPlotCanvas_PrivateData()
         self.setCursor(Qt.CrossCursor)
         self.setAutoFillBackground(True)
-        self.setPaintAttribute(QwtPlotCanvas.BackingStore, True)
+        self.setPaintAttribute(QwtPlotCanvas.BackingStore, False)
         self.setPaintAttribute(QwtPlotCanvas.Opaque, True)
         self.setPaintAttribute(QwtPlotCanvas.HackStyledBackground, True)
     
