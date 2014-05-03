@@ -13,9 +13,9 @@ class QwtPointArrayData(QwtSeriesData):
         self.__y = y
         
     def boundingRect(self):
-        if self.__boundingRect.width() < 0:
-            self.__boundingRect = qwtBoundingRect(self)
-        return self.__boundingRect
+        if self._boundingRect.width() < 0:
+            self._boundingRect = qwtBoundingRect(self)
+        return self._boundingRect
     
     def size(self):
         return min([self.__x.size, self.__y.size])
@@ -38,9 +38,9 @@ class QwtCPointerData(QwtSeriesData):
         self.__size = size
     
     def boundingRect(self):
-        if self.__boundingRect.width() < 0:
-            self.__boundingRect = qwtBoundingRect(self)
-        return self.__boundingRect
+        if self._boundingRect.width() < 0:
+            self._boundingRect = qwtBoundingRect(self)
+        return self._boundingRect
     
     def size(self):
         return self.__size
