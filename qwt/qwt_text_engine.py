@@ -52,11 +52,11 @@ class QwtRichTextDocument(QTextDocument):
 
 class QwtPlainTextEngine_PrivateData(object):
     def __init__(self):
-        self.d_ascentCache = {}
+        self.__ascentCache = {}
     
     def effectiveAscent(self, font):
         fontKey = font.key()
-        return self.d_ascentCache.get(fontKey, self.findAscent(font))
+        return self.__ascentCache.get(fontKey, self.findAscent(font))
     
     def findAscent(self, font):
         dummy = "E"
@@ -91,7 +91,7 @@ class QwtTextEngine(object):
 
 class QwtPlainTextEngine(QwtTextEngine):
     def __init__(self):
-        self.d_data = QwtPlainTextEngine_PrivateData()
+        self.__data = QwtPlainTextEngine_PrivateData()
     
     def heightForWidth(self, font, flags, text, width):
         fm = QFontMetricsF(font)
@@ -108,7 +108,7 @@ class QwtPlainTextEngine(QwtTextEngine):
     def textMargins(self, font):
         left = right = top = 0
         fm = QFontMetricsF(font)
-        top = fm.ascent() - self.d_data.effectiveAscent(font)
+        top = fm.ascent() - self.__data.effectiveAscent(font)
         bottom = fm.descent()
         return left, right, top, bottom
 

@@ -131,19 +131,19 @@ class QwtNullPaintDevice(QPaintDevice):
     
     def __init__(self):
         super(QwtNullPaintDevice, self).__init__()
-        self.d_engine = None
-        self.d_data = QwtNullPaintDevice_PrivateData()
+        self.__engine = None
+        self.__data = QwtNullPaintDevice_PrivateData()
     
     def setMode(self, mode):
-        self.d_data.mode = mode
+        self.__data.mode = mode
     
     def mode(self):
-        return self.d_data.mode
+        return self.__data.mode
     
     def paintEngine(self):
-        if self.d_engine is None:
-            self.d_engine = QwtNullPaintDevice_PaintEngine()
-        return self.d_engine
+        if self.__engine is None:
+            self.__engine = QwtNullPaintDevice_PaintEngine()
+        return self.__engine
     
     def metric(self, deviceMetric):
         if deviceMetric == QPaintDevice.PdmWidth:

@@ -139,7 +139,7 @@ class QwtPlotLayout(object):
     IgnoreFooter = 0x20
     
     def __init__(self):
-        self.d_data = QwtPlotLayout_PrivateData()
+        self.__data = QwtPlotLayout_PrivateData()
         self.setLegendPosition(QwtPlot.BottomLegend)
         self.setCanvasMargin(4)
         self.setAlignCanvasToScales(False)
@@ -150,24 +150,24 @@ class QwtPlotLayout(object):
             margin = -1
         if axis == -1:
             for axis in range(QwtPlot.axisCnt):
-                self.d_data.canvasMargin[axis] = margin
+                self.__data.canvasMargin[axis] = margin
         elif axis >= 0 and axis < QwtPlot.axisCnt:
-            self.d_data.canvasMargin[axis] = margin
+            self.__data.canvasMargin[axis] = margin
     
     def canvasMargin(self, axisId):
         if axisId < 0 or axisId >= QwtPlot.axisCnt:
             return 0
-        return self.d_data.canvasMargin[axisId]
+        return self.__data.canvasMargin[axisId]
     
     def setAlignCanvasToScales(self, *args):
         if len(args) == 1:
             on, = args
             for axis in range(QwtPlot.axisCnt):
-                self.d_data.alignCanvasToScales[axis] = on
+                self.__data.alignCanvasToScales[axis] = on
         elif len(args) == 2:
             axisId, on = args
             if axis >= 0 and axis < QwtPlot.axisCnt:
-                self.d_data.alignCanvasToScales[axisId] = on
+                self.__data.alignCanvasToScales[axisId] = on
         else:
             raise TypeError("%s().setAlignCanvasToScales() takes 1 or 2 "\
                             "argument(s) (%s given)"\
@@ -176,13 +176,13 @@ class QwtPlotLayout(object):
     def alignCanvasToScale(self, axisId):
         if axisId < 0 or axisId >= QwtPlot.axisCnt:
             return False
-        return self.d_data.alignCanvasToScales[axisId]
+        return self.__data.alignCanvasToScales[axisId]
     
     def setSpacing(self, spacing):
-        self.d_data.spacing = max([0, spacing])
+        self.__data.spacing = max([0, spacing])
         
     def spacing(self):
-        return self.d_data.spacing
+        return self.__data.spacing
     
     def setLegendPosition(self, *args):
         if len(args) == 2:
@@ -192,13 +192,13 @@ class QwtPlotLayout(object):
             if pos in (QwtPlot.TopLegend, QwtPlot.BottomLegend):
                 if ratio <= 0.:
                     ratio = .33
-                self.d_data.legendRatio = ratio
-                self.d_data.legendPos = pos
+                self.__data.legendRatio = ratio
+                self.__data.legendPos = pos
             elif pos in (QwtPlot.LeftLegend, QwtPlot.RightLegend):
                 if ratio <= 0.:
                     ratio = .5
-                self.d_data.legendRatio = ratio
-                self.d_data.legendPos = pos
+                self.__data.legendRatio = ratio
+                self.__data.legendPos = pos
         elif len(args) == 1:
             pos, = args
             self.setLegendPosition(pos, 0.)
@@ -207,54 +207,54 @@ class QwtPlotLayout(object):
                             "(%s given)" % (self.__class__.__name__, len(args)))
     
     def legendPosition(self):
-        return self.d_data.legendPos
+        return self.__data.legendPos
     
     def setLegendRatio(self, ratio):
         self.setLegendPosition(self.legendPosition(), ratio)
     
     def legendRatio(self):
-        return self.d_data.legendRatio
+        return self.__data.legendRatio
     
     def setTitleRect(self, rect):
-        self.d_data.titleRect = rect
+        self.__data.titleRect = rect
     
     def titleRect(self):
-        return self.d_data.titleRect
+        return self.__data.titleRect
     
     def setFooterRect(self, rect):
-        self.d_data.footerRect = rect
+        self.__data.footerRect = rect
     
     def footerRect(self):
-        return self.d_data.footerRect
+        return self.__data.footerRect
         
     def setLegendRect(self, rect):
-        self.d_data.legendRect = rect
+        self.__data.legendRect = rect
     
     def legendRect(self):
-        return self.d_data.legendRect
+        return self.__data.legendRect
     
     def setScaleRect(self, axis, rect):
         if axis >= 0 and axis < QwtPlot.axisCnt:
-            self.d_data.scaleRect[axis] = rect
+            self.__data.scaleRect[axis] = rect
     
     def scaleRect(self, axis):
         if axis < 0 or axis >= QwtPlot.axisCnt:
             return QRectF()
-        return self.d_data.scaleRect[axis]
+        return self.__data.scaleRect[axis]
     
     def setCanvasRect(self, rect):
-        self.d_data.canvasRect = rect
+        self.__data.canvasRect = rect
     
     def canvasRect(self):
-        return self.d_data.canvasRect
+        return self.__data.canvasRect
     
     def invalidate(self):
-        self.d_data.titleRect = QRectF()
-        self.d_data.footerRect = QRectF()
-        self.d_data.legendRect = QRectF()
-        self.d_data.canvasRect = QRectF()
+        self.__data.titleRect = QRectF()
+        self.__data.footerRect = QRectF()
+        self.__data.legendRect = QRectF()
+        self.__data.canvasRect = QRectF()
         for axis in range(QwtPlot.axisCnt):
-            self.d_data.scaleRect[axis] = QRectF()
+            self.__data.scaleRect[axis] = QRectF()
     
     def minimumSizeHint(self, plot):
         class _ScaleData(object):
@@ -278,7 +278,7 @@ class QwtPlotLayout(object):
                 sd.tickOffset = scl.margin()
                 if scl.scaleDraw().hasComponent(QwtAbstractScaleDraw.Ticks):
                     sd.tickOffset += np.ceil(scl.scaleDraw().maxTickLength())
-            canvasBorder[axis] = fw + self.d_data.canvasMargin[axis] + 1
+            canvasBorder[axis] = fw + self.__data.canvasMargin[axis] + 1
         for axis in range(QwtPlot.axisCnt):
             sd = scaleData[axis]
             if sd.w and axis in (QwtPlot.xBottom, QwtPlot.xTop):
@@ -334,61 +334,61 @@ class QwtPlotLayout(object):
                         w += scaleData[QwtPlot.yLeft].w +\
                              scaleData[QwtPlot.yRight].w
                     labelH = label.heightForWidth(labelW)
-                h += labelH + self.d_data.spacing
+                h += labelH + self.__data.spacing
         legend = plot.legend()
         if legend and not legend.isEmpty():
-            if self.d_data.legendPos in (QwtPlot.LeftLegend,
+            if self.__data.legendPos in (QwtPlot.LeftLegend,
                                          QwtPlot.RightLegend):
                 legendW = legend.sizeHint().width()
                 legendH = legend.heightForWidth(legendW)
                 if legend.frameWidth() > 0:
-                    w += self.d_data.spacing
+                    w += self.__data.spacing
                 if legendH > h:
                     legendW += legend.scrollExtent(Qt.Horizontal)
-                if self.d_data.legendRatio < 1.:
-                    legendW = min([legendW, int(w/(1.-self.d_data.legendRatio))])
-                w += legendW + self.d_data.spacing
+                if self.__data.legendRatio < 1.:
+                    legendW = min([legendW, int(w/(1.-self.__data.legendRatio))])
+                w += legendW + self.__data.spacing
             else:
                 legendW = min([legend.sizeHint().width(), w])
                 legendH = legend.heightForWidth(legendW)
                 if legend.frameWidth() > 0:
-                    h += self.d_data.spacing
-                if self.d_data.legendRatio < 1.:
-                    legendH = min([legendH, int(h/(1.-self.d_data.legendRatio))])
-                h += legendH + self.d_data.spacing
+                    h += self.__data.spacing
+                if self.__data.legendRatio < 1.:
+                    legendH = min([legendH, int(h/(1.-self.__data.legendRatio))])
+                h += legendH + self.__data.spacing
         return QSize(w, h)
     
     def layoutLegend(self, options, rect):
-        hint = self.d_data.layoutData.legend.hint
-        if self.d_data.legendPos in (QwtPlot.LeftLegend, QwtPlot.RightLegend):
-            dim = min([hint.width(), int(rect.width()*self.d_data.legendRatio)])
+        hint = self.__data.layoutData.legend.hint
+        if self.__data.legendPos in (QwtPlot.LeftLegend, QwtPlot.RightLegend):
+            dim = min([hint.width(), int(rect.width()*self.__data.legendRatio)])
             if not (options & self.IgnoreScrollbars):
                 if hint.height() > rect.height():
-                    dim += self.d_data.layoutData.legend.hScrollExtent
+                    dim += self.__data.layoutData.legend.hScrollExtent
         else:
-            dim = min([hint.height(), int(rect.height()*self.d_data.legendRatio)])
-            dim = max([dim, self.d_data.layoutData.legend.vScrollExtent])
+            dim = min([hint.height(), int(rect.height()*self.__data.legendRatio)])
+            dim = max([dim, self.__data.layoutData.legend.vScrollExtent])
         legendRect = rect
-        if self.d_data.legendPos == QwtPlot.LeftLegend:
+        if self.__data.legendPos == QwtPlot.LeftLegend:
             legendRect.setWidth(dim)
-        elif self.d_data.legendPos == QwtPlot.RightLegend:
+        elif self.__data.legendPos == QwtPlot.RightLegend:
             legendRect.setX(rect.right()-dim)
             legendRect.setWidth(dim)
-        elif self.d_data.legendPos == QwtPlot.TopLegend:
+        elif self.__data.legendPos == QwtPlot.TopLegend:
             legendRect.setHeight(dim)
-        elif self.d_data.legendPos == QwtPlot.BottomLegend:
+        elif self.__data.legendPos == QwtPlot.BottomLegend:
             legendRect.setY(rect.bottom()-dim)
             legendRect.setHeight(dim)
         return legendRect
     
     def alignLegend(self, canvasRect, legendRect):
         alignedRect = legendRect
-        if self.d_data.legendPos in (QwtPlot.BottomLegend, QwtPlot.TopLegend):
-            if self.d_data.layoutData.legend.hint.width() < canvasRect.width():
+        if self.__data.legendPos in (QwtPlot.BottomLegend, QwtPlot.TopLegend):
+            if self.__data.layoutData.legend.hint.width() < canvasRect.width():
                 alignedRect.setX(canvasRect.x())
                 alignedRect.setWidth(canvasRect.width())
         else:
-            if self.d_data.layoutData.legend.hint.height() < canvasRect.height():
+            if self.__data.layoutData.legend.hint.height() < canvasRect.height():
                 alignedRect.setY(canvasRect.y())
                 alignedRect.setHeight(canvasRect.height())
         return alignedRect
@@ -399,38 +399,38 @@ class QwtPlotLayout(object):
         backboneOffset = [0 for _i in range(QwtPlot.axisCnt)]
         for axis in range(QwtPlot.axisCnt):
             if not (options & self.IgnoreFrames):
-                backboneOffset[axis] += self.d_data.layoutData.canvas.contentsMargins[axis]
-            if not self.d_data.alignCanvasToScales[axis]:
-                backboneOffset[axis] += self.d_data.canvasMargin[axis]
+                backboneOffset[axis] += self.__data.layoutData.canvas.contentsMargins[axis]
+            if not self.__data.alignCanvasToScales[axis]:
+                backboneOffset[axis] += self.__data.canvasMargin[axis]
         done = False
         while not done:
             done = True
             if not ((options & self.IgnoreTitle) or \
-                    self.d_data.layoutData.title.text.isEmpty()):
+                    self.__data.layoutData.title.text.isEmpty()):
                 w = rect.width()
-                if self.d_data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
-                   self.d_data.layoutData.scale[QwtPlot.yRight].isEnabled:
+                if self.__data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
+                   self.__data.layoutData.scale[QwtPlot.yRight].isEnabled:
                     w -= dimAxis[QwtPlot.yLeft]+dimAxis[QwtPlot.yRight]
-                d = np.ceil(self.d_data.layoutData.title.text.heightForWidth(w))
+                d = np.ceil(self.__data.layoutData.title.text.heightForWidth(w))
                 if not (options & self.IgnoreFrames):
-                    d += 2*self.d_data.layoutData.title.frameWidth
+                    d += 2*self.__data.layoutData.title.frameWidth
                 if d > dimTitle:
                     dimTitle = d
                     done = False
             if not ((options & self.IgnoreFooter) or \
-                    self.d_data.layoutData.footer.text.isEmpty()):
+                    self.__data.layoutData.footer.text.isEmpty()):
                 w = rect.width()
-                if self.d_data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
-                   self.d_data.layoutData.scale[QwtPlot.yRight].isEnabled:
+                if self.__data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
+                   self.__data.layoutData.scale[QwtPlot.yRight].isEnabled:
                     w -= dimAxis[QwtPlot.yLeft]+dimAxis[QwtPlot.yRight]
-                d = np.ceil(self.d_data.layoutData.footer.text.heightForWidth(w))
+                d = np.ceil(self.__data.layoutData.footer.text.heightForWidth(w))
                 if not (options & self.IgnoreFrames):
-                    d += 2*self.d_data.layoutData.footer.frameWidth
+                    d += 2*self.__data.layoutData.footer.frameWidth
                 if d > dimFooter:
                     dimFooter = d
                     done = False
             for axis in range(QwtPlot.axisCnt):
-                scaleData = self.d_data.layoutData.scale[axis]
+                scaleData = self.__data.layoutData.scale[axis]
                 if scaleData.isEnabled:
                     if axis in (QwtPlot.xTop, QwtPlot.xBottom):
                         length = rect.width()-dimAxis[QwtPlot.yLeft]-dimAxis[QwtPlot.yRight]
@@ -450,13 +450,13 @@ class QwtPlotLayout(object):
                         if dimAxis[QwtPlot.xTop] <= 0:
                             length -= 1
                         if dimAxis[QwtPlot.xBottom] > 0:
-                            length += min([self.d_data.layoutData.scale[QwtPlot.xBottom].tickOffset,
+                            length += min([self.__data.layoutData.scale[QwtPlot.xBottom].tickOffset,
                                            float(scaleData.start-backboneOffset[QwtPlot.xBottom])])
                         if dimAxis[QwtPlot.xTop] > 0:
-                            length += min([self.d_data.layoutData.scale[QwtPlot.xTop].tickOffset,
+                            length += min([self.__data.layoutData.scale[QwtPlot.xTop].tickOffset,
                                            float(scaleData.end-backboneOffset[QwtPlot.xTop])])
                         if dimTitle > 0:
-                            length -= dimTitle + self.d_data.spacing
+                            length -= dimTitle + self.__data.spacing
                     d = scaleData.dimWithoutTitle
                     if not scaleData.scaleWidget.title().isEmpty():
                         d += scaleData.scaleWidget.titleHeightForWidth(np.floor(length))
@@ -469,22 +469,22 @@ class QwtPlotLayout(object):
         backboneOffset = [0 for _i in range(QwtPlot.axisCnt)]
         for axis in range(QwtPlot.axisCnt):
             backboneOffset[axis] = 0
-            if not self.d_data.alignCanvasToScales[axis]:
-                backboneOffset[axis] += self.d_data.canvasMargin[axis]
+            if not self.__data.alignCanvasToScales[axis]:
+                backboneOffset[axis] += self.__data.canvasMargin[axis]
             if not options & self.IgnoreFrames:
-                backboneOffset[axis] += self.d_data.layoutData.canvas.contentsMargins[axis]
+                backboneOffset[axis] += self.__data.layoutData.canvas.contentsMargins[axis]
         for axis in range(QwtPlot.axisCnt):
             if not scaleRect[axis].isValid():
                 continue
-            startDist = self.d_data.layoutData.scale[axis].start
-            endDist = self.d_data.layoutData.scale[axis].end
+            startDist = self.__data.layoutData.scale[axis].start
+            endDist = self.__data.layoutData.scale[axis].end
             axisRect = scaleRect[axis]
             if axis in (QwtPlot.xTop, QwtPlot.xBottom):
                 leftScaleRect = scaleRect[QwtPlot.yLeft]
                 leftOffset = backboneOffset[QwtPlot.yLeft]-startDist
                 if leftScaleRect.isValid():
                     dx = leftOffset + leftScaleRect.width()
-                    if self.d_data.alignCanvasToScales[QwtPlot.yLeft] and dx < 0.:
+                    if self.__data.alignCanvasToScales[QwtPlot.yLeft] and dx < 0.:
                         cLeft = canvasRect.left()
                         canvasRect.setLeft(max([cLeft, axisRect.left()-dx]))
                     else:
@@ -492,7 +492,7 @@ class QwtPlotLayout(object):
                         left = axisRect.left()+leftOffset
                         axisRect.setLeft(max([left, minLeft]))
                 else:
-                    if self.d_data.alignCanvasToScales[QwtPlot.yLeft] and leftOffset < 0:
+                    if self.__data.alignCanvasToScales[QwtPlot.yLeft] and leftOffset < 0:
                         canvasRect.setLeft(max([canvasRect.left(),
                                                 axisRect.left()-leftOffset]))
                     else:
@@ -502,14 +502,14 @@ class QwtPlotLayout(object):
                 rightOffset = backboneOffset[QwtPlot.yRight]-endDist+1
                 if rightScaleRect.isValid():
                     dx = rightOffset+rightScaleRect.width()
-                    if self.d_data.alignCanvasToScales[QwtPlot.yRight] and dx < 0:
+                    if self.__data.alignCanvasToScales[QwtPlot.yRight] and dx < 0:
                         cRight = canvasRect.right()
                         canvasRect.setRight(min([cRight, axisRect.right()+dx]))
                     maxRight = rightScaleRect.right()
                     right = axisRect.right()-rightOffset
                     axisRect.setRight(min([right, maxRight]))
                 else:
-                    if self.d_data.alignCanvasToScales[QwtPlot.yRight] and rightOffset < 0:
+                    if self.__data.alignCanvasToScales[QwtPlot.yRight] and rightOffset < 0:
                         canvasRect.setRight(min([canvasRect.right(),
                                                  axisRect.right()+rightOffset]))
                     else:
@@ -520,16 +520,16 @@ class QwtPlotLayout(object):
                 bottomOffset = backboneOffset[QwtPlot.xBottom]-endDist+1
                 if bottomScaleRect.isValid():
                     dy = bottomOffset+bottomScaleRect.height()
-                    if self.d_data.alignCanvasToScales[QwtPlot.xBottom] and dy < 0:
+                    if self.__data.alignCanvasToScales[QwtPlot.xBottom] and dy < 0:
                         cBottom = canvasRect.bottom()
                         canvasRect.setBottom(min([cBottom, axisRect.bottom()+dy]))
                     else:
                         maxBottom = bottomScaleRect.top()+\
-                            self.d_data.layoutData.scale[QwtPlot.xBottom].tickOffset
+                            self.__data.layoutData.scale[QwtPlot.xBottom].tickOffset
                         bottom = axisRect.bottom()-bottomOffset
                         axisRect.setBottom(min([bottom, maxBottom]))
                 else:
-                    if self.d_data.alignCanvasToScales[QwtPlot.xBottom] and bottomOffset < 0:
+                    if self.__data.alignCanvasToScales[QwtPlot.xBottom] and bottomOffset < 0:
                         canvasRect.setBottom(min([canvasRect.bottom(),
                                                   axisRect.bottom()+bottomOffset]))
                     else:
@@ -539,16 +539,16 @@ class QwtPlotLayout(object):
                 topOffset = backboneOffset[QwtPlot.xTop]-startDist
                 if topScaleRect.isValid():
                     dy = topOffset+topScaleRect.height()
-                    if self.d_data.alignCanvasToScales[QwtPlot.xTop] and dy < 0:
+                    if self.__data.alignCanvasToScales[QwtPlot.xTop] and dy < 0:
                         cTop = canvasRect.top()
                         canvasRect.setTop(max([cTop, axisRect.top()-dy]))
                     else:
                         minTop = topScaleRect.bottom()-\
-                                 self.d_data.layoutData.scale[QwtPlot.xTop].tickOffset
+                                 self.__data.layoutData.scale[QwtPlot.xTop].tickOffset
                         top = axisRect.top()+topOffset
                         axisRect.setTop(max([top, minTop]))
                 else:
-                    if self.d_data.alignCanvasToScales[QwtPlot.xTop] and topOffset < 0:
+                    if self.__data.alignCanvasToScales[QwtPlot.xTop] and topOffset < 0:
                         canvasRect.setTop(max([canvasRect.top(),
                                                axisRect.top()-topOffset]))
                     else:
@@ -559,33 +559,33 @@ class QwtPlotLayout(object):
             if not sRect.isValid():
                 continue
             if axis in (QwtPlot.xBottom, QwtPlot.xTop):
-                if self.d_data.alignCanvasToScales[QwtPlot.yLeft]:
-                    y = canvasRect.left()-self.d_data.layoutData.scale[axis].start
+                if self.__data.alignCanvasToScales[QwtPlot.yLeft]:
+                    y = canvasRect.left()-self.__data.layoutData.scale[axis].start
                     if not options & self.IgnoreFrames:
-                        y += self.d_data.layoutData.canvas.contentsMargins[QwtPlot.yLeft]
+                        y += self.__data.layoutData.canvas.contentsMargins[QwtPlot.yLeft]
                     sRect.setLeft(y)
-                if self.d_data.alignCanvasToScales[QwtPlot.yRight]:
-                    y = canvasRect.right()-1+self.d_data.layoutData.scale[axis].end
+                if self.__data.alignCanvasToScales[QwtPlot.yRight]:
+                    y = canvasRect.right()-1+self.__data.layoutData.scale[axis].end
                     if not options & self.IgnoreFrames:
-                        y -= self.d_data.layoutData.canvas.contentsMargins[QwtPlot.yRight]
+                        y -= self.__data.layoutData.canvas.contentsMargins[QwtPlot.yRight]
                     sRect.setRight(y)
-                if self.d_data.alignCanvasToScales[axis]:
+                if self.__data.alignCanvasToScales[axis]:
                     if axis == QwtPlot.xTop:
                         sRect.setBottom(canvasRect.top())
                     else:
                         sRect.setTop(canvasRect.bottom())
             else:
-                if self.d_data.alignCanvasToScales[QwtPlot.xTop]:
-                    x = canvasRect.top()-self.d_data.layoutData.scale[axis].start
+                if self.__data.alignCanvasToScales[QwtPlot.xTop]:
+                    x = canvasRect.top()-self.__data.layoutData.scale[axis].start
                     if not options & self.IgnoreFrames:
-                        x += self.d_data.layoutData.canvas.contentsMargins[QwtPlot.xTop]
+                        x += self.__data.layoutData.canvas.contentsMargins[QwtPlot.xTop]
                     sRect.setTop(x)
-                if self.d_data.alignCanvasToScales[QwtPlot.xBottom]:
-                    x = canvasRect.bottom()-1+self.d_data.layoutData.scale[axis].end
+                if self.__data.alignCanvasToScales[QwtPlot.xBottom]:
+                    x = canvasRect.bottom()-1+self.__data.layoutData.scale[axis].end
                     if not options & self.IgnoreFrames:
-                        x -= self.d_data.layoutData.canvas.contentsMargins[QwtPlot.xBottom]
+                        x -= self.__data.layoutData.canvas.contentsMargins[QwtPlot.xBottom]
                     sRect.setBottom(x)
-                if self.d_data.alignCanvasToScales[axis]:
+                if self.__data.alignCanvasToScales[axis]:
                     if axis == QwtPlot.yLeft:
                         sRect.setRight(canvasRect.left())
                     else:
@@ -594,21 +594,21 @@ class QwtPlotLayout(object):
     def activate(self, plot, plotRect, options=0x00):
         self.invalidate()
         rect = QRectF(plotRect)
-        self.d_data.layoutData.init(plot, rect)
+        self.__data.layoutData.init(plot, rect)
         if not (options & self.IgnoreLegend) and plot.legend() and\
            not plot.legend().isEmpty():
-            self.d_data.legendRect = self.layoutLegend(options, rect)
+            self.__data.legendRect = self.layoutLegend(options, rect)
             region = QRegion(rect.toRect())
-            rect = region.subtracted(self.d_data.legendRect.toRect()
+            rect = region.subtracted(self.__data.legendRect.toRect()
                                      ).boundingRect()
-            if self.d_data.legendPos == QwtPlot.LeftLegend:
-                rect.setLeft(rect.left()+self.d_data.spacing)
-            elif self.d_data.legendPos == QwtPlot.RightLegend:
-                rect.setRight(rect.right()-self.d_data.spacing)
-            elif self.d_data.legendPos == QwtPlot.TopLegend:
-                rect.setTop(rect.top()+self.d_data.spacing)
-            elif self.d_data.legendPos == QwtPlot.BottomLegend:
-                rect.setBottom(rect.bottom()-self.d_data.spacing)
+            if self.__data.legendPos == QwtPlot.LeftLegend:
+                rect.setLeft(rect.left()+self.__data.spacing)
+            elif self.__data.legendPos == QwtPlot.RightLegend:
+                rect.setRight(rect.right()-self.__data.spacing)
+            elif self.__data.legendPos == QwtPlot.TopLegend:
+                rect.setTop(rect.top()+self.__data.spacing)
+            elif self.__data.legendPos == QwtPlot.BottomLegend:
+                rect.setBottom(rect.bottom()-self.__data.spacing)
         
 #     +---+-----------+---+
 #     |       Title       |
@@ -627,24 +627,24 @@ class QwtPlotLayout(object):
 
         dimTitle, dimFooter, dimAxes = self.expandLineBreaks(options, rect)
         if dimTitle > 0:
-            self.d_data.titleRect.setRect(rect.left(), rect.top(),
+            self.__data.titleRect.setRect(rect.left(), rect.top(),
                                           rect.width(), dimTitle)
-            rect.setTop(self.d_data.titleRect.bottom()+self.d_data.spacing)
-            if self.d_data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
-               self.d_data.layoutData.scale[QwtPlot.yRight].isEnabled:
-                self.d_data.titleRect.setX(rect.left()+dimAxes[QwtPlot.yLeft])
-                self.d_data.titleRect.setWidth(rect.width()\
+            rect.setTop(self.__data.titleRect.bottom()+self.__data.spacing)
+            if self.__data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
+               self.__data.layoutData.scale[QwtPlot.yRight].isEnabled:
+                self.__data.titleRect.setX(rect.left()+dimAxes[QwtPlot.yLeft])
+                self.__data.titleRect.setWidth(rect.width()\
                             -dimAxes[QwtPlot.yLeft]-dimAxes[QwtPlot.yRight])
         if dimFooter > 0:
-            self.d_data.footerRect.setRect(rect.left(),
+            self.__data.footerRect.setRect(rect.left(),
                            rect.bottom()-dimFooter, rect.width(), dimFooter)
-            rect.setBottom(self.d_data.footerRect.top()-self.d_data.spacing)
-            if self.d_data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
-               self.d_data.layoutData.scale[QwtPlot.yRight].isEnabled:
-                self.d_data.footerRect.setX(rect.left()+dimAxes[QwtPlot.yLeft])
-                self.d_data.footerRect.setWidth(rect.width()\
+            rect.setBottom(self.__data.footerRect.top()-self.__data.spacing)
+            if self.__data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
+               self.__data.layoutData.scale[QwtPlot.yRight].isEnabled:
+                self.__data.footerRect.setX(rect.left()+dimAxes[QwtPlot.yLeft])
+                self.__data.footerRect.setWidth(rect.width()\
                             -dimAxes[QwtPlot.yLeft]-dimAxes[QwtPlot.yRight])
-        self.d_data.canvasRect.setRect(
+        self.__data.canvasRect.setRect(
                 rect.x()+dimAxes[QwtPlot.yLeft],
                 rect.y()+dimAxes[QwtPlot.xTop],
                 rect.width()-dimAxes[QwtPlot.yRight]-dimAxes[QwtPlot.yLeft],
@@ -652,18 +652,18 @@ class QwtPlotLayout(object):
         for axis in range(QwtPlot.axisCnt):
             if dimAxes[axis]:
                 dim = dimAxes[axis]
-                scaleRect = self.d_data.scaleRect[axis]
-                scaleRect.setRect(*self.d_data.canvasRect.getRect())
+                scaleRect = self.__data.scaleRect[axis]
+                scaleRect.setRect(*self.__data.canvasRect.getRect())
                 if axis == QwtPlot.yLeft:
-                    scaleRect.setX(self.d_data.canvasRect.left()-dim)
+                    scaleRect.setX(self.__data.canvasRect.left()-dim)
                     scaleRect.setWidth(dim)
                 elif axis == QwtPlot.yRight:
-                    scaleRect.setX(self.d_data.canvasRect.right())
+                    scaleRect.setX(self.__data.canvasRect.right())
                 elif axis == QwtPlot.xBottom:
-                    scaleRect.setY(self.d_data.canvasRect.bottom())
+                    scaleRect.setY(self.__data.canvasRect.bottom())
                     scaleRect.setHeight(dim)
                 elif axis == QwtPlot.xTop:
-                    scaleRect.setY(self.d_data.canvasRect.top()-dim)
+                    scaleRect.setY(self.__data.canvasRect.top()-dim)
                     scaleRect.setHeight(dim)
                 scaleRect = scaleRect.normalized()
                 
@@ -682,8 +682,8 @@ class QwtPlotLayout(object):
 #       |   <-  Axis   ->   |
 #       +---+-----------+---+
                 
-        self.alignScales(options, self.d_data.canvasRect,
-                         self.d_data.scaleRect)
-        if not self.d_data.legendRect.isEmpty():
-            self.d_data.legendRect = self.alignLegend(self.d_data.canvasRect,
-                                                      self.d_data.legendRect)
+        self.alignScales(options, self.__data.canvasRect,
+                         self.__data.scaleRect)
+        if not self.__data.legendRect.isEmpty():
+            self.__data.legendRect = self.alignLegend(self.__data.canvasRect,
+                                                      self.__data.legendRect)

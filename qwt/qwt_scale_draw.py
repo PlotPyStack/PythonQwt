@@ -39,55 +39,55 @@ class QwtAbstractScaleDraw(object):
     Ticks = 0x02
     Labels = 0x04
     def __init__(self):
-        self.d_data = QwtAbstractScaleDraw_PrivateData()
+        self.__data = QwtAbstractScaleDraw_PrivateData()
     
     def enableComponent(self, component, enable):
         if enable:
-            self.d_data.components |= component
+            self.__data.components |= component
         else:
-            self.d_data.components &= ~component
+            self.__data.components &= ~component
     
     def hasComponent(self, component):
-        return self.d_data.components & component
+        return self.__data.components & component
     
     def setScaleDiv(self, scaleDiv):
-        self.d_data.scaleDiv = scaleDiv
-        self.d_data.map.setScaleInterval(scaleDiv.lowerBound(),
+        self.__data.scaleDiv = scaleDiv
+        self.__data.map.setScaleInterval(scaleDiv.lowerBound(),
                                          scaleDiv.upperBound())
-        self.d_data.labelCache.clear()
+        self.__data.labelCache.clear()
     
     def setTransformation(self, transformation):
-        self.d_data.map.setTransformation(transformation)
+        self.__data.map.setTransformation(transformation)
     
     def scaleMap(self):
-        return self.d_data.map
+        return self.__data.map
     
     def scaleDiv(self):
-        return self.d_data.scaleDiv
+        return self.__data.scaleDiv
     
     def setPenWidth(self, width):
         if width < 0:
             width = 0
-        if width != self.d_data.penWidth:
-            self.d_data.penWidth = width
+        if width != self.__data.penWidth:
+            self.__data.penWidth = width
 
     def penWidth(self):
-        return self.d_data.penWidth
+        return self.__data.penWidth
     
     def draw(self, painter, palette):
         painter.save()
         
         pen = painter.pen()
-        pen.setWidth(self.d_data.penWidth)
+        pen.setWidth(self.__data.penWidth)
         pen.setCosmetic(False)
         painter.setPen(pen)
         
         if self.hasComponent(QwtAbstractScaleDraw.Labels):
             painter.save()
             painter.setPen(palette.color(QPalette.Text))
-            majorTicks = self.d_data.scaleDiv.ticks(QwtScaleDiv.MajorTick)
+            majorTicks = self.__data.scaleDiv.ticks(QwtScaleDiv.MajorTick)
             for v in majorTicks:
-                if self.d_data.scaleDiv.contains(v):
+                if self.__data.scaleDiv.contains(v):
                     self.drawLabel(painter, v)
             painter.restore()
         
@@ -98,11 +98,11 @@ class QwtAbstractScaleDraw(object):
             pen.setCapStyle(Qt.FlatCap)
             painter.setPen(pen)
             for tickType in range(QwtScaleDiv.NTickTypes):
-                ticks = self.d_data.scaleDiv.ticks(tickType)
+                ticks = self.__data.scaleDiv.ticks(tickType)
                 for v in ticks:
-                    if self.d_data.scaleDiv.contains(v):
+                    if self.__data.scaleDiv.contains(v):
                         self.drawTick(painter, v,
-                                      self.d_data.tickLength[tickType])
+                                      self.__data.tickLength[tickType])
             painter.restore()
         
         if self.hasComponent(QwtAbstractScaleDraw.Backbone):
@@ -119,18 +119,18 @@ class QwtAbstractScaleDraw(object):
     def setSpacing(self, spacing):
         if spacing < 0:
             spacing = 0
-        self.d_data.spacing = spacing
+        self.__data.spacing = spacing
     
     def spacing(self):
-        return self.d_data.spacing
+        return self.__data.spacing
     
     def setMinimumExtent(self, minExtent):
         if minExtent < 0.:
             minExtent = 0.
-        self.d_data.minExtent = minExtent
+        self.__data.minExtent = minExtent
     
     def minimumExtent(self):
-        return self.d_data.minExtent
+        return self.__data.minExtent
         
     def setTickLength(self, tickType, length):
         if tickType < QwtScaleDiv.MinorTick or\
@@ -141,18 +141,18 @@ class QwtAbstractScaleDraw(object):
         maxTickLen = 1000.
         if length > maxTickLen:
             length = maxTickLen
-        self.d_data.tickLength[tickType] = length
+        self.__data.tickLength[tickType] = length
     
     def tickLength(self, tickType):
         if tickType < QwtScaleDiv.MinorTick or\
            tickType > QwtScaleDiv.MajorTick:
             return 0
-        return self.d_data.tickLength[tickType]
+        return self.__data.tickLength[tickType]
     
     def maxTickLength(self):
         length = 0.
         for tickType in range(QwtScaleDiv.NTickTypes):
-            length = max([length, self.d_data.tickLength[tickType]])
+            length = max([length, self.__data.tickLength[tickType]])
         return length
     
     def label(self, value):
@@ -161,20 +161,19 @@ class QwtAbstractScaleDraw(object):
         return QLocale().toString(value)
     
     def tickLabel(self, font, value):
-        lbl = self.d_data.labelCache.get(value)
+        lbl = self.__data.labelCache.get(value)
         if lbl is None:
             lbl = QwtText(self.label(value))
             lbl.setRenderFlags(0)
             lbl.setLayoutAttribute(QwtText.MinimumLayout)
             lbl.textSize(font)
-            self.d_data.labelCache[value] = lbl
+            self.__data.labelCache[value] = lbl
         return lbl
             
 
 
-class QwtScaleDraw_PrivateData(QwtAbstractScaleDraw_PrivateData):
+class QwtScaleDraw_PrivateData(object):
     def __init__(self):
-        super(QwtScaleDraw_PrivateData, self).__init__()
         self.len = 0
         self.alignment = QwtScaleDraw.BottomScale
         self.labelAlignment = 0
@@ -188,20 +187,20 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
     BottomScale, TopScale, LeftScale, RightScale = range(4)
     
     def __init__(self):
-        super(QwtAbstractScaleDraw, self).__init__()
-        self.d_data = QwtScaleDraw_PrivateData()
+        QwtAbstractScaleDraw.__init__(self)
+        self.__data = QwtScaleDraw_PrivateData()
         self.setLength(100)
         
     def alignment(self):
-        return self.d_data.alignment
+        return self.__data.alignment
     
     def setAlignment(self, align):
-        self.d_data.alignment = align
+        self.__data.alignment = align
     
     def orientation(self):
-        if self.d_data.alignment in (self.TopScale, self.BottomScale):
+        if self.__data.alignment in (self.TopScale, self.BottomScale):
             return Qt.Horizontal
-        elif self.d_data.alignment in (self.LeftScale, self.RightScale):
+        elif self.__data.alignment in (self.LeftScale, self.RightScale):
             return Qt.Vertical
     
     def getBorderDistHint(self, font):
@@ -352,17 +351,17 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         px = 0
         py = 0
         if self.alignment() == self.RightScale:
-            px = self.d_data.pos.x() + dist
+            px = self.__data.pos.x() + dist
             py = tval
         elif self.alignment() == self.LeftScale:
-            px = self.d_data.pos.x() - dist
+            px = self.__data.pos.x() - dist
             py = tval
         elif self.alignment() == self.BottomScale:
             px = tval
-            py = self.d_data.pos.y() + dist
+            py = self.__data.pos.y() + dist
         elif self.alignment() == self.TopScale:
             px = tval
-            py = self.d_data.pos.y() - dist
+            py = self.__data.pos.y() - dist
         
         return QPointF(px, py)
     
@@ -371,7 +370,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             return
         
         roundingAlignment = QwtPainter().roundingAlignment(painter)
-        pos = self.d_data.pos
+        pos = self.__data.pos
         tval = self.scaleMap().transform(value)
         if roundingAlignment:
             tval = round(tval)
@@ -412,8 +411,8 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         
     def drawBackbone(self, painter):
         doAlign = QwtPainter().roundingAlignment(painter)
-        pos = self.d_data.pos
-        len_ = self.d_data.len
+        pos = self.__data.pos
+        len_ = self.__data.len
         pw = max([self.penWidth(), 1])
         
         if doAlign:
@@ -451,25 +450,25 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             self.move(QPointF(x, y))
         elif len(args) == 1:
             pos, = args
-            self.d_data.pos = pos
+            self.__data.pos = pos
             self.updateMap()
         else:
             raise TypeError("%s().move() takes 1 or 2 argument(s) (%s given)"\
                             % (self.__class__.__name__, len(args)))
     
     def pos(self):
-        return self.d_data.pos
+        return self.__data.pos
     
     def setLength(self, length):
         if length >= 0 and length < 10:
             length = 10
         if length < 0 and length > -10:
             length = -10
-        self.d_data.len = length
+        self.__data.len = length
         self.updateMap()
     
     def length(self):
-        return self.d_data.len
+        return self.__data.len
     
     def drawLabel(self, painter, value):
         lbl = self.tickLabel(painter.font(), value)
@@ -545,16 +544,16 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return self.labelRect(font, value).size()
     
     def setLabelRotation(self, rotation):
-        self.d_data.labelRotation = rotation
+        self.__data.labelRotation = rotation
     
     def labelRotation(self):
-        return self.d_data.labelRotation
+        return self.__data.labelRotation
     
     def setLabelAlignment(self, alignment):
-        self.d_data.labelAlignment = alignment
+        self.__data.labelAlignment = alignment
     
     def labelAlignment(self):
-        return self.d_data.labelAlignment
+        return self.__data.labelAlignment
     
     def maxLabelWidth(self, font):
         return ceil(max([self.labelSize(font, v).width()
@@ -567,8 +566,8 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
                          if self.scaleDiv().contains(v)]))
     
     def updateMap(self):
-        pos = self.d_data.pos
-        len_ = self.d_data.len
+        pos = self.__data.pos
+        len_ = self.__data.len
         sm = self.scaleMap()
         if self.orientation() == Qt.Vertical:
             sm.setPaintInterval(pos.y()+len_, pos.y())

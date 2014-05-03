@@ -90,29 +90,29 @@ class QwtScaleEngine(object):
     Inverted = 0x08
     
     def __init__(self, base=10):
-        self.d_data = QwtScaleEngine_PrivateData()
+        self.__data = QwtScaleEngine_PrivateData()
         self.setBase(base)
     
     def setTransformation(self, transform):
-        if transform != self.d_data.transform:
-            self.d_data.transform = transform
+        if transform != self.__data.transform:
+            self.__data.transform = transform
     
     def transformation(self):
-        if self.d_data.transform:
-            return self.d_data.transform.copy()
+        if self.__data.transform:
+            return self.__data.transform.copy()
     
     def lowerMargin(self):
-        return self.d_data.lowerMargin
+        return self.__data.lowerMargin
     
     def upperMargin(self):
-        return self.d_data.upperMargin
+        return self.__data.upperMargin
     
     def setMargins(self, lower, upper):
-        self.d_data.lowerMargin = max([lower, 0.])
-        self.d_data.upperMargin = max([upper, 0.])
+        self.__data.lowerMargin = max([lower, 0.])
+        self.__data.upperMargin = max([upper, 0.])
     
     def divideInterval(self, intervalSize, numSteps):
-        return divideInterval(intervalSize, numSteps, self.d_data.base)
+        return divideInterval(intervalSize, numSteps, self.__data.base)
     
     def contains(self, interval, value):
         if not interval.isValid():
@@ -146,30 +146,30 @@ class QwtScaleEngine(object):
     
     def setAttribute(self, attribute, on):
         if on:
-            self.d_data.attributes |= attribute
+            self.__data.attributes |= attribute
         else:
-            self.d_data.attributes &= ~attribute
+            self.__data.attributes &= ~attribute
     
     def testAttribute(self, attribute):
-        return self.d_data.attributes & attribute
+        return self.__data.attributes & attribute
     
     def setAttributes(self, attributes):
-        self.d_data.attributes = attributes
+        self.__data.attributes = attributes
     
     def attributes(self):
-        return self.d_data.attributes
+        return self.__data.attributes
     
     def setReference(self, r):
-        self.d_data.referenceValue = r
+        self.__data.referenceValue = r
     
     def reference(self):
-        return self.d_data.referenceValue
+        return self.__data.referenceValue
     
     def setBase(self, base):
-        self.d_data.base = max([base, 2])
+        self.__data.base = max([base, 2])
     
     def base(self):
-        return self.d_data.base
+        return self.__data.base
 
 
 class QwtLinearScaleEngine(QwtScaleEngine):

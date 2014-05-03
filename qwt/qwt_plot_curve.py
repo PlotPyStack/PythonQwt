@@ -83,15 +83,15 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     def __init__(self, title):
         if not isinstance(title, QwtText):
             title = QwtText(title)
-        self.d_data = None
+        self.__data = None
         QwtPlotSeriesItem.__init__(self, title)
         QwtSeriesStore.__init__(self)
         self.init()
         
     def init(self):
+        self.__data = QwtPlotCurve_PrivateData()
         self.setItemAttribute(QwtPlotItem.Legend)
         self.setItemAttribute(QwtPlotItem.AutoScale)
-        self.d_data = QwtPlotCurve_PrivateData()
         self.setData(QwtPointSeriesData())
         self.setZ(20.)
     
@@ -100,43 +100,43 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
     def setPaintAttribute(self, attribute, on):
         if on:
-            self.d_data.paintAttributes |= attribute
+            self.__data.paintAttributes |= attribute
         else:
-            self.d_data.paintAttributes &= ~attribute
+            self.__data.paintAttributes &= ~attribute
     
     def testPaintAttribute(self, attribute):
-        return self.d_data.paintAttributes & attribute
+        return self.__data.paintAttributes & attribute
     
     def setLegendAttribute(self, attribute, on):
         if on != self.testLegendAttribute(attribute):
             if on:
-                self.d_data.legendAttributes |= attribute
+                self.__data.legendAttributes |= attribute
             else:
-                self.d_data.legendAttributes &= ~attribute
+                self.__data.legendAttributes &= ~attribute
             qwtUpdateLegendIconSize(self)
             self.legendChanged()
     
     def testLegendAttribute(self, attribute):
-        return self.d_data.legendAttributes & attribute
+        return self.__data.legendAttributes & attribute
     
     def setStyle(self, style):
-        if style != self.d_data.style:
-            self.d_data.style = style
+        if style != self.__data.style:
+            self.__data.style = style
             self.legendChanged()
             self.itemChanged()
     
     def style(self):
-        return self.d_data.style
+        return self.__data.style
     
     def setSymbol(self, symbol):
-        if symbol != self.d_data.symbol:
-            self.d_data.symbol = symbol
+        if symbol != self.__data.symbol:
+            self.__data.symbol = symbol
             qwtUpdateLegendIconSize(self)
             self.legendChanged()
             self.itemChanged()
     
     def symbol(self):
-        return self.d_data.symbol
+        return self.__data.symbol
     
     def setPen(self, *args):
         if len(args) == 3:
@@ -146,22 +146,22 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         else:
             raise TypeError("%s().setPen() takes 1 or 3 argument(s) (%s given)"\
                             % (self.__class__.__name__, len(args)))
-        if pen != self.d_data.pen:
-            self.d_data.pen = pen
+        if pen != self.__data.pen:
+            self.__data.pen = pen
             self.legendChanged()
             self.itemChanged()
     
     def pen(self):
-        return self.d_data.pen
+        return self.__data.pen
     
     def setBrush(self, brush):
-        if brush != self.d_data.brush:
-            self.d_data.brush = brush
+        if brush != self.__data.brush:
+            self.__data.brush = brush
             self.legendChanged()
             self.itemChanged()
     
     def brush(self):
-        return self.d_data.brush
+        return self.__data.brush
         
     def drawSeries(self, painter, xMap, yMap, canvasRect, from_, to):
         numSamples = self.dataSize()
@@ -171,14 +171,14 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             to = numSamples-1
         if qwtVerifyRange(numSamples, from_, to) > 0:
             painter.save()
-            painter.setPen(self.d_data.pen)
-            self.drawCurve(painter, self.d_data.style, xMap, yMap, canvasRect,
+            painter.setPen(self.__data.pen)
+            self.drawCurve(painter, self.__data.style, xMap, yMap, canvasRect,
                            from_, to)
             painter.restore()
-            if self.d_data.symbol and\
-               self.d_data.symbol.style() != QwtSymbol.NoSymbol:
+            if self.__data.symbol and\
+               self.__data.symbol.style() != QwtSymbol.NoSymbol:
                 painter.save()
-                self.drawSymbols(painter, self.d_data.symbol,
+                self.drawSymbols(painter, self.__data.symbol,
                                  xMap, yMap, canvasRect, from_, to)
                 painter.restore()
     
@@ -199,12 +199,12 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if from_ > to:
             return
         doAlign = QwtPainter().roundingAlignment(painter)
-        doFit = (self.d_data.attributes & self.Fitted)\
-                and self.d_data.curveFitter
-        doFill = self.d_data.brush.style() != Qt.NoBrush\
-                 and self.d_data.brush.color().alpha() > 0
+        doFit = (self.__data.attributes & self.Fitted)\
+                and self.__data.curveFitter
+        doFill = self.__data.brush.style() != Qt.NoBrush\
+                 and self.__data.brush.color().alpha() > 0
         clipRect = QRectF()
-        if self.d_data.paintAttributes & self.ClipPolygons:
+        if self.__data.paintAttributes & self.ClipPolygons:
             pw = max([1., painter.pen().widthF()])
             clipRect = canvasRect.adjusted(-pw, -pw, pw, pw)
         doIntegers = False
@@ -212,14 +212,14 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             if painter.paintEngine().type() == QPaintEngine.Raster:
                 if not doFit and not doFill:
                     doIntegers = True
-        noDuplicates = self.d_data.paintAttributes & self.FilterPoints
+        noDuplicates = self.__data.paintAttributes & self.FilterPoints
         mapper = QwtPointMapper()
         mapper.setFlag(QwtPointMapper.RoundPoints, doAlign)
         mapper.setFlag(QwtPointMapper.WeedOutPoints, noDuplicates)
         mapper.setBoundingRect(canvasRect)
         if doIntegers:
             polyline = mapper.toPolygon(xMap, yMap, self.data(), from_, to)
-            if self.d_data.paintAttributes & self.ClipPolygons:
+            if self.__data.paintAttributes & self.ClipPolygons:
                 clipped = QwtClipper().clipPolygon(clipRect.toAlignedRect(),
                                                    polyline, False)
                 QwtPainter().drawPolyline(painter, clipped)
@@ -229,8 +229,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             print('*** DEBUG: draw!')
             polyline = mapper.toPolygonF(xMap, yMap, self.data(), from_, to)
             if doFit:
-                polyline = self.d_data.curveFitter.fitCurve(polyline)
-            if self.d_data.paintAttributes & self.ClipPolygons:
+                polyline = self.__data.curveFitter.fitCurve(polyline)
+            if self.__data.paintAttributes & self.ClipPolygons:
                 clipped = QwtClipper().clipPolygonF(clipRect, polyline, False)
                 QwtPainter().drawPolyline(painter, clipped)
             else:
@@ -242,8 +242,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         painter.save()
         painter.setRenderHint(QPainter.Antialiasing, False)
         doAlign = QwtPainter().roundingAlignment(painter)
-        x0 = xMap.transform(self.d_data.baseline)
-        y0 = yMap.transform(self.d_data.baseline)
+        x0 = xMap.transform(self.__data.baseline)
+        y0 = yMap.transform(self.__data.baseline)
         if doAlign:
             x0 = round(x0)
             y0 = round(y0)
@@ -266,13 +266,13 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         color = painter.pen().color()
         if painter.pen().style() == Qt.NoPen or color.alpha() == 0:
             return
-        doFill = self.d_data.brush.style() != Qt.NoBrush\
-                 and self.d_data.brush.color().alpha() > 0
+        doFill = self.__data.brush.style() != Qt.NoBrush\
+                 and self.__data.brush.color().alpha() > 0
         doAlign = QwtPainter().roundingAlignment(painter)
         mapper = QwtPointMapper()
         mapper.setBoundingRect(canvasRect)
         mapper.setFlag(QwtPointMapper.RoundPoints, doAlign)
-        if self.d_data.paintAttributes & self.FilterPoints:
+        if self.__data.paintAttributes & self.FilterPoints:
             if color.alpha() == 255\
                and not (painter.renderHints() & QPainter.Antialiasing):
                 mapper.setFlag(QwtPointMapper.WeedOutPoints, True)
@@ -281,13 +281,13 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             points = mapper.toPointsF(xMap, yMap, self.data(), from_, to)
             QwtPainter().drawPoints(painter, points)
             self.fillCurve(painter, xMap, yMap, canvasRect, points)
-        elif self.d_data.paintAttributes & self.ImageBuffer:
+        elif self.__data.paintAttributes & self.ImageBuffer:
             image = mapper.toImage(xMap, yMap, self.data(), from_, to,
-                            self.d_data.pen,
+                            self.__data.pen,
                             painter.testRenderHint(QPainter.Antialiasing),
                             self.renderThreadCount())
             painter.drawImage(canvasRect.toAlignedRect(), image)
-        elif self.d_data.paintAttributes & self.MinimizeMemory:
+        elif self.__data.paintAttributes & self.MinimizeMemory:
             series = self.data()
             for i in range(from_, to+1):
                 sample = series.sample(i)
@@ -310,7 +310,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         polygon = QPolygonF(2*(to-from_)+1)
         points = polygon.data()
         inverted = self.orientation() == Qt.Vertical
-        if self.d_data.attributes & self.Inverted:
+        if self.__data.attributes & self.Inverted:
             inverted = not inverted
         series = self.data()
         ip = 0
@@ -333,43 +333,43 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             points[ip].setX(xi)
             points[ip].setY(yi)
             ip += 2
-        if self.d_data.paintAttributes & self.ClipPolygons:
+        if self.__data.paintAttributes & self.ClipPolygons:
             clipped = QwtClipper().clipPolygonF(canvasRect, polygon, False)
             QwtPainter().drawPolyline(painter, clipped)
         else:
             QwtPainter().drawPolyline(painter, polygon)
-        if self.d_data.brush.style() != Qt.NoBrush:
+        if self.__data.brush.style() != Qt.NoBrush:
             self.fillCurve(painter, xMap, yMap, canvasRect, polygon)
     
     def setCurveAttribute(self, attribute, on):
-        if (self.d_data.attributes & attribute) == on:
+        if (self.__data.attributes & attribute) == on:
             return
         if on:
-            self.d_data.attributes |= attribute
+            self.__data.attributes |= attribute
         else:
-            self.d_data.attributes &= ~attribute
+            self.__data.attributes &= ~attribute
         self.itemChanged()
     
     def testCurveAttribute(self, attribute):
-        return self.d_data.attributes & attribute
+        return self.__data.attributes & attribute
     
     def setCurveFitter(self, curveFitter):
-        self.d_data.curveFitter = curveFitter
+        self.__data.curveFitter = curveFitter
         self.itemChanged()
     
     def curveFitter(self):
-        return self.d_data.curveFitter
+        return self.__data.curveFitter
     
     def fillCurve(self, painter, xMap, yMap, canvasRect, polygon):
-        if self.d_data.brush.style() == Qt.NoBrush:
+        if self.__data.brush.style() == Qt.NoBrush:
             return
         self.closePolyline(painter, xMap, yMap, polygon)
         if polygon.count() <= 2:
             return
-        brush = self.d_data.brush
+        brush = self.__data.brush
         if not brush.color().isValid():
-            brush.setColor(self.d_data.pen.color())
-        if self.d_data.paintAttributes & self.ClipPolygons:
+            brush.setColor(self.__data.pen.color())
+        if self.__data.paintAttributes & self.ClipPolygons:
             polygon = QwtClipper().clipPolygonF(canvasRect, polygon, True)
         painter.save()
         painter.setPen(Qt.NoPen)
@@ -381,7 +381,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if polygon.size() < 2:
             return
         doAlign = QwtPainter().roundingAlignment(painter)
-        baseline = self.d_data.baseline
+        baseline = self.__data.baseline
         if self.orientation() == Qt.Vertical:
             if yMap.transformation():
                 baseline = yMap.transformation().bounded(baseline)
@@ -414,12 +414,12 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
                 symbol.drawSymbols(painter, points)
     
     def setBaseline(self, value):
-        if self.d_data.baseline != value:
-            self.d_data.baseline = value
+        if self.__data.baseline != value:
+            self.__data.baseline = value
             self.itemChanged()
     
     def baseline(self):
-        return self.d_data.baseline
+        return self.__data.baseline
     
     def closestPoint(self, pos, dist):
         numSamples = self.dataSize()
@@ -451,29 +451,29 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         painter = QPainter(graphic)
         painter.setRenderHint(QPainter.Antialiasing,
                           self.testRenderHint(QwtPlotItem.RenderAntialiased))
-        if self.d_data.legendAttributes == 0 or\
-           (self.d_data.legendAttributes & QwtPlotCurve.LegendShowBrush):
-            brush = self.d_data.brush
-            if brush.style() == Qt.NoBrush and self.d_data.legendAttributes == 0:
+        if self.__data.legendAttributes == 0 or\
+           (self.__data.legendAttributes & QwtPlotCurve.LegendShowBrush):
+            brush = self.__data.brush
+            if brush.style() == Qt.NoBrush and self.__data.legendAttributes == 0:
                 if self.style() != QwtPlotCurve.NoCurve:
                     brush = QBrush(self.pen().color())
-                elif self.d_data.symbol and\
-                     self.d_data.symbol.style() != QwtSymbol.NoSymbol:
-                    brush = QBrush(self.d_data.symbol.pen().color())
+                elif self.__data.symbol and\
+                     self.__data.symbol.style() != QwtSymbol.NoSymbol:
+                    brush = QBrush(self.__data.symbol.pen().color())
             if brush.style() != Qt.NoBrush:
                 r = QRectF(0, 0, size.width(), size.height())
                 painter.fillRect(r, brush)
-        if self.d_data.legendAttributes & QwtPlotCurve.LegendShowLine:
+        if self.__data.legendAttributes & QwtPlotCurve.LegendShowLine:
             if self.pen() != Qt.NoPen:
                 pn = self.pen()
                 pn.setCapStyle(Qt.FlatCap)
                 painter.setPen(pn)
                 y = .5*size.height()
                 QwtPainter().drawLine(painter, 0., y, size.width(), y)
-        if self.d_data.legendAttributes & QwtPlotCurve.LegendShowSymbol:
-            if self.d_data.symbol:
+        if self.__data.legendAttributes & QwtPlotCurve.LegendShowSymbol:
+            if self.__data.symbol:
                 r = QRectF(0, 0, size.width(), size.height())
-                self.d_data.symbol.drawSymbol(painter, r)
+                self.__data.symbol.drawSymbol(painter, r)
         return graphic    
 
     def setData(self, *args):

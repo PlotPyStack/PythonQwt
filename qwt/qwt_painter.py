@@ -69,8 +69,8 @@ def isX11GraphicsSystem():
 
 class QwtPainter(object):
     def __init__(self):
-        self.d_polylineSplitting = True
-        self.d_roundingAlignment = True
+        self.__polylineSplitting = True
+        self.__roundingAlignment = True
         
     def isAligning(self, painter):
         if painter and painter.isActive():
@@ -83,19 +83,19 @@ class QwtPainter(object):
         return True
     
     def setRoundingAlignment(self, enable):
-        self.d_roundingAlignment = enable
+        self.__roundingAlignment = enable
     
     def roundingAlignment(self, painter=None):
         if painter is None:
-            return self.d_roundingAlignment
+            return self.__roundingAlignment
         else:
-            return self.d_roundingAlignment and self.isAligning(painter)
+            return self.__roundingAlignment and self.isAligning(painter)
     
     def setPolylineSplitting(self, enable):
-        self.d_polylineSplitting = enable
+        self.__polylineSplitting = enable
     
     def polylineSplitting(self):
-        return self.d_polylineSplitting
+        return self.__polylineSplitting
     
     def drawPath(self, painter, path):
         painter.drawPath(path)
@@ -241,7 +241,7 @@ class QwtPainter(object):
                 else:
                     cpa = QwtClipper.clipPolygon(clipRect, polygon)
             qwtDrawPolyline(painter, cpa, cpa.size(),
-                            self.d_polylineSplitting)
+                            self.__polylineSplitting)
         elif len(args) == 3:
             painter, points, pointCount = args
             deviceClipping, clipRect = qwtIsClippingNeeded(painter)
@@ -253,7 +253,7 @@ class QwtPainter(object):
                     polygon = QPolygon(points)
                     polygon = QwtClipper.clipPolygon(clipRect, polygon)
                 qwtDrawPolyline(painter, polygon,
-                                polygon.size(), self.d_polylineSplitting)
+                                polygon.size(), self.__polylineSplitting)
 #                polygon = QPolygonF(pointCount)
 #                pointer = polygon.data()
 #                pointer.setsize(pointCount*2*np.finfo(float).dtype.itemsize)
@@ -262,7 +262,7 @@ class QwtPainter(object):
 #                memory[1::2] = ydata
             else:
                 qwtDrawPolyline(painter, points, pointCount,
-                                self.d_polylineSplitting)
+                                self.__polylineSplitting)
         else:
             raise TypeError("%s().drawPolyline() takes 2 or 3 argument(s) (%s"\
                             " given)" % (self.__class__.__name__, len(args)))

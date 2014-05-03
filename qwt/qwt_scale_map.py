@@ -7,94 +7,94 @@ from qwt.qt.QtCore import QRectF, QPointF
 
 class QwtScaleMap(object):
     def __init__(self, other=None):
-        self.d_transform = None # QwtTransform
+        self.__transform = None # QwtTransform
         if other is None:
-            self.d_s1 = 0.
-            self.d_s2 = 1.
-            self.d_p1 = 0.
-            self.d_p2 = 1.
-            self.d_cnv = 1.
-            self.d_ts1 = 0.
+            self.__s1 = 0.
+            self.__s2 = 1.
+            self.__p1 = 0.
+            self.__p2 = 1.
+            self.__cnv = 1.
+            self.__ts1 = 0.
         else:
-            self.d_s1 = other.d_s1
-            self.d_s2 = other.d_s2
-            self.d_p1 = other.d_p1
-            self.d_p2 = other.d_p2
-            self.d_cnv = other.d_cnv
-            self.d_ts1 = other.d_ts1
-            if other.d_transform:
-                self.d_transform = other.d_transform.copy()
+            self.__s1 = other.__s1
+            self.__s2 = other.__s2
+            self.__p1 = other.__p1
+            self.__p2 = other.__p2
+            self.__cnv = other.__cnv
+            self.__ts1 = other.__ts1
+            if other.__transform:
+                self.__transform = other.__transform.copy()
 
     def __eq__(self, other):
-        return self.d_s1 == other.d_s1 and\
-               self.d_s2 == other.d_s2 and\
-               self.d_p1 == other.d_p1 and\
-               self.d_p2 == other.d_p2 and\
-               self.d_cnv == other.d_cnv and\
-               self.d_ts1 == other.d_ts1
+        return self.__s1 == other.__s1 and\
+               self.__s2 == other.__s2 and\
+               self.__p1 == other.__p1 and\
+               self.__p2 == other.__p2 and\
+               self.__cnv == other.__cnv and\
+               self.__ts1 == other.__ts1
 
     def s1(self):
-        return self.d_s1
+        return self.__s1
         
     def s2(self):
-        return self.d_s2
+        return self.__s2
         
     def p1(self):
-        return self.d_p1
+        return self.__p1
         
     def p2(self):
-        return self.d_p2
+        return self.__p2
     
     def pDist(self):
-        return abs(self.d_p2 - self.d_p1)
+        return abs(self.__p2 - self.__p1)
         
     def sDist(self):
-        return abs(self.d_s2 - self.d_s1)
+        return abs(self.__s2 - self.__s1)
 
     def transform_scalar(self, s):
-        if self.d_transform:
-            s = self.d_transform.transform(s)
-        return self.d_p1 + (s - self.d_ts1)*self.d_cnv
+        if self.__transform:
+            s = self.__transform.transform(s)
+        return self.__p1 + (s - self.__ts1)*self.__cnv
     
     def invTransform_scalar(self, p):
-        s = self.d_ts1 + ( p - self.d_p1 ) / self.d_cnv
-        if self.d_transform:
-            s = self.d_transform.invTransform(s)
+        s = self.__ts1 + ( p - self.__p1 ) / self.__cnv
+        if self.__transform:
+            s = self.__transform.invTransform(s)
         return s
     
     def isInverting(self):
-        return ( self.d_p1 < self.d_p2 ) != ( self.d_s1 < self.d_s2 )
+        return ( self.__p1 < self.__p2 ) != ( self.__s1 < self.__s2 )
     
     def setTransformation(self, transform):
-        if self.d_transform != transform:
-            self.d_transform = transform
-        self.setScaleInterval(self.d_s1, self.d_s2)
+        if self.__transform != transform:
+            self.__transform = transform
+        self.setScaleInterval(self.__s1, self.__s2)
     
     def transformation(self):
-        return self.d_transform
+        return self.__transform
     
     def setScaleInterval(self, s1, s2):
-        self.d_s1 = s1
-        self.d_s2 = s2
-        if self.d_transform:
-            self.d_s1 = self.d_transform.bounded(self.d_s1)
-            self.d_s2 = self.d_transform.bounded(self.d_s2)
+        self.__s1 = s1
+        self.__s2 = s2
+        if self.__transform:
+            self.__s1 = self.__transform.bounded(self.__s1)
+            self.__s2 = self.__transform.bounded(self.__s2)
         self.updateFactor()
 
     def setPaintInterval(self, p1, p2):
-        self.d_p1 = p1
-        self.d_p2 = p2
+        self.__p1 = p1
+        self.__p2 = p2
         self.updateFactor()
     
     def updateFactor(self):
-        self.d_ts1 = self.d_s1
-        ts2 = self.d_s2
-        if self.d_transform:
-            self.d_ts1 = self.d_transform.transform(self.d_ts1)
-            ts2 = self.d_transform.transform(ts2)
-        self.d_cnv = 1.
-        if self.d_ts1 != ts2:
-            self.d_cnv = (self.d_p2 - self.d_p1)/(ts2 - self.d_ts1)
+        self.__ts1 = self.__s1
+        ts2 = self.__s2
+        if self.__transform:
+            self.__ts1 = self.__transform.transform(self.__ts1)
+            ts2 = self.__transform.transform(ts2)
+        self.__cnv = 1.
+        if self.__ts1 != ts2:
+            self.__cnv = (self.__p2 - self.__p1)/(ts2 - self.__ts1)
     
     def transform(self, *args):
         """Transform from scale to paint coordinates

@@ -19,16 +19,16 @@ class QwtPlotSeriesItem(QwtPlotItem, QwtAbstractSeriesStore):
         if not isinstance(title, QwtText):
             title = QwtText(title)
         QwtPlotItem.__init__(self, title)
-        self.d_data = QwtPlotSeriesItem_PrivateData()
+        self.__data = QwtPlotSeriesItem_PrivateData()
         
     def setOrientation(self, orientation):
-        if self.d_data.orientation != orientation:
-            self.d_data.orientation = orientation
+        if self.__data.orientation != orientation:
+            self.__data.orientation = orientation
             self.legendChanged()
             self.itemChanged()
     
     def orientation(self):
-        return self.d_data.orientation
+        return self.__data.orientation
     
     def draw(self, painter, xMap, yMap, canvasRect):
         self.drawSeries(painter, xMap, yMap, canvasRect, 0, -1)

@@ -49,20 +49,20 @@ class QwtLogTransform(QwtTransform):
 
 class QwtPowerTransform(QwtTransform):
     def __init__(self, exponent):
-        self.d_exponent = exponent
+        self.__exponent = exponent
         super(QwtPowerTransform, self).__init__()
 
     def transform(self, value):
         if value < 0.:
-            return -np.pow(-value, 1./self.d_exponent)
+            return -np.pow(-value, 1./self.__exponent)
         else:
-            return np.pow(value, 1./self.d_exponent)
+            return np.pow(value, 1./self.__exponent)
     
     def invTransform(self, value):
         if value < 0.:
-            return -np.pow(-value, self.d_exponent)
+            return -np.pow(-value, self.__exponent)
         else:
-            return np.pow(value, self.d_exponent)
+            return np.pow(value, self.__exponent)
     
     def copy(self):
         return QwtPowerTransform()

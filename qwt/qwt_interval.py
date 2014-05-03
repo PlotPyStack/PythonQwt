@@ -10,45 +10,45 @@ class QwtInterval(object):
     ExcludeBorders = ExcludeMinimum | ExcludeMaximum
     
     def __init__(self, minValue=0., maxValue=-1., borderFlags=None):
-        self.d_minValue = minValue
-        self.d_maxValue = maxValue
+        self.__minValue = minValue
+        self.__maxValue = maxValue
         if borderFlags is None:
-            self.d_borderFlags = self.IncludeBorders
+            self.__borderFlags = self.IncludeBorders
         else:
-            self.d_borderFlags = borderFlags
+            self.__borderFlags = borderFlags
 
     def setInterval(self, minValue, maxValue, borderFlags):
-        self.d_minValue = minValue
-        self.d_maxValue = maxValue
-        self.d_borderFlags = borderFlags
+        self.__minValue = minValue
+        self.__maxValue = maxValue
+        self.__borderFlags = borderFlags
         
     def setBorderFlags(self, borderFlags):
-        self.d_borderFlags = borderFlags
+        self.__borderFlags = borderFlags
 
     def borderFlags(self):
-        return self.d_borderFlags
+        return self.__borderFlags
     
     def setMinValue(self, minValue):
-        self.d_minValue = minValue
+        self.__minValue = minValue
     
     def setMaxValue(self, maxValue):
-        self.d_maxValue = maxValue
+        self.__maxValue = maxValue
     
     def minValue(self):
-        return self.d_minValue
+        return self.__minValue
     
     def maxValue(self):
-        return self.d_maxValue
+        return self.__maxValue
 
     def isValid(self):
-        if (self.d_borderFlags & self.ExcludeBorders) == 0:
-            return self.d_minValue <= self.d_maxValue
+        if (self.__borderFlags & self.ExcludeBorders) == 0:
+            return self.__minValue <= self.__maxValue
         else:
-            return self.d_minValue < self.d_maxValue
+            return self.__minValue < self.__maxValue
     
     def width(self):
         if self.isValid:
-            return self.d_maxValue - self.d_minValue
+            return self.__maxValue - self.__minValue
         else:
             return 0.
     
@@ -70,47 +70,47 @@ class QwtInterval(object):
         return self
     
     def __eq__(self, other):
-        return self.d_minValue == other.d_minValue and\
-               self.d_maxValue == other.d_maxValue and\
-               self.d_borderFlags == other.d_borderFlags
+        return self.__minValue == other.__minValue and\
+               self.__maxValue == other.__maxValue and\
+               self.__borderFlags == other.__borderFlags
 
     def __ne__(self, other):
         return not self.__eq__(other)
     
     def isNull(self):
-        return self.isValid() and self.d_minValue >= self.d_maxValue
+        return self.isValid() and self.__minValue >= self.__maxValue
     
     def invalidate(self):
-        self.d_minValue = 0.
-        self.d_maxValue = -1.
+        self.__minValue = 0.
+        self.__maxValue = -1.
     
     def normalized(self):
-        if self.d_minValue > self.d_maxValue:
+        if self.__minValue > self.__maxValue:
             return self.inverted()
-        elif self.d_minValue == self.d_maxValue and\
-             self.d_borderFlags == self.ExcludeMinimum:
+        elif self.__minValue == self.__maxValue and\
+             self.__borderFlags == self.ExcludeMinimum:
             return self.inverted()
         else:
             return self
     
     def inverted(self):
         borderFlags = self.IncludeBorders
-        if self.d_borderFlags & self.ExcludeMinimum:
+        if self.__borderFlags & self.ExcludeMinimum:
             borderFlags |= self.ExcludeMaximum
-        if self.d_borderFlags & self.ExcludeMaximum:
+        if self.__borderFlags & self.ExcludeMaximum:
             borderFlags |= self.ExcludeMinimum
-        return QwtInterval(self.d_maxValue, self.d_minValue, borderFlags)
+        return QwtInterval(self.__maxValue, self.__minValue, borderFlags)
     
     def contains(self, value):
         if not self.isValid():
             return False
-        elif value < self.d_minValue or value > self.d_maxValue:
+        elif value < self.__minValue or value > self.__maxValue:
             return False
-        elif value == self.d_minValue and\
-             self.d_borderFlags & self.ExcludeMinimum:
+        elif value == self.__minValue and\
+             self.__borderFlags & self.ExcludeMinimum:
             return False
-        elif value == self.d_maxValue and\
-             self.d_borderFlags & self.ExcludeMaximum:
+        elif value == self.__maxValue and\
+             self.__borderFlags & self.ExcludeMaximum:
             return False
         else:
             return True
@@ -128,27 +128,27 @@ class QwtInterval(object):
         flags = self.IncludeBorders
         
         # minimum
-        if self.d_minValue < other.minValue():
-            united.setMinValue(self.d_minValue)
-            flags &= self.d_borderFlags & self.ExcludeMinimum
-        elif other.minValue() < self.d_minValue:
+        if self.__minValue < other.minValue():
+            united.setMinValue(self.__minValue)
+            flags &= self.__borderFlags & self.ExcludeMinimum
+        elif other.minValue() < self.__minValue:
             united.setMinValue(other.minValue())
             flags &= other.borderFlags() & self.ExcludeMinimum
         else:
-            united.setMinValue(self.d_minValue)
-            flags &= (self.d_borderFlags & other.borderFlags())\
+            united.setMinValue(self.__minValue)
+            flags &= (self.__borderFlags & other.borderFlags())\
                      & self.ExcludeMinimum
         
         # maximum
-        if self.d_maxValue > other.maxValue():
-            united.setMaxValue(self.d_maxValue)
-            flags &= self.d_borderFlags & self.ExcludeMaximum
-        elif other.maxValue() > self.d_maxValue:
+        if self.__maxValue > other.maxValue():
+            united.setMaxValue(self.__maxValue)
+            flags &= self.__borderFlags & self.ExcludeMaximum
+        elif other.maxValue() > self.__maxValue:
             united.setMaxValue(other.maxValue())
             flags &= other.borderFlags() & self.ExcludeMaximum
         else:
-            united.setMaxValue(self.d_maxValue)
-            flags &= self.d_borderFlags & other.borderFlags()\
+            united.setMaxValue(self.__maxValue)
+            flags &= self.__borderFlags & other.borderFlags()\
                      & self.ExcludeMaximum
         
         united.setBorderFlags(flags)
@@ -217,21 +217,21 @@ class QwtInterval(object):
     def symmetrize(self, value):
         if not self.isValid():
             return self
-        delta = max([abs(value-self.d_maxValue),
-                     abs(value-self.d_minValue)])
+        delta = max([abs(value-self.__maxValue),
+                     abs(value-self.__minValue)])
         return QwtInterval(value-delta, value+delta)
 
     def limited(self, lowerBound, upperBound):
         if not self.isValid() or lowerBound > upperBound:
             return QwtInterval()
-        minValue = max([self.d_minValue, lowerBound])
+        minValue = max([self.__minValue, lowerBound])
         minValue = min([minValue, upperBound])
-        maxValue = max([self.d_maxValue, lowerBound])
+        maxValue = max([self.__maxValue, lowerBound])
         maxValue = min([maxValue, upperBound])
-        return QwtInterval(minValue, maxValue, self.d_borderFlags)
+        return QwtInterval(minValue, maxValue, self.__borderFlags)
     
     def extend(self, value):
         if not self.isValid():
             return self
-        return QwtInterval(min([value, self.d_minValue]),
-                           max([value, self.d_maxValue]))
+        return QwtInterval(min([value, self.__minValue]),
+                           max([value, self.__maxValue]))

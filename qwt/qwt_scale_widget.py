@@ -44,7 +44,7 @@ class QwtScaleWidget(QWidget):
     TitleInverted = 1
     
     def __init__(self, *args):
-        self.d_data = None
+        self.__data = None
         align = QwtScaleDraw.LeftScale
         if len(args) == 0:
             parent = None
@@ -59,34 +59,34 @@ class QwtScaleWidget(QWidget):
         self.initScale(align)
         
     def initScale(self, align):
-        self.d_data = QwtScaleWidget_PrivateData()
-        self.d_data.layoutFlags = 0
+        self.__data = QwtScaleWidget_PrivateData()
+        self.__data.layoutFlags = 0
         if align == QwtScaleDraw.RightScale:
-            self.d_data.layoutFlags |= self.TitleInverted
+            self.__data.layoutFlags |= self.TitleInverted
 
-        self.d_data.borderDist = [0, 0]
-        self.d_data.minBorderDist = [0, 0]
-        self.d_data.margin = 4
-        self.d_data.titleOffset = 0
-        self.d_data.spacing = 2
+        self.__data.borderDist = [0, 0]
+        self.__data.minBorderDist = [0, 0]
+        self.__data.margin = 4
+        self.__data.titleOffset = 0
+        self.__data.spacing = 2
 
-        self.d_data.scaleDraw = QwtScaleDraw()
-        self.d_data.scaleDraw.setAlignment(align)
-        self.d_data.scaleDraw.setLength(10)
+        self.__data.scaleDraw = QwtScaleDraw()
+        self.__data.scaleDraw.setAlignment(align)
+        self.__data.scaleDraw.setLength(10)
         
-        self.d_data.scaleDraw.setScaleDiv(
+        self.__data.scaleDraw.setScaleDiv(
                     QwtLinearScaleEngine().divideScale(0.0, 100.0, 10, 5))
         
-        self.d_data.colorBar.colorMap = QwtLinearColorMap()
-        self.d_data.colorBar.isEnabled = False
-        self.d_data.colorBar.width = 10
+        self.__data.colorBar.colorMap = QwtLinearColorMap()
+        self.__data.colorBar.isEnabled = False
+        self.__data.colorBar.width = 10
         
         flags = int(Qt.AlignHCenter|Qt.TextExpandTabs|Qt.TextWordWrap)
-        self.d_data.title.setRenderFlags(flags)
-        self.d_data.title.setFont(self.font())
+        self.__data.title.setRenderFlags(flags)
+        self.__data.title.setFont(self.font())
         
         policy = QSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.Fixed)
-        if self.d_data.scaleDraw.orientation() == Qt.Vertical:
+        if self.__data.scaleDraw.orientation() == Qt.Vertical:
             policy.transpose()
         
         self.setSizePolicy(policy)
@@ -94,34 +94,34 @@ class QwtScaleWidget(QWidget):
         self.setAttribute(Qt.WA_WState_OwnSizePolicy, False)
     
     def setLayoutFlag(self, flag, on):
-        if (self.d_data.layoutFlags & flag != 0) != on:
+        if (self.__data.layoutFlags & flag != 0) != on:
             if on:
-                self.d_data.layoutFlags |= flag
+                self.__data.layoutFlags |= flag
             else:
-                self.d_data.layoutFlags &= ~flag
+                self.__data.layoutFlags &= ~flag
     
     def testLayoutFlag(self, flag):
-        return self.d_data.layoutFlags & flag
+        return self.__data.layoutFlags & flag
     
     def setTitle(self, title):
         if isinstance(title, QwtText):
             flags = title.renderFlags() & (~ int(Qt.AlignTop|Qt.AlignBottom))
             title.setRenderFlags(flags)
-            if title != self.d_data.title:
-                self.d_data.title = title
+            if title != self.__data.title:
+                self.__data.title = title
                 self.layoutScale()
         else:
-            if self.d_data.title.text() != title:
-                self.d_data.title.setText(title)
+            if self.__data.title.text() != title:
+                self.__data.title.setText(title)
                 self.layoutScale()
     
     def setAlignment(self, alignment):
-        if self.d_data.scaleDraw:
-            self.d_data.scaleDraw.setAlignment(alignment)
+        if self.__data.scaleDraw:
+            self.__data.scaleDraw.setAlignment(alignment)
         if not self.testAttribute(Qt.WA_WState_OwnSizePolicy):
             policy = QSizePolicy(QSizePolicy.MinimumExpanding,
                                  QSizePolicy.Fixed)
-            if self.d_data.scaleDraw.orientation() == Qt.Vertical:
+            if self.__data.scaleDraw.orientation() == Qt.Vertical:
                 policy.transpose()
             self.setSizePolicy(policy)
             self.setAttribute(Qt.WA_WState_OwnSizePolicy, False)
@@ -133,35 +133,35 @@ class QwtScaleWidget(QWidget):
         return self.scaleDraw().alignment()
     
     def setBorderDist(self, dist1, dist2):
-        if dist1 != self.d_data.borderDist[0] or\
-           dist2 != self.d_data.borderDist[1]:
-            self.d_data.borderDist = [dist1, dist2]
+        if dist1 != self.__data.borderDist[0] or\
+           dist2 != self.__data.borderDist[1]:
+            self.__data.borderDist = [dist1, dist2]
             self.layoutScale()
     
     def setMargin(self, margin):
         margin = max([0, margin])
-        if margin != self.d_data.margin:
-            self.d_data.margin = margin
+        if margin != self.__data.margin:
+            self.__data.margin = margin
             self.layoutScale()
     
     def setSpacing(self, spacing):
         spacing = max([0, spacing])
-        if spacing != self.d_data.spacing:
-            self.d_data.spacing = spacing
+        if spacing != self.__data.spacing:
+            self.__data.spacing = spacing
             self.layoutScale()
     
     def setLabelAlignment(self, alignment):
-        self.d_data.scaleDraw.setLabelAlignment(alignment)
+        self.__data.scaleDraw.setLabelAlignment(alignment)
         self.layoutScale()
     
     def setLabelRotation(self, rotation):
-        self.d_data.scaleDraw.setLabelRotation(rotation)
+        self.__data.scaleDraw.setLabelRotation(rotation)
         self.layoutScale()
     
     def setScaleDraw(self, scaleDraw):
-        if scaleDraw is None or scaleDraw == self.d_data.scaleDraw:
+        if scaleDraw is None or scaleDraw == self.__data.scaleDraw:
             return
-        sd = self.d_data.scaleDraw
+        sd = self.__data.scaleDraw
         if sd:
             scaleDraw.setAlignment(sd.alignment())
             scaleDraw.setScaleDiv(sd.scaleDiv())
@@ -169,26 +169,26 @@ class QwtScaleWidget(QWidget):
             if sd.scaleMap().transformation():
                 transform = sd.scaleMap().transformation().copy()
             scaleDraw.setTransformation(transform)
-        self.d_data.scaleDraw = scaleDraw
+        self.__data.scaleDraw = scaleDraw
         self.layoutScale()
     
     def scaleDraw(self):
-        return self.d_data.scaleDraw
+        return self.__data.scaleDraw
     
     def title(self):
-        return self.d_data.title
+        return self.__data.title
     
     def startBorderDist(self):
-        return self.d_data.borderDist[0]
+        return self.__data.borderDist[0]
     
     def endBorderDist(self):
-        return self.d_data.borderDist[1]
+        return self.__data.borderDist[1]
 
     def margin(self):
-        return self.d_data.margin
+        return self.__data.margin
     
     def spacing(self):
-        return self.d_data.spacing
+        return self.__data.spacing
     
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -199,44 +199,44 @@ class QwtScaleWidget(QWidget):
         self.draw(painter)
     
     def draw(self, painter):
-        self.d_data.scaleDraw.draw(painter, self.palette())
-        if self.d_data.colorBar.isEnabled and\
-           self.d_data.colorBar.width > 0 and\
-           self.d_data.colorBar.interval.isValid():
+        self.__data.scaleDraw.draw(painter, self.palette())
+        if self.__data.colorBar.isEnabled and\
+           self.__data.colorBar.width > 0 and\
+           self.__data.colorBar.interval.isValid():
             self.drawColorBar(painter, self.colorBarRect(self.contentsRect()))
         
         r = self.contentsRect()
-        if self.d_data.scaleDraw.orientation() == Qt.Horizontal:
-            r.setLeft(r.left() + self.d_data.borderDist[0])
-            r.setWidth(r.width() - self.d_data.borderDist[1])
+        if self.__data.scaleDraw.orientation() == Qt.Horizontal:
+            r.setLeft(r.left() + self.__data.borderDist[0])
+            r.setWidth(r.width() - self.__data.borderDist[1])
         else:
-            r.setTop(r.top() + self.d_data.borderDist[0])
-            r.setHeight(r.height() - self.d_data.borderDist[1])
+            r.setTop(r.top() + self.__data.borderDist[0])
+            r.setHeight(r.height() - self.__data.borderDist[1])
         
-        if not self.d_data.title.isEmpty():
-            self.drawTitle(painter, self.d_data.scaleDraw.alignment(), r)
+        if not self.__data.title.isEmpty():
+            self.drawTitle(painter, self.__data.scaleDraw.alignment(), r)
     
     def colorBarRect(self, rect):
         cr = rect
-        if self.d_data.scaleDraw.orientation() == Qt.Horizontal:
-            cr.setLeft(cr.left() + self.d_data.borderDist[0])
-            cr.setWidth(cr.width() - self.d_data.borderDist[1] + 1)
+        if self.__data.scaleDraw.orientation() == Qt.Horizontal:
+            cr.setLeft(cr.left() + self.__data.borderDist[0])
+            cr.setWidth(cr.width() - self.__data.borderDist[1] + 1)
         else:
-            cr.setTop(cr.top() + self.d_data.borderDist[0])
-            cr.setHeight(cr.height() - self.d_data.borderDist[1] + 1)
-        sda = self.d_data.scaleDraw.alignment()
+            cr.setTop(cr.top() + self.__data.borderDist[0])
+            cr.setHeight(cr.height() - self.__data.borderDist[1] + 1)
+        sda = self.__data.scaleDraw.alignment()
         if sda == QwtScaleDraw.LeftScale:
-            cr.setLeft(cr.right()-self.d_data.margin-self.d_data.colorBar.width)
-            cr.setWidth(self.d_data.colorBar.width)
+            cr.setLeft(cr.right()-self.__data.margin-self.__data.colorBar.width)
+            cr.setWidth(self.__data.colorBar.width)
         elif sda == QwtScaleDraw.RightScale:
-            cr.setLeft(cr.left()+self.d_data.margin)
-            cr.setWidth(self.d_data.colorBar.width)
+            cr.setLeft(cr.left()+self.__data.margin)
+            cr.setWidth(self.__data.colorBar.width)
         elif sda == QwtScaleDraw.BottomScale:
-            cr.setTop(cr.top()+self.d_data.margin)
-            cr.setHeight(self.d_data.colorBar.width)
+            cr.setTop(cr.top()+self.__data.margin)
+            cr.setHeight(self.__data.colorBar.width)
         elif sda == QwtScaleDraw.TopScale:
-            cr.setTop(cr.bottom()-self.d_data.margin-self.d_data.colorBar.width)
-            cr.setHeight(self.d_data.colorBar.width)
+            cr.setTop(cr.bottom()-self.__data.margin-self.__data.colorBar.width)
+            cr.setHeight(self.__data.colorBar.width)
         return cr
     
     def resizeEvent(self, event):
@@ -244,37 +244,37 @@ class QwtScaleWidget(QWidget):
     
     def layoutScale(self, update_geometry=True):
         bd0, bd1 = self.getBorderDistHint()
-        if self.d_data.borderDist[0] > bd0:
-            bd0 = self.d_data.borderDist[0]
-        if self.d_data.borderDist[1] > bd1:
-            bd1 = self.d_data.borderDist[1]
+        if self.__data.borderDist[0] > bd0:
+            bd0 = self.__data.borderDist[0]
+        if self.__data.borderDist[1] > bd1:
+            bd1 = self.__data.borderDist[1]
         
         colorBarWidth = 0
-        if self.d_data.colorBar.isEnabled and\
-           self.d_data.colorBar.interval.isValid():
-            colorBarWidth = self.d_data.colorBar.width + self.d_data.spacing
+        if self.__data.colorBar.isEnabled and\
+           self.__data.colorBar.interval.isValid():
+            colorBarWidth = self.__data.colorBar.width + self.__data.spacing
         
         r = self.contentsRect()
-        if self.d_data.scaleDraw.orientation() == Qt.Vertical:
+        if self.__data.scaleDraw.orientation() == Qt.Vertical:
             y = r.top() + bd0
             length = r.height() - (bd0 +bd1)
-            if self.d_data.scaleDraw.alignment() == QwtScaleDraw.LeftScale:
-                x = r.right() - 1. - self.d_data.margin - colorBarWidth
+            if self.__data.scaleDraw.alignment() == QwtScaleDraw.LeftScale:
+                x = r.right() - 1. - self.__data.margin - colorBarWidth
             else:
-                x = r.left() + self.d_data.margin + colorBarWidth
+                x = r.left() + self.__data.margin + colorBarWidth
         else:
             x = r.left() + bd0
             length = r.width() - (bd0 + bd1)
-            if self.d_data.scaleDraw.alignment() == QwtScaleDraw.BottomScale:
-                y = r.top() + self.d_data.margin + colorBarWidth
+            if self.__data.scaleDraw.alignment() == QwtScaleDraw.BottomScale:
+                y = r.top() + self.__data.margin + colorBarWidth
             else:
-                y = r.bottom() - 1. - self.d_data.margin - colorBarWidth
+                y = r.bottom() - 1. - self.__data.margin - colorBarWidth
         
-        self.d_data.scaleDraw.move(x, y)
-        self.d_data.scaleDraw.setLength(length)
+        self.__data.scaleDraw.move(x, y)
+        self.__data.scaleDraw.setLength(length)
         
-        extent = ceil(self.d_data.scaleDraw.extent(self.font()))
-        self.d_data.titleOffset = self.d_data.margin + self.d_data.spacing +\
+        extent = ceil(self.__data.scaleDraw.extent(self.font()))
+        self.__data.titleOffset = self.__data.margin + self.__data.spacing +\
                                   colorBarWidth + extent
         
         if update_geometry:
@@ -282,37 +282,37 @@ class QwtScaleWidget(QWidget):
             self.update()
     
     def drawColorBar(self, painter, rect):
-        if not self.d_data.colorBar.interval.isValid():
+        if not self.__data.colorBar.interval.isValid():
             return
-        sd = self.d_data.scaleDraw
-        QwtPainter.drawColorBar(painter, self.d_data.colorBar.colorMap,
-                                self.d_data.colorBar.interval.normalized(),
+        sd = self.__data.scaleDraw
+        QwtPainter.drawColorBar(painter, self.__data.colorBar.colorMap,
+                                self.__data.colorBar.interval.normalized(),
                                 sd.scaleMap(), sd.orientation(), rect)
     
     def drawTitle(self, painter, align, rect):
         r = rect
-        flags = self.d_data.title.renderFlags()\
+        flags = self.__data.title.renderFlags()\
                 &(~ int(Qt.AlignTop|Qt.AlignBottom|Qt.AlignVCenter))
         if align == QwtScaleDraw.LeftScale:
             angle = -90.
             flags |= Qt.AlignTop
             r.setRect(r.left(), r.bottom(), r.height(),
-                      r.width()-self.d_data.titleOffset)
+                      r.width()-self.__data.titleOffset)
         elif align == QwtScaleDraw.RightScale:
             angle = -90.
             flags |= Qt.AlignTop
-            r.setRect(r.left()+self.d_data.titleOffset, r.bottom(), r.height(),
-                      r.width()-self.d_data.titleOffset)
+            r.setRect(r.left()+self.__data.titleOffset, r.bottom(), r.height(),
+                      r.width()-self.__data.titleOffset)
         elif align == QwtScaleDraw.BottomScale:
             angle = 0.
             flags |= Qt.AlignBottom
-            r.setTop(r.top()+self.d_data.titleOffset)
+            r.setTop(r.top()+self.__data.titleOffset)
         else:
             angle = 0.
             flags |= Qt.AlignTop
-            r.setBottom(r.bottom()-self.d_data.titleOffset)
+            r.setBottom(r.bottom()-self.__data.titleOffset)
         
-        if self.d_data.layoutFlags & self.TitleInverted:
+        if self.__data.layoutFlags & self.TitleInverted:
             if align in (QwtScaleDraw.LeftScale, QwtScaleDraw.RightScale):
                 angle = -angle
                 r.setRect(r.x()+r.height(), r.y()-r.width(),
@@ -326,7 +326,7 @@ class QwtScaleWidget(QWidget):
         if angle != 0.:
             painter.rotate(angle)
         
-        title = self.d_data.title
+        title = self.__data.title
         title.setRenderFlags(flags)
         title.draw(painter, QRectF(0., 0., r.width(), r.height()))
         
@@ -339,12 +339,12 @@ class QwtScaleWidget(QWidget):
         return self.minimumSizeHint()
     
     def minimumSizeHint(self):
-        o = self.d_data.scaleDraw.orientation()
+        o = self.__data.scaleDraw.orientation()
         length = 0
         mbd1, mbd2 = self.getBorderDistHint()
-        length += max([0, self.d_data.borderDist[0]-mbd1])
-        length += max([0, self.d_data.borderDist[1]-mbd2])
-        length += self.d_data.scaleDraw.minLength(self.font())
+        length += max([0, self.__data.borderDist[0]-mbd1])
+        length += max([0, self.__data.borderDist[1]-mbd2])
+        length += self.__data.scaleDraw.minLength(self.font())
         
         dim = self.dimForLength(length, self.font())
         if length < dim:
@@ -359,69 +359,69 @@ class QwtScaleWidget(QWidget):
         return size + QSize(left + right, top + bottom)
     
     def titleHeightForWidth(self, width):
-        return ceil(self.d_data.title.heightForWidth(width, self.font()))
+        return ceil(self.__data.title.heightForWidth(width, self.font()))
     
     def dimForLength(self, length, scaleFont):
-        extent = ceil(self.d_data.scaleDraw.extent(scaleFont))
-        dim = self.d_data.margin + extent + 1
-        if not self.d_data.title.isEmpty():
-            dim += self.titleHeightForWidth(length)+self.d_data.spacing
-        if self.d_data.colorBar.isEnabled and self.d_data.colorBar.interval.isValid():
-            dim += self.d_data.colorBar.width+self.d_data.spacing
+        extent = ceil(self.__data.scaleDraw.extent(scaleFont))
+        dim = self.__data.margin + extent + 1
+        if not self.__data.title.isEmpty():
+            dim += self.titleHeightForWidth(length)+self.__data.spacing
+        if self.__data.colorBar.isEnabled and self.__data.colorBar.interval.isValid():
+            dim += self.__data.colorBar.width+self.__data.spacing
         return dim
     
     def getBorderDistHint(self):
-        start, end = self.d_data.scaleDraw.getBorderDistHint(self.font())
-        if start < self.d_data.minBorderDist[0]:
-            start = self.d_data.minBorderDist[0]
-        if end < self.d_data.minBorderDist[1]:
-            end = self.d_data.minBorderDist[1]
+        start, end = self.__data.scaleDraw.getBorderDistHint(self.font())
+        if start < self.__data.minBorderDist[0]:
+            start = self.__data.minBorderDist[0]
+        if end < self.__data.minBorderDist[1]:
+            end = self.__data.minBorderDist[1]
         return start, end
     
     def setMinBorderDist(self, start, end):
-        self.d_data.minBorderDist = [start, end]
+        self.__data.minBorderDist = [start, end]
     
     def getMinBorderDist(self):
-        return self.d_data.minBorderDist
+        return self.__data.minBorderDist
     
     def setScaleDiv(self, scaleDiv):
-        sd = self.d_data.scaleDraw
+        sd = self.__data.scaleDraw
         if sd.scaleDiv() != scaleDiv:
             sd.setScaleDiv(scaleDiv)
             self.layoutScale()
             self.emit(self.SIG_SCALE_DIV_CHANGED)
 
     def setTransformation(self, transformation):
-        self.d_data.scaleDraw.setTransformation(transformation)
+        self.__data.scaleDraw.setTransformation(transformation)
         self.layoutScale()
     
     def setColorBarEnabled(self, on):
-        if on != self.d_data.colorBar.isEnabled:
-            self.d_data.colorBar.isEnabled = on
+        if on != self.__data.colorBar.isEnabled:
+            self.__data.colorBar.isEnabled = on
             self.layoutScale()
     
     def isColorBarEnabled(self):
-        return self.d_data.colorBar.isEnabled
+        return self.__data.colorBar.isEnabled
     
     def setColorBarWidth(self, width):
-        if width != self.d_data.colorBar.width:
-            self.d_data.colorBar.width = width
+        if width != self.__data.colorBar.width:
+            self.__data.colorBar.width = width
             if self.isColorBarEnabled():
                 self.layoutScale()
     
     def colorBarWidth(self):
-        return self.d_data.colorBar.width
+        return self.__data.colorBar.width
     
     def colorBarInterval(self):
-        return self.d_data.colorBar.interval
+        return self.__data.colorBar.interval
     
     def setColorMap(self, interval, colorMap):
-        self.d_data.colorBar.interval = interval
-        if colorMap != self.d_data.colorBar.colorMap:
-            self.d_data.colorBar.colorMap = colorMap
+        self.__data.colorBar.interval = interval
+        if colorMap != self.__data.colorBar.colorMap:
+            self.__data.colorBar.colorMap = colorMap
         if self.isColorBarEnabled():
             self.layoutScale()
     
     def colorMap(self):
-        return self.d_data.colorBar.colorMap
+        return self.__data.colorBar.colorMap
 

@@ -63,7 +63,7 @@ def qwtBoundingRectT(series, from_, to):
 
 class QwtSeriesData(object):
     def __init__(self):
-        self.d_boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
+        self._boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
     
     def setRectOfInterest(self, rect):
         raise NotImplementedError
@@ -78,22 +78,22 @@ class QwtSeriesData(object):
 class QwtArraySeriesData(QwtSeriesData):
     def __init__(self, samples=None):
         QwtSeriesData.__init__(self)
-        self.d_samples = []
+        self.__samples = []
         if samples is not None:
-            self.d_samples = samples
+            self.__samples = samples
         
     def setSamples(self, samples):
-        self.d_boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
-        self.d_samples = samples
+        self._boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
+        self.__samples = samples
     
     def samples(self):
-        return self.d_samples
+        return self.__samples
     
     def size(self):
-        return len(self.d_samples)
+        return len(self.__samples)
     
     def sample(self, i):
-        return self.d_samples[i]
+        return self.__samples[i]
     
 
 class QwtPointSeriesData(QwtArraySeriesData):
@@ -101,9 +101,9 @@ class QwtPointSeriesData(QwtArraySeriesData):
         QwtArraySeriesData.__init__(self, samples)
     
     def boundingRect(self):
-        if self.d_boundingRect.width() < 0.:
-            self.d_boundingRect = qwtBoundingRect(self)
-        return self.d_boundingRect
+        if self._boundingRect.width() < 0.:
+            self._boundingRect = qwtBoundingRect(self)
+        return self._boundingRect
 
 
 class QwtPoint3DSeriesData(QwtArraySeriesData):
@@ -111,9 +111,9 @@ class QwtPoint3DSeriesData(QwtArraySeriesData):
         QwtArraySeriesData.__init__(self, samples)
     
     def boundingRect(self):
-        if self.d_boundingRect.width() < 0.:
-            self.d_boundingRect = qwtBoundingRect(self)
-        return self.d_boundingRect
+        if self._boundingRect.width() < 0.:
+            self._boundingRect = qwtBoundingRect(self)
+        return self._boundingRect
 
 
 class QwtIntervalSeriesData(QwtArraySeriesData):
@@ -121,9 +121,9 @@ class QwtIntervalSeriesData(QwtArraySeriesData):
         QwtArraySeriesData.__init__(self, samples)
     
     def boundingRect(self):
-        if self.d_boundingRect.width() < 0.:
-            self.d_boundingRect = qwtBoundingRect(self)
-        return self.d_boundingRect
+        if self._boundingRect.width() < 0.:
+            self._boundingRect = qwtBoundingRect(self)
+        return self._boundingRect
 
 
 class QwtSetSeriesData(QwtArraySeriesData):
@@ -131,9 +131,9 @@ class QwtSetSeriesData(QwtArraySeriesData):
         QwtArraySeriesData.__init__(self, samples)
     
     def boundingRect(self):
-        if self.d_boundingRect.width() < 0.:
-            self.d_boundingRect = qwtBoundingRect(self)
-        return self.d_boundingRect
+        if self._boundingRect.width() < 0.:
+            self._boundingRect = qwtBoundingRect(self)
+        return self._boundingRect
 
 
 class QwtTradingChartData(QwtArraySeriesData):
@@ -141,7 +141,7 @@ class QwtTradingChartData(QwtArraySeriesData):
         QwtArraySeriesData.__init__(self, samples)
     
     def boundingRect(self):
-        if self.d_boundingRect.width() < 0.:
-            self.d_boundingRect = qwtBoundingRect(self)
-        return self.d_boundingRect
+        if self._boundingRect.width() < 0.:
+            self._boundingRect = qwtBoundingRect(self)
+        return self._boundingRect
 

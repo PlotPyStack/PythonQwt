@@ -40,15 +40,15 @@ class QwtSpline(object):
     
     def __init__(self, other=None):
         if other:
-            self.d_data = other.d_data
+            self.__data = other.__data
         else:
-            self.d_data = QwtSpline_PrivateData()
+            self.__data = QwtSpline_PrivateData()
     
     def setSplineType(self, splineType):
-        self.d_data.splineType = splineType
+        self.__data.splineType = splineType
     
     def splineType(self):
-        return self.d_data.splineType
+        return self.__data.splineType
     
     def setPoints(self, points):
         """points: QPolygonF"""
@@ -56,11 +56,11 @@ class QwtSpline(object):
         if size <= 2:
             self.reset()
             return False
-        self.d_data.points = points
-        self.d_data.a.resize(size-1)
-        self.d_data.b.resize(size-1)
-        self.d_data.c.resize(size-1)
-        if self.d_data.splineType == self.Periodic:
+        self.__data.points = points
+        self.__data.a.resize(size-1)
+        self.__data.b.resize(size-1)
+        self.__data.c.resize(size-1)
+        if self.__data.splineType == self.Periodic:
             ok = self.buildPeriodicSpline(points)
         else:
             ok = self.buildNaturalSpline(points)
@@ -69,33 +69,33 @@ class QwtSpline(object):
         return ok
     
     def points(self):
-        return self.d_data.points
+        return self.__data.points
         
     def coefficientsA(self):
-        return self.d_data.a
+        return self.__data.a
     
     def coefficientsB(self):
-        return self.d_data.b
+        return self.__data.b
     
     def coefficientsC(self):
-        return self.d_data.c
+        return self.__data.c
     
     def reset(self):
-        self.d_data.a = np.array([])
-        self.d_data.b = np.array([])
-        self.d_data.c = np.array([])
-        self.d_data.points.resize(0)
+        self.__data.a = np.array([])
+        self.__data.b = np.array([])
+        self.__data.c = np.array([])
+        self.__data.points.resize(0)
     
     def isValid(self):
-        return len(self.d_data.a) > 0
+        return len(self.__data.a) > 0
     
     def value(self, x):
-        if len(self.d_data.a) == 0:
+        if len(self.__data.a) == 0:
             return 0.
-        i = lookup(x, self.d_data.points)
-        delta = x - self.d_data.points[i].x()
-        return ((self.d_data.a[i]*delta + self.d_data.b[i])\
-                *delta + self.d_data.c[i])*delta + self.d_data.points[i].y()
+        i = lookup(x, self.__data.points)
+        delta = x - self.__data.points[i].x()
+        return ((self.__data.a[i]*delta + self.__data.b[i])\
+                *delta + self.__data.c[i])*delta + self.__data.points[i].y()
     
     def buildNaturalSpline(self, points):
         #TODO: to be implemented (!!! performance issue !!!)--> scipy ?

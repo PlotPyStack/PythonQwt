@@ -9,100 +9,100 @@ from qwt.qt.QtCore import QPointF, QRectF
 class QwtPointArrayData(QwtSeriesData):
     def __init__(self, x, y, size=None):
         QwtSeriesData.__init__(self)
-        self.d_x = x
-        self.d_y = y
+        self.__x = x
+        self.__y = y
         
     def boundingRect(self):
-        if self.d_boundingRect.width() < 0:
-            self.d_boundingRect = qwtBoundingRect(self)
-        return self.d_boundingRect
+        if self.__boundingRect.width() < 0:
+            self.__boundingRect = qwtBoundingRect(self)
+        return self.__boundingRect
     
     def size(self):
-        return min([self.d_x.size, self.d_y.size])
+        return min([self.__x.size, self.__y.size])
     
     def sample(self, index):
-        return QPointF(self.d_x[index], self.d_y[index])
+        return QPointF(self.__x[index], self.__y[index])
     
     def xData(self):
-        return self.d_x
+        return self.__x
         
     def yData(self):
-        return self.d_y
+        return self.__y
     
 
 class QwtCPointerData(QwtSeriesData):
     def __init__(self, x, y, size):
         QwtSeriesData.__init__(self)
-        self.d_x = x
-        self.d_y = y
-        self.d_size = size
+        self.__x = x
+        self.__y = y
+        self.__size = size
     
     def boundingRect(self):
-        if self.d_boundingRect.width() < 0:
-            self.d_boundingRect = qwtBoundingRect(self)
-        return self.d_boundingRect
+        if self.__boundingRect.width() < 0:
+            self.__boundingRect = qwtBoundingRect(self)
+        return self.__boundingRect
     
     def size(self):
-        return self.d_size
+        return self.__size
     
     def sample(self, index):
-        return QPointF(self.d_x[index], self.d_y[index])
+        return QPointF(self.__x[index], self.__y[index])
     
     def xData(self):
-        return self.d_x
+        return self.__x
     
     def yData(self):
-        return self.d_y
+        return self.__y
     
 
 class QwtSyntheticPointData(QwtSeriesData):
     def __init__(self, size, interval):
         QwtSeriesData.__init__(self)
-        self.d_size = size
-        self.d_interval = interval
-        self.d_rectOfInterest = None
-        self.d_intervalOfInterest = None
+        self.__size = size
+        self.__interval = interval
+        self.__rectOfInterest = None
+        self.__intervalOfInterest = None
     
     def setSize(self, size):
-        self.d_size = size
+        self.__size = size
     
     def size(self):
-        return self.d_size
+        return self.__size
     
     def setInterval(self, interval):
-        self.d_interval = interval.normalized()
+        self.__interval = interval.normalized()
     
     def interval(self):
-        return self.d_interval
+        return self.__interval
     
     def setRectOfInterest(self, rect):
-        self.d_rectOfInterest = rect
-        self.d_intervalOfInterest = QwtInterval(rect.left(), rect.right()
+        self.__rectOfInterest = rect
+        self.__intervalOfInterest = QwtInterval(rect.left(), rect.right()
                                                 ).normalized()
     
     def rectOfInterest(self):
-        return self.d_rectOfInterest
+        return self.__rectOfInterest
     
     def boundingRect(self):
-        if self.d_size == 0 or\
-           not (self.d_interval.isValid() or self.d_intervalOfInterest.isValid()):
+        if self.__size == 0 or\
+           not (self.__interval.isValid() or self.__intervalOfInterest.isValid()):
             return QRectF(1.0, 1.0, -2.0, -2.0)
         return qwtBoundingRect(self)
     
     def sample(self, index):
-        if index >= self.d_size:
+        if index >= self.__size:
             return QPointF(0, 0)
         xValue = self.x(index)
         yValue = self.y(xValue)
         return QPointF(xValue, yValue)
     
     def x(self, index):
-        if self.d_interval.isValid():
-            interval = self.d_interval
+        if self.__interval.isValid():
+            interval = self.__interval
         else:
-            interval = self.d_intervalOfInterest
-        if not interval.isValid() or self.d_size == 0 or index >= self.d_size:
+            interval = self.__intervalOfInterest
+        if not interval.isValid() or self.__size == 0 or index >= self.__size:
             return 0.
-        dx = interval.width()/self.d_size
+        dx = interval.width()/self.__size
         return interval.minValue() + index*dx
     

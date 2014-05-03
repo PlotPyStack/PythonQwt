@@ -79,17 +79,17 @@ class QwtColorMap(object):
     RGB, Indexed = range(2)
     
     def __init__(self, format_=0):
-        self.d_format = format_
+        self.__format = format_
     
     def color(self, interval, value):
-        if self.d_format == self.RGB:
+        if self.__format == self.RGB:
             return QColor(self.rgb(interval, value))
         else:
             index = self.colorIndex(interval, value)
             return self.colorTable(interval)[index]
     
     def format_(self):
-        return self.d_format
+        return self.__format
     
     def colorTable(self, interval):
         table = [0L] * 256
@@ -123,33 +123,33 @@ class QwtLinearColorMap(QwtColorMap):
             raise TypeError("%s() takes 0, 1, or 3 argument(s) (%s given)"\
                             % (self.__class__.__name__, len(args)))
         super(QwtLinearColorMap, self).__init__(format_)
-        self.d_data = QwtLinearColorMap_PrivateData()
-        self.d_data.mode = self.ScaledColors
+        self.__data = QwtLinearColorMap_PrivateData()
+        self.__data.mode = self.ScaledColors
         self.setColorInterval(color1, color2)
     
     def setMode(self, mode):
-        self.d_data.mode = mode
+        self.__data.mode = mode
     
     def mode(self):
-        return self.d_data.mode
+        return self.__data.mode
     
     def setColorInterval(self, color1, color2):
-        self.d_data.colorStops = ColorStops()
-        self.d_data.colorStops.insert(0., color1)
-        self.d_data.colorStops.insert(1., color2)
+        self.__data.colorStops = ColorStops()
+        self.__data.colorStops.insert(0., color1)
+        self.__data.colorStops.insert(1., color2)
     
     def addColorStop(self, value, color):
         if value >= 0. and value <= 1.:
-            self.d_data.colorStops.insert(value, color)
+            self.__data.colorStops.insert(value, color)
     
     def colorStops(self):
-        return self.d_data.colorStops.stops()
+        return self.__data.colorStops.stops()
     
     def color1(self):
-        return QColor(self.d_data.colorStops.rgb(self.d_data.mode, 0.))
+        return QColor(self.__data.colorStops.rgb(self.__data.mode, 0.))
     
     def color2(self):
-        return QColor(self.d_data.colorStops.rgb(self.d_data.mode, 1.))
+        return QColor(self.__data.colorStops.rgb(self.__data.mode, 1.))
     
     def rgb(self, interval, value):
         if qIsNaN(value):
@@ -158,7 +158,7 @@ class QwtLinearColorMap(QwtColorMap):
         ratio = 0.
         if width > 0.:
             ratio = (value-interval.minValue())/width
-        return self.d_data.colorStops.rgb(self.d_data.mode, ratio)
+        return self.__data.colorStops.rgb(self.__data.mode, ratio)
     
     def colorIndex(self, interval, value):
         width = interval.width()
@@ -167,7 +167,7 @@ class QwtLinearColorMap(QwtColorMap):
         if value >= interval.maxValue():
             return 255
         ratio = (value-interval.minValue())/width
-        if self.d_data.mode == self.FixedColors:
+        if self.__data.mode == self.FixedColors:
             index = ratio*255
         else:
             index = round(ratio*255)
@@ -182,16 +182,16 @@ class QwtAlphaColorMap_PrivateData(object):
 class QwtAlphaColorMap(QwtColorMap):
     def __init__(self, color):
         super(QwtAlphaColorMap, self).__init__(QwtColorMap.RGB)
-        self.d_data = QwtAlphaColorMap_PrivateData()
-        self.d_data.color = color
-        self.d_data.rgb = color.rgb() & qRgba(255, 255, 255, 0)
+        self.__data = QwtAlphaColorMap_PrivateData()
+        self.__data.color = color
+        self.__data.rgb = color.rgb() & qRgba(255, 255, 255, 0)
     
     def setColor(self, color):
-        self.d_data.color = color
-        self.d_data.rgb = color.rgb()
+        self.__data.color = color
+        self.__data.rgb = color.rgb()
     
     def color(self):
-        return self.d_data.color()
+        return self.__data.color()
     
     def rgb(self, interval, value):
         width = interval.width()
@@ -202,6 +202,6 @@ class QwtAlphaColorMap(QwtColorMap):
                 alpha = 0
             if alpha > 255:
                 alpha = 255
-            return self.d_data.rgb | (alpha << 24)
-        return self.d_data.rgb
+            return self.__data.rgb | (alpha << 24)
+        return self.__data.rgb
 

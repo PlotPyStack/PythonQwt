@@ -71,31 +71,31 @@ class QwtPlotDict_PrivateData(object):
 
 class QwtPlotDict(object):
     def __init__(self):
-        self.d_data = QwtPlotDict_PrivateData()
+        self.__data = QwtPlotDict_PrivateData()
     
     def setAutoDelete(self, autoDelete):
-        self.d_data.autoDelete = autoDelete
+        self.__data.autoDelete = autoDelete
     
     def autoDelete(self):
-        return self.d_data.autoDelete
+        return self.__data.autoDelete
     
     def insertItem(self, item):
-        self.d_data.itemList.insertItem(item)
+        self.__data.itemList.insertItem(item)
     
     def removeItem(self, item):
-        self.d_data.itemList.removeItem(item)
+        self.__data.itemList.removeItem(item)
 
     def detachItems(self, rtti, autoDelete):
-        for item in self.d_data.itemList[:]:
+        for item in self.__data.itemList[:]:
             if rtti == QwtPlotItem.Rtti_PlotItem and item.rtti() == rtti:
                 item.attach(None)
                 if self.autoDelete:
-                    self.d_data.itemList.remove(item)
+                    self.__data.itemList.remove(item)
 
     def itemList(self, rtti=None):
         if rtti is None or rtti == QwtPlotItem.Rtti_PlotItem:
-            return self.d_data.itemList
-        return [item for item in self.d_data.itemList if item.rtti() == rtti]
+            return self.__data.itemList
+        return [item for item in self.__data.itemList if item.rtti() == rtti]
 
 
 class QwtPlot_PrivateData(QwtPlotDict_PrivateData):
@@ -145,53 +145,54 @@ class QwtPlot(QFrame, QwtPlotDict):
         else:
             raise TypeError("%s() takes 0, 1 or 2 argument(s) (%s given)"\
                             % (self.__class__.__name__, len(args)))
-        super(QwtPlot, self).__init__(parent)
+        QwtPlotDict.__init__(self)
+        QFrame.__init__(self, parent)
         
-        self.d_data = QwtPlot_PrivateData()
+        self.__data = QwtPlot_PrivateData()
         from qwt.qwt_plot_layout import QwtPlotLayout
-        self.d_data.layout = QwtPlotLayout()
-        self.d_data.autoReplot = False
+        self.__data.layout = QwtPlotLayout()
+        self.__data.autoReplot = False
                 
         self.setAutoReplot(True)
-#        self.setPlotLayout(self.d_data.layout)
+#        self.setPlotLayout(self.__data.layout)
         
         # title
-        self.d_data.titleLabel = QwtTextLabel(self)
-        self.d_data.titleLabel.setObjectName("QwtPlotTitle")
-        self.d_data.titleLabel.setFont(QFont(self.fontInfo().family(), 14,
+        self.__data.titleLabel = QwtTextLabel(self)
+        self.__data.titleLabel.setObjectName("QwtPlotTitle")
+        self.__data.titleLabel.setFont(QFont(self.fontInfo().family(), 14,
                                              QFont.Bold))
         text = QwtText(title)
         text.setRenderFlags(Qt.AlignCenter|Qt.TextWordWrap)
-        self.d_data.titleLabel.setText(text)
+        self.__data.titleLabel.setText(text)
         
         # footer
-        self.d_data.footerLabel = QwtTextLabel(self)
-        self.d_data.footerLabel.setObjectName("QwtPlotFooter")
+        self.__data.footerLabel = QwtTextLabel(self)
+        self.__data.footerLabel.setObjectName("QwtPlotFooter")
         footer = QwtText()
         footer.setRenderFlags(Qt.AlignCenter|Qt.TextWordWrap)
-        self.d_data.footerLabel.setText(footer)
+        self.__data.footerLabel.setText(footer)
         
         # legend
-        self.d_data.legend = None
+        self.__data.legend = None
         
         # axis
-        self.d_axisData = []
+        self.__axisData = []
         self.initAxesData()
         
         # canvas
-        self.d_data.canvas = QwtPlotCanvas(self)
-        self.d_data.canvas.setObjectName("QwtPlotCanvas")
-        self.d_data.canvas.installEventFilter(self)
+        self.__data.canvas = QwtPlotCanvas(self)
+        self.__data.canvas.setObjectName("QwtPlotCanvas")
+        self.__data.canvas.installEventFilter(self)
         
         self.setSizePolicy(QSizePolicy.MinimumExpanding,
                            QSizePolicy.MinimumExpanding)
         
         self.resize(200, 200)
         
-        focusChain = [self, self.d_data.titleLabel, self.axisWidget(self.xTop),
-                      self.axisWidget(self.yLeft), self.d_data.canvas,
+        focusChain = [self, self.__data.titleLabel, self.axisWidget(self.xTop),
+                      self.axisWidget(self.yLeft), self.__data.canvas,
                       self.axisWidget(self.yRight),
-                      self.axisWidget(self.xBottom), self.d_data.footerLabel]
+                      self.axisWidget(self.xBottom), self.__data.footerLabel]
         
         for idx in range(len(focusChain)-1):
             qwtSetTabOrder(focusChain[idx], focusChain[idx+1], False)
@@ -199,31 +200,31 @@ class QwtPlot(QFrame, QwtPlotDict):
         qwtEnableLegendItems(self, True)
         
     def initAxesData(self):
-        self.d_axisData = [AxisData() for axisId in range(self.axisCnt)]
+        self.__axisData = [AxisData() for axisId in range(self.axisCnt)]
         
-        self.d_axisData[self.yLeft].scaleWidget = \
+        self.__axisData[self.yLeft].scaleWidget = \
             QwtScaleWidget(QwtScaleDraw.LeftScale, self)
-        self.d_axisData[self.yRight].scaleWidget = \
+        self.__axisData[self.yRight].scaleWidget = \
             QwtScaleWidget(QwtScaleDraw.RightScale, self)
-        self.d_axisData[self.xTop].scaleWidget = \
+        self.__axisData[self.xTop].scaleWidget = \
             QwtScaleWidget(QwtScaleDraw.TopScale, self)
-        self.d_axisData[self.xBottom].scaleWidget = \
+        self.__axisData[self.xBottom].scaleWidget = \
             QwtScaleWidget(QwtScaleDraw.BottomScale, self)
 
-        self.d_axisData[self.yLeft
+        self.__axisData[self.yLeft
                         ].scaleWidget.setObjectName("QwtPlotAxisYLeft")
-        self.d_axisData[self.yRight
+        self.__axisData[self.yRight
                         ].scaleWidget.setObjectName("QwtPlotAxisYRight")
-        self.d_axisData[self.xTop
+        self.__axisData[self.xTop
                         ].scaleWidget.setObjectName("QwtPlotAxisXTop")
-        self.d_axisData[self.xBottom
+        self.__axisData[self.xBottom
                         ].scaleWidget.setObjectName("QwtPlotAxisXBottom")
 
         fscl = QFont(self.fontInfo().family(), 10)
         fttl = QFont(self.fontInfo().family(), 12, QFont.Bold)
         
         for axisId in range(self.axisCnt):
-            d = self.d_axisData[axisId]
+            d = self.__axisData[axisId]
 
             d.scaleEngine = QwtLinearScaleEngine()
 
@@ -243,35 +244,35 @@ class QwtPlot(QFrame, QwtPlotDict):
             d.maxMajor = 8
             d.isValid = False
             
-        self.d_axisData[self.yLeft].isEnabled = True
-        self.d_axisData[self.yRight].isEnabled = False
-        self.d_axisData[self.xBottom].isEnabled = True
-        self.d_axisData[self.xTop].isEnabled = False
+        self.__axisData[self.yLeft].isEnabled = True
+        self.__axisData[self.yRight].isEnabled = False
+        self.__axisData[self.xBottom].isEnabled = True
+        self.__axisData[self.xTop].isEnabled = False
 
     def axisWidget(self, axisId):
         if self.axisValid(axisId):
-            return self.d_axisData[axisId].scaleWidget
+            return self.__axisData[axisId].scaleWidget
     
     def setAxisScaleEngine(self, axisId, scaleEngine):
         if self.axisValid(axisId) and scaleEngine is not None:
-            d = self.d_axisData[axisId]
+            d = self.__axisData[axisId]
             d.scaleEngine = scaleEngine
-            self.d_axisData[axisId].scaleWidget.setTransformation(
+            self.__axisData[axisId].scaleWidget.setTransformation(
                                                 scaleEngine.transformation)
             d.isValid = False
             self.autoRefresh()
     
     def axisScaleEngine(self, axisId):
         if self.axisValid(axisId):
-            return self.d_axisData[axisId].scaleEngine
+            return self.__axisData[axisId].scaleEngine
 
     def axisAutoScale(self, axisId):
         if self.axisValid(axisId):
-            return self.d_axisData[axisId].doAutoScale
+            return self.__axisData[axisId].doAutoScale
     
     def axisEnabled(self, axisId):
         if self.axisValid(axisId):
-            return self.d_axisData[axisId].isEnabled
+            return self.__axisData[axisId].isEnabled
     
     def axisFont(self, axisId):
         if self.axisValid(axisId):
@@ -292,7 +293,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             return 0
     
     def axisScaleDiv(self, axisId):
-        return self.d_axisData[axisId].scaleDiv
+        return self.__axisData[axisId].scaleDiv
     
     def axisScaleDraw(self, axisId):
         if self.axisValid(axisId):
@@ -317,8 +318,8 @@ class QwtPlot(QFrame, QwtPlotDict):
             return QwtText()
     
     def enableAxis(self, axisId, tf):
-        if self.axisValid(axisId) and tf != self.d_axisData[axisId].isEnabled:
-            self.d_axisData[axisId].isEnabled = tf
+        if self.axisValid(axisId) and tf != self.__axisData[axisId].isEnabled:
+            self.__axisData[axisId].isEnabled = tf
             self.updateLayout()
             
     def invTransform(self, axisId, pos):
@@ -338,13 +339,13 @@ class QwtPlot(QFrame, QwtPlotDict):
             return self.axisWidget(axisId).setFont(font)
     
     def setAxisAutoScale(self, axisId, on):
-        if self.axisValid(axisId) and self.d_axisData[axisId].doAutoScale != on:
-            self.d_axisData[axisId].doAutoScale = on
+        if self.axisValid(axisId) and self.__axisData[axisId].doAutoScale != on:
+            self.__axisData[axisId].doAutoScale = on
             self.autoRefresh()
     
     def setAxisScale(self, axisId, min_, max_, stepSize):
         if self.axisValid(axisId):
-            d = self.d_axisData[axisId]
+            d = self.__axisData[axisId]
             d.doAutoScale = False
             d.isValid = False
             d.minValue = min_
@@ -354,7 +355,7 @@ class QwtPlot(QFrame, QwtPlotDict):
     
     def setAxisScaleDiv(self, axisId, scaleDiv):
         if self.axisValid(axisId):
-            d = self.d_axisData[axisId]
+            d = self.__axisData[axisId]
             d.doAutoScale = False
             d.scaleDiv = scaleDiv
             d.isValid = True
@@ -376,7 +377,7 @@ class QwtPlot(QFrame, QwtPlotDict):
     def setAxisMaxMinor(self, axisId, maxMinor):
         if self.axisValid(axisId):
             maxMinor = max([0, min([maxMinor, 100])])
-            d = self.d_axisData[axisId]
+            d = self.__axisData[axisId]
             if maxMinor != d.maxMinor:
                 d.maxMinor = maxMinor
                 d.isValid = False
@@ -385,7 +386,7 @@ class QwtPlot(QFrame, QwtPlotDict):
     def setAxisMaxMajor(self, axisId, maxMajor):
         if self.axisValid(axisId):
             maxMajor = max([1, min([maxMajor, 10000])])
-            d = self.d_axisData[axisId]
+            d = self.__axisData[axisId]
             if maxMajor != d.maxMajor:
                 d.maxMajor = maxMajor
                 d.isValid = False
@@ -410,7 +411,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                 if rect.height() >= 0.:
                     intv[item.yAxis()] |= QwtInterval(rect.top(), rect.bottom())
         for axisId in range(self.axisCnt):
-            d = self.d_axisData[axisId]
+            d = self.__axisData[axisId]
             minValue = d.minValue
             maxValue = d.maxValue
             stepSize = d.stepSize
@@ -433,9 +434,9 @@ class QwtPlot(QFrame, QwtPlotDict):
                                     self.axisScaleDiv(item.yAxis()))
     
     def setCanvas(self, canvas):
-        if canvas == self.d_data.canvas:
+        if canvas == self.__data.canvas:
             return
-        self.d_data.canvas = canvas
+        self.__data.canvas = canvas
         if canvas:
             canvas.setParent(self)
             canvas.installEventFilter(self)
@@ -451,7 +452,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         return ok
 
     def eventFilter(self, obj, event):
-        if obj is self.d_data.canvas:
+        if obj is self.__data.canvas:
             if event.type() == QEvent.Resize:
                 self.updateCanvasMargins()
             elif event.type() == 178:#QEvent.ContentsRectChange:
@@ -459,58 +460,58 @@ class QwtPlot(QFrame, QwtPlotDict):
         return QFrame.eventFilter(self, obj, event)
     
     def autoRefresh(self):
-        if self.d_data.autoReplot:
+        if self.__data.autoReplot:
             self.replot()
     
     def setAutoReplot(self, tf):
-        self.d_data.autoReplot = tf
+        self.__data.autoReplot = tf
     
     def autoReplot(self):
-        return self.d_data.autoReplot
+        return self.__data.autoReplot
     
     def setTitle(self, title):
-        current_title = self.d_data.titleLabel.text()
+        current_title = self.__data.titleLabel.text()
         if isinstance(title, QwtText) and current_title == title:
             return
         elif not isinstance(title, QwtText) and current_title.text() == title:
             return
-        self.d_data.titleLabel.setText(title)
+        self.__data.titleLabel.setText(title)
         self.updateLayout()
     
     def title(self):
-        return self.d_data.titleLabel.text()
+        return self.__data.titleLabel.text()
     
     def titleLabel(self):
-        return self.d_data.titleLabel
+        return self.__data.titleLabel
     
     def setFooter(self, text):
-        current_footer = self.d_data.footerLabel.text()
+        current_footer = self.__data.footerLabel.text()
         if isinstance(text, QwtText) and current_footer == text:
             return
         elif not isinstance(text, QwtText) and current_footer.text() == text:
             return
-        self.d_data.footerLabel.setText(text)
+        self.__data.footerLabel.setText(text)
         self.updateLayout()
     
     def footer(self):
-        return self.d_data.footerLabel.text()
+        return self.__data.footerLabel.text()
     
     def footerLabel(self):
-        return self.d_data.footerLabel
+        return self.__data.footerLabel
 
     def setPlotLayout(self, layout):
-        if layout != self.d_data.layout:
-            self.d_data.layout = layout
+        if layout != self.__data.layout:
+            self.__data.layout = layout
             self.updateLayout()
     
     def plotLayout(self):
-        return self.d_data.layout
+        return self.__data.layout
     
     def legend(self):
-        return self.d_data.legend
+        return self.__data.legend
     
     def canvas(self):
-        return self.d_data.canvas
+        return self.__data.canvas
     
     def sizeHint(self):
         dw = dh = 0
@@ -531,7 +532,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         return self.minimumSizeHint() + QSize(dw, dh)
     
     def minimumSizeHint(self):
-        hint = self.d_data.layout.minimumSizeHint(self)
+        hint = self.__data.layout.minimumSizeHint(self)
         hint += QSize(2*self.frameWidth(), 2*self.frameWidth())
         return hint
     
@@ -546,41 +547,41 @@ class QwtPlot(QFrame, QwtPlotDict):
         
         QApplication.sendPostedEvents(self, QEvent.LayoutRequest)
         
-        if self.d_data.canvas:
+        if self.__data.canvas:
             try:
-                self.d_data.canvas.replot()
+                self.__data.canvas.replot()
                 ok = True
             except (AttributeError, TypeError):
                 ok = False
             if not ok:
-                self.d_data.canvas.update(self.d_data.canvas.contentsRect())
+                self.__data.canvas.update(self.__data.canvas.contentsRect())
         
         self.setAutoReplot(doAutoReplot)
     
     def updateLayout(self):
-        self.d_data.layout.activate(self, self.contentsRect())
+        self.__data.layout.activate(self, self.contentsRect())
         
-        titleRect = self.d_data.layout.titleRect().toRect()
-        footerRect = self.d_data.layout.footerRect().toRect()
+        titleRect = self.__data.layout.titleRect().toRect()
+        footerRect = self.__data.layout.footerRect().toRect()
         scaleRect = [None] * self.axisCnt
         for axisId in range(self.axisCnt):
-            scaleRect[axisId] = self.d_data.layout.scaleRect(axisId).toRect()
-        legendRect = self.d_data.layout.legendRect().toRect()
-        canvasRect = self.d_data.layout.canvasRect().toRect()
+            scaleRect[axisId] = self.__data.layout.scaleRect(axisId).toRect()
+        legendRect = self.__data.layout.legendRect().toRect()
+        canvasRect = self.__data.layout.canvasRect().toRect()
         
-        if self.d_data.titleLabel.text():
-            self.d_data.titleLabel.setGeometry(titleRect)
-            if not self.d_data.titleLabel.isVisibleTo(self):
-                self.d_data.titleLabel.show()
+        if self.__data.titleLabel.text():
+            self.__data.titleLabel.setGeometry(titleRect)
+            if not self.__data.titleLabel.isVisibleTo(self):
+                self.__data.titleLabel.show()
         else:
-            self.d_data.titleLabel.hide()
+            self.__data.titleLabel.hide()
 
-        if self.d_data.footerLabel.text():
-            self.d_data.footerLabel.setGeometry(footerRect)
-            if not self.d_data.footerLabel.isVisibleTo(self):
-                self.d_data.footerLabel.show()
+        if self.__data.footerLabel.text():
+            self.__data.footerLabel.setGeometry(footerRect)
+            if not self.__data.footerLabel.isVisibleTo(self):
+                self.__data.footerLabel.show()
         else:
-            self.d_data.footerLabel.hide()
+            self.__data.footerLabel.hide()
         
         for axisId in range(self.axisCnt):
             if self.axisEnabled(axisId):
@@ -602,14 +603,14 @@ class QwtPlot(QFrame, QwtPlotDict):
             else:
                 self.axisWidget(axisId).hide()
             
-        if self.d_data.legend:
-            if self.d_data.legend.isEmpty():
-                self.d_data.legend.hide()
+        if self.__data.legend:
+            if self.__data.legend.isEmpty():
+                self.__data.legend.hide()
             else:
-                self.d_data.legend.setGeometry(legendRect)
-                self.d_data.legend.show()
+                self.__data.legend.setGeometry(legendRect)
+                self.__data.legend.show()
         
-        self.d_data.canvas.setGeometry(canvasRect)
+        self.__data.canvas.setGeometry(canvasRect)
     
     def getCanvasMarginsHint(self, maps, canvasRect):
         """Calculate the canvas margins
@@ -643,7 +644,7 @@ class QwtPlot(QFrame, QwtPlotDict):
     
     def drawCanvas(self, painter):
         maps = [self.canvasMap(axisId) for axisId in range(self.axisCnt)]
-        self.drawItems(painter, self.d_data.canvas.contentsRect(), maps)
+        self.drawItems(painter, self.__data.canvas.contentsRect(), maps)
     
     def drawItems(self, painter, canvasRect, maps):
         for item in self.itemList():
@@ -659,7 +660,7 @@ class QwtPlot(QFrame, QwtPlotDict):
 
     def canvasMap(self, axisId):
         map_ = QwtScaleMap()
-        if not self.d_data.canvas:
+        if not self.__data.canvas:
             return map_
         
         map_.setTransformation(self.axisScaleEngine(axisId).transformation())
@@ -669,18 +670,18 @@ class QwtPlot(QFrame, QwtPlotDict):
         if self.axisEnabled(axisId):
             s = self.axisWidget(axisId)
             if axisId in (self.yLeft, self.yRight):
-                y = s.y() + s.startBorderDist() - self.d_data.canvas.y()
+                y = s.y() + s.startBorderDist() - self.__data.canvas.y()
                 h = s.height() - s.startBorderDist() - s.endBorderDist()
                 map_.setPaintInterval(y+h, y)
             else:
-                x = s.x() + s.startBorderDist() - self.d_data.canvas.x()
+                x = s.x() + s.startBorderDist() - self.__data.canvas.x()
                 w = s.width() - s.startBorderDist() - s.endBorderDist()
                 map_.setPaintInterval(x, x+w)
         else:
             margin = 0
             if not self.plotLayout().alignCanvasToScale(axisId):
                 margin = self.plotLayout().canvasMargin(axisId)
-            canvasRect = self.d_data.canvas.contentsRect()
+            canvasRect = self.__data.canvas.contentsRect()
             if axisId in (self.yLeft, self.yRight):
                 map_.setPaintInterval(canvasRect.bottom()-margin,
                                       canvasRect.top()+margin)
@@ -690,7 +691,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         return map_
     
     def setCanvasBackground(self, brush):
-        pal = self.d_data.canvas.palette()
+        pal = self.__data.canvas.palette()
         pal.setBrush(QPalette.Window, brush)
         self.canvas().setPalette(pal)
     
@@ -701,22 +702,22 @@ class QwtPlot(QFrame, QwtPlotDict):
         return axisId in range(QwtPlot.axisCnt)
     
     def insertLegend(self, legend, pos, ratio):
-        self.d_data.layout.setLegendPosition(pos, ratio)
-        if legend != self.d_data.legend:
-            if self.d_data.legend and self.d_data.legend.parent() is self:
-                del self.d_data.legend
-            self.d_data.legend = legend
-            if self.d_data.legend:
+        self.__data.layout.setLegendPosition(pos, ratio)
+        if legend != self.__data.legend:
+            if self.__data.legend and self.__data.legend.parent() is self:
+                del self.__data.legend
+            self.__data.legend = legend
+            if self.__data.legend:
                 self.connect(self, QwtPlot.LEGEND_DATA_CHANGED,
                              self.updateLegend)
-                if self.d_data.legend.parent() is not self:
-                    self.d_data.legend.setParent(self)
+                if self.__data.legend.parent() is not self:
+                    self.__data.legend.setParent(self)
                 
                 qwtEnableLegendItems(self, False)
                 self.updateLegend()
                 qwtEnableLegendItems(self, True)
                 
-                lpos = self.d_data.layout.legendPosition()
+                lpos = self.__data.layout.legendPosition()
 
                 if legend:
                     if lpos in (self.LeftLegend, self.RightLegend):
@@ -825,20 +826,20 @@ class QwtPlotItem(object):
     def __init__(self, title):
         """title: QwtText"""
         assert isinstance(title, QwtText)
-        self.d_data = QwtPlotItem_PrivateData()
-        self.d_data.title = title
+        self.__data = QwtPlotItem_PrivateData()
+        self.__data.title = title
 
     def attach(self, plot):
-        if plot is self.d_data.plot:
+        if plot is self.__data.plot:
             return
         
-        if self.d_data.plot:
-            self.d_data.plot.attachItem(self, False)
+        if self.__data.plot:
+            self.__data.plot.attachItem(self, False)
         
-        self.d_data.plot = plot
+        self.__data.plot = plot
         
-        if self.d_data.plot:
-            self.d_data.plot.attachItem(self, True)
+        if self.__data.plot:
+            self.__data.plot.attachItem(self, True)
     
     def detach(self):
         self.attach(None)
@@ -847,78 +848,78 @@ class QwtPlotItem(object):
         return self.Rtti_PlotItem
     
     def plot(self):
-        return self.d_data.plot
+        return self.__data.plot
         
     def z(self):
-        return self.d_data.z
+        return self.__data.z
         
     def setZ(self, z):
-        if self.d_data.z != z:
-            if self.d_data.plot:
-                self.d_data.plot.attachItem(self, False)
-            self.d_data.z = z
-            if self.d_data.plot:
-                self.d_data.plot.attachItem(self, True)
+        if self.__data.z != z:
+            if self.__data.plot:
+                self.__data.plot.attachItem(self, False)
+            self.__data.z = z
+            if self.__data.plot:
+                self.__data.plot.attachItem(self, True)
             self.itemChanged()
     
     def setTitle(self, title):
         if not isinstance(title, QwtText):
             title = QwtText(title)
-        if self.d_data.title != title:
-            self.d_data.title = title
+        if self.__data.title != title:
+            self.__data.title = title
         self.legendChanged()
     
     def title(self):
-        return self.d_data.title
+        return self.__data.title
     
     def setItemAttribute(self, attribute, on=True):
-        if bool(self.d_data.attributes & attribute) != on:
+        if bool(self.__data.attributes & attribute) != on:
             if on:
-                self.d_data.attributes |= attribute
+                self.__data.attributes |= attribute
             else:
-                self.d_data.attributes &= ~attribute
+                self.__data.attributes &= ~attribute
             if attribute == QwtPlotItem.Legend:
                 self.legendChanged()
             self.itemChanged()
     
     def testItemAttribute(self, attribute):
-        return bool(self.d_data.attributes & attribute)
+        return bool(self.__data.attributes & attribute)
     
     def setItemInterest(self, interest, on):
-        if bool(self.d_data.interests & interest) != on:
+        if bool(self.__data.interests & interest) != on:
             if on:
-                self.d_data.interests |= interest
+                self.__data.interests |= interest
             else:
-                self.d_data.interests &= ~interest
+                self.__data.interests &= ~interest
             self.itemChanged()
     
     def testItemInterest(self, interest):
-        return bool(self.d_data.interests & interest)
+        return bool(self.__data.interests & interest)
     
     def setRenderHint(self, hint, on):
-        if bool(self.d_data.renderHints & hint) != on:
+        if bool(self.__data.renderHints & hint) != on:
             if on:
-                self.d_data.renderHints |= hint
+                self.__data.renderHints |= hint
             else:
-                self.d_data.renderHints &= ~hint
+                self.__data.renderHints &= ~hint
             self.itemChanged()
     
     def testRenderHint(self, hint):
-        return bool(self.d_data.renderHints & hint)
+        return bool(self.__data.renderHints & hint)
     
     def setRenderThreadCount(self, numThreads):
-        self.d_data.renderThreadCount = numThreads
+        self.__data.renderThreadCount = numThreads
     
     def renderThreadCount(self):
-        return self.d_data.renderThreadCount
+        return self.__data.renderThreadCount
     
     def setLegendIconSize(self, size):
-        if self.d_data.legendIconSize != size:
-            self.d_data.legendIconSize = size
+        if self.__data.legendIconSize != size:
+            self.__data.legendIconSize = size
             self.legendChanged()
     
     def legendIconSize(self):
-        return self.d_data.legendIconSize
+        return self.__data.legendIconSize
     
     def legendIcon(self, index, size):
         return QwtGraphic()
@@ -939,43 +940,43 @@ class QwtPlotItem(object):
         self.setVisible(False)
     
     def setVisible(self, on):
-        if on != self.d_data.isVisible:
-            self.d_data.isVisible = on
+        if on != self.__data.isVisible:
+            self.__data.isVisible = on
             self.itemChanged()
     
     def isVisible(self):
-        return self.d_data.isVisible
+        return self.__data.isVisible
     
     def itemChanged(self):
-        if self.d_data.plot:
-            self.d_data.plot.autoRefresh()
+        if self.__data.plot:
+            self.__data.plot.autoRefresh()
     
     def legendChanged(self):
-        if self.testItemAttribute(QwtPlotItem.Legend) and self.d_data.plot:
-            self.d_data.plot.updateLegend(self)
+        if self.testItemAttribute(QwtPlotItem.Legend) and self.__data.plot:
+            self.__data.plot.updateLegend(self)
     
     def setAxes(self, xAxis, yAxis):
         if xAxis == QwtPlot.xBottom or xAxis == QwtPlot.xTop:
-            self.d_data.xAxis = xAxis
+            self.__data.xAxis = xAxis
         if yAxis == QwtPlot.yLeft or yAxis == QwtPlot.yRight:
-            self.d_data.yAxis = yAxis
+            self.__data.yAxis = yAxis
         self.itemChanged()
     
     def setXAxis(self, axis):
         if axis in (QwtPlot.xBottom, QwtPlot.xTop):
-            self.d_data.xAxis = axis
+            self.__data.xAxis = axis
             self.itemChanged()
     
     def setYAxis(self, axis):
         if axis in (QwtPlot.yLeft, QwtPlot.yRight):
-            self.d_data.yAxis = axis
+            self.__data.yAxis = axis
             self.itemChanged()
 
     def xAxis(self):
-        return self.d_data.xAxis
+        return self.__data.xAxis
     
     def yAxis(self):
-        return self.d_data.yAxis
+        return self.__data.yAxis
     
     def boundingRect(self):
         return QRectF(1.0, 1.0, -2.0, -2.0)

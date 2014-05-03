@@ -19,38 +19,38 @@ class QwtAbstractSeriesStore(object):
 
 class QwtSeriesStore(QwtAbstractSeriesStore):
     def __init__(self):
-        self.d_series = None
+        self.__series = None
     
     def data(self):
-        return self.d_series
+        return self.__series
         
     def sample(self, index):
-        if self.d_series:
-            return self.d_series.sample(index)
+        if self.__series:
+            return self.__series.sample(index)
         else:
             #TODO: not implemented!
             return
     
     def setData(self, series):
-        if self.d_series != series:
-            self.d_series = series
+        if self.__series != series:
+            self.__series = series
             self.dataChanged()
     
     def dataSize(self):
-        if self.d_series is None:
+        if self.__series is None:
             return 0
-        return self.d_series.size()
+        return self.__series.size()
     
     def dataRect(self):
-        if self.d_series is None:
+        if self.__series is None:
             return QRectF(1.0, 1.0, -2.0, -2.0)
-        return self.d_series.boundingRect()
+        return self.__series.boundingRect()
     
     def setRectOfInterest(self, rect):
-        if self.d_series:
-            self.d_series.setRectOfInterest(rect)
+        if self.__series:
+            self.__series.setRectOfInterest(rect)
     
     def swapData(self, series):
-        swappedSeries = self.d_series
-        self.d_series = series
+        swappedSeries = self.__series
+        self.__series = series
         return swappedSeries

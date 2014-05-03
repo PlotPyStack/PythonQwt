@@ -26,32 +26,32 @@ class QwtSplineCurveFitter(QwtCurveFitter):
     
     def __init__(self):
         super(QwtSplineCurveFitter, self).__init__()
-        self.d_data = QwtSplineCurveFitter_PrivateData()
+        self.__data = QwtSplineCurveFitter_PrivateData()
     
     def setFitMode(self, mode):
-        self.d_data.fitMode = mode
+        self.__data.fitMode = mode
     
     def fitMode(self):
-        return self.d_data.fitMode
+        return self.__data.fitMode
     
     def setSpline(self, spline):
-        self.d_data.spline = spline
-        self.d_data.spline.reset()
+        self.__data.spline = spline
+        self.__data.spline.reset()
     
     def spline(self):
-        return self.d_data.spline
+        return self.__data.spline
     
     def setSplineSize(self, splineSize):
-        self.d_data.splineSize = max([splineSize, 10])
+        self.__data.splineSize = max([splineSize, 10])
     
     def splineSize(self):
-        return self.d_data.splineSize
+        return self.__data.splineSize
     
     def fitCurve(self, points):
         size = points.size()
         if size <= 2:
             return points
-        fitMode = self.d_data.fitMode
+        fitMode = self.__data.fitMode
         if fitMode == self.Auto:
             fitMode = self.Spline
             p = points.data()
@@ -65,26 +65,26 @@ class QwtSplineCurveFitter(QwtCurveFitter):
             return self.fitSpline(points)
     
     def fitSpline(self, points):
-        self.d_data.spline.setPoints(points)
-        if not self.d_data.spline.isValid():
+        self.__data.spline.setPoints(points)
+        if not self.__data.spline.isValid():
             return points
-        fittedPoints = self.d_data.splineSize
+        fittedPoints = self.__data.splineSize
         x1 = points[0].x()
         x2 = points[int(points.size()-1)].x()
         dx = x2 - x1
-        delta = dx/(self.d_data.splineSize()-1)
-        for i in range(self.d_data.splineSize):
+        delta = dx/(self.__data.splineSize()-1)
+        for i in range(self.__data.splineSize):
             p = fittedPoints[i]
             v = x1 + i*delta
-            sv = self.d_data.spline.value(v)
+            sv = self.__data.spline.value(v)
             p.setX(v)
             p.setY(sv)
-        self.d_data.spline.reset()
+        self.__data.spline.reset()
         return fittedPoints
     
     def fitParametric(self, points):
         size = points.size()
-        fittedPoints = QPolygonF(self.d_data.splineSize)
+        fittedPoints = QPolygonF(self.__data.splineSize)
         splinePointsX = QPolygonF(size)
         splinePointsY = QPolygonF(size)
         p = points.data()
@@ -101,20 +101,20 @@ class QwtSplineCurveFitter(QwtCurveFitter):
             spX[i].setY(x)
             spY[i].setX(param)
             spY[i].setY(y)
-        self.d_data.spline.setPoints(splinePointsX)
-        if not self.d_data.spline.isValid():
+        self.__data.spline.setPoints(splinePointsX)
+        if not self.__data.spline.isValid():
             return points
-        deltaX = splinePointsX[size-1].x()/(self.d_data.splineSize-1)
-        for i in range(self.d_data.splineSize):
+        deltaX = splinePointsX[size-1].x()/(self.__data.splineSize-1)
+        for i in range(self.__data.splineSize):
             dtmp = i*deltaX
-            fittedPoints[i].setX(self.d_data.spline.value(dtmp))
-        self.d_data.spline.setPoints(splinePointsY)
-        if not self.d_data.spline.isValid():
+            fittedPoints[i].setX(self.__data.spline.value(dtmp))
+        self.__data.spline.setPoints(splinePointsY)
+        if not self.__data.spline.isValid():
             return points
-        deltaY = splinePointsY[size-1].x()/(self.d_data.splineSize-1)
-        for i in range(self.d_data.splineSize):
+        deltaY = splinePointsY[size-1].x()/(self.__data.splineSize-1)
+        for i in range(self.__data.splineSize):
             dtmp = i*deltaY
-            fittedPoints[i].setY(self.d_data.spline.value(dtmp))
+            fittedPoints[i].setY(self.__data.spline.value(dtmp))
         return fittedPoints
 
 
@@ -131,36 +131,36 @@ class QwtWeedingCurveFitter_Line(object):
 class QwtWeedingCurveFitter(QwtCurveFitter):
     def __init__(self, tolerance=1.):
         super(QwtWeedingCurveFitter, self).__init__()
-        self.d_data = QwtWeedingCurveFitter_PrivateData()
+        self.__data = QwtWeedingCurveFitter_PrivateData()
         self.setTolerance(tolerance)
     
     def setTolerance(self, tolerance):
-        self.d_data.tolerance = max([tolerance, 0.])
+        self.__data.tolerance = max([tolerance, 0.])
     
     def tolerance(self):
-        return self.d_data.tolerance
+        return self.__data.tolerance
     
     def setChunkSize(self, numPoints):
         if numPoints > 0:
             numPoints = max([numPoints, 3])
-        self.d_data.chunkSize = numPoints
+        self.__data.chunkSize = numPoints
     
     def chunkSize(self):
-        return self.d_data.chunkSize
+        return self.__data.chunkSize
     
     def fitCurve(self, points):
         fittedPoints = QPolygonF()
-        if self.d_data.chunkSize == 0:
+        if self.__data.chunkSize == 0:
             fittedPoints = self.simplify(points)
         else:
-            for i in range(0, points.size(), self.d_data.chunkSize):
-                p = points.mid(i, self.d_data.chunkSize)
+            for i in range(0, points.size(), self.__data.chunkSize):
+                p = points.mid(i, self.__data.chunkSize)
                 fittedPoints += self.simplify(p)
         return fittedPoints
     
     def simplify(self, points):
         Line = QwtWeedingCurveFitter_Line
-        toleranceSqr = self.d_data.tolerance*self.d_data.tolerance
+        toleranceSqr = self.__data.tolerance*self.__data.tolerance
         stack = []
         p = points.data()
         nPoints = points.size()

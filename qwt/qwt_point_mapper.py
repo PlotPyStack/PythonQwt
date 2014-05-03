@@ -137,43 +137,43 @@ class QwtPointMapper(object):
     WeedOutPoints = 0x02
     
     def __init__(self):
-        self.d_data = QwtPointMapper_PrivateData()
+        self.__data = QwtPointMapper_PrivateData()
         self.qwtInvalidRect = QRectF(0.0, 0.0, -1.0, -1.0)
         self.setBoundingRect(self.qwtInvalidRect)
         
     def setFlags(self, flags):
-        self.d_data.flags = flags
+        self.__data.flags = flags
     
     def flags(self):
-        return self.d_data.flags
+        return self.__data.flags
     
     def setFlag(self, flag, on):
         if on:
-            self.d_data.flags |= flag
+            self.__data.flags |= flag
         else:
-            self.d_data.flags &= ~flag
+            self.__data.flags &= ~flag
     
     def testFlag(self, flag):
-        return self.d_data.flags & flag
+        return self.__data.flags & flag
     
     def setBoundingRect(self, rect):
-        self.d_data.boundingRect = rect
+        self.__data.boundingRect = rect
         
     def boundingRect(self):
-        return self.d_data.boundingRect
+        return self.__data.boundingRect
     
     def toPolygonF(self, xMap, yMap, series, from_, to):
         round_ = round
         no_round = lambda x: x
-        if self.d_data.flags & QwtPointMapper.WeedOutPoints:
-            if self.d_data.flags & QwtPointMapper.RoundPoints:
+        if self.__data.flags & QwtPointMapper.WeedOutPoints:
+            if self.__data.flags & QwtPointMapper.RoundPoints:
                 polyline = qwtToPolylineFilteredF(xMap, yMap, series,
                                                   from_, to, round_)
             else:
                 polyline = qwtToPolylineFilteredF(xMap, yMap, series,
                                                   from_, to, no_round)
         else:
-            if self.d_data.flags & QwtPointMapper.RoundPoints:
+            if self.__data.flags & QwtPointMapper.RoundPoints:
                 polyline = qwtToPointsF(self.qwtInvalidRect, xMap, yMap,
                                         series, from_, to, round_)
             else:
@@ -182,7 +182,7 @@ class QwtPointMapper(object):
         return polyline
     
     def toPolygon(self, xMap, yMap, series, from_, to):
-        if self.d_data.flags & QwtPointMapper.WeedOutPoints:
+        if self.__data.flags & QwtPointMapper.WeedOutPoints:
             polyline = qwtToPolylineFilteredI(xMap, yMap, series, from_, to)
         else:
             polyline = qwtToPointsI(self.qwtInvalidRect, xMap, yMap,
@@ -192,10 +192,10 @@ class QwtPointMapper(object):
     def toPointsF(self, xMap, yMap, series, from_, to):
         round_ = round
         no_round = lambda x: x
-        if self.d_data.flags & QwtPointMapper.WeedOutPoints:
-            if self.d_data.flags & QwtPointMapper.RoundPoints:
-                if self.d_data.boundingRect.isValid():
-                    points = qwtToPointsFilteredF(self.d_data.boundingRect,
+        if self.__data.flags & QwtPointMapper.WeedOutPoints:
+            if self.__data.flags & QwtPointMapper.RoundPoints:
+                if self.__data.boundingRect.isValid():
+                    points = qwtToPointsFilteredF(self.__data.boundingRect,
                                               xMap, yMap, series, from_, to)
                 else:
                     points = qwtToPolylineFilteredF(xMap, yMap, series,
@@ -204,23 +204,23 @@ class QwtPointMapper(object):
                 points = qwtToPolylineFilteredF(xMap, yMap, series,
                                                 from_, to, no_round)
         else:
-            if self.d_data.flags & QwtPointMapper.RoundPoints:
-                points = qwtToPointsF(self.d_data.boundingRect,
+            if self.__data.flags & QwtPointMapper.RoundPoints:
+                points = qwtToPointsF(self.__data.boundingRect,
                                       xMap, yMap, series, from_, to, round_)
             else:
-                points = qwtToPointsF(self.d_data.boundingRect,
+                points = qwtToPointsF(self.__data.boundingRect,
                                       xMap, yMap, series, from_, to, no_round)
         return points
 
     def toPoints(self, xMap, yMap, series, from_, to):
-        if self.d_data.flags & QwtPointMapper.WeedOutPoints:
-            if self.d_data.boundingRect.isValid():
-                points = qwtToPointsFilteredI(self.d_data.boundingRect,
+        if self.__data.flags & QwtPointMapper.WeedOutPoints:
+            if self.__data.boundingRect.isValid():
+                points = qwtToPointsFilteredI(self.__data.boundingRect,
                                               xMap, yMap, series, from_, to)
             else:
                 points = qwtToPolylineFilteredI(xMap, yMap, series, from_, to)
         else:
-            points = qwtToPointsI(self.d_data.boundingRect, xMap, yMap,
+            points = qwtToPointsI(self.__data.boundingRect, xMap, yMap,
                                   series, from_, to)
         return points
     
@@ -231,7 +231,7 @@ class QwtPointMapper(object):
                 numThreads = QThread.idealThreadCount()
             if numThreads <= 0:
                 numThreads = 1
-        rect = self.d_data.boundingRect.toAlignedRect()
+        rect = self.__data.boundingRect.toAlignedRect()
         image = QImage(rect.size(), QImage.Format_ARGB32)
         image.fill(Qt.transparent)
         if pen.width() <= 1 and pen.color().alpha() == 255:
