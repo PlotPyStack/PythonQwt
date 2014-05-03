@@ -48,7 +48,9 @@ class QwtPlotCurve_PrivateData(QwtPlotItem_PrivateData):
         self.baseline = 0.
         self.symbol = None
         self.attributes = 0
-        self.paintAttributes = QwtPlotCurve.ClipPolygons|QwtPlotCurve.FilterPoints
+#        self.paintAttributes = QwtPlotCurve.ClipPolygons|QwtPlotCurve.FilterPoints
+        #TODO: uncomment previous line when QwtClipper will be implemented
+        self.paintAttributes = QwtPlotCurve.FilterPoints
         self.legendAttributes = 0
         self.pen = QPen(Qt.black)
         self.brush = QBrush()
@@ -224,6 +226,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             else:
                 QwtPainter().drawPolyline(painter, polyline)
         else:
+            print('*** DEBUG: draw!')
             polyline = mapper.toPolygonF(xMap, yMap, self.data(), from_, to)
             if doFit:
                 polyline = self.d_data.curveFitter.fitCurve(polyline)
