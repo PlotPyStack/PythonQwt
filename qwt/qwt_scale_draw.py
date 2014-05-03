@@ -453,6 +453,9 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             pos, = args
             self.d_data.pos = pos
             self.updateMap()
+        else:
+            raise TypeError("%s().move() takes 1 or 2 argument(s) (%s given)"\
+                            % (self.__class__.__name__, len(args)))
     
     def pos(self):
         return self.d_data.pos

@@ -168,6 +168,10 @@ class QwtPlotLayout(object):
             axisId, on = args
             if axis >= 0 and axis < QwtPlot.axisCnt:
                 self.d_data.alignCanvasToScales[axisId] = on
+        else:
+            raise TypeError("%s().setAlignCanvasToScales() takes 1 or 2 "\
+                            "argument(s) (%s given)"\
+                            % (self.__class__.__name__, len(args)))
 
     def alignCanvasToScale(self, axisId):
         if axisId < 0 or axisId >= QwtPlot.axisCnt:
@@ -198,6 +202,9 @@ class QwtPlotLayout(object):
         elif len(args) == 1:
             pos, = args
             self.setLegendPosition(pos, 0.)
+        else:
+            raise TypeError("%s().setLegendPosition() takes 1 or 2 argument(s)"\
+                            "(%s given)" % (self.__class__.__name__, len(args)))
     
     def legendPosition(self):
         return self.d_data.legendPos

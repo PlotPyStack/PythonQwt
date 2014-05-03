@@ -40,6 +40,9 @@ class QwtScaleDiv(object):
             interval, = args
             self.d_lowerBound = interval.minValue()
             self.d_upperBound = interval.maxValue()
+        else:
+            raise TypeError("%s().setInterval() takes 1 or 2 argument(s) (%s "\
+                            "given)" % (self.__class__.__name__, len(args)))
     
     def interval(self):
         return QwtInterval(self.d_lowerBound, self.d_upperBound)

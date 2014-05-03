@@ -19,7 +19,7 @@ class QwtTextEngineDict(object):
         if len(args) == 1:
             format_ = args[0]
             return self.d_map.get(format_)
-        else:
+        elif len(args) == 2:
             text, format_ = args
         
             if format_ == QwtText.AutoText:
@@ -34,6 +34,9 @@ class QwtTextEngineDict(object):
             
             engine = self.d_map[QwtText.PlainText]
             return engine
+        else:
+            raise TypeError("%s().textEngine() takes 1 or 2 argument(s) (%s "\
+                            "given)" % (self.__class__.__name__, len(args)))
         
     def setTextEngine(self, format_, engine):
         if format_ == QwtText.AutoText:
@@ -293,6 +296,9 @@ class QwtTextLabel(QFrame):
             parent, = args
         elif len(args) == 2:
             text, parent = args
+        else:
+            raise TypeError("%s() takes 0, 1 or 2 argument(s) (%s given)"\
+                            % (self.__class__.__name__, len(args)))
         super(QwtTextLabel, self).__init__(parent)
         self.init()
         if text is not None:

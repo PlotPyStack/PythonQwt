@@ -16,6 +16,9 @@ class QwtIntervalSample(object):
             v, min_, max_ = args
             self.value = v
             self.interval = QwtInterval(min_, max_)
+        else:
+            raise TypeError("%s() takes 0, 2 or 3 argument(s) (%s given)"\
+                            % (self.__class__.__name__, len(args)))
     
     def __eq__(self, other):
         return self.value == other.value and self.interval == other.interval
@@ -33,6 +36,9 @@ class QwtSetSample(object):
             v, s = args
             self.value = v
             self.set = s
+        else:
+            raise TypeError("%s() takes 0 or 2 argument(s) (%s given)"\
+                            % (self.__class__.__name__, len(args)))
     
     def __eq__(self, other):
         return self.value == other.value and self.set == other.set

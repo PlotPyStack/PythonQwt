@@ -106,11 +106,11 @@ class QwtScaleMap(object):
         if len(args) == 1:
             # Scalar transform
             return self.transform_scalar(args[0])
-        elif isinstance(args[2], QPointF):
+        elif len(args) == 3 and isinstance(args[2], QPointF):
             xMap, yMap, pos = args
             return QPointF(xMap.transform(pos.x()),
                            yMap.transform(pos.y()))
-        elif isinstance(args[2], QRectF):
+        elif len(args) == 3 and isinstance(args[2], QRectF):
             xMap, yMap, rect = args
             x1 = xMap.transform(rect.left())
             x2 = xMap.transform(rect.right())
@@ -129,6 +129,9 @@ class QwtScaleMap(object):
             if qwtFuzzyCompare(y2, 0., y2-y1) == 0:
                 y2 = 0.
             return QRectF(x1, y1, x2-x1+1, y2-y1+1)
+        else:
+            raise TypeError("%s().transform() takes 1 or 3 argument(s) (%s "\
+                            "given)" % (self.__class__.__name__, len(args)))
 
     def invTransform(self, *args):
         """Transform from paint to scale coordinates

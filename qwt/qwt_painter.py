@@ -103,12 +103,9 @@ class QwtPainter(object):
     def drawRect(self, *args):
         if len(args) == 4:
             painter, x, y, w, h = args
-
             self.drawRect(painter, QRectF(x, y, w, h))
-
         elif len(args) == 2:
             painter, rect = args
-            
             r = rect
             deviceClipping, clipRect = qwtIsClippingNeeded(painter)
             if deviceClipping:
@@ -122,6 +119,9 @@ class QwtPainter(object):
                     painter.restore()
                     return
             painter.drawRect(r)
+        else:
+            raise TypeError("%s().drawRect() takes 2 or 4 argument(s) (%s given)"\
+                            % (self.__class__.__name__, len(args)))
     
     def fillRect(self, painter, rect, brush):
         if not rect.isValid():
@@ -162,21 +162,21 @@ class QwtPainter(object):
             else:
                 painter, x, y, text = args
                 self.drawText(painter, QPointF(x, y), text)
-            
         elif len(args) == 3:
             painter, pos, text = args
-            
             deviceClipping, clipRect = qwtIsClippingNeeded(painter)
             if deviceClipping and not clipRect.contains(pos):
                 return
             painter.save()
             qwtUnscaleFont(painter)
             painter.drawText(pos, text)
-            painter.restore()
-        
+            painter.restore()        
         elif len(args) == 7:
             painter, x, y, w, h, flags, text = args
             self.drawText(painter, QRectF( x, y, w, h ), flags, text)
+        else:
+            raise TypeError("%s().drawText() takes 3, 4 or 7 argument(s) "\
+                            "(%s given)" % (self.__class__.__name__, len(args)))
     
     def drawSimpleRichText(self, painter, rect, flags, text):
         txt = text.clone()
@@ -216,6 +216,9 @@ class QwtPainter(object):
         elif len(args) == 2:
             painter, line = args
             self.drawLine(painter, line.p1(), line.p2())
+        else:
+            raise TypeError("%s().drawLine() takes 2, 3 or 5 argument(s) (%s "\
+                            "given)" % (self.__class__.__name__, len(args)))
     
     def drawPolygon(self, painter, polygon):
         deviceClipping, clipRect = qwtIsClippingNeeded(painter)
@@ -260,6 +263,9 @@ class QwtPainter(object):
             else:
                 qwtDrawPolyline(painter, points, pointCount,
                                 self.d_polylineSplitting)
+        else:
+            raise TypeError("%s().drawPolyline() takes 2 or 3 argument(s) (%s"\
+                            " given)" % (self.__class__.__name__, len(args)))
     
     def drawPoint(self, painter, pos):
         deviceClipping, clipRect = qwtIsClippingNeeded(painter)
@@ -343,6 +349,9 @@ class QwtPainter(object):
             opt.state |= QStyle.State_HasFocus
             widget.style().drawPrimitive(QStyle.PE_FrameFocusRect,
                                          opt, painter, widget)
+        else:
+            raise TypeError("%s().drawFocusRect() takes 2 or 3 argument(s) "\
+                            "(%s given)" % (self.__class__.__name__, len(args)))
     
     def drawRoundFrame(self, painter, rect, palette, lineWidth, frameStyle):
         Plain, Sunken, Raised = range(3)

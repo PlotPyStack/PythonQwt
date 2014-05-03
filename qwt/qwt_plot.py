@@ -142,6 +142,9 @@ class QwtPlot(QFrame, QwtPlotDict):
             parent, = args
         elif len(args) == 2:
             title, parent = args
+        else:
+            raise TypeError("%s() takes 0, 1 or 2 argument(s) (%s given)"\
+                            % (self.__class__.__name__, len(args)))
         super(QwtPlot, self).__init__(parent)
         
         self.d_data = QwtPlot_PrivateData()
