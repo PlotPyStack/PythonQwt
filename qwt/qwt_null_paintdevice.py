@@ -9,9 +9,10 @@ class QwtNullPaintDevice_PrivateData(object):
 
 
 class QwtNullPaintDevice_PaintEngine(QPaintEngine):
-    def __init__(self):
+    def __init__(self, paintdevice):
         super(QwtNullPaintDevice_PaintEngine, self
               ).__init__(QPaintEngine.AllFeatures)
+        self.__paintdevice = paintdevice
     
     def begin(self, paintdevice):
         self.setActive(True)
@@ -121,7 +122,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
     def nullDevice(self):
         if not self.isActive():
             return
-        return QwtNullPaintDevice(self.paintDevice())
+        return self.__paintdevice
 
 
 class QwtNullPaintDevice(QPaintDevice):
@@ -142,7 +143,7 @@ class QwtNullPaintDevice(QPaintDevice):
     
     def paintEngine(self):
         if self.__engine is None:
-            self.__engine = QwtNullPaintDevice_PaintEngine()
+            self.__engine = QwtNullPaintDevice_PaintEngine(self)
         return self.__engine
     
     def metric(self, deviceMetric):
@@ -167,36 +168,35 @@ class QwtNullPaintDevice(QPaintDevice):
         return value
     
     def drawRects(self, rects, rectCount):
-        super(QwtNullPaintDevice, self).drawRects(rects, rectCount)
+        pass
     
     def drawLines(self, lines, lineCount):
-        super(QwtNullPaintDevice, self).drawLines(lines, lineCount)
+        pass
         
     def drawEllipse(self, rect):
-        super(QwtNullPaintDevice, self).drawEllipse(rect)
+        pass
         
     def drawPath(self, path):
-        super(QwtNullPaintDevice, self).drawPath(path)
+        pass
     
     def drawPoints(self, points, pointCount):
-        super(QwtNullPaintDevice, self).drawPoints(points, pointCount)
+        pass
     
     def drawPolygon(self, points, pointCount, mode):
-        super(QwtNullPaintDevice, self).drawPolygon(points, pointCount, mode)
+        pass
     
     def drawPixmap(self, rect, pm, subRect):
-        super(QwtNullPaintDevice, self).drawPixmap(rect, pm, subRect)
+        pass
     
     def drawTextItem(self, pos, textItem):
-        super(QwtNullPaintDevice, self).drawPolygon(pos, textItem)
+        pass
     
     def drawTiledPixmap(self, rect, pm, subRect):
-        super(QwtNullPaintDevice, self).drawTiledPixmap(rect, pm, subRect)
+        pass
     
     def drawImage(self, rect, image, subRect, flags):
-        super(QwtNullPaintDevice, self).drawImage(rect, image, subRect, flags)
+        pass
     
     def updateState(self, state):
-        super(QwtNullPaintDevice, self).updateState(state)
-
+        pass
     

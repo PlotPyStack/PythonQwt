@@ -226,7 +226,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             else:
                 QwtPainter().drawPolyline(painter, polyline)
         else:
-            print('*** DEBUG: draw!')
             polyline = mapper.toPolygonF(xMap, yMap, self.data(), from_, to)
             if doFit:
                 polyline = self.__data.curveFitter.fitCurve(polyline)

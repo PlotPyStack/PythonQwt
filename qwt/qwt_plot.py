@@ -126,7 +126,7 @@ class AxisData(object):
 
 class QwtPlot(QFrame, QwtPlotDict):
     ITEM_ATTACHED = SIGNAL("itemAttached(PyQt_PyObject,bool)")
-    LEGEND_DATA_CHANGED = SIGNAL("legendDataChanged(PyQt_PyObject,bool)")
+    LEGEND_DATA_CHANGED = SIGNAL("legendDataChanged(PyQt_PyObject,PyQt_PyObject)")
 
     # enum Axis
     yLeft, yRight, xBottom, xTop, axisCnt = range(5)

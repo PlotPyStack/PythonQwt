@@ -304,6 +304,7 @@ class QwtPlotCanvas(QFrame):
     
     def __init__(self, plot=None):
         super(QwtPlotCanvas, self).__init__(plot)
+        self.__plot = plot
         self.setFrameStyle(QFrame.Panel|QFrame.Sunken)
         self.setLineWidth(2)
         self.__data = QwtPlotCanvas_PrivateData()
@@ -314,7 +315,7 @@ class QwtPlotCanvas(QFrame):
         self.setPaintAttribute(QwtPlotCanvas.HackStyledBackground, True)
     
     def plot(self):
-        return self.parent()
+        return self.__plot
     
     def setPaintAttribute(self, attribute, on=True):
         if bool(self.__data.paintAttributes & attribute) == on:

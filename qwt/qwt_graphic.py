@@ -164,7 +164,7 @@ class QwtGraphic_PrivateData(object):
         self.defaultSize = QSizeF()
         self.commands = []
         self.pathInfos = []
-        self.renderHints = None
+        self.renderHints = 0
 
 
 class QwtGraphic(QwtNullPaintDevice):
@@ -198,7 +198,7 @@ class QwtGraphic(QwtNullPaintDevice):
     def isEmpty(self):
         return self.__data.boundingRect.isEmpty()
     
-    def setRenderHints(self, hint, on):
+    def setRenderHint(self, hint, on):
         if on:
             self.__data.renderHints |= hint
         else:
@@ -411,7 +411,7 @@ class QwtGraphic(QwtNullPaintDevice):
         
     def updateState(self, state):
         #XXX: shall we call the parent's implementation of updateState?
-        self.__data.commands += QwtPainterCommand(state)
+        self.__data.commands += [QwtPainterCommand(state)]
         
     def updateBoundingRect(self, rect):
         br = rect
