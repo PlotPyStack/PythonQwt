@@ -653,7 +653,8 @@ class QwtPlot(QFrame, QwtPlotDict):
                           item.testRenderHint(QwtPlotItem.RenderAntialiased))
                 painter.setRenderHint(QPainter.HighQualityAntialiasing,
                           item.testRenderHint(QwtPlotItem.RenderAntialiased))
-                item.draw(painter, maps, canvasRect)
+                item.draw(painter, maps[item.xAxis()], maps[item.yAxis()],
+                          canvasRect)
                 painter.restore()
 
     def canvasMap(self, axisId):
@@ -823,6 +824,7 @@ class QwtPlotItem(object):
     
     def __init__(self, title):
         """title: QwtText"""
+        assert isinstance(title, QwtText)
         self.d_data = QwtPlotItem_PrivateData()
         self.d_data.title = title
 
@@ -869,8 +871,8 @@ class QwtPlotItem(object):
     def title(self):
         return self.d_data.title
     
-    def setItemAttribute(self, attribute, on):
-        if self.d_data.attributes.testFlag(attribute) != on:
+    def setItemAttribute(self, attribute, on=True):
+        if bool(self.d_data.attributes & attribute) != on:
             if on:
                 self.d_data.attributes |= attribute
             else:
@@ -880,10 +882,10 @@ class QwtPlotItem(object):
             self.itemChanged()
     
     def testItemAttribute(self, attribute):
-        return self.d_data.attributes.testFlag(attribute)
+        return bool(self.d_data.attributes & attribute)
     
     def setItemInterest(self, interest, on):
-        if self.d_data.interests.testFlag(interest) != on:
+        if bool(self.d_data.interests & interest) != on:
             if on:
                 self.d_data.interests |= interest
             else:
@@ -891,10 +893,10 @@ class QwtPlotItem(object):
             self.itemChanged()
     
     def testItemInterest(self, interest):
-        return self.d_data.interests.testFlag(interest)
+        return bool(self.d_data.interests & interest)
     
     def setRenderHint(self, hint, on):
-        if self.d_data.renderHints.testFlag(hint) != on:
+        if bool(self.d_data.renderHints & hint) != on:
             if on:
                 self.d_data.renderHints |= hint
             else:
@@ -902,7 +904,7 @@ class QwtPlotItem(object):
             self.itemChanged()
     
     def testRenderHint(self, hint):
-        return self.d_data.renderHints.testFlag(hint)
+        return bool(self.d_data.renderHints & hint)
     
     def setRenderThreadCount(self, numThreads):
         self.d_data.renderThreadCount = numThreads

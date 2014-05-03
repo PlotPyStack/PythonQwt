@@ -17,17 +17,17 @@ class SimplePlot(Qwt.QwtPlot):
         self.setAxisTitle(Qwt.QwtPlot.xBottom, 'x')
         self.setAxisTitle(Qwt.QwtPlot.yLeft, 'y')
         # insert a few curves
-#        cSin = Qwt.QwtPlotCurve('y = sin(x)')
-#        cSin.setPen(Qt.QPen(Qt.Qt.red))
-#        cSin.attach(self)
-#        cCos = Qwt.QwtPlotCurve('y = cos(x)')
-#        cCos.setPen(Qt.QPen(Qt.Qt.blue))
-#        cCos.attach(self)
+        cSin = Qwt.QwtPlotCurve('y = sin(x)')
+        cSin.setPen(Qt.QPen(Qt.Qt.red))
+        cSin.attach(self)
+        cCos = Qwt.QwtPlotCurve('y = cos(x)')
+        cCos.setPen(Qt.QPen(Qt.Qt.blue))
+        cCos.attach(self)
         # make a Numeric array for the horizontal data
         x = np.arange(0.0, 10.0, 0.1)
         # initialize the data
-#        cSin.setData(x, np.sin(x))
-#        cCos.setData(x, np.cos(x))
+        cSin.setData(x, np.sin(x))
+        cCos.setData(x, np.cos(x))
 #        # insert a horizontal marker at y = 0
 #        mY = Qwt.QwtPlotMarker()
 #        mY.setLabel(Qwt.QwtText('y = 0'))

@@ -39,7 +39,7 @@ def qwtDrawPolyline(painter, points, pointCount, polylineSplitting):
             n = min([splitSize+1, pointCount-i])
             painter.drawPolyline(points+i, n)
     else:
-        painter.drawPolyline(points, pointCount)
+        painter.drawPolyline(points)
 
 
 def qwtUnscaleFont(painter):
@@ -240,7 +240,7 @@ class QwtPainter(object):
                     cpa = QwtClipper.clipPolygonF(clipRect, polygon)
                 else:
                     cpa = QwtClipper.clipPolygon(clipRect, polygon)
-            qwtDrawPolyline(painter, cpa.data(), cpa.size(),
+            qwtDrawPolyline(painter, cpa, cpa.size(),
                             self.d_polylineSplitting)
         elif len(args) == 3:
             painter, points, pointCount = args
@@ -252,7 +252,7 @@ class QwtPainter(object):
                 else:
                     polygon = QPolygon(points)
                     polygon = QwtClipper.clipPolygon(clipRect, polygon)
-                qwtDrawPolyline(painter, polygon.data(),
+                qwtDrawPolyline(painter, polygon,
                                 polygon.size(), self.d_polylineSplitting)
 #                polygon = QPolygonF(pointCount)
 #                pointer = polygon.data()

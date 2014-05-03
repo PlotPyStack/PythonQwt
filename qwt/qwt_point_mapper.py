@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 
-QWT_USE_THREADS = True
+QWT_USE_THREADS = False  # QtConcurrent is not supported by PyQt
 
-from qwt.qt.QtGui import (QPolygon, QPolygonF, QPoint, QPointF, QRectF, QImage,
-                          QPainter)
-from qwt.qt.QtCore import QThread, Qt, QtConcurrent
+from qwt.qt.QtGui import QPolygon, QPolygonF, QImage, QPainter
+from qwt.qt.QtCore import QThread, Qt, QPoint, QPointF, QRectF
 
 from qwt.qwt_pixel_matrix import QwtPixelMatrix
+
+import numpy as np
 
 
 class QwtDotsCommand(object):
@@ -68,20 +69,27 @@ def qwtToPointsF(boundingRect, xMap, yMap, series, from_, to, round_):
 def qwtToPolylineFiltered(xMap, yMap, series, from_, to, round_,
                           Polygon, Point):
     polyline = Polygon(to-from_+1)
-    points = polyline.data()
-    sample0 = series.sample(from_)
-    points[0].setX(round_(xMap.transform(sample0.x())))
-    points[0].setY(round_(yMap.transform(sample0.y())))
-    pos = 0
-    for i in range(from_, to+1):
-        sample = series.sample(i)
-        p = Point(round_(xMap.transform(sample.x())),
-                  round_(yMap.transform(sample.y())))
-        if points[pos] != p:
-            pos += 1
-            points[pos] = p
-    polyline.resize(pos+1)
-    return polyline
+    pointer = polyline.data()
+    dtype = np.float if Polygon is QPolygonF else np.int
+    pointer.setsize(2*polyline.size()*np.finfo(dtype).dtype.itemsize)
+    memory = np.frombuffer(pointer, dtype)
+    memory[0::2] = np.round(xMap.transform(series.xData()))
+    memory[1::2] = np.round(yMap.transform(series.yData()))
+    return polyline    
+#    points = polyline.data()
+#    sample0 = series.sample(from_)
+#    points[0].setX(round_(xMap.transform(sample0.x())))
+#    points[0].setY(round_(yMap.transform(sample0.y())))
+#    pos = 0
+#    for i in range(from_, to+1):
+#        sample = series.sample(i)
+#        p = Point(round_(xMap.transform(sample.x())),
+#                  round_(yMap.transform(sample.y())))
+#        if points[pos] != p:
+#            pos += 1
+#            points[pos] = p
+#    polyline.resize(pos+1)
+#    return polyline
 
 def qwtToPolylineFilteredI(xMap, yMap, series, from_, to):
     return qwtToPolylineFiltered(xMap, yMap, series, from_, to, round,
@@ -121,7 +129,7 @@ def qwtToPointsFilteredF(boundingRect, xMap, yMap, series, from_, to):
 class QwtPointMapper_PrivateData(object):
     def __init__(self):
         self.boundingRect = None
-        self.flags = None
+        self.flags = 0
 
 
 class QwtPointMapper(object):

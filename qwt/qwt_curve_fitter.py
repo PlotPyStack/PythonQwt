@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from qwt.qwt_spline import QwtSpline
+
 from qwt.qt.QtGui import QPolygonF
 
 import numpy as np
@@ -157,15 +159,47 @@ class QwtWeedingCurveFitter(QwtCurveFitter):
         return fittedPoints
     
     def simplify(self, points):
+        Line = QwtWeedingCurveFitter_Line
         toleranceSqr = self.d_data.tolerance*self.d_data.tolerance
         stack = []
         p = points.data()
         nPoints = points.size()
         usePoint = [False]*nPoints
-        stack.insert(0, QwtWeedingCurveFitter_Line(0, nPoints-1))
-        raise NotImplementedError
-        
-    
-    
-        
-    
+        stack.insert(0, Line(0, nPoints-1))
+        while stack:
+            r = stack.pop(0)
+            vecX = p[r.to].x()-p[r.from_].x()
+            vecY = p[r.to].y()-p[r.from_].y()
+            vecLength = np.sqrt(vecX**2+vecY**2)
+            unitVecX = vecX/vecLength if vecLength != 0. else 0.
+            unitVecY = vecY/vecLength if vecLength != 0. else 0.
+            maxDistSqr = 0.
+            nVertexIndexMaxDistance = r.from_ + 1
+            for i in range(r.from_+1, r.to):
+                fromVecX = p[i].x()-p[r.from_].x()
+                fromVecY = p[i].y()-p[r.from_].y()
+                if fromVecX * unitVecX + fromVecY * unitVecY < 0.0:
+                    distToSegmentSqr = fromVecX * fromVecX + fromVecY * fromVecY
+                else:
+                    toVecX = p[i].x() - p[r.to].x()
+                    toVecY = p[i].y() - p[r.to].y()
+                    toVecLength = toVecX * toVecX + toVecY * toVecY
+                    s = toVecX * ( -unitVecX ) + toVecY * ( -unitVecY )
+                    if s < 0.:
+                        distToSegmentSqr = toVecLength
+                    else:
+                        distToSegmentSqr = abs( toVecLength - s * s )
+                if maxDistSqr < distToSegmentSqr:
+                    maxDistSqr = distToSegmentSqr
+                    nVertexIndexMaxDistance = i
+            if maxDistSqr <= toleranceSqr:
+                usePoint[r.from_] = True
+                usePoint[r.to] = True
+            else:
+                stack.insert(0, Line( r.from_, nVertexIndexMaxDistance ))
+                stack.insert(0, Line( nVertexIndexMaxDistance, r.to ))
+        stripped = QPolygonF()
+        for i in range(0, nPoints):
+            if usePoint[i]:
+                stripped += p[i]
+        return stripped
