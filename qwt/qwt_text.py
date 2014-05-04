@@ -62,7 +62,7 @@ class QwtText_PrivateData(object):
 
 class QwtText_LayoutCache(object):
     def __init__(self):
-        self.textSize = None
+        self.textSize = QSizeF()
         self.font = None
     
     def invalidate(self):
