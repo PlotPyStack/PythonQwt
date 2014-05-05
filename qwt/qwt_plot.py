@@ -711,7 +711,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             self.__data.legend = legend
             if self.__data.legend:
                 self.connect(self, QwtPlot.SIG_LEGEND_DATA_CHANGED,
-                             self.updateLegend)
+                             self.__data.legend.updateLegend)
                 if self.__data.legend.parent() is not self:
                     self.__data.legend.setParent(self)
                 

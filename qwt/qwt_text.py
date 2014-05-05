@@ -333,14 +333,14 @@ class QwtTextLabel(QFrame):
     def indent(self):
         return self.__data.indent
     
-    def setIdent(self, indent):
+    def setIndent(self, indent):
         if indent < 0:
             indent = 0
         self.__data.indent = indent
         self.update()
         self.updateGeometry()
     
-    def margin(self, margin):
+    def margin(self):
         return self.__data.margin
         
     def setMargin(self, margin):

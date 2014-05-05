@@ -117,6 +117,9 @@ class QwtPainterCommand(object):
     
     def reset(self):
         self.__type = self.Invalid
+
+    def type(self):
+        return self.__type
     
     def path(self):
         return self.__path

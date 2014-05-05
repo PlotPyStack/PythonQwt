@@ -368,7 +368,7 @@ class QwtPlotLayout(object):
         else:
             dim = min([hint.height(), int(rect.height()*self.__data.legendRatio)])
             dim = max([dim, self.__data.layoutData.legend.vScrollExtent])
-        legendRect = rect
+        legendRect = QRectF(rect)
         if self.__data.legendPos == QwtPlot.LeftLegend:
             legendRect.setWidth(dim)
         elif self.__data.legendPos == QwtPlot.RightLegend:
@@ -599,7 +599,7 @@ class QwtPlotLayout(object):
            not plot.legend().isEmpty():
             self.__data.legendRect = self.layoutLegend(options, rect)
             region = QRegion(rect.toRect())
-            rect = region.subtracted(self.__data.legendRect.toRect()
+            rect = region.subtracted(QRegion(self.__data.legendRect.toRect())
                                      ).boundingRect()
             if self.__data.legendPos == QwtPlot.LeftLegend:
                 rect.setLeft(rect.left()+self.__data.spacing)
