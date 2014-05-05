@@ -25,21 +25,33 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
     def type(self):
         return QPaintEngine.User
     
-    def drawRects(self, rects, rectCount):
+    def drawRects(self, rects, rectCount=None):
+        if rectCount is None:
+            rectCount = len(rects)
         device = self.nullDevice()
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode:
-            QPaintEngine.drawRects(rects, rectCount)
+            try:
+                QPaintEngine.drawRects(self, rects, rectCount)
+            except TypeError:
+                # PyQt <=4.9
+                QPaintEngine.drawRects(self, rects)
             return
         device.drawRects(rects, rectCount)
     
-    def drawLines(self, lines, lineCount):
+    def drawLines(self, lines, lineCount=None):
+        if lineCount is None:
+            lineCount = len(lines)
         device = self.nullDevice()
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode:
-            QPaintEngine.drawLines(lines, lineCount)
+            try:
+                QPaintEngine.drawLines(lines, lineCount)
+            except TypeError:
+                # PyQt <=4.9
+                QPaintEngine.drawLines(self, lines)
             return
         device.drawLines(lines, lineCount)
     
@@ -58,12 +70,18 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
             return
         device.drawPath(path)
         
-    def drawPoints(self, points, pointCount):
+    def drawPoints(self, points, pointCount=None):
+        if pointCount is None:
+            pointCount = len(points)
         device = self.nullDevice()
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode:
-            QPaintEngine.drawPoints(points, pointCount)
+            try:
+                QPaintEngine.drawPoints(points, pointCount)
+            except TypeError:
+                # PyQt <=4.9
+                QPaintEngine.drawPoints(self, points)
             return
         device.drawPoints(points, pointCount)
         
