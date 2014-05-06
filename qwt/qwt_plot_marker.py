@@ -103,26 +103,26 @@ class QwtPlotMarker(QwtPlotItem):
     def drawLabel(self, painter, canvasRect, pos):
         if self.__data.label.isEmpty():
             return
-        align = self.__data.labelAlignment
+        align = Qt.Alignment(self.__data.labelAlignment)
         alignPos = QPointF(pos)
         symbolOff = QSizeF(0, 0)
         if self.__data.style == QwtPlotMarker.VLine:
-            if self.__data.labelAlignment & Qt.AlignTop:
+            if bool(self.__data.labelAlignment & Qt.AlignTop):
                 alignPos.setY(canvasRect.top())
                 align &= ~Qt.AlignTop
                 align |= Qt.AlignBottom
-            elif self.__data.labelAlignment & Qt.AlignBottom:
+            elif bool(self.__data.labelAlignment & Qt.AlignBottom):
                 alignPos.setY(canvasRect.bottom()-1)
                 align &= ~Qt.AlignBottom
                 align |= Qt.AlignTop
             else:
                 alignPos.setY(canvasRect.center().y())
         elif self.__data.style == QwtPlotMarker.HLine:
-            if self.__data.labelAlignment & Qt.AlignLeft:
+            if bool(self.__data.labelAlignment & Qt.AlignLeft):
                 alignPos.setX(canvasRect.left())
                 align &= ~Qt.AlignLeft
                 align |= Qt.AlignRight
-            elif self.__data.labelAlignment & Qt.AlignRight:
+            elif bool(self.__data.labelAlignment & Qt.AlignRight):
                 alignPos.setX(canvasRect.right()-1)
                 align &= ~Qt.AlignRight
                 align |= Qt.AlignLeft
