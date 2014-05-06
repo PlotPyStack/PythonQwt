@@ -39,7 +39,7 @@ class QwtSpline(object):
     Natural, Periodic = range(2)
     
     def __init__(self, other=None):
-        if other:
+        if other is not None:
             self.__data = other.__data
         else:
             self.__data = QwtSpline_PrivateData()

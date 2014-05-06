@@ -48,7 +48,7 @@ def qwtUnscaleFont(painter):
     screenResolution = QSize()
     if not screenResolution.isValid():
         desktop = QApplication.desktop()
-        if desktop:
+        if desktop is not None:
             screenResolution.setWidth(desktop.logicalDpiX())
             screenResolution.setHeight(desktop.logicalDpiY())
     pd = painter.device()
@@ -622,7 +622,7 @@ class QwtPainter(object):
                 pixelRatio = widget.windowHandle().devicePixelRatio()
             else:
                 from qwt.qt.QtGui import qApp
-                if qApp:
+                if qApp is not None:
                     try:
                         pixelRatio = qApp.devicePixelRatio()
                     except RuntimeError:

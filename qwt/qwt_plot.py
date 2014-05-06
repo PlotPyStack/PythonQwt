@@ -437,7 +437,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         if canvas == self.__data.canvas:
             return
         self.__data.canvas = canvas
-        if canvas:
+        if canvas is not None:
             canvas.setParent(self)
             canvas.installEventFilter(self)
             if self.isVisible():
@@ -721,7 +721,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                 
                 lpos = self.__data.layout.legendPosition()
 
-                if legend:
+                if legend is not None:
                     if lpos in (self.LeftLegend, self.RightLegend):
                         if legend.maxColumns() == 0:
                             legend.setMaxColumns(1)
@@ -757,7 +757,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             self.emit(QwtPlot.SIG_LEGEND_DATA_CHANGED, plotItem, legendData)
 
     def updateLegendItems(self, plotItem, legendData):
-        if plotItem:
+        if plotItem is not None:
             for item in self.itemList():
                 if item.testItemInterest(QwtPlotItem.LegendInterest):
                     item.updateLegend(plotItem, legendData)

@@ -51,7 +51,7 @@ class QwtPlotCurve_PrivateData(QwtPlotItem_PrivateData):
 #        self.paintAttributes = QwtPlotCurve.ClipPolygons|QwtPlotCurve.FilterPoints
         #TODO: uncomment previous line when QwtClipper will be implemented
         self.paintAttributes = QwtPlotCurve.FilterPoints
-        self.legendAttributes = 0
+        self.legendAttributes = QwtPlotCurve.LegendShowLine
         self.pen = QPen(Qt.black)
         self.brush = QBrush()
         self.curveFitter = QwtSplineCurveFitter()

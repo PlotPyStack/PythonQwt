@@ -17,7 +17,7 @@ def qwtHasScalablePen(painter):
         scalablePen = not pen.isCosmetic()
         if not scalablePen and pen.widthF() == 0.:
             hints = painter.renderHints()
-            if hints.testFlag(QPainter.NonCosmeticDefaultPen):
+            if hints & QPainter.NonCosmeticDefaultPen:
                 scalablePen = True
     return scalablePen
 
@@ -382,7 +382,7 @@ class QwtGraphic(QwtNullPaintDevice):
         if not path.isEmpty():
             scaledPath = painter.transform().map(path)
             pointRect = scaledPath.boundingRect()
-            boundingRect = pointRect
+            boundingRect = QRectF(pointRect)
             if painter.pen().style() != Qt.NoPen\
                and painter.pen().brush().style() != Qt.NoBrush:
                 boundingRect = qwtStrokedPathRect(painter, path)
@@ -414,7 +414,7 @@ class QwtGraphic(QwtNullPaintDevice):
         self.__data.commands += [QwtPainterCommand(state)]
         
     def updateBoundingRect(self, rect):
-        br = rect
+        br = QRectF(rect)
         painter = self.paintEngine().painter()
         if painter and painter.hasClipping():
             #XXX: there's something fishy about the following lines...

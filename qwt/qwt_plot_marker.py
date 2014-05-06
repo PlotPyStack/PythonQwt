@@ -184,7 +184,7 @@ class QwtPlotMarker(QwtPlotItem):
     def setSymbol(self, symbol):
         if symbol != self.__data.symbol:
             self.__data.symbol = symbol
-            if symbol:
+            if symbol is not None:
                 self.setLegendIconSize(symbol.boundingRect().size())
             self.legendChanged()
             self.itemChanged()

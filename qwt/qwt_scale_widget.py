@@ -162,7 +162,7 @@ class QwtScaleWidget(QWidget):
         if scaleDraw is None or scaleDraw == self.__data.scaleDraw:
             return
         sd = self.__data.scaleDraw
-        if sd:
+        if sd is not None:
             scaleDraw.setAlignment(sd.alignment())
             scaleDraw.setScaleDiv(sd.scaleDiv())
             transform = None

@@ -69,7 +69,7 @@ class QwtLegendMap(object):
                     return entry.itemInfo
     
     def legendWidgets(self, itemInfo):
-        if itemInfo:
+        if itemInfo is not None:
             for entry in self.__entries:
                 if entry.itemInfo == itemInfo:
                     return entry.widgets
@@ -164,12 +164,12 @@ class QwtLegend(QwtAbstractLegend):
     
     def setMaxColumns(self, numColumns):
         tl = self.__data.view.gridLayout
-        if tl:
+        if tl is not None:
             tl.setMaxColumns(numColumns)
     
     def maxColumns(self):
         tl = self.__data.view.gridLayout
-        if tl:
+        if tl is not None:
             return tl.maxColumns()
         return 0
     
@@ -221,18 +221,18 @@ class QwtLegend(QwtAbstractLegend):
     
     def updateWidget(self, widget, data):
         label = widget #TODO: cast to QwtLegendLabel!
-        if label:
+        if label is not None:
             label.setData(data)
             if data.value(QwtLegendData.ModeRole) is None:
                 label.setItemMode(self.defaultItemMode())
     
     def updateTabOrder(self):
         contentsLayout = self.__data.view.gridLayout
-        if contentsLayout:
+        if contentsLayout is not None:
             w = None
             for i in range(contentsLayout.count()):
                 item = contentsLayout.itemAt(i)
-                if w and item.widget():
+                if w is not None and item.widget():
                     QWidget.setTabOrder(w, item.widget())
                 w = item.widget()
     
@@ -265,9 +265,9 @@ class QwtLegend(QwtAbstractLegend):
     def itemClicked(self, widget):
 #        w = self.sender()  #TODO: cast to QWidget
         w = widget
-        if w:
+        if w is not None:
             itemInfo = self.__data.itemMap.itemInfo(w)
-            if itemInfo:
+            if itemInfo is not None:
                 widgetList = self.__data.itemMap.legendWidgets(itemInfo)
                 if w in widgetList:
                     index = widgetList.index(w)
@@ -276,9 +276,9 @@ class QwtLegend(QwtAbstractLegend):
     def itemChecked(self, on, widget):
 #        w = self.sender()  #TODO: cast to QWidget
         w = widget
-        if w:
+        if w is not None:
             itemInfo = self.__data.itemMap.itemInfo(w)
-            if itemInfo:
+            if itemInfo is not None:
                 widgetList = self.__data.itemMap.legendWidgets(itemInfo)
                 if w in widgetList:
                     index = widgetList.index(w)
@@ -309,7 +309,7 @@ class QwtLegend(QwtAbstractLegend):
         for i in range(legendLayout.count()):
             item = legendLayout.itemAt(i)
             w = item.widget()
-            if w:
+            if w is not None:
                 painter.save()
                 painter.setClipRect(itemRects[index])
                 self.renderItem(painter, w, itemRects[index], fillBackground)
@@ -322,7 +322,7 @@ class QwtLegend(QwtAbstractLegend):
                widget.testAttribute(Qt.WA_StyledBackground):
                 QwtPainter().drawBackground(painter, rect, widget)
         label = widget  #TODO: cast to QwtLegendLabel
-        if label:
+        if label is not None:
             icon = label.data().icon()
             sz = icon.defaultSize()
             iconRect = QRectF(rect.x()+label.margin(),

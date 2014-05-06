@@ -85,7 +85,14 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
             return
         device.drawPoints(points, pointCount)
         
-    def drawPolygon(self, points, pointCount, mode):
+    def drawPolygon(self, *args):
+        if len(args) == 3:
+            points, pointCount, mode = args
+        elif len(args) == 2:
+            points, mode = args
+            pointCount = len(points)
+        else:
+            raise TypeError("Unexpected arguments")
         device = self.nullDevice()
         if device is None:
             return
@@ -93,7 +100,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
             path = QPainterPath()
             if pointCount > 0:
                 path.moveTo(points[0])
-                for i in range(pointCount):
+                for i in range(1, pointCount):
                     path.lineTo(points[i])
                 if mode != QPaintEngine.PolylineMode:
                     path.closeSubpath()
