@@ -113,7 +113,7 @@ class QwtPlainTextEngine(QwtTextEngine):
         return left, right, top, bottom
 
     def draw(self, painter, rect, flags, text):
-        QwtPainter().drawText(painter, rect, flags, text)
+        QwtPainter.drawText(painter, rect, flags, text)
     
     def mightRender(self, text):
         return True
@@ -139,7 +139,7 @@ class QwtRichTextEngine(QwtTextEngine):
     
     def draw(self, painter, rect, flags, text):
         doc = QwtRichTextDocument(text, flags, painter.font())
-        QwtPainter().drawSimpleRichText(painter, rect, flags, doc)
+        QwtPainter.drawSimpleRichText(painter, rect, flags, doc)
     
     def taggedText(self, text, flags):
         return self.taggedRichText(text,flags)

@@ -6,13 +6,25 @@ from qwt.qt.QtCore import QRectF, QPointF
 
 
 class QwtScaleMap(object):
-    def __init__(self, other=None):
+    def __init__(self, *args):
         self.__transform = None # QwtTransform
+        self.__s1 = 0.
+        self.__s2 = 1.
+        self.__p1 = 0.
+        self.__p2 = 1.
+        other = None
+        if len(args) == 1:
+            other, = args
+        elif len(args) == 4:
+            s1, s2, p1, p2 = args
+            self.__s1 = s1
+            self.__s2 = s2
+            self.__p1 = p1
+            self.__p2 = p2
+        elif len(args) != 0:
+            raise TypeError("%s() takes 1, 3, or 4 argument(s) (%s given)"\
+                            % (self.__class__.__name__, len(args)))
         if other is None:
-            self.__s1 = 0.
-            self.__s2 = 1.
-            self.__p1 = 0.
-            self.__p2 = 1.
             self.__cnv = 1.
             self.__ts1 = 0.
         else:

@@ -1,4 +1,6 @@
 
+QWT_VERSION_STR = '6.1.0'
+
 from qwt.qwt_plot import QwtPlot
 from qwt.qwt_symbol import QwtSymbol
 from qwt.qwt_scale_engine import QwtLinearScaleEngine
@@ -9,9 +11,19 @@ from qwt.qwt_scale_map import QwtScaleMap
 from qwt.qwt_interval import QwtInterval
 from qwt.qwt_legend import QwtLegend
 from qwt.qwt_plot_marker import QwtPlotMarker
+from qwt.qwt_plot_grid import QwtPlotGrid
+
+from qwt.toqimage import toQImage
+
+from qwt.qwt_scale_div import QwtScaleDiv
+from qwt.qwt_scale_draw import QwtScaleDraw
+from qwt.qwt_scale_draw import QwtAbstractScaleDraw
+from qwt.qwt_series_data import QwtIntervalSeriesData
+from qwt.qwt_sample import QwtIntervalSample
+from qwt.qwt_painter import QwtPainter
+from qwt.qwt_legend_data import QwtLegendData
 
 QwtDoubleInterval = QwtInterval
 
 # to be implemented:
-# QwtSymbol (fake class already imported above)
-# QwtLog10ScaleEngine, toQImage, QwtPlotGrid, QwtPlotPrintFilter
+# QwtLog10ScaleEngine, toQImage, QwtPlotPrintFilter

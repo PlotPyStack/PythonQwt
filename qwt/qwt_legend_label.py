@@ -46,7 +46,9 @@ class QwtLegendLabel(QwtTextLabel):
         doUpdate = self.updatesEnabled()
         self.setUpdatesEnabled(False)
         self.setText(legendData.title())
-        self.setIcon(legendData.icon().toPixmap())
+        icon = legendData.icon()
+        if icon is not None:
+            self.setIcon(icon.toPixmap())
         if legendData.hasRole(QwtLegendData.ModeRole):
             self.setItemMode(legendData.mode())
         if doUpdate:
@@ -127,7 +129,7 @@ class QwtLegendLabel(QwtTextLabel):
         sz = QwtTextLabel.sizeHint(self)
         sz.setHeight(max([sz.height(), self.__data.icon.height()+4]))
         if self.__data.itemMode != QwtLegendData.ReadOnly:
-            sz += self.buttonShift(self)
+            sz += buttonShift(self)
             sz = sz.expandedTo(QApplication.globalStrut())
         return sz
     
@@ -140,7 +142,7 @@ class QwtLegendLabel(QwtTextLabel):
                            self.palette(), True)
         painter.save()
         if self.__data.isDown:
-            shiftSize = self.buttonShift(self)
+            shiftSize = buttonShift(self)
             painter.translate(shiftSize.width(), shiftSize.height())
         painter.setClipRect(cr)
         self.drawContents(painter)

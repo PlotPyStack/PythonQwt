@@ -54,7 +54,7 @@ class QwtSplineCurveFitter(QwtCurveFitter):
         fitMode = self.__data.fitMode
         if fitMode == self.Auto:
             fitMode = self.Spline
-            p = points.data()
+            p = points#.data()
             for i in range(1, size):
                 if p[i].x() <= p[i-1].x():
                     fitMode = self.ParametricSpline

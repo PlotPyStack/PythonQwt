@@ -130,7 +130,7 @@ class QwtPoint3DSeriesData(QwtArraySeriesData):
 
 
 class QwtIntervalSeriesData(QwtArraySeriesData):
-    def __init__(self, samples):
+    def __init__(self, samples=None):
         QwtArraySeriesData.__init__(self, samples)
     
     def boundingRect(self):

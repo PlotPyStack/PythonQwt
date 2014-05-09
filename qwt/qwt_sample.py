@@ -11,7 +11,7 @@ class QwtIntervalSample(object):
         elif len(args) == 2:
             v, intv = args
             self.value = v
-            self.interval = QwtInterval(intv)
+            self.interval = intv
         elif len(args) == 3:
             v, min_, max_ = args
             self.value = v

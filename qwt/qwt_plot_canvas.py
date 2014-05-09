@@ -102,7 +102,7 @@ def qwtDrawBackground(painter, canvas):
     brush = canvas.palette().brush(canvas.backgroundRole())
     if brush.style() == Qt.TexturePattern:
         pm = QPixmap(canvas.size())
-        QwtPainter().fillPixmap(canvas, pm)
+        QwtPainter.fillPixmap(canvas, pm)
         painter.drawPixmap(0, 0, pm)
     elif brush.gradient():
         rects = []
@@ -261,7 +261,7 @@ def qwtFillBackground(*args):
             rect = fillRect.toAlignedRect()
             if clipRegion.intersects(rect):
                 pm = QPixmap(rect.size())
-                QwtPainter().fillPixmap(bgWidget, pm, widget.mapTo(bgWidget, rect.topLeft()))
+                QwtPainter.fillPixmap(bgWidget, pm, widget.mapTo(bgWidget, rect.topLeft()))
                 painter.drawPixmap(rect, pm)
         
     else:
@@ -379,7 +379,7 @@ class QwtPlotCanvas(QFrame):
            self.__data.backingStore is not None:
             bs = self.__data.backingStore
             if bs.size() != self.size():
-                bs = QwtPainter().backingStore(self, self.size())
+                bs = QwtPainter.backingStore(self, self.size())
                 if self.testAttribute(Qt.WA_StyledBackground):
                     p = QPainter(bs)
                     qwtFillBackground(p, self)
@@ -388,7 +388,7 @@ class QwtPlotCanvas(QFrame):
                     p = QPainter()
                     if self.__data.borderRadius <= 0.:
 #                        print('**DEBUG: QwtPlotCanvas.paintEvent')
-                        QwtPainter().fillPixmap(self, bs)
+                        QwtPainter.fillPixmap(self, bs)
                         p.begin(bs)
                         self.drawCanvas(p, False)
                     else:
@@ -479,7 +479,7 @@ class QwtPlotCanvas(QFrame):
     def drawBorder(self, painter):
         if self.__data.borderRadius > 0:
             if self.frameWidth() > 0:
-                QwtPainter().drawRoundedFrame(painter, QRectF(self.frameRect()),
+                QwtPainter.drawRoundedFrame(painter, QRectF(self.frameRect()),
                         self.__data.borderRadius, self.__data.borderRadius,
                         self.palette(), self.frameWidth(), self.frameStyle())
         else:
@@ -513,7 +513,7 @@ class QwtPlotCanvas(QFrame):
         focusRect = self.contentsRect()
         focusRect.setRect(focusRect.x()+margin, focusRect.y()+margin,
                           focusRect.width()-2*margin, focusRect.height()-2*margin)
-        QwtPainter().drawFocusRect(painter, self, focusRect)
+        QwtPainter.drawFocusRect(painter, self, focusRect)
     
     def replot(self):
         self.invalidateBackingStore()

@@ -198,7 +198,7 @@ class QwtGraphic(QwtNullPaintDevice):
     def isEmpty(self):
         return self.__data.boundingRect.isEmpty()
     
-    def setRenderHint(self, hint, on):
+    def setRenderHint(self, hint, on=True):
         if on:
             self.__data.renderHints |= hint
         else:

@@ -85,19 +85,19 @@ class QwtPlotMarker(QwtPlotItem):
     def drawLines(self, painter, canvasRect, pos):
         if self.__data.style == self.NoLine:
             return
-        doAlign = QwtPainter().roundingAlignment(painter)
+        doAlign = QwtPainter.roundingAlignment(painter)
         painter.setPen(self.__data.pen)
         if self.__data.style in (QwtPlotMarker.HLine, QwtPlotMarker.Cross):
             y = pos.y()
             if doAlign:
                 y = round(y)
-            QwtPainter().drawLine(painter, canvasRect.left(),
+            QwtPainter.drawLine(painter, canvasRect.left(),
                                   y, canvasRect.right()-1., y)
         if self.__data.style in (QwtPlotMarker.VLine, QwtPlotMarker.Cross):
             x = pos.x()
             if doAlign:
                 x = round(x)
-            QwtPainter().drawLine(painter, x,
+            QwtPainter.drawLine(painter, x,
                                   canvasRect.top(), x, canvasRect.bottom()-1.)
     
     def drawLabel(self, painter, canvasRect, pos):
@@ -266,10 +266,10 @@ class QwtPlotMarker(QwtPlotItem):
             painter.setPen(self.__data.pen)
             if self.__data.style in (QwtPlotMarker.HLine, QwtPlotMarker.Cross):
                 y = .5*size.height()
-                QwtPainter().drawLine(painter, 0., y, size.width(), y)
+                QwtPainter.drawLine(painter, 0., y, size.width(), y)
             if self.__data.style in (QwtPlotMarker.VLine, QwtPlotMarker.Cross):
                 x = .5*size.width()
-                QwtPainter().drawLine(painter, x, 0., x, size.height())
+                QwtPainter.drawLine(painter, x, 0., x, size.height())
         if self.__data.symbol:
             r = QRect(0, 0, size.width(), size.height())
             self.__data.symbol.drawSymbol(painter, r)

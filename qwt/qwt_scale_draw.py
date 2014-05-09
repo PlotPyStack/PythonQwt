@@ -369,7 +369,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if len_ <= 0:
             return
         
-        roundingAlignment = QwtPainter().roundingAlignment(painter)
+        roundingAlignment = QwtPainter.roundingAlignment(painter)
         pos = self.__data.pos
         tval = self.scaleMap().transform(value)
         if roundingAlignment:
@@ -386,31 +386,31 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             if roundingAlignment:
                 x1 = round(x1)
                 x2 = round(x2)
-            QwtPainter().drawLine(painter, x1, tval, x2, tval)
+            QwtPainter.drawLine(painter, x1, tval, x2, tval)
         elif self.alignment() == self.RightScale:
             x1 = pos.x()
             x2 = pos.x() + pw + len_
             if roundingAlignment:
                 x1 = round(x1)
                 x2 = round(x2)
-            QwtPainter().drawLine(painter, x1, tval, x2, tval)
+            QwtPainter.drawLine(painter, x1, tval, x2, tval)
         elif self.alignment() == self.BottomScale:
             y1 = pos.y()
             y2 = pos.y() + pw + len_
             if roundingAlignment:
                 y1 = round(y1)
                 y2 = round(y2)
-            QwtPainter().drawLine(painter, tval, y1, tval, y2)
+            QwtPainter.drawLine(painter, tval, y1, tval, y2)
         elif self.alignment() == self.TopScale:
             y1 = pos.y() + a
             y2 = pos.y() - pw - len_ + a
             if roundingAlignment:
                 y1 = round(y1)
                 y2 = round(y2)
-            QwtPainter().drawLine(painter, tval, y1, tval, y2)
+            QwtPainter.drawLine(painter, tval, y1, tval, y2)
         
     def drawBackbone(self, painter):
-        doAlign = QwtPainter().roundingAlignment(painter)
+        doAlign = QwtPainter.roundingAlignment(painter)
         pos = self.__data.pos
         len_ = self.__data.len
         pw = max([self.penWidth(), 1])
@@ -427,22 +427,22 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             x = pos.x() - off
             if doAlign:
                 x = round(x)
-            QwtPainter().drawLine(painter, x, pos.y(), x, pos.y()+len_)
+            QwtPainter.drawLine(painter, x, pos.y(), x, pos.y()+len_)
         elif self.alignment() == self.RightScale:
             x = pos.x() + off
             if doAlign:
                 x = round(x)
-            QwtPainter().drawLine(painter, x, pos.y(), x, pos.y()+len_)
+            QwtPainter.drawLine(painter, x, pos.y(), x, pos.y()+len_)
         elif self.alignment() == self.TopScale:
             y = pos.y() - off
             if doAlign:
                 y = round(y)
-            QwtPainter().drawLine(painter, pos.x(), y, pos.x()+len_, y)
+            QwtPainter.drawLine(painter, pos.x(), y, pos.x()+len_, y)
         elif self.alignment() == self.BottomScale:
             y = pos.y() + off
             if doAlign:
                 y = round(y)
-            QwtPainter().drawLine(painter, pos.x(), y, pos.x()+len_, y)
+            QwtPainter.drawLine(painter, pos.x(), y, pos.x()+len_, y)
         
     def move(self, *args):
         if len(args) == 2:

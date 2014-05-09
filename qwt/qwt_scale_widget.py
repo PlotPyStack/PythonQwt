@@ -93,7 +93,7 @@ class QwtScaleWidget(QWidget):
         
         self.setAttribute(Qt.WA_WState_OwnSizePolicy, False)
     
-    def setLayoutFlag(self, flag, on):
+    def setLayoutFlag(self, flag, on=True):
         if (self.__data.layoutFlags & flag != 0) != on:
             if on:
                 self.__data.layoutFlags |= flag
@@ -286,8 +286,8 @@ class QwtScaleWidget(QWidget):
             return
         sd = self.__data.scaleDraw
         QwtPainter.drawColorBar(painter, self.__data.colorBar.colorMap,
-                                self.__data.colorBar.interval.normalized(),
-                                sd.scaleMap(), sd.orientation(), rect)
+                                  self.__data.colorBar.interval.normalized(),
+                                  sd.scaleMap(), sd.orientation(), rect)
     
     def drawTitle(self, painter, align, rect):
         r = rect

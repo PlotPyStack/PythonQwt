@@ -290,7 +290,7 @@ class QwtLegend(QwtAbstractLegend):
         if fillBackground:
             if self.autoFillBackground() or\
                self.testAttribute(Qt.WA_StyledBackground):
-                QwtPainter().drawBackground(painter, rect, self)
+                QwtPainter.drawBackground(painter, rect, self)
 #    const QwtDynGridLayout *legendLayout = 
 #        qobject_cast<QwtDynGridLayout *>( contentsWidget()->layout() );
         #TODO: not the exact same implementation
@@ -320,7 +320,7 @@ class QwtLegend(QwtAbstractLegend):
         if fillBackground:
             if widget.autoFillBackground() or\
                widget.testAttribute(Qt.WA_StyledBackground):
-                QwtPainter().drawBackground(painter, rect, widget)
+                QwtPainter.drawBackground(painter, rect, widget)
         label = widget  #TODO: cast to QwtLegendLabel
         if label is not None:
             icon = label.data().icon()

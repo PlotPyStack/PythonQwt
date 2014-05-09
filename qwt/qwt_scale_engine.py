@@ -144,7 +144,7 @@ class QwtScaleEngine(object):
             return QwtInterval(-DBL_MAX, -DBL_MAX+delta)
         return QwtInterval(value-delta, value+delta)
     
-    def setAttribute(self, attribute, on):
+    def setAttribute(self, attribute, on=True):
         if on:
             self.__data.attributes |= attribute
         else:

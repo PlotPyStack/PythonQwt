@@ -103,8 +103,11 @@ def qwtToPolylineFilteredF(xMap, yMap, series, from_, to, round_):
 def qwtToPointsFiltered(boundingRect, xMap, yMap, series, from_, to,
                         Polygon):
     polygon = Polygon(to-from_+1)
-    points = polygon.data()
-    pixelMatrix = QwtPixelMatrix(boundingRect.toAlignedRect())
+    points = polygon#.data()  #XXX: do something!
+    rect = boundingRect
+    if isinstance(boundingRect, QRectF):
+        rect = boundingRect.toAlignedRect()
+    pixelMatrix = QwtPixelMatrix(rect)
     numPoints = 0
     for i in range(from_, to+1):
         sample = series.sample(i)
@@ -114,7 +117,7 @@ def qwtToPointsFiltered(boundingRect, xMap, yMap, series, from_, to,
             points[numPoints].setX(x)
             points[numPoints].setY(y)
             numPoints += 1
-    polygon.resize(numPoints)
+#    polygon.resize(numPoints)  #XXX: do something!
     return polygon
 
 def qwtToPointsFilteredI(boundingRect, xMap, yMap, series, from_, to):
@@ -147,7 +150,7 @@ class QwtPointMapper(object):
     def flags(self):
         return self.__data.flags
     
-    def setFlag(self, flag, on):
+    def setFlag(self, flag, on=True):
         if on:
             self.__data.flags |= flag
         else:

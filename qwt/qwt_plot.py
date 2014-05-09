@@ -138,8 +138,12 @@ class QwtPlot(QFrame, QwtPlotDict):
         if len(args) == 0:
             title, parent = "", None
         elif len(args) == 1:
-            title = ""
-            parent, = args
+            if isinstance(args[0], QWidget):
+                title = ""
+                parent, = args
+            else:
+                title, = args
+                parent = None
         elif len(args) == 2:
             title, parent = args
         else:
@@ -343,7 +347,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             self.__axisData[axisId].doAutoScale = on
             self.autoRefresh()
     
-    def setAxisScale(self, axisId, min_, max_, stepSize):
+    def setAxisScale(self, axisId, min_, max_, stepSize=0):
         if self.axisValid(axisId):
             d = self.__axisData[axisId]
             d.doAutoScale = False
@@ -825,8 +829,12 @@ class QwtPlotItem(object):
     # enum RenderHint
     RenderAntialiased = 0x1
     
-    def __init__(self, title):
+    def __init__(self, title=None):
         """title: QwtText"""
+        if title is None:
+            title = QwtText("")
+        if hasattr(title, 'capitalize'):  # avoids dealing with Py3K compat.
+            title = QwtText(title)
         assert isinstance(title, QwtText)
         self.__data = QwtPlotItem_PrivateData()
         self.__data.title = title
@@ -898,7 +906,7 @@ class QwtPlotItem(object):
     def testItemInterest(self, interest):
         return bool(self.__data.interests & interest)
     
-    def setRenderHint(self, hint, on):
+    def setRenderHint(self, hint, on=True):
         if bool(self.__data.renderHints & hint) != on:
             if on:
                 self.__data.renderHints |= hint
