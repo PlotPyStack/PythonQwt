@@ -34,28 +34,22 @@ def qwtRenderDots(xMap, yMap, command, pos, image):
 
 def qwtToPoints(boundingRect, xMap, yMap, series, from_, to, round_,
                 Polygon):
-    polyline = Polygon(to-from_+1)
-    points = polyline.data()
-    numPoints = 0
+    Point = QPointF if isinstance(Polygon, QPolygonF) else QPoint
+    points = []
     if boundingRect.isValid():
         for i in range(from_, to+1):
             sample = series.sample(i)
             x = xMap.transform(sample.x())
             y = yMap.transform(sample.y())
             if boundingRect.contains(x, y):
-                points[numPoints].setX(round_(x))
-                points[numPoints].setY(round_(y))
-                numPoints += 1
-        polyline.resize(numPoints)
+                points.append(Point(round_(x), round_(y)))
     else:
         for i in range(from_, to+1):
             sample = series.sample(i)
             x = xMap.transform(sample.x())
             y = yMap.transform(sample.y())
-            points[numPoints].setX(round_(x))
-            points[numPoints].setY(round_(y))
-            numPoints += 1
-    return polyline
+            points.append(Point(round_(x), round_(y)))
+    return Polygon(list(set(points)))
 
 def qwtToPointsI(boundingRect, xMap, yMap, series, from_, to):
     return qwtToPoints(boundingRect, xMap, yMap, series, from_, to, round,
@@ -102,23 +96,14 @@ def qwtToPolylineFilteredF(xMap, yMap, series, from_, to, round_):
 
 def qwtToPointsFiltered(boundingRect, xMap, yMap, series, from_, to,
                         Polygon):
-    polygon = Polygon(to-from_+1)
-    points = polygon#.data()  #XXX: do something!
-    rect = boundingRect
-    if isinstance(boundingRect, QRectF):
-        rect = boundingRect.toAlignedRect()
-    pixelMatrix = QwtPixelMatrix(rect)
-    numPoints = 0
+    Point = QPointF if isinstance(Polygon, QPolygonF) else QPoint
+    points = []
     for i in range(from_, to+1):
         sample = series.sample(i)
         x = round(xMap.transform(sample.x()))
         y = round(yMap.transform(sample.y()))
-        if not pixelMatrix.testAndSetPixel(x, y, True):
-            points[numPoints].setX(x)
-            points[numPoints].setY(y)
-            numPoints += 1
-#    polygon.resize(numPoints)  #XXX: do something!
-    return polygon
+        points.append(Point(x, y))
+    return Polygon(list(set(points)))
 
 def qwtToPointsFilteredI(boundingRect, xMap, yMap, series, from_, to):
     return qwtToPointsFiltered(boundingRect, xMap, yMap, series, from_, to,

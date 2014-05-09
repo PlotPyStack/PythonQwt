@@ -310,7 +310,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     def drawSteps(self, painter, xMap, yMap, canvasRect, from_, to):
         doAlign = QwtPainter.roundingAlignment(painter)
         polygon = QPolygonF(2*(to-from_)+1)
-        points = polygon#.data()  #XXX: do something!
         inverted = self.orientation() == Qt.Vertical
         if self.__data.attributes & self.Inverted:
             inverted = not inverted
@@ -324,16 +323,12 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
                 xi = round(xi)
                 yi = round(yi)
             if ip > 0:
-                p0 = points[ip-2]
-                p = points[ip-1]
+                p0 = polygon[ip-2]
                 if inverted:
-                    p.setX(p0.x())
-                    p.setY(yi)
+                    polygon[ip-1] = QPointF(p0.x(), yi)
                 else:
-                    p.setX(xi)
-                    p.setY(p0.y())
-            points[ip].setX(xi)
-            points[ip].setY(yi)
+                    polygon[ip-1] = QPointF(xi, p0.y())
+            polygon[ip] = QPointF(xi, yi)
             ip += 2
         if self.__data.paintAttributes & self.ClipPolygons:
             clipped = QwtClipper().clipPolygonF(canvasRect, polygon, False)

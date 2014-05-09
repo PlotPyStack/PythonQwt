@@ -3,6 +3,7 @@
 from qwt.qwt_spline import QwtSpline
 
 from qwt.qt.QtGui import QPolygonF
+from qwt.qt.QtCore import QPointF
 
 import numpy as np
 
@@ -68,17 +69,15 @@ class QwtSplineCurveFitter(QwtCurveFitter):
         self.__data.spline.setPoints(points)
         if not self.__data.spline.isValid():
             return points
-        fittedPoints = self.__data.splineSize
+        fittedPoints = QPolygonF(self.__data.splineSize)
         x1 = points[0].x()
         x2 = points[int(points.size()-1)].x()
         dx = x2 - x1
         delta = dx/(self.__data.splineSize()-1)
         for i in range(self.__data.splineSize):
-            p = fittedPoints[i]
             v = x1 + i*delta
             sv = self.__data.spline.value(v)
-            p.setX(v)
-            p.setY(sv)
+            fittedPoints[i] = QPointF(v, sv)
         self.__data.spline.reset()
         return fittedPoints
     
@@ -88,8 +87,8 @@ class QwtSplineCurveFitter(QwtCurveFitter):
         splinePointsX = QPolygonF(size)
         splinePointsY = QPolygonF(size)
         p = points.data()
-        spX = splinePointsX.data()
-        spY = splinePointsY.data()
+        spX = splinePointsX#.data()
+        spY = splinePointsY#.data()
         param = 0.
         for i in range(size):
             x = p[i].x()
@@ -97,24 +96,24 @@ class QwtSplineCurveFitter(QwtCurveFitter):
             if i > 0:
                 delta = np.sqrt((x-spX[i-1].y())**2+(y-spY[i-1].y())**2)
                 param += max([delta, 1.])
-            spX[i].setX(param)
-            spX[i].setY(x)
-            spY[i].setX(param)
-            spY[i].setY(y)
+            spX[i] = QPointF(param, x)
+            spY[i] = QPointF(param, y)
         self.__data.spline.setPoints(splinePointsX)
         if not self.__data.spline.isValid():
             return points
         deltaX = splinePointsX[size-1].x()/(self.__data.splineSize-1)
         for i in range(self.__data.splineSize):
             dtmp = i*deltaX
-            fittedPoints[i].setX(self.__data.spline.value(dtmp))
+            fittedPoints[i] = QPointF(self.__data.spline.value(dtmp),
+                                      fittedPoints[i].y())
         self.__data.spline.setPoints(splinePointsY)
         if not self.__data.spline.isValid():
             return points
         deltaY = splinePointsY[size-1].x()/(self.__data.splineSize-1)
         for i in range(self.__data.splineSize):
             dtmp = i*deltaY
-            fittedPoints[i].setY(self.__data.spline.value(dtmp))
+            fittedPoints[i] = QPointF(fittedPoints[i].x(),
+                                      self.__data.spline.value(dtmp))
         return fittedPoints
 
 
