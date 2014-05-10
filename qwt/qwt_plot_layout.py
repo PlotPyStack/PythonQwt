@@ -266,7 +266,7 @@ class QwtPlotLayout(object):
                 self.tickOffset = 0
         scaleData = [_ScaleData() for _i in range(QwtPlot.axisCnt)]
         canvasBorder = [0 for _i in range(QwtPlot.axisCnt)]
-        fw, _, _, _ = plot.canvas().getContentMargins()
+        fw, _, _, _ = plot.canvas().getContentsMargins()
         for axis in range(QwtPlot.axisCnt):
             if plot.axisEnabled(axis):
                 scl = plot.axisWidget(axis)

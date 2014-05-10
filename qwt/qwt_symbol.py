@@ -43,7 +43,7 @@ def qwtScaleBoundingRect(graphic, size):
 
 
 def qwtDrawPixmapSymbols(painter, points, numPoints, symbol):
-    size = QSize(symbol.size())
+    size = symbol.size()
     if size.isEmpty():
         size = symbol.pixmap().size()
     transform = QTransform(painter.transform())
@@ -90,7 +90,7 @@ def qwtDrawGraphicSymbols(painter, points, numPoint, graphic, symbol):
         return
     sx = 1.
     sy = 1.
-    sz = QSize(symbol.size())
+    sz = symbol.size()
     if sz.isValid():
         sx = sz.width()/pointRect.width()
         sy = sz.height()/pointRect.height()
@@ -111,7 +111,7 @@ def qwtDrawGraphicSymbols(painter, points, numPoint, graphic, symbol):
 def qwtDrawEllipseSymbols(painter, points, numPoints, symbol):
     painter.setBrush(symbol.brush())
     painter.setPen(symbol.pen())
-    size = QSize(symbol.size())
+    size =symbol.size()
     if QwtPainter.roundingAlignment(painter):
         sw = size.width()
         sh = size.height()
@@ -135,7 +135,7 @@ def qwtDrawEllipseSymbols(painter, points, numPoints, symbol):
 
 
 def qwtDrawRectSymbols(painter, points, numPoints, symbol):
-    size = QSize(symbol.size())
+    size = symbol.size()
     pen = QPen(symbol.pen())
     pen.setJoinStyle(Qt.MiterJoin)
     painter.setPen(pen)
@@ -164,7 +164,7 @@ def qwtDrawRectSymbols(painter, points, numPoints, symbol):
 
 
 def qwtDrawDiamondSymbols(painter, points, numPoints, symbol):
-    size = QSize(symbol.size())
+    size =symbol.size()
     pen = QPen(symbol.pen())
     pen.setJoinStyle(Qt.MiterJoin)
     painter.setPen(pen)
@@ -198,7 +198,7 @@ def qwtDrawDiamondSymbols(painter, points, numPoints, symbol):
 
 
 def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
-    size = QSize(symbol.size())
+    size =symbol.size()
     pen = QPen(symbol.pen())
     pen.setJoinStyle(Qt.MiterJoin)
     painter.setPen(pen)
@@ -231,7 +231,7 @@ def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
 
 
 def qwtDrawLineSymbols(painter, orientations, points, numPoints, symbol):
-    size = QSize(symbol.size())
+    size =symbol.size()
     off = 0
     pen = QPen(symbol.pen())
     if pen.width() > 1:
@@ -270,7 +270,7 @@ def qwtDrawLineSymbols(painter, orientations, points, numPoints, symbol):
 
 
 def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
-    size = QSize(symbol.size())
+    size =symbol.size()
     off = 0
     pen = QPen(symbol.pen())
     if pen.width() > 1:
@@ -306,7 +306,7 @@ def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
 
 
 def qwtDrawStar1Symbols(painter, points, numPoints, symbol):
-    size = QSize(symbol.size())
+    size =symbol.size()
     painter.setPen(symbol.pen())
     sqrt1_2 = sqrt(.5)
     if QwtPainter.roundingAlignment(painter):
@@ -422,7 +422,7 @@ class QwtSymbol_PrivateData(object):
         class Pixmap(object):
             def __init__(self):
                 self.pixmap = QPixmap()
-        self.pixmap = Pixmap()
+        self.pixmap = None  #Pixmap()
         
         class Graphic(object):
             def __init__(self):
@@ -437,13 +437,14 @@ class QwtSymbol_PrivateData(object):
         class PaintCache(object):
             def __init__(self):
                 self.policy = 0
-                self.pixmap = QPixmap()
+                self.pixmap = None  #QPixmap()
         self.cache = PaintCache()
 
 
 class QwtSymbol(object):
     
     # enum Style
+    Style = int
     NoSymbol = -1
     (Ellipse, Rect, Diamond, Triangle, DTriangle, UTriangle, LTriangle,
      RTriangle, Cross, XCross, HLine, VLine, Star1, Star2, Hexagon, Path,

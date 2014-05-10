@@ -12,6 +12,7 @@ from qwt.qwt_interval import QwtInterval
 from qwt.qwt_legend import QwtLegend
 from qwt.qwt_plot_marker import QwtPlotMarker
 from qwt.qwt_plot_grid import QwtPlotGrid
+from qwt.qwt_color_map import QwtLinearColorMap
 
 from qwt.toqimage import toQImage
 
@@ -26,4 +27,8 @@ from qwt.qwt_legend_data import QwtLegendData
 QwtDoubleInterval = QwtInterval
 
 # to be implemented:
-# QwtLog10ScaleEngine, toQImage, QwtPlotPrintFilter
+# QwtLog10ScaleEngine, QwtPlotPrintFilter
+class QwtLog10ScaleEngine(object):
+    pass
+class QwtPlotPrintFilter(object):
+    pass

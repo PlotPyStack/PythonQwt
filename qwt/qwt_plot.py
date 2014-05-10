@@ -262,7 +262,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             d = self.__axisData[axisId]
             d.scaleEngine = scaleEngine
             self.__axisData[axisId].scaleWidget.setTransformation(
-                                                scaleEngine.transformation)
+                                                scaleEngine.transformation())
             d.isValid = False
             self.autoRefresh()
     
@@ -321,7 +321,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         else:
             return QwtText()
     
-    def enableAxis(self, axisId, tf):
+    def enableAxis(self, axisId, tf=True):
         if self.axisValid(axisId) and tf != self.__axisData[axisId].isEnabled:
             self.__axisData[axisId].isEnabled = tf
             self.updateLayout()

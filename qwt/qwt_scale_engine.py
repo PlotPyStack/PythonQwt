@@ -4,6 +4,7 @@ from qwt.qwt_interval import QwtInterval
 from qwt.qwt_scale_div import QwtScaleDiv
 from qwt.qwt_transform import QwtLogTransform
 from qwt.qwt_math import qwtFuzzyCompare
+from qwt.qwt_transform import QwtTransform
 
 import numpy as np
 
@@ -77,7 +78,7 @@ class QwtScaleEngine_PrivateData(object):
         self.upperMargin = 0.
         self.referenceValue = 0.
         self.base = 10
-        self.transform = None
+        self.transform = None  # QwtTransform
 
 
 class QwtScaleEngine(object):
@@ -94,6 +95,7 @@ class QwtScaleEngine(object):
         self.setBase(base)
     
     def setTransformation(self, transform):
+        assert transform is None or isinstance(transform, QwtTransform)
         if transform != self.__data.transform:
             self.__data.transform = transform
     

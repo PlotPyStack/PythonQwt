@@ -4,6 +4,7 @@ from qwt.qwt_plot import QwtPlotItem
 from qwt.qwt_text import QwtText
 from qwt.qwt_painter import QwtPainter
 from qwt.qwt_graphic import QwtGraphic
+from qwt.qwt_symbol import QwtSymbol
 
 from qwt.qt.QtGui import QPen, QPainter
 from qwt.qt.QtCore import Qt, QPointF, QRectF, QSizeF, QRect
@@ -79,7 +80,7 @@ class QwtPlotMarker(QwtPlotItem):
             clipRect = QRectF(canvasRect.adjusted(-sz.width(), -sz.height(),
                                                   sz.width(), sz.height()))
             if clipRect.contains(pos):
-                self.__data.symbol.drawSymbol(painter, pos)
+                self.__data.symbol.drawSymbols(painter, [pos])
         self.drawLabel(painter, canvasRect, pos)
     
     def drawLines(self, painter, canvasRect, pos):

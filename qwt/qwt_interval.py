@@ -10,8 +10,8 @@ class QwtInterval(object):
     ExcludeBorders = ExcludeMinimum | ExcludeMaximum
     
     def __init__(self, minValue=0., maxValue=-1., borderFlags=None):
-        assert isinstance(minValue, (float, int))
-        assert isinstance(maxValue, (float, int))
+        assert not isinstance(minValue, QwtInterval)
+        assert not isinstance(maxValue, QwtInterval)
         self.__minValue = minValue
         self.__maxValue = maxValue
         if borderFlags is None:

@@ -13,9 +13,11 @@ class QwtPointArrayData(QwtSeriesData):
         self.__y = y
         
     def boundingRect(self):
-        if self._boundingRect.width() < 0:
-            self._boundingRect = qwtBoundingRect(self)
-        return self._boundingRect
+        xmin = self.__x.min()
+        xmax = self.__x.max()
+        ymin = self.__y.min()
+        ymax = self.__y.max()
+        return QRectF(xmin, ymin, xmax-xmin, ymax-ymin)
     
     def size(self):
         return min([self.__x.size, self.__y.size])
@@ -30,29 +32,15 @@ class QwtPointArrayData(QwtSeriesData):
         return self.__y
     
 
-class QwtCPointerData(QwtSeriesData):
+class QwtCPointerData(QwtPointArrayData):
     def __init__(self, x, y, size):
         QwtSeriesData.__init__(self)
         self.__x = x
         self.__y = y
         self.__size = size
     
-    def boundingRect(self):
-        if self._boundingRect.width() < 0:
-            self._boundingRect = qwtBoundingRect(self)
-        return self._boundingRect
-    
     def size(self):
         return self.__size
-    
-    def sample(self, index):
-        return QPointF(self.__x[index], self.__y[index])
-    
-    def xData(self):
-        return self.__x
-    
-    def yData(self):
-        return self.__y
     
 
 class QwtSyntheticPointData(QwtSeriesData):
