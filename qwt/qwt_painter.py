@@ -33,7 +33,7 @@ def qwtDrawPolyline(painter, points, pointCount, polylineSplitting):
         pe = painter.paintEngine()
         if pe and pe.type() == QPaintEngine.Raster:
             doSplit = True
-    if doSplit:
+    if False:#doSplit:  #FIXME: uncomment "doSplit", and fix associated bug (or solve performance issue...)
         splitSize = 20
         for i in range(0, pointCount, splitSize):
             n = min([splitSize+1, pointCount-i])

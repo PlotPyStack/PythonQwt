@@ -554,10 +554,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         if self.__data.canvas:
             try:
                 self.__data.canvas.replot()
-                ok = True
             except (AttributeError, TypeError):
-                ok = False
-            if not ok:
                 self.__data.canvas.update(self.__data.canvas.contentsRect())
         
         self.setAutoReplot(doAutoReplot)

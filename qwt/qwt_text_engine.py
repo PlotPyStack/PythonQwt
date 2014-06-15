@@ -56,7 +56,7 @@ class QwtPlainTextEngine_PrivateData(object):
     
     def effectiveAscent(self, font):
         fontKey = font.key()
-        return self.__ascentCache.get(fontKey, self.findAscent(font))
+        return self.__ascentCache.setdefault(fontKey, self.findAscent(font))
     
     def findAscent(self, font):
         dummy = "E"
