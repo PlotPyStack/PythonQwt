@@ -84,6 +84,7 @@ class QwtText(object):
 
     def __init__(self, *args):
         QwtPlainTextEngine()
+        self.desktopwidget = QApplication.desktop()
         self._dict = QwtTextEngineDict()
         if len(args) in (0, 2):
             if len(args) == 2:
@@ -211,7 +212,7 @@ class QwtText(object):
     def heightForWidth(self, width, defaultFont=None):
         if defaultFont is None:
             defaultFont = QFont()
-        font = QFont(self.usedFont(defaultFont), QApplication.desktop())
+        font = QFont(self.usedFont(defaultFont), self.desktopwidget)
         h = 0
         if self.__data.layoutAttributes & self.MinimumLayout:
             (left, right, top, bottom
@@ -226,7 +227,7 @@ class QwtText(object):
         return h
     
     def textSize(self, defaultFont):
-        font = QFont(self.usedFont(defaultFont), QApplication.desktop())
+        font = QFont(self.usedFont(defaultFont), self.desktopwidget)
         if not self.__layoutCache.textSize.isValid() or\
            self.__layoutCache.font is not font:
             self.__layoutCache.textSize =\
@@ -262,7 +263,7 @@ class QwtText(object):
                 painter.setPen(self.__data.color)
         expandedRect = rect
         if self.__data.layoutAttributes & self.MinimumLayout:
-            font = QFont(painter.font(), QApplication.desktop())
+            font = QFont(painter.font(), self.desktopwidget)
             (left, right, top, bottom
              ) = self.__data.textEngine.textMargins(font)
             expandedRect.setTop(rect.top()-top)

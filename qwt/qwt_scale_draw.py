@@ -185,6 +185,12 @@ class QwtScaleDraw_PrivateData(object):
 class QwtScaleDraw(QwtAbstractScaleDraw):
     # enum Alignment
     BottomScale, TopScale, LeftScale, RightScale = range(4)
+    Flags = (
+             Qt.AlignHCenter|Qt.AlignBottom, # BottomScale
+             Qt.AlignHCenter|Qt.AlignTop,    # TopScale
+             Qt.AlignLeft|Qt.AlignVCenter,   # LeftScale
+             Qt.AlignRight|Qt.AlignVCenter,  # RightScale
+            )
     
     def __init__(self):
         QwtAbstractScaleDraw.__init__(self)
@@ -322,8 +328,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if self.hasComponent(QwtAbstractScaleDraw.Backbone):
             pw = max([1, self.penWidth()])
             d += pw
-        d = max([d, self.minimumExtent()])
-        return d
+        return max([d, self.minimumExtent()])
     
     def minLength(self, font):
         startDist, endDist = self.getBorderDistHint(font)
@@ -498,18 +503,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         
         flags = self.labelAlignment()
         if flags == 0:
-            if self.alignment() == self.RightScale:
-                if flags == 0:
-                    flags = Qt.AlignRight|Qt.AlignVCenter
-            elif self.alignment() == self.LeftScale:
-                if flags == 0:
-                    flags = Qt.AlignLeft|Qt.AlignVCenter
-            elif self.alignment() == self.BottomScale:
-                if flags == 0:
-                    flags = Qt.AlignHCenter|Qt.AlignBottom
-            elif self.alignment() == self.TopScale:
-                if flags == 0:
-                    flags = Qt.AlignHCenter|Qt.AlignTop
+            flags = self.Flags[self.alignment()]
         
         if flags & Qt.AlignLeft:
             x = -size.width()

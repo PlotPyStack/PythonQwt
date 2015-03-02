@@ -50,13 +50,17 @@ class QwtRichTextDocument(QTextDocument):
         self.adjustSize();
 
 
+ASCENTCACHE = {}
+
 class QwtPlainTextEngine_PrivateData(object):
-    def __init__(self):
-        self.__ascentCache = {}
-    
+
     def effectiveAscent(self, font):
+        global ASCENTCACHE
         fontKey = font.key()
-        return self.__ascentCache.setdefault(fontKey, self.findAscent(font))
+        ascent = ASCENTCACHE.get(fontKey)
+        if ascent is not None:
+            return ascent
+        return ASCENTCACHE.setdefault(fontKey, self.findAscent(font))
     
     def findAscent(self, font):
         dummy = "E"
