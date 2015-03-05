@@ -597,6 +597,7 @@ class QwtSymbol(object):
         return self.__data.isPinPointEnabled
     
     def drawSymbols(self, painter, points, numPoints=None):
+        #TODO: remove argument numPoints (not necessary in Python's qwt)
         if numPoints is not None and numPoints <= 0:
             return
         useCache = False
@@ -639,7 +640,14 @@ class QwtSymbol(object):
             self.renderSymbols(painter, points, numPoints)
             painter.restore()
     
-    def drawSymbol(self, painter, rect):
+    def drawSymbol(self, painter, point_or_rect):
+        if isinstance(point_or_rect, (QPointF, QPoint)):
+            # drawSymbol( QPainter *, const QPointF & )
+            self.drawSymbols(painter, [point_or_rect], 1)
+            return
+        # drawSymbol( QPainter *, const QRectF & )
+        rect = point_or_rect
+        assert isinstance(rect, QRectF)
         if self.__data.style == QwtSymbol.NoSymbol:
             return
         if self.__data.style == QwtSymbol.Graphic:
