@@ -1,46 +1,75 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qt.QtGui import QColor, qRed, qGreen, qBlue, qRgb, qRgba
+from qwt.qt.QtGui import QColor, qRed, qGreen, qBlue, qRgb, qRgba, qAlpha
 from qwt.qt.QtCore import Qt, qIsNaN
 
 
 class ColorStop(object):
-    def __init__(self, pos, color):
+    def __init__(self, pos=0., color=None):
         self.pos = pos
-        self.rgb = color.rgb()
+        if color is None:
+            self.rgb = 0L
+        else:
+            self.rgb = color.rgba()
         self.r = qRed(self.rgb)
         self.g = qGreen(self.rgb)
         self.b = qBlue(self.rgb)
+        self.a = qAlpha(self.rgb)
+        
+        #  when mapping a value to rgb we will have to calcualate: 
+        #     - const int v = int( ( s1.v0 + ratio * s1.vStep ) + 0.5 );
+        #  Thus adding 0.5 ( for rounding ) can be done in advance
+        self.r0 = self.r + 0.5
+        self.g0 = self.g + 0.5
+        self.b0 = self.b + 0.5
+        self.a0 = self.a + 0.5
+        
+        self.rStep = self.gStep = self.bStep = self.aStep = 0.
+        self.posStep = 0.
+        
+    def updateSteps(self, nextStop):
+        self.rStep = nextStop.r - self.r
+        self.gStep = nextStop.g - self.g
+        self.bStep = nextStop.b - self.b
+        self.aStep = nextStop.a - self.a
+        self.posStep = nextStop.pos - self.pos
 
 
 class ColorStops(object):
     def __init__(self):
-        self._stops = []
+        self.__doAlpha = False
+        self.__stops = []
         self.stops = []
     
     def insert(self, pos, color):
         if pos < 0. or pos > 1.:
             return
-        if len(self._stops) == 0:
+        if len(self.__stops) == 0:
             index = 0
-            self._stops = [None]
+            self.__stops = [None]
         else:
             index = self.findUpper(pos)
-            if index == len(self._stops) or\
-               abs(self._stops[index].pos-pos) >= .001:
-                self._stops.append(None)
-                for i in range(len(self._stops)-1, index, -1):
-                    self._stops[i] = self._stops[i-1]
-        self._stops[index] = ColorStop(pos, color)
+            if index == len(self.__stops) or\
+               abs(self.__stops[index].pos-pos) >= .001:
+                self.__stops.append(None)
+                for i in range(len(self.__stops)-1, index, -1):
+                    self.__stops[i] = self.__stops[i-1]
+        self.__stops[index] = ColorStop(pos, color)
+        if color.alpha() != 255:
+            self.__doAlpha = True
+        if index > 0:
+            self.__stops[index-1].updateSteps(self.__stops[index])
+        if index < len(self.__stops)-1:
+            self.__stops[index].updateSteps(self.__stops[index+1])
     
     def stops(self):
-        return [stop.pos for stop in self._stops]
+        return [stop.pos for stop in self.__stops]
     
     def findUpper(self, pos):
         index = 0
-        n = len(self._stops)
+        n = len(self.__stops)
         
-        stops = self._stops
+        stops = self.__stops
         
         while n > 0:
             half = n >> 1
@@ -54,23 +83,27 @@ class ColorStops(object):
     
     def rgb(self, mode, pos):
         if pos <= 0.:
-            return self._stops[0].rgb
+            return self.__stops[0].rgb
         if pos >= 1.0:
-            return self._stops[-1].rgb
+            return self.__stops[-1].rgb
         
         index = self.findUpper(pos)
         if mode == QwtLinearColorMap.FixedColors:
-            return self._stops[index-1].rgb
+            return self.__stops[index-1].rgb
         else:
-            s1 = self._stops[index-1]
-            s2 = self._stops[index]
-            ratio = (pos-s1.pos)/(s2.pos-s1.pos)
-            r = s1.r + round(ratio*(s2.r-s1.r))
-            g = s1.g + round(ratio*(s2.g-s1.g))
-            b = s1.b + round(ratio*(s2.b-s1.b))
-            return qRgb(r, g, b)
-        
-        
+            s1 = self.__stops[index-1]
+            ratio = (pos-s1.pos)/s1.posStep
+            r = int(s1.r0 + ratio*s1.rStep)
+            g = int(s1.g0 + ratio*s1.gStep)
+            b = int(s1.b0 + ratio*s1.bStep)
+            if self.__doAlpha:
+                if s1.aStep:
+                    a = int(s1.a0 + ratio*s1.aStep)
+                    return qRgba(r, g, b, a)
+                else:
+                    return qRgba(r, g, b, s1.a)
+            else:
+                return qRgb(r, g, b)
 
 
 class QwtColorMap(object):
@@ -85,7 +118,7 @@ class QwtColorMap(object):
     
     def color(self, interval, value):
         if self.__format == self.RGB:
-            return QColor(self.rgb(interval, value))
+            return QColor.fromRgba(self.rgb(interval, value))
         else:
             index = self.colorIndex(interval, value)
             return self.colorTable(interval)[index]
@@ -156,11 +189,11 @@ class QwtLinearColorMap(QwtColorMap):
     
     def rgb(self, interval, value):
         if qIsNaN(value):
-            return qRgba(0, 0, 0, 0)
+            return 0L
         width = interval.width()
-        ratio = 0.
-        if width > 0.:
-            ratio = (value-interval.minValue())/width
+        if width <= 0.:
+            return 0L
+        ratio = (value-interval.minValue())/width
         return self.__data.colorStops.rgb(self.__data.mode, ratio)
     
     def colorIndex(self, interval, value):
@@ -171,40 +204,40 @@ class QwtLinearColorMap(QwtColorMap):
             return 255
         ratio = (value-interval.minValue())/width
         if self.__data.mode == self.FixedColors:
-            index = ratio*255
+            return int(ratio*255)
         else:
-            index = round(ratio*255)
-        return index
+            return int(ratio*255+.5)
     
 
 class QwtAlphaColorMap_PrivateData(object):
     def __init__(self):
         self.color = None
         self.rgb = None
+        self.rgbMax = None
 
 class QwtAlphaColorMap(QwtColorMap):
     def __init__(self, color):
         super(QwtAlphaColorMap, self).__init__(QwtColorMap.RGB)
         self.__data = QwtAlphaColorMap_PrivateData()
-        self.__data.color = color
-        self.__data.rgb = color.rgb() & qRgba(255, 255, 255, 0)
+        self.setColor(color)
     
     def setColor(self, color):
         self.__data.color = color
-        self.__data.rgb = color.rgb()
+        self.__data.rgb = color.rgb() & qRgba(255, 255, 255, 0)
+        self.__data.rgbMax = self.__data.rgb | ( 255 << 24 )
     
     def color(self):
         return self.__data.color()
     
     def rgb(self, interval, value):
+        if qIsNaN(value):
+            return 0L
         width = interval.width()
-        if not qIsNaN(value) and width >= 0.:
-            ratio = (value-interval.minValue())/width
-            alpha = round(255*ratio)
-            if alpha < 0:
-                alpha = 0
-            if alpha > 255:
-                alpha = 255
-            return self.__data.rgb | (alpha << 24)
-        return self.__data.rgb
-
+        if width <= 0.:
+            return 0L
+        if value <= interval.minValue():
+            return self.__data.rgb
+        if value >= interval.maxValue():
+            return self.__data.rgbMax
+        ratio = (value-interval.minValue())/width
+        return self.__data.rgb | (int(round(255*ratio)) << 24)

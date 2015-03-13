@@ -98,11 +98,13 @@ class QwtAbstractScaleDraw(object):
             pen.setCapStyle(Qt.FlatCap)
             painter.setPen(pen)
             for tickType in range(QwtScaleDiv.NTickTypes):
+                tickLen = self.__data.tickLength[tickType]
+                if tickLen <= 0.:
+                    continue
                 ticks = self.__data.scaleDiv.ticks(tickType)
                 for v in ticks:
                     if self.__data.scaleDiv.contains(v):
-                        self.drawTick(painter, v,
-                                      self.__data.tickLength[tickType])
+                        self.drawTick(painter, v, tickLen)
             painter.restore()
         
         if self.hasComponent(QwtAbstractScaleDraw.Backbone):
@@ -156,8 +158,6 @@ class QwtAbstractScaleDraw(object):
         return length
     
     def label(self, value):
-        if qFuzzyCompare(value+1., 1.):
-            value = 0.
         return QLocale().toString(value)
     
     def tickLabel(self, font, value):
@@ -210,7 +210,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             return Qt.Vertical
     
     def getBorderDistHint(self, font):
-        start, end = 0, 0
+        start, end = 0, 1.
         
         if not self.hasComponent(QwtAbstractScaleDraw.Labels):
             return start, end

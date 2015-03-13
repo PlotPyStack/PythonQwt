@@ -223,22 +223,29 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if doIntegers:
             polyline = mapper.toPolygon(xMap, yMap, self.data(), from_, to)
             if self.__data.paintAttributes & self.ClipPolygons:
-                clipped = QwtClipper().clipPolygon(clipRect.toAlignedRect(),
+                polyline = QwtClipper().clipPolygon(clipRect.toAlignedRect(),
                                                    polyline, False)
-                QwtPainter.drawPolyline(painter, clipped)
-            else:
-                QwtPainter.drawPolyline(painter, polyline)
+            QwtPainter.drawPolyline(painter, polyline)
         else:
             polyline = mapper.toPolygonF(xMap, yMap, self.data(), from_, to)
             if doFit:
                 polyline = self.__data.curveFitter.fitCurve(polyline)
-            if self.__data.paintAttributes & self.ClipPolygons:
-                clipped = QwtClipper().clipPolygonF(clipRect, polyline, False)
-                QwtPainter.drawPolyline(painter, clipped)
-            else:
-                QwtPainter.drawPolyline(painter, polyline)
             if doFill:
-                self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
+                if painter.pen().style() != Qt.NoPen:
+                    filled = QPolygonF(polyline)
+                    self.fillCurve(painter, xMap, yMap, canvasRect, filled)
+                    filled.clear()
+                    if self.__data.paintAttributes & self.ClipPolygons:
+                        polyline = QwtClipper().clipPolygonF(clipRect,
+                                                             polyline, False)
+                    QwtPainter.drawPolyline(painter, polyline)
+                else:
+                    self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
+            else:
+                if self.__data.paintAttributes & self.ClipPolygons:
+                    polyline = QwtClipper().clipPolygonF(clipRect, polyline,
+                                                         False)
+                QwtPainter.drawPolyline(painter, polyline)
     
     def drawSticks(self, painter, xMap, yMap, canvasRect, from_, to):
         painter.save()

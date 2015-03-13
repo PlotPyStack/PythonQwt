@@ -39,7 +39,7 @@ def qwtStrokedPathRect(painter, path):
     return rect
 
 
-def qwtExecCommand(painter, cmd, renderHints, transform):
+def qwtExecCommand(painter, cmd, renderHints, transform, initialTransform):
     if cmd.type() == QwtPainterCommand.Path:
         doMap = False
         if bool(renderHints & QwtGraphic.RenderPensUnscaled)\
@@ -51,10 +51,14 @@ def qwtExecCommand(painter, cmd, renderHints, transform):
                     isCosmetic = False
             doMap = not isCosmetic
         if doMap:
-            transform = painter.transform()
+            tr = painter.transform()
             painter.resetTransform()
-            painter.drawPath(transform.map(cmd.path()))
-            painter.setTransform(transform)
+            path = tr.map(cmd.path())
+            if initialTransform:
+                painter.setTransform(initialTransform)
+                path = initialTransform.inverted().map(path)
+            painter.drawPath(path)
+            painter.setTransform(tr)
         else:
             painter.drawPath(cmd.path())
     elif cmd.type() == QwtPainterCommand.Pixmap:
@@ -161,6 +165,7 @@ class QwtGraphic_PrivateData(object):
     def __init__(self):
         self.boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
         self.pointRect = QRectF(0.0, 0.0, -1.0, -1.0)
+        self.initialTransform = None
         self.defaultSize = QSizeF()
         self.commands = []
         self.pathInfos = []
@@ -250,7 +255,8 @@ class QwtGraphic(QwtNullPaintDevice):
             transform = painter.transform()
             painter.save()
             for command in self.__data.commands:
-                qwtExecCommand(painter, command, self.__data.renderHints, transform)
+                qwtExecCommand(painter, command, self.__data.renderHints,
+                               transform, self.__data.initialTransform)
             painter.restore()
         elif len(args) in (2, 3) and isinstance(args[1], QSizeF):
             painter, size = args[:2]
@@ -295,9 +301,17 @@ class QwtGraphic(QwtNullPaintDevice):
             tr.translate(-self.__data.pointRect.x(),
                          -self.__data.pointRect.y())
             transform = painter.transform()
+            if not scalePens and transform.isScaling():
+                #  we don't want to scale pens according to sx/sy,
+                #  but we want to apply the scaling from the 
+                #  painter transformation later
+                self.__data.initialTransform = QTransform()
+                self.__data.initialTransform.scale(transform.m11(),
+                                                   transform.m22())
             painter.setTransform(tr, True)
             self.render(painter)
             painter.setTransform(transform)
+            self.__data.initialTransform = None
         elif len(args) in (2, 3) and isinstance(args[1], QPointF):
             painter, pos = args[:2]
             alignment = Qt.AlignTop|Qt.AlignLeft
@@ -439,5 +453,5 @@ class QwtGraphic(QwtNullPaintDevice):
         self.reset()
         painter = QPainter(self)
         for cmd in commands:
-            qwtExecCommand(painter, cmd, 0, QTransform())
+            qwtExecCommand(painter, cmd, 0, QTransform(), None)
         painter.end()

@@ -7,7 +7,7 @@ from qwt.qt.QtGui import (QPaintEngine, QApplication, QFont, QFontInfo, QFrame,
                           QPixmap, QPainter, QPolygonF, QPalette, QStyle, QPen,
                           QAbstractTextDocumentLayout, QStyleOptionFocusRect,
                           QBrush, QLinearGradient, QPainterPath, QColor,
-                          QStyleOption, QPolygon)
+                          QStyleOption, QPolygon, QTransform)
 from qwt.qt.QtCore import (QSize, QRectF, Qt, QPointF, QSizeF, QRect, QPoint,
                            QT_VERSION)
 
@@ -34,7 +34,7 @@ def qwtDrawPolyline(painter, points, pointCount, polylineSplitting):
         if pe and pe.type() == QPaintEngine.Raster:
             doSplit = True
     if False:#doSplit:  #FIXME: uncomment "doSplit", and fix associated bug (or solve performance issue...)
-        splitSize = 20
+        splitSize = 6
         for i in range(0, pointCount, splitSize):
             n = min([splitSize+1, pointCount-i])
             painter.drawPolyline(points+i, n)
@@ -42,15 +42,20 @@ def qwtDrawPolyline(painter, points, pointCount, polylineSplitting):
         painter.drawPolyline(points)
 
 
-def qwtUnscaleFont(painter):
-    if painter.font().pixelSize() >= 0:
-        return
+def qwtScreenResolution():
     screenResolution = QSize()
     if not screenResolution.isValid():
         desktop = QApplication.desktop()
         if desktop is not None:
             screenResolution.setWidth(desktop.logicalDpiX())
             screenResolution.setHeight(desktop.logicalDpiY())
+    return screenResolution
+
+
+def qwtUnscaleFont(painter):
+    if painter.font().pixelSize() >= 0:
+        return
+    screenResolution = qwtScreenResolution()
     pd = painter.device()
     if pd.logicalDpiX() != screenResolution.width() or\
        pd.logicalDpiY() != screenResolution.height():
@@ -181,20 +186,29 @@ class QwtPainterClass(object):
     def drawSimpleRichText(self, painter, rect, flags, text):
         txt = text.clone()
         painter.save()
-        painter.setFont(txt.defaultFont())
-        qwtUnscaleFont(painter)
+        unscaledRect = QRectF(rect)
+        if painter.font().pixelSize() < 0:
+            res = qwtScreenResolution()
+            pd = painter.device()
+            if pd.logicalDpiX() != res.width()\
+               or pd.logicalDpiY() != res.height():
+                transform = QTransform()
+                transform.scale(res.width()/float(pd.logicalDpiX()),
+                                res.height()/float(pd.logicalDpiY()))
+                painter.setWorldTransform(transform, True)
+                unscaledRect = transform.inverted().mapRect(rect)
         txt.setDefaultFont(painter.font())
-        txt.setPageSize(QSizeF(rect.width(), QWIDGETSIZE_MAX))
+        txt.setPageSize(QSizeF(unscaledRect.width(), QWIDGETSIZE_MAX))
         layout = txt.documentLayout()
         height = layout.documentSize().height()
-        y = rect.y()
+        y = unscaledRect.y()
         if flags & Qt.AlignBottom:
-            y += rect.height()-height
+            y += unscaledRect.height()-height
         elif flags & Qt.AlignVCenter:
-            y += (rect.height()-height)/2
+            y += (unscaledRect.height()-height)/2
         context = QAbstractTextDocumentLayout.PaintContext()
         context.palette.setColor(QPalette.Text, painter.pen().color())
-        painter.translate(rect.x(), y)
+        painter.translate(unscaledRect.x(), y)
         layout.draw(painter, context)
         painter.restore()
         
@@ -558,6 +572,7 @@ class QwtPainterClass(object):
         c = QColor()
         devRect = rect.toAlignedRect()
         pixmap = QPixmap(devRect.size())
+        pixmap.fill(Qt.transparent)
         pmPainter = QPainter(pixmap)
         pmPainter.translate(-devRect.x(), -devRect.y())
         if orientation == Qt.Horizontal:
@@ -566,7 +581,7 @@ class QwtPainterClass(object):
             for x in range(devRect.left(), devRect.right()+1):
                 value = sMap.invTransform(x)
                 if colorMap.format() == QwtColorMap.RGB:
-                    c.setRgb(colorMap.rgb(interval, value))
+                    c.setRgba(colorMap.rgb(interval, value))
                 else:
                     c = colorTable[colorMap.colorIndex(interval, value)]
                 pmPainter.setPen(c)
@@ -577,7 +592,7 @@ class QwtPainterClass(object):
             for y in range(devRect.top(), devRect.bottom()+1):
                 value = sMap.invTransform(y)
                 if colorMap.format() == QwtColorMap.RGB:
-                    c.setRgb(colorMap.rgb(interval, value))
+                    c.setRgba(colorMap.rgb(interval, value))
                 else:
                     c = colorTable[colorMap.colorIndex(interval, value)]
                 pmPainter.setPen(c)

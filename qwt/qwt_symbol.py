@@ -734,6 +734,7 @@ class QwtSymbol(object):
 
     def boundingRect(self):
         rect = QRectF()
+        pinPointTranslation = False
         if self.__data.style in (QwtSymbol.Ellipse, QwtSymbol.Rect,
                                  QwtSymbol.Hexagon):
             pw = 0.
@@ -757,15 +758,17 @@ class QwtSymbol(object):
                     self.__data.path.path, self.__data.pen, self.__data.brush)
             rect = qwtScaleBoundingRect(self.__data.path.graphic,
                                         self.__data.size)
+            pinPointTranslation = True
         elif self.__data.style == QwtSymbol.Pixmap:
             if self.__data.size.isEmpty():
                 rect.setSize(self.__data.pixmap.pixmap.size())
             else:
                 rect.setSize(self.__data.size)
-            rect.moveCenter(QPointF(0., 0.))
+            pinPointTranslation = True
         elif self.__data.style == QwtSymbol.Graphic:
             rect = qwtScaleBoundingRect(self.__data.graphic.graphic,
                                         self.__data.size)
+            pinPointTranslation = True
         elif self.__data.style == QwtSymbol.SvgDocument:
             if self.__data.svg.renderer is not None:
                 rect = self.__data.svg.renderer.viewBoxF()
@@ -776,11 +779,11 @@ class QwtSymbol(object):
                 transform = QTransform()
                 transform.scale(sx, sy)
                 rect = transform.mapRect(rect)
+            pinPointTranslation = True
         else:
             rect.setSize(self.__data.size)
             rect.moveCenter(QPointF(0., 0.))
-        if self.__data.style in (QwtSymbol.Graphic, QwtSymbol.SvgDocument,
-                                 QwtSymbol.Path):
+        if pinPointTranslation:
             pinPoint = QPointF(0., 0.)
             if self.__data.isPinPointEnabled:
                 pinPoint = rect.center()-self.__data.pinPoint

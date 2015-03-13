@@ -201,6 +201,8 @@ class QwtLegend(QwtAbstractLegend):
                 widget = self.createWidget(data[i])
                 if contentsLayout is not None:
                     contentsLayout.addWidget(widget)
+                if self.isVisible():
+                    widget.setVisible(True)
                 widgetList.append(widget)
             if not widgetList:
                 self.__data.itemMap.remove(itemInfo)
@@ -311,7 +313,7 @@ class QwtLegend(QwtAbstractLegend):
             w = item.widget()
             if w is not None:
                 painter.save()
-                painter.setClipRect(itemRects[index])
+                painter.setClipRect(itemRects[index], Qt.IntersectClip)
                 self.renderItem(painter, w, itemRects[index], fillBackground)
                 index += 1
                 painter.restore()

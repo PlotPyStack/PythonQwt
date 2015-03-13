@@ -6,6 +6,8 @@ from qwt.qwt_transform import QwtLogTransform
 from qwt.qwt_math import qwtFuzzyCompare
 from qwt.qwt_transform import QwtTransform
 
+from qwt.qt.QtCore import qFuzzyCompare
+
 import numpy as np
 
 DBL_MAX = np.finfo(float).max
@@ -418,6 +420,8 @@ class QwtLogScaleEngine(QwtScaleEngine):
             for v in ticks[QwtScaleDiv.MajorTick]:
                 s = logBase/numSteps
                 if s >= 1.:
+                    if not qFuzzyCompare(s, 1.):
+                        ticks[QwtScaleDiv.MinorTick] += [v*s]
                     for j in range(2, numSteps):
                         ticks[QwtScaleDiv.MinorTick] += [v*j*s]
                 else:

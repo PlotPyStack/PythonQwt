@@ -202,6 +202,14 @@ class QwtPlot(QFrame, QwtPlotDict):
             qwtSetTabOrder(focusChain[idx], focusChain[idx+1], False)
         
         qwtEnableLegendItems(self, True)
+
+    def __del__(self):
+        #XXX Is is really necessary in Python? (pure transcription of C++)
+        self.setAutoReplot(False)
+        self.detachItems(QwtPlotItem.Rtti_PlotItem, self.autoDelete())
+        self.__data.layout = None
+        self.deleteAxesData()
+        self.__data = None
         
     def initAxesData(self):
         self.__axisData = [AxisData() for axisId in range(self.axisCnt)]
@@ -252,6 +260,12 @@ class QwtPlot(QFrame, QwtPlotDict):
         self.__axisData[self.yRight].isEnabled = False
         self.__axisData[self.xBottom].isEnabled = True
         self.__axisData[self.xTop].isEnabled = False
+
+    def deleteAxesData(self):
+        #XXX Is is really necessary in Python? (pure transcription of C++)
+        for axisId in range(self.axisCnt):
+            self.__axisData[axisId].scaleEngine = None
+            self.__axisData[axisId] = None
 
     def axisWidget(self, axisId):
         if self.axisValid(axisId):
@@ -679,16 +693,25 @@ class QwtPlot(QFrame, QwtPlotDict):
                 w = s.width() - s.startBorderDist() - s.endBorderDist()
                 map_.setPaintInterval(x, x+w)
         else:
-            margin = 0
-            if not self.plotLayout().alignCanvasToScale(axisId):
-                margin = self.plotLayout().canvasMargin(axisId)
             canvasRect = self.__data.canvas.contentsRect()
             if axisId in (self.yLeft, self.yRight):
-                map_.setPaintInterval(canvasRect.bottom()-margin,
-                                      canvasRect.top()+margin)
+                top = 0
+                if not self.plotLayout().alignCanvasToScale(self.xTop):
+                    top = self.plotLayout().canvasMargin(self.xTop)
+                bottom = 0
+                if not self.plotLayout().alignCanvasToScale(self.xBottom):
+                    bottom = self.plotLayout().canvasMargin(self.xBottom)
+                map_.setPaintInterval(canvasRect.bottom()-bottom,
+                                      canvasRect.top()+top)
             else:
-                map_.setPaintInterval(canvasRect.left()+margin,
-                                      canvasRect.right()-margin)
+                left = 0
+                if not self.plotLayout().alignCanvasToScale(self.yLeft):
+                    left = self.plotLayout().canvasMargin(self.yLeft)
+                right = 0
+                if not self.plotLayout().alignCanvasToScale(self.yRight):
+                    right = self.plotLayout().canvasMargin(self.yRight)
+                map_.setPaintInterval(canvasRect.left()+left,
+                                      canvasRect.right()-right)
         return map_
     
     def setCanvasBackground(self, brush):
@@ -784,8 +807,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             else:
                 self.emit(QwtPlot.SIG_LEGEND_DATA_CHANGED, plotItem, [])
         
-        if self.autoReplot():
-            self.update()
+        self.autoRefresh()
 
 
 class QwtPlotItem_PrivateData(object):
