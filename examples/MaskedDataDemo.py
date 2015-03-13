@@ -2,7 +2,8 @@
 
 import sys
 from PyQt4 import Qt
-import PyQt4.Qwt5 as Qwt
+#import PyQt4.Qwt5 as Qwt
+import qwt as Qwt
 
 try:
     import numpy as np

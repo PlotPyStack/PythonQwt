@@ -10,7 +10,8 @@ from __future__ import unicode_literals
 
 import sys
 from PyQt4.Qt import *
-from PyQt4.Qwt5 import *
+#from PyQt4.Qwt5 import *
+from qwt import *
 import PyQt4.Qwt5.anynumpy as np
 
 

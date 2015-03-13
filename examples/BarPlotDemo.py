@@ -11,7 +11,8 @@
 import random
 import sys
 import PyQt4.Qt as Qt
-import PyQt4.Qwt5 as Qwt
+#import PyQt4.Qwt5 as Qwt
+import qwt as Qwt
 
 
 class Spy(Qt.QObject):
