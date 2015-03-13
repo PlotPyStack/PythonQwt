@@ -6,6 +6,7 @@ from PyQt4 import Qt
 import qwt as Qwt
 from PyQt4.Qwt5.anynumpy import *
 
+#FIXME: This example is still not working: I suspect an issue related to image scaling (see PlotImage.draw)
 
 # from scipy.pilutil
 def bytescale(data, cmin=None, cmax=None, high=255, low=0):
@@ -134,6 +135,12 @@ class ImagePlot(Qwt.QwtPlot):
 	# set axis titles
         self.setAxisTitle(Qwt.QwtPlot.xBottom, 'time (s)')
         self.setAxisTitle(Qwt.QwtPlot.yLeft, 'frequency (Hz)')
+
+        colorMap = Qwt.QwtLinearColorMap(Qt.Qt.blue, Qt.Qt.red)
+        interval = Qwt.QwtDoubleInterval(-1, 1)
+        self.axisWidget(Qwt.QwtPlot.yLeft).setColorBarEnabled(True)
+        self.axisWidget(Qwt.QwtPlot.yLeft).setColorMap(interval, colorMap)
+
 	# calculate 3 NumPy arrays
         x = arange(-2*pi, 2*pi, 0.01)
         y = pi*sin(x)
