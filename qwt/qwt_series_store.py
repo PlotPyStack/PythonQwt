@@ -42,7 +42,7 @@ class QwtSeriesStore(QwtAbstractSeriesStore):
         return self.__series.size()
     
     def dataRect(self):
-        if self.__series is None:
+        if self.__series is None or self.dataSize() == 0:
             return QRectF(1.0, 1.0, -2.0, -2.0)
         return self.__series.boundingRect()
     

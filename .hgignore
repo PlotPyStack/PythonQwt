@@ -11,6 +11,7 @@
 \.pickle$
 ^build/
 ^qwt-6.1.0/
+^qwt-6.1.2/
 ^dist/
 ^tests/build
 ^tests/dist
