@@ -83,8 +83,7 @@ class QwtText(object):
     MinimumLayout = 0x01
 
     def __init__(self, *args):
-        QwtPlainTextEngine()
-        self.desktopwidget = QApplication.desktop()
+        self._desktopwidget = None
         self._dict = QwtTextEngineDict()
         if len(args) in (0, 2):
             if len(args) == 2:
@@ -110,6 +109,12 @@ class QwtText(object):
         else:
             raise TypeError("%s() takes 0, 1 or 2 argument(s) (%s given)"\
                             % (self.__class__.__name__, len(args)))
+
+    @property
+    def desktopwidget(self):
+        if self._desktopwidget is None:
+            self._desktopwidget = QApplication.desktop()
+        return self._desktopwidget
     
     def __eq__(self, other):
         return self.__data.renderFlags == other.__data.renderFlags and\
