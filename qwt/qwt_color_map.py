@@ -78,7 +78,9 @@ class QwtColorMap(object):
     # enum Format
     RGB, Indexed = range(2)
     
-    def __init__(self, format_=0):
+    def __init__(self, format_=None):
+        if format_ is None:
+            format_ = self.RGB
         self.__format = format_
     
     def color(self, interval, value):
@@ -88,7 +90,7 @@ class QwtColorMap(object):
             index = self.colorIndex(interval, value)
             return self.colorTable(interval)[index]
     
-    def format_(self):
+    def format(self):
         return self.__format
     
     def colorTable(self, interval):
@@ -113,14 +115,15 @@ class QwtLinearColorMap(QwtColorMap):
     
     def __init__(self, *args):
         color1, color2 = QColor(Qt.blue), QColor(Qt.yellow)
+        format_ = QwtColorMap.RGB
         if len(args) == 1:
             format_, = args
+        elif len(args) == 2:
+            color1, color2 = args
         elif len(args) == 3:
             color1, color2, format_ = args
-        elif len(args) == 0:
-            format_ = QwtColorMap.RGB
-        else:
-            raise TypeError("%s() takes 0, 1, or 3 argument(s) (%s given)"\
+        elif len(args) != 0:
+            raise TypeError("%s() takes 0, 1, 2 or 3 argument(s) (%s given)"\
                             % (self.__class__.__name__, len(args)))
         super(QwtLinearColorMap, self).__init__(format_)
         self.__data = QwtLinearColorMap_PrivateData()
@@ -135,12 +138,12 @@ class QwtLinearColorMap(QwtColorMap):
     
     def setColorInterval(self, color1, color2):
         self.__data.colorStops = ColorStops()
-        self.__data.colorStops.insert(0., color1)
-        self.__data.colorStops.insert(1., color2)
+        self.__data.colorStops.insert(0., QColor(color1))
+        self.__data.colorStops.insert(1., QColor(color2))
     
     def addColorStop(self, value, color):
         if value >= 0. and value <= 1.:
-            self.__data.colorStops.insert(value, color)
+            self.__data.colorStops.insert(value, QColor(color))
     
     def colorStops(self):
         return self.__data.colorStops.stops()
