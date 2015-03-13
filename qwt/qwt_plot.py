@@ -138,7 +138,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         if len(args) == 0:
             title, parent = "", None
         elif len(args) == 1:
-            if isinstance(args[0], QWidget):
+            if isinstance(args[0], QWidget) or args[0] is None:
                 title = ""
                 parent, = args
             else:
