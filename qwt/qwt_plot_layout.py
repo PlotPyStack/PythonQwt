@@ -659,6 +659,7 @@ class QwtPlotLayout(object):
                     scaleRect.setWidth(dim)
                 elif axis == QwtPlot.yRight:
                     scaleRect.setX(self.__data.canvasRect.right())
+                    scaleRect.setWidth(dim)
                 elif axis == QwtPlot.xBottom:
                     scaleRect.setY(self.__data.canvasRect.bottom())
                     scaleRect.setHeight(dim)
