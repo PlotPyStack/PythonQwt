@@ -11,6 +11,7 @@ class QwtScaleDiv(object):
     MinorTick, MediumTick, MajorTick, NTickTypes = range(4)
     
     def __init__(self, *args):
+        self.__ticks = None
         if len(args) == 2 and isinstance(args[1], (tuple, list)):
             interval, ticks = args
             self.__lowerBound = interval.minValue()
@@ -63,6 +64,8 @@ class QwtScaleDiv(object):
         return self.__upperBound - self.__lowerBound
     
     def __eq__(self, other):
+        if self.__ticks is None:
+            return False
         if self.__lowerBound != other.__lowerBound or\
            self.__upperBound != other.__upperBound:
             return False
@@ -111,7 +114,7 @@ class QwtScaleDiv(object):
             self.__ticks[tickType] = ticks
     
     def ticks(self, tickType):
-        if tickType in range(self.NTickTypes):
+        if self.__ticks is not None and tickType in range(self.NTickTypes):
             return self.__ticks[tickType]
         else:
             return []

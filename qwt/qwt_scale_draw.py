@@ -550,14 +550,18 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return self.__data.labelAlignment
     
     def maxLabelWidth(self, font):
+        ticks = self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
+        if not ticks:
+            return 0
         return ceil(max([self.labelSize(font, v).width()
-                         for v in self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
-                         if self.scaleDiv().contains(v)]))
+                         for v in ticks if self.scaleDiv().contains(v)]))
     
     def maxLabelHeight(self, font):
+        ticks = self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
+        if not ticks:
+            return 0
         return ceil(max([self.labelSize(font, v).height()
-                         for v in self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
-                         if self.scaleDiv().contains(v)]))
+                         for v in ticks if self.scaleDiv().contains(v)]))
     
     def updateMap(self):
         pos = self.__data.pos
