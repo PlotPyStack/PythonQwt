@@ -50,10 +50,36 @@ class QwtRichTextDocument(QTextDocument):
         self.adjustSize();
 
 
+class QwtTextEngine(object):
+    def __init__(self):
+        pass
+
+
 ASCENTCACHE = {}
 
-class QwtPlainTextEngine_PrivateData(object):
-
+class QwtPlainTextEngine(QwtTextEngine):
+    def __init__(self):
+        self.qrectf_max = QRectF(0, 0, QWIDGETSIZE_MAX, QWIDGETSIZE_MAX)
+        self._fm_cache = {}
+    
+    def fontmetrics(self, font):
+        fm = self._fm_cache.get(font)
+        if fm is None:
+            return self._fm_cache.setdefault(font, QFontMetricsF(font))
+        else:
+            return fm
+    
+    def heightForWidth(self, font, flags, text, width):
+        fm = self.fontmetrics(font)
+        rect = fm.boundingRect(QRectF(0, 0, width, QWIDGETSIZE_MAX),
+                               flags, text)
+        return rect.height()
+    
+    def textSize(self, font, flags, text):
+        fm = self.fontmetrics(font)
+        rect = fm.boundingRect(self.qrectf_max, flags, text)
+        return rect.size()
+    
     def effectiveAscent(self, font):
         global ASCENTCACHE
         fontKey = font.key()
@@ -66,7 +92,7 @@ class QwtPlainTextEngine_PrivateData(object):
         dummy = "E"
         white = QColor(Qt.white)
 
-        fm = QFontMetrics(font)
+        fm = self.fontmetrics(font)
         pm = QPixmap(fm.width(dummy), fm.height())
         pm.fill(white)
         
@@ -87,32 +113,10 @@ class QwtPlainTextEngine_PrivateData(object):
                     return fm.ascent()-row+1
         return fm.ascent()
 
-
-class QwtTextEngine(object):
-    def __init__(self):
-        pass
-
-
-class QwtPlainTextEngine(QwtTextEngine):
-    def __init__(self):
-        self.__data = QwtPlainTextEngine_PrivateData()
-    
-    def heightForWidth(self, font, flags, text, width):
-        fm = QFontMetricsF(font)
-        rect = fm.boundingRect(QRectF(0, 0, width, QWIDGETSIZE_MAX),
-                               flags, text)
-        return rect.height()
-    
-    def textSize(self, font, flags, text):
-        fm = QFontMetricsF(font)
-        rect = fm.boundingRect(QRectF(0, 0, QWIDGETSIZE_MAX, QWIDGETSIZE_MAX),
-                               flags, text)
-        return rect.size()
-    
     def textMargins(self, font):
         left = right = top = 0
-        fm = QFontMetricsF(font)
-        top = fm.ascent() - self.__data.effectiveAscent(font)
+        fm = self.fontmetrics(font)
+        top = fm.ascent() - self.effectiveAscent(font)
         bottom = fm.descent()
         return left, right, top, bottom
 

@@ -10,40 +10,6 @@ from qwt.qt.QtCore import Qt, QSizeF, QSize, QRectF
 import math
 
 
-class QwtTextEngineDict(object):
-    def __init__(self):
-        self.__map = {QwtText.PlainText: QwtPlainTextEngine(),
-                      QwtText.RichText:  QwtRichTextEngine()}
-    
-    def textEngine(self, *args):
-        if len(args) == 1:
-            format_ = args[0]
-            return self.__map.get(format_)
-        elif len(args) == 2:
-            text, format_ = args
-        
-            if format_ == QwtText.AutoText:
-                for key, engine in list(self.__map.iteritems()):
-                    if key != QwtText.PlainText:
-                        if engine and engine.mightRender(text):
-                            return engine
-            
-            engine = self.__map.get(format_)
-            if engine is not None:
-                return engine
-            
-            engine = self.__map[QwtText.PlainText]
-            return engine
-        else:
-            raise TypeError("%s().textEngine() takes 1 or 2 argument(s) (%s "\
-                            "given)" % (self.__class__.__name__, len(args)))
-        
-    def setTextEngine(self, format_, engine):
-        if format_ == QwtText.AutoText:
-            return
-        if format_ == QwtText.PlainText and engine is None:
-            return
-        self.__map.setdefault(format_, engine)
 
 
 class QwtText_PrivateData(object):
@@ -284,6 +250,43 @@ class QwtText(object):
     
     def setTextEngine(self, format_, engine):
         self._dict.setTextEngine(format_, engine)
+
+
+class QwtTextEngineDict(object):
+    # Optimization: a single text engine for all QwtText objects
+    # (this is not how it's implemented in Qwt6 C++ library)
+    __map = {QwtText.PlainText: QwtPlainTextEngine(),
+             QwtText.RichText:  QwtRichTextEngine()}
+    
+    def textEngine(self, *args):
+        if len(args) == 1:
+            format_ = args[0]
+            return self.__map.get(format_)
+        elif len(args) == 2:
+            text, format_ = args
+        
+            if format_ == QwtText.AutoText:
+                for key, engine in list(self.__map.iteritems()):
+                    if key != QwtText.PlainText:
+                        if engine and engine.mightRender(text):
+                            return engine
+            
+            engine = self.__map.get(format_)
+            if engine is not None:
+                return engine
+            
+            engine = self.__map[QwtText.PlainText]
+            return engine
+        else:
+            raise TypeError("%s().textEngine() takes 1 or 2 argument(s) (%s "\
+                            "given)" % (self.__class__.__name__, len(args)))
+        
+    def setTextEngine(self, format_, engine):
+        if format_ == QwtText.AutoText:
+            return
+        if format_ == QwtText.PlainText and engine is None:
+            return
+        self.__map.setdefault(format_, engine)
 
 
 class QwtTextLabel_PrivateData(object):
