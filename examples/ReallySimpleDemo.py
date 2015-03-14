@@ -15,13 +15,15 @@ class SimplePlot(Qwt.QwtPlot):
     def __init__(self, *args):
         Qwt.QwtPlot.__init__(self, *args)
 
-	# make a QwtPlot widget
+	  # make a QwtPlot widget
         self.setTitle('ReallySimpleDemo.py')
         self.insertLegend(Qwt.QwtLegend(), Qwt.QwtPlot.RightLegend)
         
         # set axis titles
         self.setAxisTitle(Qwt.QwtPlot.xBottom, 'x -->')
         self.setAxisTitle(Qwt.QwtPlot.yLeft, 'y -->')
+        self.enableAxis(self.xTop)
+        self.enableAxis(self.yRight)
 
         # insert a few curves
         cSin = Qwt.QwtPlotCurve('y = sin(x)')

@@ -130,7 +130,7 @@ class ImagePlot(Qwt.QwtPlot):
         self.plotLayout().setAlignCanvasToScales(True)
         # set legend
         legend = Qwt.QwtLegend()
-#        legend.setDefaultItemMode(Qwt.QwtLegendData.Clickable)
+        legend.setDefaultItemMode(Qwt.QwtLegendData.Clickable)
         self.insertLegend(legend, Qwt.QwtPlot.RightLegend)
 	# set axis titles
         self.setAxisTitle(Qwt.QwtPlot.xBottom, 'time (s)')
@@ -138,8 +138,10 @@ class ImagePlot(Qwt.QwtPlot):
 
         colorMap = Qwt.QwtLinearColorMap(Qt.Qt.blue, Qt.Qt.red)
         interval = Qwt.QwtDoubleInterval(-1, 1)
-        self.axisWidget(Qwt.QwtPlot.yLeft).setColorBarEnabled(True)
-        self.axisWidget(Qwt.QwtPlot.yLeft).setColorMap(interval, colorMap)
+        self.enableAxis(Qwt.QwtPlot.yRight)
+        self.setAxisScale(Qwt.QwtPlot.yRight, -1, 1)
+        self.axisWidget(Qwt.QwtPlot.yRight).setColorBarEnabled(True)
+        self.axisWidget(Qwt.QwtPlot.yRight).setColorMap(interval, colorMap)
 
 	# calculate 3 NumPy arrays
         x = arange(-2*pi, 2*pi, 0.01)
