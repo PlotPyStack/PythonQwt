@@ -413,6 +413,7 @@ class QwtPlot(QFrame, QwtPlotDict):
     def setAxisTitle(self, axisId, title):
         if self.axisValid(axisId):
             self.axisWidget(axisId).setTitle(title)
+            self.updateLayout()
 
     def updateAxes(self):
         intv = [QwtInterval() for _i in range(self.axisCnt)]
