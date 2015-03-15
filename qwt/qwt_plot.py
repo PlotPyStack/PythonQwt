@@ -152,6 +152,8 @@ class QwtPlot(QFrame, QwtPlotDict):
         QwtPlotDict.__init__(self)
         QFrame.__init__(self, parent)
         
+        self.__layout_state = None
+        
         self.__data = QwtPlot_PrivateData()
         from qwt.qwt_plot_layout import QwtPlotLayout
         self.__data.layout = QwtPlotLayout()
@@ -573,8 +575,21 @@ class QwtPlot(QFrame, QwtPlotDict):
                 self.__data.canvas.update(self.__data.canvas.contentsRect())
         
         self.setAutoReplot(doAutoReplot)
+
+    def get_layout_state(self):
+        return (self.contentsRect(),
+                self.__data.titleLabel.text(), self.__data.footerLabel.text(),
+                [(self.axisEnabled(axisId), self.axisTitle(axisId).text())
+                 for axisId in range(self.axisCnt)],
+                self.__data.legend)
     
     def updateLayout(self):
+        state = self.get_layout_state()
+        if self.__layout_state is not None and\
+           state == self.__layout_state:
+            return
+        self.__layout_state = state
+
         self.__data.layout.activate(self, self.contentsRect())
         
         titleRect = self.__data.layout.titleRect().toRect()

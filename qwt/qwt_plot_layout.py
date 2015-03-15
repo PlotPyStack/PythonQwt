@@ -318,8 +318,7 @@ class QwtPlotLayout(object):
         ch = max([scaleData[QwtPlot.yLeft].h,
                   scaleData[QwtPlot.yRight].h]) + top + 1 + bottom + 1
         h += max([ch, minCanvasSize.height()])
-        labels = [plot.titleLabel(), plot.footerLabel()]
-        for label in labels:
+        for label in [plot.titleLabel(), plot.footerLabel()]:
             if label and not label.text().isEmpty():
                 centerOnCanvas = not plot.axisEnabled(QwtPlot.yLeft)\
                                  and plot.axisEnabled(QwtPlot.yRight)
