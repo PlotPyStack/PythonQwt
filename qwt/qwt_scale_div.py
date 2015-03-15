@@ -69,10 +69,7 @@ class QwtScaleDiv(object):
         if self.__lowerBound != other.__lowerBound or\
            self.__upperBound != other.__upperBound:
             return False
-        for index in range(self.NTickTypes):
-            if self.__ticks[index] != other.__ticks[index]:
-                return False
-        return True
+        return self.__ticks == other.__ticks
     
     def __ne__(self, other):
         return not self.__eq__(other)

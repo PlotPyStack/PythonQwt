@@ -447,8 +447,11 @@ class QwtPlot(QFrame, QwtPlotDict):
                 d.isValid = True
             scaleWidget = self.axisWidget(axisId)
             scaleWidget.setScaleDiv(d.scaleDiv)
-            startDist, endDist = scaleWidget.getBorderDistHint()
-            scaleWidget.setBorderDist(startDist, endDist)
+
+            #TODO: see when it is *really* necessary to update border dist
+#            startDist, endDist = scaleWidget.getBorderDistHint()
+#            scaleWidget.setBorderDist(startDist, endDist)
+
         for item in itmList:
             if item.testItemInterest(QwtPlotItem.ScaleInterest):
                 item.updateScaleDiv(self.axisScaleDiv(item.xAxis()),
