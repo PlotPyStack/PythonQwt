@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import division
+
 from qwt.qwt_interval import QwtInterval
 from qwt.qwt_scale_div import QwtScaleDiv
 from qwt.qwt_transform import QwtLogTransform
@@ -251,7 +253,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         if numTicks % 2:
             medIndex = numTicks/2
         for val in ticks[QwtScaleDiv.MajorTick]:
-            for k in range(int(numTicks)):
+            for k in range(numTicks):
                 val += minStep
                 alignedValue = val
                 if qwtFuzzyCompare(val, 0., stepSize) == 0:
@@ -305,7 +307,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
                     stepSize = qwtLog(logBase, stepSize)
                 return x1, x2, stepSize
             
-        logRef = -1.
+        logRef = 1.
         if self.reference() > LOG_MIN/2:
             logRef = min([self.reference(), LOG_MAX/2])
         
@@ -315,7 +317,9 @@ class QwtLogScaleEngine(QwtScaleEngine):
             interval.setInterval(logRef/delta, logRef*delta)
         
         if self.testAttribute(QwtScaleEngine.IncludeReference):
-            interval = interval.limited(LOG_MIN, LOG_MAX)
+            interval = interval.extend(logRef)
+
+        interval = interval.limited(LOG_MIN, LOG_MAX)        
         
         if interval.width() == 0.:
             interval = self.buildInterval(interval.minValue())
@@ -391,7 +395,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
     
     def buildMajorTicks(self, interval, stepSize):
         width = qwtLogInterval(self.base(), interval).width()
-        numTicks = min([round(width/stepSize)+1, 10000])
+        numTicks = min([int(round(width/stepSize))+1, 10000])
 
         lxmin = np.log(interval.minValue())
         lxmax = np.log(interval.maxValue())
@@ -411,7 +415,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
             if minStep == 0.:
                 return
             
-            numSteps = round(stepSize/minStep)
+            numSteps = int(round(stepSize/minStep))
             
             mediumTickIndex = -1
             if numSteps > 2 and numSteps % 2 == 0:
@@ -425,7 +429,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
                     for j in range(2, numSteps):
                         ticks[QwtScaleDiv.MinorTick] += [v*j*s]
                 else:
-                    for j in range(2, numSteps):
+                    for j in range(1, numSteps):
                         tick = v + j*v*(logBase-1)/numSteps
                         if j == mediumTickIndex:
                             ticks[QwtScaleDiv.MediumTick] += [tick]
@@ -440,7 +444,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
             if minStep < 1.:
                 minStep = 1.
             
-            numTicks = round(stepSize/minStep)-1
+            numTicks = int(round(stepSize/minStep))-1
             
             if qwtFuzzyCompare((numTicks+1)*minStep, stepSize, stepSize) > 0:
                 numTicks = 0
@@ -465,7 +469,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
     def align(self, interval, stepSize):
         intv = qwtLogInterval(self.base(), interval)
         
-        x1 = floorEps(intv.maxValue(), stepSize)
+        x1 = floorEps(intv.minValue(), stepSize)
         if qwtFuzzyCompare(interval.minValue(), x1, stepSize) == 0:
             x1 = interval.minValue()
         

@@ -3,7 +3,7 @@ QWT_VERSION_STR = '6.1.0'
 
 from qwt.qwt_plot import QwtPlot
 from qwt.qwt_symbol import QwtSymbol
-from qwt.qwt_scale_engine import QwtLinearScaleEngine
+from qwt.qwt_scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine
 from qwt.qwt_text import QwtText
 from qwt.qwt_plot_canvas import QwtPlotCanvas
 from qwt.qwt_plot_curve import QwtPlotCurve, QwtPlotItem
@@ -27,8 +27,6 @@ from qwt.qwt_legend_data import QwtLegendData
 QwtDoubleInterval = QwtInterval
 
 # to be implemented:
-# QwtLog10ScaleEngine, QwtPlotPrintFilter
-class QwtLog10ScaleEngine(object):
-    pass
+# QwtPlotPrintFilter
 class QwtPlotPrintFilter(object):
     pass

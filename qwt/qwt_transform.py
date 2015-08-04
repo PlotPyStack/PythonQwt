@@ -35,7 +35,7 @@ class QwtLogTransform(QwtTransform):
     LogMin = 1.0e-150
     LogMax = 1.0e150
     def bounded(self, value):
-        return max([self.LogMin, min([value, self.LogMax])])
+        return np.clip(value, self.LogMin, self.LogMax)
 
     def transform(self, value):
         return np.log(value)
