@@ -1,5 +1,5 @@
 
-QWT_VERSION_STR = '6.1.0'
+QWT_VERSION_STR = '6.1.2'
 
 from qwt.qwt_plot import QwtPlot
 from qwt.qwt_symbol import QwtSymbol
@@ -24,9 +24,6 @@ from qwt.qwt_sample import QwtIntervalSample
 from qwt.qwt_painter import QwtPainter
 from qwt.qwt_legend_data import QwtLegendData
 
-QwtDoubleInterval = QwtInterval
+from qwt.qwt_plot_renderer import QwtPlotRenderer
 
-# to be implemented:
-# QwtPlotPrintFilter
-class QwtPlotPrintFilter(object):
-    pass
+#TODO: implement QwtClipper: needed for SVG export for example

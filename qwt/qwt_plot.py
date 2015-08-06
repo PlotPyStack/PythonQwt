@@ -544,7 +544,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                 niceDist = 40
                 scaleWidget = self.axisWidget(axisId)
                 scaleDiv = scaleWidget.scaleDraw().scaleDiv()
-                majCnt = scaleDiv.ticks(QwtScaleDiv.MajorTick).count()
+                majCnt = len(scaleDiv.ticks(QwtScaleDiv.MajorTick))
                 if axisId in (self.yLeft, self.yRight):
                     hDiff = (majCnt-1)*niceDist-scaleWidget.minimumSizeHint().height()
                     if hDiff > dh:
@@ -827,6 +827,16 @@ class QwtPlot(QFrame, QwtPlotDict):
                 self.emit(QwtPlot.SIG_LEGEND_DATA_CHANGED, plotItem, [])
         
         self.autoRefresh()
+    
+    def print_(self, printer):
+        from qwt.qwt_plot_renderer import QwtPlotRenderer
+        renderer = QwtPlotRenderer(self)
+        renderer.renderTo(self, printer)
+    
+    def exportTo(self, filename, size=(300, 200), resolution=85, format_=None):
+        from qwt.qwt_plot_renderer import QwtPlotRenderer
+        renderer = QwtPlotRenderer(self)
+        renderer.renderDocument(self, filename, size, resolution, format_)
 
 
 class QwtPlotItem_PrivateData(object):

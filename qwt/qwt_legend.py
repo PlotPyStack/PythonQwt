@@ -296,7 +296,7 @@ class QwtLegend(QwtAbstractLegend):
 #    const QwtDynGridLayout *legendLayout = 
 #        qobject_cast<QwtDynGridLayout *>( contentsWidget()->layout() );
         #TODO: not the exact same implementation
-        legendLayout = self.__data.view.contentsWidget.gridLayout
+        legendLayout = self.__data.view.contentsWidget.layout()
         if legendLayout is None:
             return
         left, right, top, bottom = self.getContentsMargins()

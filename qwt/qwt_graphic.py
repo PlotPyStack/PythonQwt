@@ -47,7 +47,7 @@ def qwtExecCommand(painter, cmd, renderHints, transform, initialTransform):
             isCosmetic = painter.pen().isCosmetic()
             if isCosmetic and painter.pen().widthF() == 0.:
                 hints = painter.renderHints()
-                if hints.testFlag(QPainter.NonCosmeticDefaultPen):
+                if hints & QPainter.NonCosmeticDefaultPen:
                     isCosmetic = False
             doMap = not isCosmetic
         if doMap:

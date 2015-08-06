@@ -81,7 +81,7 @@ class QwtScaleWidget(QWidget):
         self.__data.colorBar.isEnabled = False
         self.__data.colorBar.width = 10
         
-        flags = int(Qt.AlignHCenter|Qt.TextExpandTabs|Qt.TextWordWrap)
+        flags = Qt.AlignmentFlag(Qt.AlignHCenter|Qt.TextExpandTabs|Qt.TextWordWrap)
         self.__data.title.setRenderFlags(flags)
         self.__data.title.setFont(self.font())
         

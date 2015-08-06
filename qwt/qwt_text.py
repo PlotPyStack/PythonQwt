@@ -4,7 +4,7 @@ from qwt.qwt_painter import QwtPainter
 from qwt.qwt_text_engine import QwtPlainTextEngine, QwtRichTextEngine
 
 from qwt.qt.QtGui import (QPainter, QFrame, QSizePolicy, QPalette, QFont,
-                          QFontMetrics, QApplication)
+                          QFontMetrics, QApplication, QColor)
 from qwt.qt.QtCore import Qt, QSizeF, QSize, QRectF
 
 import math
@@ -110,6 +110,7 @@ class QwtText(object):
         return self.__data.text
     
     def setRenderFlags(self, renderFlags):
+        renderFlags = Qt.AlignmentFlag(renderFlags)
         if renderFlags != self.__data.renderFlags:
             self.__data.renderFlags = renderFlags
             self.__layoutCache.invalidate()
@@ -130,7 +131,7 @@ class QwtText(object):
         return defaultFont
     
     def setColor(self, color):
-        self.__data.color = color
+        self.__data.color = QColor(color)
         self.setPaintAttribute(self.PaintUsingTextColor)
     
     def color(self):

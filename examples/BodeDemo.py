@@ -104,39 +104,6 @@ zoom_xpm = ['32 32 8 1',
             '...########################..##.']
 
 
-
-class PrintFilter(QwtPlotPrintFilter):
-    def __init__(self):
-        QwtPlotPrintFilter.__init__(self)
-
-    # __init___()
-    
-    def color(self, c, item):
-        if not (self.options() & QwtPlotPrintFilter.CanvasBackground):
-            if item == QwtPlotPrintFilter.MajorGrid:
-                return Qt.darkGray
-            elif item == QwtPlotPrintFilter.MinorGrid:
-                return Qt.gray
-        if item == QwtPlotPrintFilter.Title:
-            return Qt.red
-        elif item == QwtPlotPrintFilter.AxisScale:
-            return Qt.green
-        elif item == QwtPlotPrintFilter.AxisTitle:
-            return Qt.blue
-        return c
-
-    # color()
-
-    def font(self, f, _):
-        result = QFont(f)
-        result.setPointSize(int(f.pointSize()*1.25))
-        return result
-
-    # font()
-
-# class PrintFilter
-
-
 class BodePlot(QwtPlot):
 
     def __init__(self, *args):
@@ -148,14 +115,11 @@ class BodePlot(QwtPlot):
         # legend
         legend = QwtLegend()
         legend.setFrameStyle(QFrame.Box | QFrame.Sunken)
-        legend.setItemMode(QwtLegend.ClickableItem)
         self.insertLegend(legend, QwtPlot.BottomLegend)
 
         # grid
         self.grid = QwtPlotGrid()
         self.grid.enableXMin(True)
-        self.grid.setMajPen(QPen(Qt.white, 0, Qt.DotLine))
-        self.grid.setMinPen(QPen(Qt.gray, 0 , Qt.DotLine))
         self.grid.attach(self)
 
         # axes
@@ -166,7 +130,7 @@ class BodePlot(QwtPlot):
 
         self.setAxisMaxMajor(QwtPlot.xBottom, 6)
         self.setAxisMaxMinor(QwtPlot.xBottom, 10)
-        self.setAxisScaleEngine(QwtPlot.xBottom, QwtLog10ScaleEngine())
+        self.setAxisScaleEngine(QwtPlot.xBottom, QwtLogScaleEngine())
 
         # curves
         self.curve1 = QwtPlotCurve('Amplitude')
@@ -224,7 +188,7 @@ class BodePlot(QwtPlot):
         text.setFont(QFont(fn, 12, QFont.Bold))
         text.setColor(Qt.blue)
         text.setBackgroundBrush(QBrush(Qt.yellow))
-        text.setBackgroundPen(QPen(Qt.red, 2))
+        text.setBorderPen(QPen(Qt.red, 2))
         m.setLabel(text)
         m.attach(self)
 
@@ -284,38 +248,38 @@ class BodeDemo(QMainWindow):
         QMainWindow.__init__(self, *args)
 
         self.plot = BodePlot(self)
-        self.plot.setMargin(5)
+        self.plot.setContentsMargins(5, 5, 5, 0)
 
         self.setContextMenuPolicy(Qt.NoContextMenu)
         
-        self.zoomers = []
-        zoomer = QwtPlotZoomer(
-            QwtPlot.xBottom,
-            QwtPlot.yLeft,
-            QwtPicker.DragSelection,
-            QwtPicker.AlwaysOff,
-            self.plot.canvas())
-        zoomer.setRubberBandPen(QPen(Qt.green))
-        self.zoomers.append(zoomer)
+#        self.zoomers = []
+#        zoomer = QwtPlotZoomer(
+#            QwtPlot.xBottom,
+#            QwtPlot.yLeft,
+#            QwtPicker.DragSelection,
+#            QwtPicker.AlwaysOff,
+#            self.plot.canvas())
+#        zoomer.setRubberBandPen(QPen(Qt.green))
+#        self.zoomers.append(zoomer)
+#
+#        zoomer = QwtPlotZoomer(
+#            QwtPlot.xTop,
+#            QwtPlot.yRight,
+#            QwtPicker.PointSelection | QwtPicker.DragSelection,
+#            QwtPicker.AlwaysOff,
+#            self.plot.canvas())
+#        zoomer.setRubberBand(QwtPicker.NoRubberBand)
+#        self.zoomers.append(zoomer)
 
-        zoomer = QwtPlotZoomer(
-            QwtPlot.xTop,
-            QwtPlot.yRight,
-            QwtPicker.PointSelection | QwtPicker.DragSelection,
-            QwtPicker.AlwaysOff,
-            self.plot.canvas())
-        zoomer.setRubberBand(QwtPicker.NoRubberBand)
-        self.zoomers.append(zoomer)
-
-        self.picker = QwtPlotPicker(
-            QwtPlot.xBottom,
-            QwtPlot.yLeft,
-            QwtPicker.PointSelection | QwtPicker.DragSelection,
-            QwtPlotPicker.CrossRubberBand,
-            QwtPicker.AlwaysOn,
-            self.plot.canvas())
-        self.picker.setRubberBandPen(QPen(Qt.green))
-        self.picker.setTrackerPen(QPen(Qt.cyan))
+#        self.picker = QwtPlotPicker(
+#            QwtPlot.xBottom,
+#            QwtPlot.yLeft,
+#            QwtPicker.PointSelection | QwtPicker.DragSelection,
+#            QwtPlotPicker.CrossRubberBand,
+#            QwtPicker.AlwaysOn,
+#            self.plot.canvas())
+#        self.picker.setRubberBandPen(QPen(Qt.green))
+#        self.picker.setTrackerPen(QPen(Qt.cyan))
  
         self.setCentralWidget(self.plot)
 
@@ -336,21 +300,12 @@ class BodeDemo(QMainWindow):
         toolBar.addWidget(btnPrint)
         self.connect(btnPrint, SIGNAL('clicked()'), self.print_)
 
-        if QT_VERSION >= 0X040100:
-            btnPDF = QToolButton(toolBar)
-            btnPDF.setText("PDF")
-            btnPDF.setIcon(QIcon(QPixmap(print_xpm)))
-            btnPDF.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-            toolBar.addWidget(btnPDF)
-            self.connect(btnPDF, SIGNAL('clicked()'), self.exportPDF)
-
-        if QT_VERSION >= 0x040300:
-            btnSVG = QToolButton(toolBar)
-            btnSVG.setText("SVG")
-            btnSVG.setIcon(QIcon(QPixmap(print_xpm)))
-            btnSVG.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-            toolBar.addWidget(btnSVG)            
-            self.connect(btnSVG, SIGNAL('clicked()'), self.exportSVG)
+        btnExport = QToolButton(toolBar)
+        btnExport.setText("Export")
+        btnExport.setIcon(QIcon(QPixmap(print_xpm)))
+        btnExport.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        toolBar.addWidget(btnExport)
+        self.connect(btnExport, SIGNAL('clicked()'), self.exportDocument)
             
         toolBar.addSeparator()
 
@@ -361,10 +316,10 @@ class BodeDemo(QMainWindow):
         dampLayout.addWidget(QLabel("Damping Factor", dampBox), 0)
         dampLayout.addSpacing(10)
 
-        self.cntDamp = QwtCounter(dampBox)
-        self.cntDamp.setRange(0.01, 5.0, 0.01)
-        self.cntDamp.setValue(0.01)
-        dampLayout.addWidget(self.cntDamp, 10)
+#        self.cntDamp = QwtCounter(dampBox)
+#        self.cntDamp.setRange(0.01, 5.0, 0.01)
+#        self.cntDamp.setValue(0.01)
+#        dampLayout.addWidget(self.cntDamp, 10)
 
         toolBar.addWidget(dampBox)
 
@@ -373,25 +328,23 @@ class BodeDemo(QMainWindow):
         self.zoom(False)
         self.showInfo()
         
-        self.connect(self.cntDamp,
-                     SIGNAL('valueChanged(double)'),
-                     self.plot.setDamp)
+#        self.connect(self.cntDamp,
+#                     SIGNAL('valueChanged(double)'),
+#                     self.plot.setDamp)
         self.connect(btnZoom,
                      SIGNAL('toggled(bool)'),
                      self.zoom)
-        self.connect(self.picker,
-                     SIGNAL('moved(const QPoint &)'),
-                     self.moved)
-        self.connect(self.picker,
-                     SIGNAL('selected(const QPolygon &)'),
-                     self.selected)
+#        self.connect(self.picker,
+#                     SIGNAL('moved(const QPoint &)'),
+#                     self.moved)
+#        self.connect(self.picker,
+#                     SIGNAL('selected(const QPolygon &)'),
+#                     self.selected)
 
     # __init__()
 
     def print_(self):
         printer = QPrinter(QPrinter.HighResolution)
-
-        printer.setOutputFileName('bode-example-%s.ps' % qVersion())
 
         printer.setCreator('Bode example')
         printer.setOrientation(QPrinter.Landscape)
@@ -404,72 +357,39 @@ class BodeDemo(QMainWindow):
 
         dialog = QPrintDialog(printer)
         if dialog.exec_():
-            printFilter = PrintFilter()
+            renderer = QwtPlotRenderer()
             if (QPrinter.GrayScale == printer.colorMode()):
-                printFilter.setOptions(
-                    QwtPlotPrintFilter.PrintAll
-                    & ~QwtPlotPrintFilter.PrintBackground
-                    | QwtPlotPrintFilter.PrintFrameWithScales)
-            self.plot.print_(printer, printFilter)
+                renderer.setDiscardFlag(QwtPlotRenderer.DiscardBackground)
+                renderer.setDiscardFlag(QwtPlotRenderer.DiscardCanvasBackground)
+                renderer.setDiscardFlag(QwtPlotRenderer.DiscardCanvasFrame)
+                renderer.setLayoutFlag(QwtPlotRenderer.FrameWithScales)
+            renderer.renderTo(self.plot, printer)
 
-    # print_()
-    
-    def exportPDF(self):
-        if QT_VERSION > 0x040100:
-            fileName = QFileDialog.getSaveFileName(
-                self,
-                'Export File Name',
-                'bode-example-%s.pdf' % qVersion(),
-                'PDF Documents (*.pdf)')
-
-        if not fileName.isEmpty():
-            printer = QPrinter()
-            printer.setOutputFormat(QPrinter.PdfFormat)
-            printer.setOrientation(QPrinter.Landscape)
-            printer.setOutputFileName(fileName)
-
-            printer.setCreator('Bode example')
-            self.plot.print_(printer)
-
-    # exportPDF()
-
-    def exportSVG(self):
-        if QT_VERSION >= 0x040300:
-            fileName = QFileDialog.getSaveFileName(
-                self,
-                'Export File Name',
-                'bode-example-%s.svg' % qVersion(),
-                'SVG Documents (*.svg)')
-            if not fileName.isEmpty():
-                generator = QSvgGenerator()
-                generator.setFileName(fileName)
-                generator.setSize(QSize(800, 600))
-                self.plot.print_(generator)
-
-    # exportSVG()
+    def exportDocument(self):
+        self.plot.exportTo("bode.pdf")
 
     def zoom(self, on):
-        self.zoomers[0].setEnabled(on)
-        self.zoomers[0].zoom(0)
-        
-        self.zoomers[1].setEnabled(on)
-        self.zoomers[1].zoom(0)
+#        self.zoomers[0].setEnabled(on)
+#        self.zoomers[0].zoom(0)
+#        
+#        self.zoomers[1].setEnabled(on)
+#        self.zoomers[1].zoom(0)
 
-        if on:
-            self.picker.setRubberBand(Qwt.QwtPicker.NoRubberBand)
-        else:
-            self.picker.setRubberBand(Qwt.QwtPicker.CrossRubberBand)
+#        if on:
+#            self.picker.setRubberBand(Qwt.QwtPicker.NoRubberBand)
+#        else:
+#            self.picker.setRubberBand(Qwt.QwtPicker.CrossRubberBand)
 
         self.showInfo()
 
     # zoom()
     
-    def showInfo(self, text=None):
-        if not text:
-            if self.picker.rubberBand():
-                text = 'Cursor Pos: Press left mouse button in plot region'
-            else:
-                text = 'Zoom: Press mouse button and drag'
+    def showInfo(self, text=""):
+#        if not text:
+#            if self.picker.rubberBand():
+#                text = 'Cursor Pos: Press left mouse button in plot region'
+#            else:
+#                text = 'Zoom: Press mouse button and drag'
                 
         self.statusBar().showMessage(text)
                 
@@ -489,20 +409,15 @@ class BodeDemo(QMainWindow):
 
     # selected()
 
-# class BodeDemo
-    
-
 def make():
     demo = BodeDemo()
     demo.resize(540, 400)
     demo.show()
     return demo
 
-# make()
 
-
-def main(args):
-    app = QApplication(args)
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
     fonts = QFontDatabase()
     for name in ('Verdana', 'STIXGeneral'):
         if name in fonts.families():
@@ -510,19 +425,3 @@ def main(args):
             break
     demo = make()
     sys.exit(app.exec_())
-
-# main()
-
-
-# Admire!
-if __name__ == '__main__':
-    if 'settracemask' in sys.argv:
-        # for debugging, requires: python configure.py --trace ...
-        import sip
-        sip.settracemask(0x3f)
-
-    main(sys.argv)
-
-# Local Variables: ***
-# mode: python ***
-# End: ***

@@ -137,7 +137,7 @@ class ImagePlot(Qwt.QwtPlot):
         self.setAxisTitle(Qwt.QwtPlot.yLeft, 'frequency (Hz)')
 
         colorMap = Qwt.QwtLinearColorMap(Qt.Qt.blue, Qt.Qt.red)
-        interval = Qwt.QwtDoubleInterval(-1, 1)
+        interval = Qwt.QwtInterval(-1, 1)
         self.enableAxis(Qwt.QwtPlot.yRight)
         self.setAxisScale(Qwt.QwtPlot.yRight, -1, 1)
         self.axisWidget(Qwt.QwtPlot.yRight).setColorBarEnabled(True)

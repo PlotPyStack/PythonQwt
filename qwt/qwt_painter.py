@@ -196,7 +196,8 @@ class QwtPainterClass(object):
                 transform.scale(res.width()/float(pd.logicalDpiX()),
                                 res.height()/float(pd.logicalDpiY()))
                 painter.setWorldTransform(transform, True)
-                unscaledRect = transform.inverted().mapRect(rect)
+                invtrans, _ok = transform.inverted()
+                unscaledRect = invtrans.mapRect(rect)
         txt.setDefaultFont(painter.font())
         txt.setPageSize(QSizeF(unscaledRect.width(), QWIDGETSIZE_MAX))
         layout = txt.documentLayout()
@@ -215,6 +216,10 @@ class QwtPainterClass(object):
     def drawLine(self, *args):
         if len(args) == 3:
             painter, p1, p2 = args
+            if isinstance(p1, QPointF):
+                p1 = p1.toPoint()
+            if isinstance(p2, QPointF):
+                p2 = p2.toPoint()
             deviceClipping, clipRect = qwtIsClippingNeeded(painter)
             if deviceClipping and not clipRect.contains(p1)\
                and not clipRect.contains(p2):
