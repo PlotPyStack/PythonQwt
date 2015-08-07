@@ -833,10 +833,13 @@ class QwtPlot(QFrame, QwtPlotDict):
         renderer = QwtPlotRenderer(self)
         renderer.renderTo(self, printer)
     
-    def exportTo(self, filename, size=(300, 200), resolution=85, format_=None):
+    def exportTo(self, filename, size=(800, 600), size_mm=None,
+                 resolution=72., format_=None):
+        if size_mm is None:
+            size_mm = tuple(25.4*np.array(size)/resolution)
         from qwt.qwt_plot_renderer import QwtPlotRenderer
         renderer = QwtPlotRenderer(self)
-        renderer.renderDocument(self, filename, size, resolution, format_)
+        renderer.renderDocument(self, filename, size_mm, resolution, format_)
 
 
 class QwtPlotItem_PrivateData(object):

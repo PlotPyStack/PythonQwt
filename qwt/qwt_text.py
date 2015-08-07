@@ -10,8 +10,6 @@ from qwt.qt.QtCore import Qt, QSizeF, QSize, QRectF
 import math
 
 
-
-
 class QwtText_PrivateData(object):
     def __init__(self):
         self.renderFlags = Qt.AlignCenter

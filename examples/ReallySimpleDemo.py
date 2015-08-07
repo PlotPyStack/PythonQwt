@@ -71,5 +71,5 @@ def make():
 if __name__ == '__main__':
     app = Qt.QApplication(sys.argv)
     demo = make()
-    demo.exportTo("demo.pdf")
+    demo.exportTo("demo.png", size=(1600, 900), resolution=200)
     sys.exit(app.exec_())
