@@ -23,9 +23,8 @@ import os
 import sys
 import collections
 
-from spyderlib.qt.QtGui import QFileDialog
-
-from spyderlib.py3compat import is_text_string, to_text_string, TEXT_TYPES
+from qwt.qt.QtGui import QFileDialog
+from qwt.py3compat import is_text_string, to_text_string, TEXT_TYPES
 
 #==============================================================================
 # QVariant conversion utilities
