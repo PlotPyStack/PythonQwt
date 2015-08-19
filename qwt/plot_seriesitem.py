@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_plot import QwtPlotItem, QwtPlotItem_PrivateData
-from qwt.qwt_text import QwtText
-from qwt.qwt_series_store import QwtAbstractSeriesStore
+from qwt.plot import QwtPlotItem, QwtPlotItem_PrivateData
+from qwt.text import QwtText
+from qwt.series_store import QwtAbstractSeriesStore
 
 from qwt.qt.QtCore import Qt, QRectF
 

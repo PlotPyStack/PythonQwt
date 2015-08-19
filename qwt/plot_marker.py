@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_plot import QwtPlotItem
-from qwt.qwt_text import QwtText
-from qwt.qwt_painter import QwtPainter
-from qwt.qwt_graphic import QwtGraphic
-from qwt.qwt_symbol import QwtSymbol
+from qwt.plot import QwtPlotItem
+from qwt.text import QwtText
+from qwt.painter import QwtPainter
+from qwt.graphic import QwtGraphic
+from qwt.symbol import QwtSymbol
 
 from qwt.qt.QtGui import QPen, QPainter
 from qwt.qt.QtCore import Qt, QPointF, QRectF, QSizeF, QRect

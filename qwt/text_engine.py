@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_painter import QwtPainter
+from qwt.painter import QwtPainter
 
 from qwt.qt.QtGui import (QTextDocument, QTextOption, QColor, QFontMetricsF,
                           QPixmap, QPainter, QFontMetrics)

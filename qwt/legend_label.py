@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_text import QwtTextLabel
-from qwt.qwt_legend_data import QwtLegendData
+from qwt.text import QwtTextLabel
+from qwt.legend_data import QwtLegendData
 
 from qwt.qt.QtGui import (QStyleOption, QStyle, QPixmap, QApplication,
                           QPainter, qDrawWinButton)

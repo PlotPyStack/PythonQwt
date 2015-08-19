@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_painter import QwtPainter
-from qwt.qwt_text_engine import QwtPlainTextEngine, QwtRichTextEngine
+from qwt.painter import QwtPainter
+from qwt.text_engine import QwtPlainTextEngine, QwtRichTextEngine
 
 from qwt.qt.QtGui import (QPainter, QFrame, QSizePolicy, QPalette, QFont,
                           QFontMetrics, QApplication, QColor)
 from qwt.qt.QtCore import Qt, QSizeF, QSize, QRectF
 
-import math
+import numpy as np
 
 
 class QwtText_PrivateData(object):
@@ -373,7 +373,7 @@ class QwtTextLabel(QFrame):
             elif align & Qt.AlignTop or align & Qt.AlignBottom:
                 mh += self.__data.indent
         sz += QSizeF(mw, mh)
-        return QSize(math.ceil(sz.width()), math.ceil(sz.height()))
+        return QSize(np.ceil(sz.width()), np.ceil(sz.height()))
 
     def heightForWidth(self, width):
         renderFlags = self.__data.text.renderFlags()
@@ -383,7 +383,7 @@ class QwtTextLabel(QFrame):
         width -= 2*self.frameWidth()
         if renderFlags & Qt.AlignLeft or renderFlags & Qt.AlignRight:
             width -= indent
-        height = math.ceil(self.__data.text.heightForWidth(width, self.font()))
+        height = np.ceil(self.__data.text.heightForWidth(width, self.font()))
         if renderFlags & Qt.AlignTop or renderFlags & Qt.AlignBottom:
             height += indent
         height += 2*self.frameWidth()

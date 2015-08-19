@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_null_paintdevice import QwtNullPaintDevice
-from qwt.qwt_painter_command import QwtPainterCommand
+from qwt.null_paintdevice import QwtNullPaintDevice
+from qwt.painter_command import QwtPainterCommand
 
 from qwt.qt.QtGui import (QPainter, QPainterPathStroker, QPaintEngine, QPixmap,
                           QTransform, QImage)
 from qwt.qt.QtCore import Qt, QRectF, QSizeF, QSize, QPointF, QRect
 
-from math import ceil
+import numpy as np
 
 
 def qwtHasScalablePen(painter):
@@ -235,7 +235,7 @@ class QwtGraphic(QwtNullPaintDevice):
     
     def sizeMetrics(self):
         sz = self.defaultSize()
-        return QSize(ceil(sz.width()), ceil(sz.height()))
+        return QSize(np.ceil(sz.width()), np.ceil(sz.height()))
         
     def setDefaultSize(self, size):
         w = max([0., size.width()])
@@ -340,8 +340,8 @@ class QwtGraphic(QwtNullPaintDevice):
             if self.isNull():
                 return QPixmap()
             sz = self.defaultSize()
-            w = ceil(sz.width())
-            h = ceil(sz.height())
+            w = np.ceil(sz.width())
+            h = np.ceil(sz.height())
             pixmap = QPixmap(w, h)
             pixmap.fill(Qt.transparent)
             r = QRectF(0., 0., sz.width(), sz.height())
@@ -367,8 +367,8 @@ class QwtGraphic(QwtNullPaintDevice):
             if self.isNull():
                 return QImage()
             sz = self.defaultSize()
-            w = ceil(sz.width())
-            h = ceil(sz.height())
+            w = np.ceil(sz.width())
+            h = np.ceil(sz.height())
             image = QImage(w, h, QImage.Format_ARGB32)
             image.fill(0)
             r = QRect(0, 0, sz.width(), sz.height())

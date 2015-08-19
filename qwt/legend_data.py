@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_text import QwtText
+from qwt.text import QwtText
 
 
 class QwtLegendData(object):

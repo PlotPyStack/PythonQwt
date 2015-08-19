@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_scale_div import QwtScaleDiv
-from qwt.qwt_plot import QwtPlotItem
-from qwt.qwt_text import QwtText
-from qwt.qwt_painter import QwtPainter
-from qwt.qwt_math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
+from qwt.scale_div import QwtScaleDiv
+from qwt.plot import QwtPlotItem
+from qwt.text import QwtText
+from qwt.painter import QwtPainter
+from qwt.math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
 
 from qwt.qt.QtGui import QPen
 from qwt.qt.QtCore import Qt

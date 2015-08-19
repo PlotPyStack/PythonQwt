@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_plot_seriesitem import QwtPlotSeriesItem
-from qwt.qwt_series_store import QwtSeriesStore
-from qwt.qwt_interval import QwtInterval
-from qwt.qwt_series_data import QwtIntervalSeriesData
-from qwt.qwt_plot import QwtPlotItem
-from qwt.qwt_painter import QwtPainter
-from qwt.qwt_sample import QwtIntervalSample
-from qwt.qwt_column_symbol import QwtColumnRect, QwtColumnSymbol
+from qwt.plot_seriesitem import QwtPlotSeriesItem
+from qwt.series_store import QwtSeriesStore
+from qwt.interval import QwtInterval
+from qwt.series_data import QwtIntervalSeriesData
+from qwt.plot import QwtPlotItem
+from qwt.painter import QwtPainter
+from qwt.sample import QwtIntervalSample
+from qwt.column_symbol import QwtColumnRect, QwtColumnSymbol
 
 from qwt.qt.QtGui import QPen, QBrush, QColor, QPolygonF
 from qwt.qt.QtCore import Qt, QPointF, QRectF

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_sample import QwtIntervalSample, QwtSetSample, QwtOHLCSample
+from qwt.sample import QwtIntervalSample, QwtSetSample, QwtOHLCSample
 
 from qwt.qt.QtCore import QRectF, QPointF
 

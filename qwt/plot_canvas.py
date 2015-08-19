@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_null_paintdevice import QwtNullPaintDevice
-from qwt.qwt_painter import QwtPainter
+from qwt.null_paintdevice import QwtNullPaintDevice
+from qwt.painter import QwtPainter
 
 from qwt.qt.QtGui import (QFrame, QPaintEngine, QPen, QBrush, QRegion, QImage,
                           QPainterPath, QPixmap, QGradient, QPainter, qAlpha,

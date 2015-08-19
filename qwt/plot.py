@@ -4,16 +4,16 @@ from qwt.qt.QtGui import (QWidget, QFont, QSizePolicy, QFrame, QApplication,
                           QRegion, QPainter, QPalette)
 from qwt.qt.QtCore import Qt, SIGNAL, QEvent, QSize, QRectF
 
-from qwt.qwt_text import QwtText, QwtTextLabel
-from qwt.qwt_scale_widget import QwtScaleWidget
-from qwt.qwt_scale_draw import QwtScaleDraw
-from qwt.qwt_scale_engine import QwtLinearScaleEngine
-from qwt.qwt_plot_canvas import QwtPlotCanvas
-from qwt.qwt_scale_div import QwtScaleDiv
-from qwt.qwt_scale_map import QwtScaleMap
-from qwt.qwt_graphic import QwtGraphic
-from qwt.qwt_legend_data import QwtLegendData
-from qwt.qwt_interval import QwtInterval
+from qwt.text import QwtText, QwtTextLabel
+from qwt.scale_widget import QwtScaleWidget
+from qwt.scale_draw import QwtScaleDraw
+from qwt.scale_engine import QwtLinearScaleEngine
+from qwt.plot_canvas import QwtPlotCanvas
+from qwt.scale_div import QwtScaleDiv
+from qwt.scale_map import QwtScaleMap
+from qwt.graphic import QwtGraphic
+from qwt.legend_data import QwtLegendData
+from qwt.interval import QwtInterval
 
 import numpy as np
 
@@ -155,7 +155,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         self.__layout_state = None
         
         self.__data = QwtPlot_PrivateData()
-        from qwt.qwt_plot_layout import QwtPlotLayout
+        from qwt.plot_layout import QwtPlotLayout
         self.__data.layout = QwtPlotLayout()
         self.__data.autoReplot = False
                 
@@ -587,11 +587,11 @@ class QwtPlot(QFrame, QwtPlotDict):
                 self.__data.legend)
     
     def updateLayout(self):
-        state = self.get_layout_state()
-        if self.__layout_state is not None and\
-           state == self.__layout_state:
-            return
-        self.__layout_state = state
+#        state = self.get_layout_state()
+#        if self.__layout_state is not None and\
+#           state == self.__layout_state:
+#            return
+#        self.__layout_state = state
 
         self.__data.layout.activate(self, self.contentsRect())
         
@@ -829,7 +829,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         self.autoRefresh()
     
     def print_(self, printer):
-        from qwt.qwt_plot_renderer import QwtPlotRenderer
+        from qwt.plot_renderer import QwtPlotRenderer
         renderer = QwtPlotRenderer(self)
         renderer.renderTo(self, printer)
     
@@ -837,7 +837,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                  resolution=72., format_=None):
         if size_mm is None:
             size_mm = tuple(25.4*np.array(size)/resolution)
-        from qwt.qwt_plot_renderer import QwtPlotRenderer
+        from qwt.plot_renderer import QwtPlotRenderer
         renderer = QwtPlotRenderer(self)
         renderer.renderDocument(self, filename, size_mm, resolution, format_)
 

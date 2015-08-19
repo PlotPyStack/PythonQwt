@@ -3,31 +3,31 @@ QWT_VERSION_STR = '6.1.2'
 
 import warnings
 
-from qwt.qwt_plot import QwtPlot
-from qwt.qwt_symbol import QwtSymbol as QSbl  # see deprecated section
-from qwt.qwt_scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine
-from qwt.qwt_text import QwtText
-from qwt.qwt_plot_canvas import QwtPlotCanvas
-from qwt.qwt_plot_curve import QwtPlotCurve as QPC  # see deprecated section
-from qwt.qwt_plot_curve import QwtPlotItem
-from qwt.qwt_scale_map import QwtScaleMap
-from qwt.qwt_interval import QwtInterval
-from qwt.qwt_legend import QwtLegend
-from qwt.qwt_plot_marker import QwtPlotMarker
-from qwt.qwt_plot_grid import QwtPlotGrid as QPG  # see deprecated section
-from qwt.qwt_color_map import QwtLinearColorMap
+from qwt.plot import QwtPlot
+from qwt.symbol import QwtSymbol as QSbl  # see deprecated section
+from qwt.scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine
+from qwt.text import QwtText
+from qwt.plot_canvas import QwtPlotCanvas
+from qwt.plot_curve import QwtPlotCurve as QPC  # see deprecated section
+from qwt.plot_curve import QwtPlotItem
+from qwt.scale_map import QwtScaleMap
+from qwt.interval import QwtInterval
+from qwt.legend import QwtLegend
+from qwt.plot_marker import QwtPlotMarker
+from qwt.plot_grid import QwtPlotGrid as QPG  # see deprecated section
+from qwt.color_map import QwtLinearColorMap
 
-from qwt.toqimage import toQImage
+from qwt.toqimage import array_to_qimage as toQImage
 
-from qwt.qwt_scale_div import QwtScaleDiv
-from qwt.qwt_scale_draw import QwtScaleDraw
-from qwt.qwt_scale_draw import QwtAbstractScaleDraw
-from qwt.qwt_series_data import QwtIntervalSeriesData
-from qwt.qwt_sample import QwtIntervalSample
-from qwt.qwt_painter import QwtPainter
-from qwt.qwt_legend_data import QwtLegendData
+from qwt.scale_div import QwtScaleDiv
+from qwt.scale_draw import QwtScaleDraw
+from qwt.scale_draw import QwtAbstractScaleDraw
+from qwt.series_data import QwtIntervalSeriesData
+from qwt.sample import QwtIntervalSample
+from qwt.painter import QwtPainter
+from qwt.legend_data import QwtLegendData
 
-from qwt.qwt_plot_renderer import QwtPlotRenderer
+from qwt.plot_renderer import QwtPlotRenderer
 
 
 ## ============================================================================

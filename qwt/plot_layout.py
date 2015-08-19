@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_text import QwtText
-from qwt.qwt_scale_widget import QwtScaleWidget
-from qwt.qwt_plot import QwtPlot
-from qwt.qwt_scale_draw import QwtAbstractScaleDraw
+from qwt.text import QwtText
+from qwt.scale_widget import QwtScaleWidget
+from qwt.plot import QwtPlot
+from qwt.scale_draw import QwtAbstractScaleDraw
 
 from qwt.qt.QtGui import QFont, QRegion
 from qwt.qt.QtCore import QSize, Qt, QRectF

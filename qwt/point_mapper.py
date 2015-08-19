@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-QWT_USE_THREADS = False  # QtConcurrent is not supported by PyQt
+USE_THREADS = False  # QtConcurrent is not supported by PyQt
 
 from qwt.qt.QtGui import QPolygon, QPolygonF, QImage, QPainter
 from qwt.qt.QtCore import QThread, Qt, QPoint, QPointF, QRectF
 
-from qwt.qwt_pixel_matrix import QwtPixelMatrix
+from qwt.pixel_matrix import QwtPixelMatrix
 
 import numpy as np
 
@@ -214,7 +214,7 @@ class QwtPointMapper(object):
     
     def toImage(self, xMap, yMap, series, from_, to, pen, antialiased,
                 numThreads):
-        if QWT_USE_THREADS:
+        if USE_THREADS:
             if numThreads == 0:
                 numThreads = QThread.idealThreadCount()
             if numThreads <= 0:
@@ -226,7 +226,7 @@ class QwtPointMapper(object):
             command = QwtDotsCommand()
             command.series = series
             command.rgb = pen.color().rgba()
-            if QWT_USE_THREADS:
+            if USE_THREADS:
                 numPoints = int((to-from_+1)/numThreads)
                 futures = []
                 for i in range(numThreads):

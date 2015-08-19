@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_graphic import QwtGraphic
-from qwt.qwt_painter import QwtPainter
+from qwt.graphic import QwtGraphic
+from qwt.painter import QwtPainter
 
 from qwt.qt.QtGui import (QPainter, QTransform, QPixmap, QPen, QPolygonF,
                           QPainterPath, QBrush, QPaintEngine)
 from qwt.qt.QtCore import QSize, QRect, QPointF, QRectF, QSizeF, Qt, QPoint
 from qwt.qt.QtSvg import QSvgRenderer
 
-from math import floor, sqrt, cos, pi, ceil
+import numpy as np
 
 
 class QwtTriangle(object):
@@ -207,8 +207,8 @@ def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
     sw2 = .5*size.width()
     sh2 = .5*size.height()
     if doAlign:
-        sw2 = floor(sw2)
-        sh2 = floor(sh2)
+        sw2 = np.floor(sw2)
+        sh2 = np.floor(sh2)
     for pos in points:
         x = pos.x()
         y = pos.y()
@@ -240,8 +240,8 @@ def qwtDrawLineSymbols(painter, orientations, points, numPoints, symbol):
     painter.setPen(pen)
     painter.setRenderHint(QPainter.Antialiasing, False)
     if QwtPainter.roundingAlignment(painter):
-        sw = floor(size.width())
-        sh = floor(size.height())
+        sw = np.floor(size.width())
+        sh = np.floor(size.height())
         sw2 = size.width()//2
         sh2 = size.height()//2
         for pos in points:
@@ -278,8 +278,8 @@ def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
         off = 1
     painter.setPen(pen)
     if QwtPainter.roundingAlignment(painter):
-        sw = floor(size.width())
-        sh = floor(size.height())
+        sw = np.floor(size.width())
+        sh = np.floor(size.height())
         sw2 = size.width()//2
         sh2 = size.height()//2
         for pos in points:
@@ -308,7 +308,7 @@ def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
 def qwtDrawStar1Symbols(painter, points, numPoints, symbol):
     size =symbol.size()
     painter.setPen(symbol.pen())
-    sqrt1_2 = sqrt(.5)
+    sqrt1_2 = np.sqrt(.5)
     if QwtPainter.roundingAlignment(painter):
         r = QRect(0, 0, size.width(), size.height())
         for pos in points:
@@ -344,7 +344,7 @@ def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
     pen.setJoinStyle(Qt.MiterJoin)
     painter.setPen(pen)
     painter.setBrush(symbol.brush())
-    cos30 = cos(30*pi/180.)
+    cos30 = np.cos(30*np.pi/180.)
     dy = .25*symbol.size().height()
     dx = .5*symbol.size().width()*cos30/3.
     doAlign = QwtPainter.roundingAlignment(painter)
@@ -379,7 +379,7 @@ def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
 def qwtDrawHexagonSymbols(painter, points, numPoints, symbol):
     painter.setBrush(symbol.brush())
     painter.setPen(symbol.pen())
-    cos30 = cos(30*pi/180.)
+    cos30 = np.cos(30*np.pi/180.)
     dx = .5*(symbol.size().width()-cos30)
     dy = .25*symbol.size().height()
     doAlign = QwtPainter.roundingAlignment(painter)
@@ -387,8 +387,8 @@ def qwtDrawHexagonSymbols(painter, points, numPoints, symbol):
         if doAlign:
             x = round(pos.x())
             y = round(pos.y())
-            x1 = ceil(x-dx)
-            y1 = ceil(y-2*dy)
+            x1 = np.ceil(x-dx)
+            y1 = np.ceil(y-2*dy)
         else:
             x = pos.x()
             y = pos.y()
@@ -789,10 +789,10 @@ class QwtSymbol(object):
                 pinPoint = rect.center()-self.__data.pinPoint
             rect.moveCenter(pinPoint)
         r = QRect()
-        r.setLeft(floor(rect.left()))
-        r.setTop(floor(rect.top()))
-        r.setRight(floor(rect.right()))
-        r.setBottom(floor(rect.bottom()))
+        r.setLeft(np.floor(rect.left()))
+        r.setTop(np.floor(rect.top()))
+        r.setRight(np.floor(rect.right()))
+        r.setBottom(np.floor(rect.bottom()))
         if self.__data.style != QwtSymbol.Pixmap:
             r.adjust(-1, -1, 1, 1)
         return r

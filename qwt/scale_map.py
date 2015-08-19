@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_math import qwtFuzzyCompare
+from qwt.math import qwtFuzzyCompare
 
 from qwt.qt.QtCore import QRectF, QPointF
 

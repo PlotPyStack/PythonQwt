@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_spline import QwtSpline
+from qwt.spline import QwtSpline
 
 from qwt.qt.QtGui import QPolygonF
 from qwt.qt.QtCore import QPointF

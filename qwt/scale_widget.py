@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_scale_draw import QwtScaleDraw
-from qwt.qwt_scale_engine import QwtLinearScaleEngine
-from qwt.qwt_color_map import QwtLinearColorMap
-from qwt.qwt_text import QwtText
-from qwt.qwt_painter import QwtPainter
-from qwt.qwt_interval import QwtInterval
-from qwt.qwt_color_map import QwtColorMap
+from qwt.scale_draw import QwtScaleDraw
+from qwt.scale_engine import QwtLinearScaleEngine
+from qwt.color_map import QwtLinearColorMap
+from qwt.text import QwtText
+from qwt.painter import QwtPainter
+from qwt.interval import QwtInterval
+from qwt.color_map import QwtColorMap
 
 from qwt.qt.QtGui import (QWidget, QSizePolicy, QPainter, QStyleOption, QStyle,
                           QPalette)
 from qwt.qt.QtCore import Qt, QRectF, QSize, SIGNAL
 
-from math import ceil
+import numpy as np
 
 
 class ColorBar(object):
@@ -273,7 +273,7 @@ class QwtScaleWidget(QWidget):
         self.__data.scaleDraw.move(x, y)
         self.__data.scaleDraw.setLength(length)
         
-        extent = ceil(self.__data.scaleDraw.extent(self.font()))
+        extent = np.ceil(self.__data.scaleDraw.extent(self.font()))
         self.__data.titleOffset = self.__data.margin + self.__data.spacing +\
                                   colorBarWidth + extent
         
@@ -359,10 +359,10 @@ class QwtScaleWidget(QWidget):
         return size + QSize(left + right, top + bottom)
     
     def titleHeightForWidth(self, width):
-        return ceil(self.__data.title.heightForWidth(width, self.font()))
+        return np.ceil(self.__data.title.heightForWidth(width, self.font()))
     
     def dimForLength(self, length, scaleFont):
-        extent = ceil(self.__data.scaleDraw.extent(scaleFont))
+        extent = np.ceil(self.__data.scaleDraw.extent(scaleFont))
         dim = self.__data.margin + extent + 1
         if not self.__data.title.isEmpty():
             dim += self.titleHeightForWidth(length)+self.__data.spacing

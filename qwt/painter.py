@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_clipper import QwtClipper
-from qwt.qwt_color_map import QwtColorMap
+from qwt.clipper import QwtClipper
+from qwt.color_map import QwtColorMap
 
 from qwt.qt.QtGui import (QPaintEngine, QApplication, QFont, QFontInfo, QFrame,
                           QPixmap, QPainter, QPolygonF, QPalette, QStyle, QPen,

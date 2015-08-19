@@ -2,11 +2,11 @@
 
 from __future__ import division
 
-from qwt.qwt_painter import QwtPainter
-from qwt.qwt_plot import QwtPlot
-from qwt.qwt_plot_layout import QwtPlotLayout
-from qwt.qwt_scale_draw import QwtScaleDraw
-from qwt.qwt_scale_map import QwtScaleMap
+from qwt.painter import QwtPainter
+from qwt.plot import QwtPlot
+from qwt.plot_layout import QwtPlotLayout
+from qwt.scale_draw import QwtScaleDraw
+from qwt.scale_map import QwtScaleMap
 
 from qwt.qt.QtGui import (QPrinter, QPainter, QImageWriter, QImage, QColor,
                           QPaintDevice, QTransform, QPalette, QFileDialog,

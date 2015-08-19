@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_series_data import QwtSeriesData, qwtBoundingRect
-from qwt.qwt_interval import QwtInterval
+from qwt.series_data import QwtSeriesData, qwtBoundingRect
+from qwt.interval import QwtInterval
 
 from qwt.qt.QtCore import QPointF, QRectF
 

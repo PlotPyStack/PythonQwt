@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_curve_fitter import QwtSplineCurveFitter
-from qwt.qwt_text import QwtText
-from qwt.qwt_plot import QwtPlotItem, QwtPlotItem_PrivateData
-from qwt.qwt_painter import QwtPainter
-from qwt.qwt_point_mapper import QwtPointMapper
-from qwt.qwt_clipper import QwtClipper
-from qwt.qwt_math import qwtSqr
-from qwt.qwt_graphic import QwtGraphic
-from qwt.qwt_series_data import QwtPointSeriesData, QwtSeriesData
-from qwt.qwt_series_store import QwtSeriesStore
-from qwt.qwt_plot_seriesitem import QwtPlotSeriesItem
-from qwt.qwt_point_data import QwtPointArrayData, QwtCPointerData
-from qwt.qwt_symbol import QwtSymbol
+from qwt.curve_fitter import QwtSplineCurveFitter
+from qwt.text import QwtText
+from qwt.plot import QwtPlotItem, QwtPlotItem_PrivateData
+from qwt.painter import QwtPainter
+from qwt.point_mapper import QwtPointMapper
+from qwt.clipper import QwtClipper
+from qwt.math import qwtSqr
+from qwt.graphic import QwtGraphic
+from qwt.series_data import QwtPointSeriesData, QwtSeriesData
+from qwt.series_store import QwtSeriesStore
+from qwt.plot_seriesitem import QwtPlotSeriesItem
+from qwt.point_data import QwtPointArrayData, QwtCPointerData
+from qwt.symbol import QwtSymbol
 
 from qwt.qt.QtGui import QPen, QBrush, QPaintEngine, QPainter, QPolygonF
 from qwt.qt.QtCore import QSize, Qt, QT_VERSION, QRectF, QPointF

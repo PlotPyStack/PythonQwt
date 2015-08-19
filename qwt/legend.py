@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_legend_data import QwtLegendData
-from qwt.qwt_dyngrid_layout import QwtDynGridLayout
-from qwt.qwt_painter import QwtPainter
-from qwt.qwt_legend_label import QwtLegendLabel
+from qwt.legend_data import QwtLegendData
+from qwt.dyngrid_layout import QwtDynGridLayout
+from qwt.painter import QwtPainter
+from qwt.legend_label import QwtLegendLabel
 
 from qwt.qt.QtGui import (QFrame, QScrollArea, QWidget, QVBoxLayout, QPalette,
                           QApplication)
 from qwt.qt.QtCore import SIGNAL, QEvent, QSize, Qt, QRect, QRectF
 
-from math import ceil
+import numpy as np
 
 
 class QwtAbstractLegend(QFrame):
@@ -301,10 +301,10 @@ class QwtLegend(QwtAbstractLegend):
             return
         left, right, top, bottom = self.getContentsMargins()
         layoutRect = QRect()
-        layoutRect.setLeft(ceil(rect.left())+left)
-        layoutRect.setTop(ceil(rect.top())+top)
-        layoutRect.setRight(ceil(rect.right())-right)
-        layoutRect.setBottom(ceil(rect.bottom())-bottom)
+        layoutRect.setLeft(np.ceil(rect.left())+left)
+        layoutRect.setTop(np.ceil(rect.top())+top)
+        layoutRect.setRight(np.ceil(rect.right())-right)
+        layoutRect.setBottom(np.ceil(rect.bottom())-bottom)
         numCols = legendLayout.columnsForWidth(layoutRect.width())
         itemRects = legendLayout.layoutItems(layoutRect, numCols)
         index = 0

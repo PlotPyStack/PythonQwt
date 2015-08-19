@@ -2,11 +2,11 @@
 
 from __future__ import division
 
-from qwt.qwt_interval import QwtInterval
-from qwt.qwt_scale_div import QwtScaleDiv
-from qwt.qwt_transform import QwtLogTransform
-from qwt.qwt_math import qwtFuzzyCompare
-from qwt.qwt_transform import QwtTransform
+from qwt.interval import QwtInterval
+from qwt.scale_div import QwtScaleDiv
+from qwt.transform import QwtLogTransform
+from qwt.math import qwtFuzzyCompare
+from qwt.transform import QwtTransform
 
 from qwt.qt.QtCore import qFuzzyCompare
 

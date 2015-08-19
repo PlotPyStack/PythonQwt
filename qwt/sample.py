@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_interval import QwtInterval
+from qwt.interval import QwtInterval
 
 
 class QwtIntervalSample(object):

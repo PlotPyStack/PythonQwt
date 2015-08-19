@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qwt_scale_div import QwtScaleDiv
-from qwt.qwt_scale_map import QwtScaleMap
-from qwt.qwt_text import QwtText
-from qwt.qwt_math import qwtRadians
-from qwt.qwt_painter import QwtPainter
+from qwt.scale_div import QwtScaleDiv
+from qwt.scale_map import QwtScaleMap
+from qwt.text import QwtText
+from qwt.math import qwtRadians
+from qwt.painter import QwtPainter
 
 from qwt.qt.QtGui import QPalette, QFontMetrics, QTransform
 from qwt.qt.QtCore import (Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect,

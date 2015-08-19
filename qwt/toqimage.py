@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from qwt.qt.QtGui import QImage, qRgb
+from qwt.qt.QtGui import QImage
 
 import numpy as np
 
 
-def toQImage(arr, copy=False):
+def array_to_qimage(arr, copy=False):
     """Convert NumPy array to QImage object"""
     # https://gist.githubusercontent.com/smex/5287589/raw/toQImage.py
     if arr is None:
