@@ -1022,6 +1022,12 @@ class QwtPlotItem(object):
         if yAxis == QwtPlot.yLeft or yAxis == QwtPlot.yRight:
             self.__data.yAxis = yAxis
         self.itemChanged()
+
+    def setAxis(self, xAxis, yAxis):
+        import warnings
+        warnings.warn("`setAxis` has been removed in Qwt6: "\
+                      "please use `setAxes` instead", RuntimeWarning)
+        self.setAxes(xAxis, yAxis)
     
     def setXAxis(self, axis):
         if axis in (QwtPlot.xBottom, QwtPlot.xTop):

@@ -237,3 +237,4 @@ class QwtInterval(object):
             return self
         return QwtInterval(min([value, self.__minValue]),
                            max([value, self.__maxValue]))
+

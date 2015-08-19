@@ -47,7 +47,7 @@ class BottomEdge(object):
 
 class PointBuffer(object):
     def __init__(self, capacity=0):
-        self.capacity = capacity
+        self.m_capacity = capacity
         self.m_size = 0
         self.m_buffer = None
         if capacity > 0:
@@ -56,8 +56,19 @@ class PointBuffer(object):
     def setPoints(self, numPoints, points):
         self.reserve(numPoints)
         self.m_size = numPoints
-        
-        
+    
+    def reset(self):
+        self.m_size = 0
+    
+    def size(self):
+        return self.m_size
+    
+    def data(self):
+        return self.m_buffer
+    
+    def operator(self, i):
+        return self.m_buffer[i]
+    
 
 
 class QwtClipper(object):

@@ -522,6 +522,12 @@ class QwtPlotCanvas(QFrame):
         else:
             self.update(self.contentsRect())
     
+    def invalidatePaintCache(self):
+        import warnings
+        warnings.warn("`invalidatePaintCache` has been removed: "\
+                      "please use `replot` instead", RuntimeWarning)
+        self.replot()
+
     def updateStyleSheetInfo(self):
         if not self.testAttribute(Qt.WA_StyledBackground):
             return
