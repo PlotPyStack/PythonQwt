@@ -67,8 +67,10 @@ def qwtToPolylineFiltered(xMap, yMap, series, from_, to, round_,
     dtype = np.float if Polygon is QPolygonF else np.int
     pointer.setsize(2*polyline.size()*np.finfo(dtype).dtype.itemsize)
     memory = np.frombuffer(pointer, dtype)
-    memory[0::2] = np.round(xMap.transform(series.xData()))
-    memory[1::2] = np.round(yMap.transform(series.yData()))
+    memory[from_*2:to*2+1:2] =\
+                        np.round(xMap.transform(series.xData()))[from_:to+1]
+    memory[from_*2+1:to*2+2:2] =\
+                        np.round(yMap.transform(series.yData()))[from_:to+1]
     return polyline    
 #    points = polyline.data()
 #    sample0 = series.sample(from_)

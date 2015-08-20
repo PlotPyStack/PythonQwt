@@ -13,8 +13,10 @@ from qwt.series_store import QwtSeriesStore
 from qwt.plot_seriesitem import QwtPlotSeriesItem
 from qwt.point_data import QwtPointArrayData, QwtCPointerData
 from qwt.symbol import QwtSymbol
+from qwt.plot_directpainter import QwtPlotDirectPainter
 
-from qwt.qt.QtGui import QPen, QBrush, QPaintEngine, QPainter, QPolygonF
+from qwt.qt.QtGui import (QPen, QBrush, QPaintEngine, QPainter, QPolygonF,
+                          QColor)
 from qwt.qt.QtCore import QSize, Qt, QT_VERSION, QRectF, QPointF
 
 import numpy as np
@@ -150,6 +152,10 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             raise TypeError("%s().setPen() takes 1 or 3 argument(s) (%s given)"\
                             % (self.__class__.__name__, len(args)))
         if pen != self.__data.pen:
+            if isinstance(pen, QColor):
+                pen = QPen(pen)
+            else:
+                assert isinstance(pen, QPen)
             self.__data.pen = pen
             self.legendChanged()
             self.itemChanged()
@@ -158,6 +164,10 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         return self.__data.pen
     
     def setBrush(self, brush):
+        if isinstance(brush, QColor):
+            brush = QBrush(brush)
+        else:
+            assert isinstance(brush, QBrush)
         if brush != self.__data.brush:
             self.__data.brush = brush
             self.legendChanged()
@@ -165,6 +175,17 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     
     def brush(self):
         return self.__data.brush
+    
+    def directPaint(self, from_, to):
+        """When observing an measurement while it is running, new points have 
+        to be added to an existing seriesItem. drawSeries() can be used to 
+        display them avoiding a complete redraw of the canvas.
+
+        Setting plot().canvas().setAttribute(Qt.WA_PaintOutsidePaintEvent, True)
+        will result in faster painting, if the paint engine of the canvas widget
+        supports this feature."""
+        directPainter = QwtPlotDirectPainter(self.plot())
+        directPainter.drawSeries(self, from_, to)
         
     def drawSeries(self, painter, xMap, yMap, canvasRect, from_, to):
         numSamples = self.dataSize()
@@ -425,7 +446,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     def baseline(self):
         return self.__data.baseline
     
-    def closestPoint(self, pos, dist):
+    def closestPoint(self, pos):
         numSamples = self.dataSize()
         if self.plot() is None or numSamples <= 0:
             return -1
@@ -442,9 +463,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             if f < dmin:
                 index = i
                 dmin = f
-        if dist:
-            dist = np.sqrt(dmin)
-        return index
+        dist = np.sqrt(dmin)
+        return index, dist
     
     def legendIcon(self, index, size):
         if size.isEmpty():
@@ -470,7 +490,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if self.__data.legendAttributes & QwtPlotCurve.LegendShowLine:
             if self.pen() != Qt.NoPen:
                 pn = self.pen()
-                pn.setCapStyle(Qt.FlatCap)
+#                pn.setCapStyle(Qt.FlatCap)
                 painter.setPen(pn)
                 y = .5*size.height()
                 QwtPainter.drawLine(painter, 0., y, size.width(), y)

@@ -6,10 +6,10 @@ from qwt.qt.QtCore import QRectF, QPointF
 
 
 class QwtPoint3d(object):
-    pass  # Fake / to be implemented
+    pass  #TODO: Fake / to be implemented
 
 class QwtPointPolar(object):
-    pass  # Fake / to be implemented
+    pass  #TODO Fake / to be implemented
 
 
 def qwtBoundingRect(*args):

@@ -29,6 +29,8 @@ from qwt.legend_data import QwtLegendData
 
 from qwt.plot_renderer import QwtPlotRenderer
 
+from qwt.plot_directpainter import QwtPlotDirectPainter
+
 
 ## ============================================================================
 ## Deprecated classes and attributes (to be removed in next major release)

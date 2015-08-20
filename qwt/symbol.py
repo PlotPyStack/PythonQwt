@@ -798,7 +798,7 @@ class QwtSymbol(object):
         return r
     
     def invalidateCache(self):
-        if not self.__data.cache.pixmap.isNull():
+        if self.__data.cache.pixmap is not None:
             self.__data.cache.pixmap = QPixmap()
     
     def setStyle(self, style):
