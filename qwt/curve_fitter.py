@@ -86,13 +86,13 @@ class QwtSplineCurveFitter(QwtCurveFitter):
         fittedPoints = QPolygonF(self.__data.splineSize)
         splinePointsX = QPolygonF(size)
         splinePointsY = QPolygonF(size)
-        p = points.data()
+#        p = points.data()
         spX = splinePointsX#.data()
         spY = splinePointsY#.data()
         param = 0.
         for i in range(size):
-            x = p[i].x()
-            y = p[i].y()
+            x = points[i].x()
+            y = points[i].y()
             if i > 0:
                 delta = np.sqrt((x-spX[i-1].y())**2+(y-spY[i-1].y())**2)
                 param += max([delta, 1.])

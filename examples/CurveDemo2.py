@@ -1,16 +1,14 @@
 #!/usr/bin/env python
 
-# The Python version of qwt-*/examples/curvdemo2
-
+#FIXME: scale issue!
 
 import sys
 from PyQt4 import Qt
-#import PyQt4.Qwt5 as Qwt
 import qwt as Qwt
-from PyQt4.Qwt5.anynumpy import *
+import numpy as np
 
-Size=15
-USize=13
+Size = 15
+USize = 13
 
 class CurveDemo(Qt.QFrame):
 
@@ -29,18 +27,14 @@ class CurveDemo(Qt.QFrame):
         # curve 1
         curve = Qwt.QwtPlotCurve()
         curve.setPen(Qt.QPen(Qt.QColor(150, 150, 200), 2))
-        curve.setCurveType(Qwt.QwtPlotCurve.Xfy)
         curve.setStyle(Qwt.QwtPlotCurve.Lines)
-        curveFitter = Qwt.QwtSplineCurveFitter()
-        curveFitter.setSplineSize(150)
-        curve.setCurveFitter(curveFitter)
         curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.XCross,
                                       Qt.QBrush(),
                                       Qt.QPen(Qt.Qt.yellow, 2),
                                       Qt.QSize(7, 7)))
         self.tuples.append((curve,
                             Qwt.QwtScaleMap(0, 100, -1.5, 1.5),
-                            Qwt.QwtScaleMap(0, 100, 0.0, 2*pi)))
+                            Qwt.QwtScaleMap(0, 100, 0.0, 2*np.pi)))
         # curve 2
         curve = Qwt.QwtPlotCurve()
         curve.setPen(Qt.QPen(Qt.QColor(200, 150, 50),
@@ -52,17 +46,12 @@ class CurveDemo(Qt.QFrame):
                                       Qt.QPen(Qt.Qt.yellow),
                                       Qt.QSize(5, 5)))
         self.tuples.append((curve,
-                            Qwt.QwtScaleMap(0, 100, 0.0, 2*pi),
+                            Qwt.QwtScaleMap(0, 100, 0.0, 2*np.pi),
                             Qwt.QwtScaleMap(0, 100, -3.0, 1.1)))
         # curve 3
         curve = Qwt.QwtPlotCurve()
         curve.setPen(Qt.QPen(Qt.QColor(100, 200, 150)))
         curve.setStyle(Qwt.QwtPlotCurve.Lines)
-        curve.setCurveAttribute(Qwt.QwtPlotCurve.Fitted)
-        curveFitter = Qwt.QwtSplineCurveFitter()
-        curveFitter.setFitMode(Qwt.QwtSplineCurveFitter.ParametricSpline)
-        curveFitter.setSplineSize(200)
-        curve.setCurveFitter(curveFitter)
         self.tuples.append((curve,
                             Qwt.QwtScaleMap(0, 100, -1.1, 3.0),
                             Qwt.QwtScaleMap(0, 100, -1.1, 3.0)))
@@ -70,34 +59,25 @@ class CurveDemo(Qt.QFrame):
         curve = Qwt.QwtPlotCurve()
         curve.setPen(Qt.QPen(Qt.Qt.red))
         curve.setStyle(Qwt.QwtPlotCurve.Lines)
-        curve.setCurveAttribute(Qwt.QwtPlotCurve.Fitted)
-        curveFitter = Qwt.QwtSplineCurveFitter()
-        curveFitter.setSplineSize(200)
-        curve.setCurveFitter(curveFitter)
         self.tuples.append((curve,
                             Qwt.QwtScaleMap(0, 100, -5.0, 1.1),
                             Qwt.QwtScaleMap(0, 100, -1.1, 5.0)))
         # data
         self.phase = 0.0
-        self.base = arange(0.0, 2.01*pi, 2*pi/(USize-1))
-        self.uval = cos(self.base)
-        self.vval = sin(self.base)
+        self.base = np.arange(0.0, 2.01*np.pi, 2*np.pi/(USize-1))
+        self.uval = np.cos(self.base)
+        self.vval = np.sin(self.base)
         self.uval[1::2] *= 0.5
         self.vval[1::2] *= 0.5
         self.newValues()
         # start timer
         self.tid = self.startTimer(250)
 
-    # __init__()
-
     def paintEvent(self, event):
         Qt.QFrame.paintEvent(self,event)
         painter = Qt.QPainter(self)
-        #painter.setRenderHint(Qt.QPainter.Antialiasing)
         painter.setClipRect(self.contentsRect())
         self.drawContents(painter)
-
-    # paintEvent()
 
     def drawContents(self, painter):
         r = self.contentsRect()
@@ -106,8 +86,6 @@ class CurveDemo(Qt.QFrame):
             yMap.setPaintInterval(r.top(), r.bottom())
             curve.draw(painter, xMap, yMap, r)
 
-    # drawContents()
-
     def timerEvent(self, event):
         self.newValues()
         self.repaint()
@@ -115,12 +93,12 @@ class CurveDemo(Qt.QFrame):
     def newValues(self):
         phase = self.phase
         
-        self.xval = arange(0, 2.01*pi, 2*pi/(Size-1))
-        self.yval = sin(self.xval - phase)
-        self.zval = cos(3*(self.xval + phase))
+        self.xval = np.arange(0, 2.01*np.pi, 2*np.pi/(Size-1))
+        self.yval = np.sin(self.xval - phase)
+        self.zval = np.cos(3*(self.xval + phase))
     
-        s = 0.25 * sin(phase)
-        c = sqrt(1.0 - s*s)
+        s = 0.25 * np.sin(phase)
+        c = np.sqrt(1.0 - s*s)
         u = self.uval
         self.uval = c*self.uval-s*self.vval
         self.vval = c*self.vval+s*u
@@ -130,32 +108,19 @@ class CurveDemo(Qt.QFrame):
         self.tuples[2][0].setData(self.yval, self.zval)
         self.tuples[3][0].setData(self.uval, self.vval)
         
-        self.phase += 2*pi/100
-        if self.phase>2*pi:
+        self.phase += 2*np.pi/100
+        if self.phase>2*np.pi:
             self.phase = 0.0
 
 
 def make():
     demo = CurveDemo()
-    demo.resize(300, 300)
+    demo.resize(600, 600)
     demo.show()
     return demo
 
-# make()
 
-
-def main(args):
-    app = Qt.QApplication(args)
+if __name__ == '__main__':
+    app = Qt.QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())
-
-# main()
-
- 
-# Admire!         
-if __name__ == '__main__':
-    main(sys.argv)
-
-# Local Variables: ***
-# mode: python ***
-# End: ***

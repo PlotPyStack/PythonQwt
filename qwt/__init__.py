@@ -27,6 +27,8 @@ from qwt.sample import QwtIntervalSample
 from qwt.painter import QwtPainter
 from qwt.legend_data import QwtLegendData
 
+from qwt.point_data import QwtPointArrayData
+
 from qwt.plot_renderer import QwtPlotRenderer
 
 from qwt.plot_directpainter import QwtPlotDirectPainter

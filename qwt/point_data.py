@@ -4,11 +4,16 @@ from qwt.series_data import QwtSeriesData, qwtBoundingRect
 from qwt.interval import QwtInterval
 
 from qwt.qt.QtCore import QPointF, QRectF
+import numpy as np
 
 
 class QwtPointArrayData(QwtSeriesData):
     def __init__(self, x, y, size=None):
         QwtSeriesData.__init__(self)
+        if isinstance(x, (tuple, list)):
+            x = np.array(x)
+        if isinstance(y, (tuple, list)):
+            y = np.array(y)
         self.__x = x
         self.__y = y
         

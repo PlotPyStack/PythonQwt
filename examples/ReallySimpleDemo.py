@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-# The really simple Python version of Qwt-5.0.0/examples/simple
-
-
 import sys
 import numpy as np
 import qwt
@@ -10,26 +7,18 @@ from PyQt4 import Qt
 
 
 class SimplePlot(qwt.QwtPlot):
-
     def __init__(self, *args):
         qwt.QwtPlot.__init__(self, *args)
-
-	  # make a QwtPlot widget
         self.setTitle('ReallySimpleDemo.py')
         self.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.RightLegend)
-        
-        # set axis titles
         self.setAxisTitle(qwt.QwtPlot.xBottom, 'x -->')
         self.setAxisTitle(qwt.QwtPlot.yLeft, 'y -->')
         self.enableAxis(self.xBottom)
-#        self.enableAxis(self.xTop)
-#        self.enableAxis(self.yRight)
 
         # insert a few curves
         cSin = qwt.QwtPlotCurve('y = sin(x)')
         cSin.setPen(Qt.QPen(Qt.Qt.red))
         cSin.attach(self)
-
         cCos = qwt.QwtPlotCurve('y = cos(x)')
         cCos.setPen(Qt.QPen(Qt.Qt.blue))
         cCos.attach(self)
