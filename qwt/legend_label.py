@@ -102,7 +102,7 @@ class QwtLegendLabel(QwtTextLabel):
         if self.__data.itemMode == QwtLegendData.Checkable:
             isBlocked = self.signalsBlocked()
             self.blockSignals(True)
-            self.setDown(True)
+            self.setDown(on)
             self.blockSignals(isBlocked)
     
     def isChecked(self):

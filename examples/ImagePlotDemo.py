@@ -2,59 +2,43 @@
 
 import sys
 from PyQt4 import Qt
-#import PyQt4.Qwt5 as Qwt
 import qwt as Qwt
-from PyQt4.Qwt5.anynumpy import *
+import numpy as np
 
 #FIXME: This example is still not working: I suspect an issue related to image scaling (see PlotImage.draw)
 
-# from scipy.pilutil
 def bytescale(data, cmin=None, cmax=None, high=255, low=0):
-    if ((hasattr(data, 'dtype') and data.dtype.char == UInt8)
-        or (hasattr(data, 'typecode') and data.typecode == UInt8)
+    if ((hasattr(data, 'dtype') and data.dtype.char == np.uint8)
+        or (hasattr(data, 'typecode') and data.typecode == np.uint8)
         ):
         return data
     high = high - low
     if cmin is None:
-        cmin = min(ravel(data))
+        cmin = min(np.ravel(data))
     if cmax is None:
-        cmax = max(ravel(data))
+        cmax = max(np.ravel(data))
     scale = high * 1.0 / (cmax-cmin or 1)
-    bytedata = ((data*1.0-cmin)*scale + 0.4999).astype(UInt8)
-    return bytedata + asarray(low).astype(UInt8)
-
-# bytescale()
-
+    bytedata = ((data*1.0-cmin)*scale + 0.4999).astype(np.uint8)
+    return bytedata + np.asarray(low).astype(np.uint8)
 
 def linearX(nx, ny):
-    return repeat(arange(nx, typecode = Float32)[:, NewAxis], ny, -1)
-
-# linearX()
-
+    return np.repeat(np.arange(nx, typecode = np.float32)[:, np.newaxis], ny, -1)
 
 def linearY(nx, ny):
-    return repeat(arange(ny, typecode = Float32)[NewAxis, :], nx, 0)
-
-# linearY()
-
+    return np.repeat(np.arange(ny, typecode = np.float32)[np.newaxis, :], nx, 0)
 
 def square(n, min, max):
-    t = arange(min, max, float(max-min)/(n-1))
+    t = np.arange(min, max, float(max-min)/(n-1))
     #return outer(cos(t), sin(t))
-    return cos(t)*sin(t)[:,NewAxis]
-
-# square()
+    return np.cos(t)*np.sin(t)[:,np.newaxis]
     
 
 class PlotImage(Qwt.QwtPlotItem):
-
     def __init__(self, title = Qwt.QwtText()):
         Qwt.QwtPlotItem.__init__(self)
         self.setTitle(title)
         self.setItemAttribute(Qwt.QwtPlotItem.Legend);
         self.xyzs = None
-
-    # __init__()
     
     def setData(self, xyzs, xRange = None, yRange = None):
         self.xyzs = xyzs
@@ -73,13 +57,9 @@ class PlotImage(Qwt.QwtPlotItem):
         for i in range(0, 256):
             self.image.setColor(i, Qt.qRgb(i, 0, 255-i))
 
-    # setData()    
-
     def updateLegend(self, legend):
         Qwt.QwtPlotItem.updateLegend(self, legend)
         legend.find(self).setText(self.title())
-
-    # updateLegend()
 
     def draw(self, painter, xMap, yMap, rect):
         """Paint image zoomed to xMap, yMap
@@ -112,27 +92,21 @@ class PlotImage(Qwt.QwtPlotItem):
         image = image.scaled(xMap.p2()-xMap.p1()+1, yMap.p1()-yMap.p2()+1)
         # draw
         painter.drawImage(xMap.p1(), yMap.p2(), image)
-
-    # drawImage()
-
-# class PlotImage
     
 
 class ImagePlot(Qwt.QwtPlot):
-
     def __init__(self, *args):
         Qwt.QwtPlot.__init__(self, *args)
         # set plot title
-        self.setTitle('ImagePlot: (un)zoom & (un)hide')
+        self.setTitle('ImagePlot')
         # set plot layout
-#        self.plotLayout().setMargin(0)
         self.plotLayout().setCanvasMargin(0)
         self.plotLayout().setAlignCanvasToScales(True)
         # set legend
         legend = Qwt.QwtLegend()
         legend.setDefaultItemMode(Qwt.QwtLegendData.Clickable)
         self.insertLegend(legend, Qwt.QwtPlot.RightLegend)
-	# set axis titles
+        # set axis titles
         self.setAxisTitle(Qwt.QwtPlot.xBottom, 'time (s)')
         self.setAxisTitle(Qwt.QwtPlot.yLeft, 'frequency (Hz)')
 
@@ -143,11 +117,11 @@ class ImagePlot(Qwt.QwtPlot):
         self.axisWidget(Qwt.QwtPlot.yRight).setColorBarEnabled(True)
         self.axisWidget(Qwt.QwtPlot.yRight).setColorMap(interval, colorMap)
 
-	# calculate 3 NumPy arrays
-        x = arange(-2*pi, 2*pi, 0.01)
-        y = pi*sin(x)
-        z = 4*pi*cos(x)*cos(x)*sin(x)
-	# attach a curve
+        # calculate 3 NumPy arrays
+        x = np.arange(-2*np.pi, 2*np.pi, 0.01)
+        y = np.pi*np.sin(x)
+        z = 4*np.pi*np.cos(x)*np.cos(x)*np.sin(x)
+        # attach a curve
         curve = Qwt.QwtPlotCurve('y = pi*sin(x)')
         curve.attach(self)
         curve.setPen(Qt.QPen(Qt.Qt.green, 2))
@@ -161,7 +135,7 @@ class ImagePlot(Qwt.QwtPlot):
         grid = Qwt.QwtPlotGrid()
         grid.attach(self)
         grid.setPen(Qt.QPen(Qt.Qt.black, 0, Qt.Qt.DotLine))
-	# attach a horizontal marker at y = 0
+        # attach a horizontal marker at y = 0
         marker = Qwt.QwtPlotMarker()
         marker.attach(self)
         marker.setValue(0.0, 0.0)
@@ -171,41 +145,26 @@ class ImagePlot(Qwt.QwtPlot):
         # attach a vertical marker at x = pi
         marker = Qwt.QwtPlotMarker()
         marker.attach(self)
-        marker.setValue(pi, 0.0)
+        marker.setValue(np.pi, 0.0)
         marker.setLineStyle(Qwt.QwtPlotMarker.VLine)
         marker.setLabelAlignment(Qt.Qt.AlignRight | Qt.Qt.AlignBottom)
         marker.setLabel(Qwt.QwtText('x = pi'))
         # attach a plot image
         plotImage = PlotImage('Image')
         plotImage.attach(self)
-        plotImage.setData(
-            square(512, -2*pi, 2*pi), (-2*pi, 2*pi), (-2*pi, 2*pi))
+        plotImage.setData(square(512, -2*np.pi, 2*np.pi),
+                          (-2*np.pi, 2*np.pi), (-2*np.pi, 2*np.pi))
 
-        self.connect(self,
-                     Qt.SIGNAL("legendClicked(QwtPlotItem*)"),
-                     self.toggleVisibility)
+        self.connect(legend, legend.SIG_CLICKED, self.toggleVisibility)
         
         # replot
         self.replot()
-#        self.zoomer = Qwt.QwtPlotZoomer(Qwt.QwtPlot.xBottom,
-#                                        Qwt.QwtPlot.yLeft,
-#                                        Qwt.QwtPicker.DragSelection,
-#                                        Qwt.QwtPicker.AlwaysOff,
-#                                        self.canvas())
-#        self.zoomer.setRubberBandPen(Qt.QPen(Qt.Qt.green))
 
-
-    # __init__()
-
-    def toggleVisibility(self, plotItem):
+    def toggleVisibility(self, plotItem, idx):
         """Toggle the visibility of a plot item
         """
         plotItem.setVisible(not plotItem.isVisible())
         self.replot()
-
-    # toggleVisibility()
-
-# class Qwt.QwtImagePlot
 
 
 def make():
@@ -214,21 +173,8 @@ def make():
     demo.show()
     return demo
 
-# make()
 
-
-def main(args):
-    app = Qt.QApplication(args)
+if __name__ == '__main__':
+    app = Qt.QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())
-
-# main()
-
-
-# Admire
-if __name__ == '__main__':
-    main(sys.argv)
-
-# Local Variables: ***
-# mode: python ***
-# End: ***

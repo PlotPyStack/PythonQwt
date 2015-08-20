@@ -1,21 +1,14 @@
 #!/usr/bin/env python
 
-# The Python version of qwt-*/examples/cpuplot
-
-
 import os
 import sys
 
 from PyQt4 import Qt
-#import PyQt4.Qwt5 as Qwt
 import qwt as Qwt
-from PyQt4.Qwt5.anynumpy import *
+import numpy as np
 
-
-#-- cpustat.cpp --#
 
 class CpuStat:
-
     User = 0
     Nice = 1
     System = 2
@@ -169,8 +162,6 @@ class CpuStat:
     def __init__(self):
         self.procValues = self.__lookup()
 
-    # __init__()
-  
     def statistic(self):
         values = self.__lookup()
         userDelta = 0.0
@@ -183,15 +174,11 @@ class CpuStat:
         self.procValues = values
         return 100.0*userDelta/totalDelta, 100.0*systemDelta/totalDelta
 
-    # statistics()
-    
     def upTime(self):
         result = Qt.QTime()
         for item in self.procValues:
             result = result.addSecs(item/100)
         return result
-
-    # upTime()
 
     def __lookup(self):
         if os.path.exists("/proc/stat"):
@@ -205,27 +192,16 @@ class CpuStat:
             CpuStat.counter %= len(CpuStat.dummyValues)
             return result
 
-    # __lookup
-
-# class CpuStat
-
-
-#-- cpupiemarker.cpp --#
 
 class CpuPieMarker(Qwt.QwtPlotMarker):
-    
     def __init__(self, *args):
         Qwt.QwtPlotMarker.__init__(self, *args)
         self.setZ(1000.0)
         self.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased, True)
         
-    # __init__()
-
     def rtti(self):
         return Qwt.QwtPlotItem.Rtti_PlotUserItem
 
-    # rtti()
-    
     def draw(self, painter, xMap, yMap, rect):
         margin = 5
         pieRect = Qt.QRect()
@@ -238,7 +214,7 @@ class CpuPieMarker(Qwt.QwtPlotMarker):
         for key in ["User", "System", "Idle"]:
             curve = self.plot().cpuPlotCurve(key)
             if curve.dataSize():
-                value = int(5760*curve.y(0)/100.0)
+                value = int(5760*curve.sample(0).y()/100.0)
                 painter.save()
                 painter.setBrush(Qt.QBrush(curve.pen().color(),
                                               Qt.Qt.SolidPattern))
@@ -246,42 +222,24 @@ class CpuPieMarker(Qwt.QwtPlotMarker):
                 painter.restore()
                 angle += value
 
-    # draw()
-
-# class CpuPieMarker
-                        
-
-#-- cpuplot.cpp --#
 
 class TimeScaleDraw(Qwt.QwtScaleDraw):
-
     def __init__(self, baseTime, *args):
         Qwt.QwtScaleDraw.__init__(self, *args)
         self.baseTime = baseTime
  
-    # __init__()
-
     def label(self, value):
         upTime = self.baseTime.addSecs(int(value))
         return Qwt.QwtText(upTime.toString())
 
-    # label()
-
-# class TimeScaleDraw
-
 
 class Background(Qwt.QwtPlotItem):
-
     def __init__(self):
         Qwt.QwtPlotItem.__init__(self)
         self.setZ(0.0)
 
-    # __init__()
-
     def rtti(self):
         return Qwt.QwtPlotItem.Rtti_PlotUserItem
-
-    # rtti()
 
     def draw(self, painter, xMap, yMap, rect):
         c = Qt.QColor(Qt.Qt.white)
@@ -293,18 +251,11 @@ class Background(Qwt.QwtPlotItem):
             painter.fillRect(r, c)
             c = c.dark(110)
 
-    # draw()
-
-# class Background
-
 
 class CpuCurve(Qwt.QwtPlotCurve):
-
     def __init__(self, *args):
         Qwt.QwtPlotCurve.__init__(self, *args)
         self.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
-
-    # __init__()
 
     def setColor(self, color):
         c = Qt.QColor(color)
@@ -313,21 +264,16 @@ class CpuCurve(Qwt.QwtPlotCurve):
         self.setPen(c)
         self.setBrush(c)
 
-    # setColor()
-
-# class CpuCurve
-
     
 HISTORY = 60
 
 class CpuPlot(Qwt.QwtPlot):
-
     def __init__(self, *args):
         Qwt.QwtPlot.__init__(self, *args)
 
         self.curves = {}
         self.data = {}
-        self.timeData = 1.0 * arange(HISTORY-1, -1, -1)
+        self.timeData = 1.0 * np.arange(HISTORY-1, -1, -1)
         self.cpuStat = CpuStat()
 
         self.setAutoReplot(False)
@@ -335,7 +281,7 @@ class CpuPlot(Qwt.QwtPlot):
         self.plotLayout().setAlignCanvasToScales(True)
         
         legend = Qwt.QwtLegend()
-        legend.setItemMode(Qwt.QwtLegend.CheckableItem)
+        legend.setDefaultItemMode(Qwt.QwtLegendData.Checkable)
         self.insertLegend(legend, Qwt.QwtPlot.RightLegend)
         
         self.setAxisTitle(Qwt.QwtPlot.xBottom, "System Uptime [h:m:s]")
@@ -359,28 +305,28 @@ class CpuPlot(Qwt.QwtPlot):
         curve.setColor(Qt.Qt.red)
         curve.attach(self)
         self.curves['System'] = curve
-        self.data['System'] = zeros(HISTORY, Float)
+        self.data['System'] = np.zeros(HISTORY, np.float)
 
         curve = CpuCurve('User')
         curve.setColor(Qt.Qt.blue)
         curve.setZ(curve.z() - 1.0)
         curve.attach(self)
         self.curves['User'] = curve
-        self.data['User'] = zeros(HISTORY, Float)
+        self.data['User'] = np.zeros(HISTORY, np.float)
 
         curve = CpuCurve('Total')
         curve.setColor(Qt.Qt.black)
         curve.setZ(curve.z() - 2.0)
         curve.attach(self)
         self.curves['Total'] = curve
-        self.data['Total'] = zeros(HISTORY, Float)
+        self.data['Total'] = np.zeros(HISTORY, np.float)
 
         curve = CpuCurve('Idle')
         curve.setColor(Qt.Qt.darkCyan)
         curve.setZ(curve.z() - 3.0)
         curve.attach(self)
         self.curves['Idle'] = curve
-        self.data['Idle'] = zeros(HISTORY, Float)
+        self.data['Idle'] = np.zeros(HISTORY, np.float)
 
         self.showCurve(self.curves['System'], True)
         self.showCurve(self.curves['User'], True)
@@ -389,13 +335,9 @@ class CpuPlot(Qwt.QwtPlot):
 
         self.startTimer(1000)
 
-        self.connect(self,
-                     Qt.SIGNAL('legendChecked(QwtPlotItem*, bool)'),
-                     self.showCurve)
+        self.connect(legend, legend.SIG_CHECKED, self.showCurve)
         self.replot()
 
-    # __init__()
-    
     def timerEvent(self, e):
         for data in self.data.values():
             data[1:] = data[0:-1]
@@ -412,23 +354,13 @@ class CpuPlot(Qwt.QwtPlot):
 
         self.replot()
 
-    # timerEvent()
-    
-    def showCurve(self, item, on):
+    def showCurve(self, item, on, index=None):
         item.setVisible(on)
-        widget = self.legend().find(item)
-        if isinstance(widget, Qwt.QwtLegendItem):
-            widget.setChecked(on)
+        self.legend().legendWidget(item).setChecked(on)
         self.replot()
-
-    # showCurve()
 
     def cpuPlotCurve(self, key):
         return self.curves[key]
-
-    # cpuPlotCurve()
-    
-# class CpuPlot
 
 
 def make():
@@ -437,7 +369,6 @@ def make():
     
     plot = CpuPlot(demo)
     plot.setTitle("History")
-    plot.setMargin(5)
     
     label = Qt.QLabel("Press the legend to en/disable a curve", demo)
 
@@ -449,26 +380,8 @@ def make():
     demo.show()
     return demo
 
-# make()
 
-
-def main(args):
-    app = Qt.QApplication(args)
+if __name__ == '__main__':
+    app = Qt.QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())
-
-# main()
-
-
-# Admire!
-if __name__ == '__main__':
-    if 'settracemask' in sys.argv:
-        # for debugging, requires: python configure.py --trace ...
-        import sip
-        sip.settracemask(0x3f)
-
-    main(sys.argv)
-
-# Local Variables: ***
-# mode: python ***
-# End: ***

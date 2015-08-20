@@ -145,7 +145,7 @@ class QwtLegend_PrivateData(object):
 
 class QwtLegend(QwtAbstractLegend):
     SIG_CLICKED = SIGNAL("clicked(PyQt_PyObject,int)")
-    SIG_CHECKED = SIGNAL("checked(bool,int)")
+    SIG_CHECKED = SIGNAL("checked(PyQt_PyObject,bool,int)")
     
     def __init__(self, parent=None):
         QwtAbstractLegend.__init__(self, parent)
@@ -215,9 +215,8 @@ class QwtLegend(QwtAbstractLegend):
     def createWidget(self, data):
         label = QwtLegendLabel()
         label.setItemMode(self.defaultItemMode())
-        self.connect(label, SIGNAL("clicked()"),
-                     lambda: self.itemClicked(label))
-        self.connect(label, SIGNAL("checked(bool)"),
+        self.connect(label, label.SIG_CLICKED, lambda: self.itemClicked(label))
+        self.connect(label, label.SIG_CHECKED,
                      lambda state: self.itemChecked(state, label))
         return label
     
