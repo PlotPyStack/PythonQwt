@@ -1,19 +1,14 @@
 #!/usr/bin/env python
 
-# The Python version of qwt-5.0/examples/histogram
-
 import random
 import sys
 from PyQt4 import Qt
-#import PyQt4.Qwt5 as Qwt
 import qwt as Qwt
 
 
 class HistogramItem(Qwt.QwtPlotItem):
-
     Auto = 0
     Xfy = 1
-    
     def __init__(self, *args):
         Qwt.QwtPlotItem.__init__(self, *args)
         self.__attributes = HistogramItem.Auto
@@ -24,30 +19,20 @@ class HistogramItem(Qwt.QwtPlotItem):
         self.setItemAttribute(Qwt.QwtPlotItem.Legend, True)
         self.setZ(20.0)
 
-    # __init__()
-
     def setData(self, data):
         self.__data = data
         self.itemChanged()
 
-    # setData()
-
     def data(self):
         return self.__data
-
-    # data()
 
     def setColor(self, color):
         if self.__color != color:
             self.__color = color
             self.itemChanged()
 
-    # setColor()
-
     def color(self):
         return self.__color
-
-    # color()
 
     def boundingRect(self):
         result = self.__data.boundingRect()
@@ -67,12 +52,8 @@ class HistogramItem(Qwt.QwtPlotItem):
                 result.setTop(self.baseline())
         return result
 
-    # boundingRect()
-
     def rtti(self):
         return Qwt.QwtPlotItem.PlotHistogram
-
-    # rtti()
 
     def draw(self, painter, xMap, yMap, rect):
         iData = self.data()
@@ -129,19 +110,13 @@ class HistogramItem(Qwt.QwtPlotItem):
                 self.drawBar(
                     painter, Qt.Qt.Vertical, Qt.QRect(x1, y0, x2-x1, y2-y0))
 
-    # draw()
-
     def setBaseline(self, reference):
         if self.baseline() != reference:
             self.__reference = reference
             self.itemChanged()
-
-    # setBaseLine()
     
     def baseline(self,):
         return self.__reference
-
-    # baseline()
 
     def setHistogramAttribute(self, attribute, on = True):
         if self.testHistogramAttribute(attribute):
@@ -153,13 +128,9 @@ class HistogramItem(Qwt.QwtPlotItem):
             self.__attributes &= ~attribute
 
         self.itemChanged()
-    
-    # setHistogramAttribute()
 
     def testHistogramAttribute(self, attribute):
         return bool(self.__attributes & attribute) 
-
-    # testHistogramAttribute()
 
     def drawBar(self, painter, orientation, rect):
         painter.save()
@@ -198,10 +169,6 @@ class HistogramItem(Qwt.QwtPlotItem):
 
         painter.restore()
 
-    # drawBar()
-
-# class HistogramItem
-
 
 def make():
     demo = Qwt.QwtPlot()
@@ -213,7 +180,6 @@ def make():
     grid.enableYMin(True)
     grid.setMajorPen(Qt.QPen(Qt.Qt.black, 0, Qt.Qt.DotLine));
     grid.setMinorPen(Qt.QPen(Qt.Qt.gray, 0 , Qt.Qt.DotLine));
-     
     grid.attach(demo)
 
     histogram = HistogramItem()
@@ -221,7 +187,6 @@ def make():
 
     numValues = 20
     samples = []
-
     pos = 0.0
     for i in range(numValues):
         width = 5 + random.randint(0, 4)
@@ -231,32 +196,15 @@ def make():
 
     histogram.setData(Qwt.QwtIntervalSeriesData(samples))
     histogram.attach(demo)
-
     demo.setAxisScale(Qwt.QwtPlot.yLeft, 0.0, 100.0)
     demo.setAxisScale(Qwt.QwtPlot.xBottom, 0.0, pos)
     demo.replot()
-    
     demo.resize(600, 400)
     demo.show()
-
     return demo
 
-# make()
 
-
-def main(args):
-    app = Qt.QApplication(args)
+if __name__ == '__main__':
+    app = Qt.QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())
-
-# main()
-
-
-# Admire
-if __name__ == '__main__':
-    main(sys.argv)
-
-# Local Variables: ***
-# mode: python ***
-# End: ***
-

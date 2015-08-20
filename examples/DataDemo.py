@@ -1,19 +1,11 @@
 #!/usr/bin/env python
 
-# The Python version of Qwt-5.0.0/examples/data_plot
-
-# for debugging, requires: python configure.py  --trace ...
-if False:
-    import sip
-    sip.settracemask(0x3f)
-
 import random
 import sys
 
 from PyQt4 import Qt
-#import PyQt4.Qwt5 as Qwt
 import qwt as Qwt
-from PyQt4.Qwt5.anynumpy import *
+import numpy as np
 
 
 class DataPlot(Qwt.QwtPlot):
@@ -25,9 +17,9 @@ class DataPlot(Qwt.QwtPlot):
         self.alignScales()
 
         # Initialize data
-        self.x = arange(0.0, 100.1, 0.5)
-        self.y = zeros(len(self.x), Float)
-        self.z = zeros(len(self.x), Float)
+        self.x = np.arange(0.0, 100.1, 0.5)
+        self.y = np.zeros(len(self.x), np.float)
+        self.z = np.zeros(len(self.x), np.float)
 
         self.setTitle("A Moving QwtPlot Demonstration")
         self.insertLegend(Qwt.QwtLegend(), Qwt.QwtPlot.BottomLegend);
@@ -57,8 +49,6 @@ class DataPlot(Qwt.QwtPlot):
         self.startTimer(50)
         self.phase = 0.0
 
-    # __init__()
-
     def alignScales(self):
         self.canvas().setFrameStyle(Qt.QFrame.Box | Qt.QFrame.Plain)
         self.canvas().setLineWidth(1)
@@ -70,32 +60,27 @@ class DataPlot(Qwt.QwtPlot):
             if scaleDraw:
                 scaleDraw.enableComponent(
                     Qwt.QwtAbstractScaleDraw.Backbone, False)
-
-    # alignScales()
     
     def timerEvent(self, e):
-        if self.phase > pi - 0.0001:
+        if self.phase > np.pi - 0.0001:
             self.phase = 0.0
 
         # y moves from left to right:
         # shift y array right and assign new value y[0]
-        self.y = concatenate((self.y[:1], self.y[:-1]), 1)
-        self.y[0] = sin(self.phase) * (-1.0 + 2.0*random.random())
+        self.y = np.concatenate((self.y[:1], self.y[:-1]), 1)
+        self.y[0] = np.sin(self.phase) * (-1.0 + 2.0*random.random())
 		
         # z moves from right to left:
         # Shift z array left and assign new value to z[n-1].
-        self.z = concatenate((self.z[1:], self.z[:1]), 1)
-        self.z[-1] = 0.8 - (2.0 * self.phase/pi) + 0.4*random.random()
+        self.z = np.concatenate((self.z[1:], self.z[:1]), 1)
+        self.z[-1] = 0.8 - (2.0 * self.phase/np.pi) + 0.4*random.random()
 
         self.curveR.setData(self.x, self.y)
         self.curveL.setData(self.x, self.z)
 
         self.replot()
-        self.phase += pi*0.02
+        self.phase += np.pi*0.02
 
-    # timerEvent()
-
-# class DataPlot
 
 def make():
     demo = DataPlot()
@@ -103,19 +88,8 @@ def make():
     demo.show()
     return demo
 
-# make()
 
-def main(args): 
-    app = Qt.QApplication(args)
+if __name__ == '__main__':
+    app = Qt.QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())
-
-# main()
-
-# Admire
-if __name__ == '__main__':
-    main(sys.argv)
-
-# Local Variables: ***
-# mode: python ***
-# End: ***

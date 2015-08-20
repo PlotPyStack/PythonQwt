@@ -3,22 +3,14 @@
 
 import sys
 from PyQt4 import Qt
-#import PyQt4.Qwt5 as Qwt
 import qwt as Qwt
-from PyQt4.Qwt5.anynumpy import *
+import numpy as np
 
 
 class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
-
-    def __init__(self,
-                 x = [], y = [], dx = None, dy = None,
-                 curvePen = None,
-                 curveStyle = None,
-                 curveSymbol = None,
-                 errorPen = None,
-                 errorCap = 0,
-                 errorOnTop = False,
-                 ):
+    def __init__(self, x=[], y=[], dx=None, dy=None, curvePen=None,
+                 curveStyle=None, curveSymbol=None, errorPen=None,
+                 errorCap=0, errorOnTop=False):
         """A curve of x versus y data with error bars in dx and dy.
 
         Horizontal error bars are plotted if dx is not None.
@@ -65,8 +57,6 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
         self.errorCap = errorCap
         self.errorOnTop = errorOnTop
 
-    # __init__()
-
     def setData(self, *args):
         """Set x versus y data with error bars in dx and dy.
 
@@ -92,11 +82,11 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
             if len(args) > 3:
                 dy = args[3]
         
-        self.__x = asarray(x, Float)
+        self.__x = np.asarray(x, np.float)
         if len(self.__x.shape) != 1:
             raise RuntimeError('len(asarray(x).shape) != 1')
 
-        self.__y = asarray(y, Float)
+        self.__y = np.asarray(y, np.float)
         if len(self.__y.shape) != 1:
             raise RuntimeError('len(asarray(y).shape) != 1')
         if len(self.__x) != len(self.__y):
@@ -105,20 +95,18 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
         if dx is None:
             self.__dx = None
         else:
-            self.__dx = asarray(dx, Float)
+            self.__dx = np.asarray(dx, np.float)
         if len(self.__dx.shape) not in [0, 1, 2]:
             raise RuntimeError('len(asarray(dx).shape) not in [0, 1, 2]')
             
         if dy is None:
             self.__dy = dy
         else:
-            self.__dy = asarray(dy, Float)
+            self.__dy = np.asarray(dy, np.float)
         if len(self.__dy.shape) not in [0, 1, 2]:
             raise RuntimeError('len(asarray(dy).shape) not in [0, 1, 2]')
         
         Qwt.QwtPlotCurve.setData(self, self.__x, self.__y)
-
-    # setData()
         
     def boundingRect(self):
         """Return the bounding rectangle of the data, error bars included.
@@ -144,10 +132,8 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
             ymax = max(self.__y + self.__dy[1])
 
         return Qt.QRectF(xmin, ymin, xmax-xmin, ymax-ymin)
-        
-    # boundingRect()
 
-    def drawFromTo(self, painter, xMap, yMap, first, last = -1):
+    def drawSeries(self, painter, xMap, yMap, canvasRect, first, last = -1):
         """Draw an interval of the curve, including the error bars
 
         painter is the QPainter used to draw the curve
@@ -166,7 +152,8 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
             last = self.dataSize() - 1
 
         if self.errorOnTop:
-            Qwt.QwtPlotCurve.drawFromTo(self, painter, xMap, yMap, first, last)
+            Qwt.QwtPlotCurve.drawSeries(self, painter, xMap, yMap,
+                                        canvasRect, first, last)
 
         # draw the error bars
         painter.save()
@@ -244,11 +231,8 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
         painter.restore()
 
         if not self.errorOnTop:
-            Qwt.QwtPlotCurve.drawFromTo(self, painter, xMap, yMap, first, last)
-
-    # drawFromTo()
-
-# class ErrorBarPlotCurve
+            Qwt.QwtPlotCurve.drawSeries(self, painter, xMap, yMap,
+                                        canvasRect, first, last)
 
 
 def make():
@@ -262,8 +246,8 @@ def make():
     grid.setPen(Qt.QPen(Qt.Qt.black, 0, Qt.Qt.DotLine))
     
     # calculate data and errors for a curve with error bars
-    x = arange(0, 10.1, 0.5, Float)
-    y = sin(x)
+    x = np.arange(0, 10.1, 0.5, np.float)
+    y = np.sin(x)
     dy = 0.2 * abs(y)
     # dy = (0.15 * abs(y), 0.25 * abs(y)) # uncomment for asymmetric error bars
     dx = 0.2 # all error bars the same size
@@ -284,37 +268,12 @@ def make():
         errorOnTop = errorOnTop,
         )
     curve.attach(demo)
-    demo.resize(400, 300)
+    demo.resize(640, 480)
     demo.show()
     return demo
 
-# make()
 
-
-# Admire!
 if __name__ == '__main__':
-    if 'settracemask' in sys.argv:
-        # for debugging, requires: python configure.py --trace ...
-        import sip
-        sip.settracemask(0x3f)
-
     app = Qt.QApplication(sys.argv)
     demo = make()
-#    zoomer = Qwt.QwtPlotZoomer(Qwt.QwtPlot.xBottom,
-#                               Qwt.QwtPlot.yLeft,
-#                               Qwt.QwtPicker.DragSelection,
-#                               Qwt.QwtPicker.AlwaysOff,
-#                               demo.canvas())
-#    zoomer.setRubberBandPen(Qt.QPen(Qt.Qt.green))
-#    picker = Qwt.QwtPlotPicker(Qwt.QwtPlot.xBottom,
-#                               Qwt.QwtPlot.yLeft,
-#                               Qwt.QwtPicker.NoSelection,
-#                               Qwt.QwtPlotPicker.CrossRubberBand,
-#                               Qwt.QwtPicker.AlwaysOn,
-#                               demo.canvas())
-#    picker.setTrackerPen(Qt.QPen(Qt.Qt.red))
     sys.exit(app.exec_())
-
-# Local Variables: ***
-# mode: python ***
-# End: ***

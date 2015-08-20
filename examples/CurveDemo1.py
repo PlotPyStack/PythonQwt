@@ -1,17 +1,12 @@
 #!/usr/bin/env python
 
-# The Python version of qwt-*/examples/curvedemo1/curvdemo1
-
-
 import sys
 from PyQt4 import Qt
-#import PyQt4.Qwt5 as Qwt
 import qwt as Qwt
-from PyQt4.Qwt5.anynumpy import *
+import numpy as np
 
 
 class CurveDemo(Qt.QFrame):
-
     def __init__(self, *args):
         Qt.QFrame.__init__(self, *args)
 
@@ -26,23 +21,12 @@ class CurveDemo(Qt.QFrame):
         self.setMidLineWidth(3)
 
         # calculate values
-        self.x = arange(0, 10.0, 10.0/27)
-        self.y = sin(self.x)*cos(2*self.x)
+        self.x = np.arange(0, 10.0, 10.0/27)
+        self.y = np.sin(self.x)*np.cos(2*self.x)
         
         # make curves with different styles
         self.curves = []
         self.titles = []
-#        # curve 0
-#        self.titles.append('Style: Lines/Fitted, Symbol: Cross')
-#        curve = Qwt.QwtPlotCurve()
-#        curve.setPen(Qt.QPen(Qt.Qt.darkGreen))
-#        curve.setStyle(Qwt.QwtPlotCurve.Lines)
-#        curve.setCurveAttribute(Qwt.QwtPlotCurve.Fitted)
-#        curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.Cross,
-#                                      Qt.QBrush(),
-#                                      Qt.QPen(Qt.Qt.black),
-#                                      Qt.QSize(5, 5)))
-#        self.curves.append(curve)
         # curve 1
         self.titles.append('Style: Sticks, Symbol: Ellipse')
         curve = Qwt.QwtPlotCurve()
@@ -86,20 +70,14 @@ class CurveDemo(Qt.QFrame):
         for curve in self.curves:
             curve.setData(self.x, self.y)
 
-    # __init__()
-
     def shiftDown(self, rect, offset):
         rect.translate(0, offset)
-
-    # shiftDown()
 
     def paintEvent(self, event):
         Qt.QFrame.paintEvent(self, event)
         painter = Qt.QPainter(self)
         painter.setClipRect(self.contentsRect())
         self.drawContents(painter)
-
-    # paintEvent()
 
     def drawContents(self, painter):
         # draw curves
@@ -127,10 +105,6 @@ class CurveDemo(Qt.QFrame):
                 Qt.Qt.AlignTop | Qt.Qt.AlignHCenter, title)
             self.shiftDown(r, dy)
 
-    # drawContents()
-
-# class CurveDemo
-
 
 def make():
     demo = CurveDemo()
@@ -138,20 +112,8 @@ def make():
     demo.show()
     return demo
 
-# make()
 
-def main(args):
-    app = Qt.QApplication(args)
+if __name__ == '__main__':
+    app = Qt.QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())
-
-# main()
-
-
-# Admire!         
-if __name__ == '__main__':
-    main(sys.argv)
-
-# Local Variables: ***
-# mode: python ***
-# End: ***

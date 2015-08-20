@@ -10,9 +10,8 @@ from __future__ import unicode_literals
 
 import sys
 from PyQt4.Qt import *
-#from PyQt4.Qwt5 import *
 from qwt import *
-import PyQt4.Qwt5.anynumpy as np
+import numpy as np
 
 
 print_xpm = ['32 32 12 1',
@@ -194,13 +193,9 @@ class BodePlot(QwtPlot):
 
         self.setDamp(0.01)
 
-    # __init__()
-
     def showData(self, frequency, amplitude, phase):
         self.curve1.setData(frequency, amplitude)
         self.curve2.setData(frequency, phase)
-
-    # showData()
 
     def showPeak(self, frequency, amplitude):
         self.peakMarker.setValue(frequency, amplitude)
@@ -208,15 +203,11 @@ class BodePlot(QwtPlot):
         label.setText('Peak: %4g dB' % amplitude)
         self.peakMarker.setLabel(label)
 
-    # showPeak()
-
     def show3dB(self, frequency):
         self.dB3Marker.setValue(frequency, 0.0)
         label = self.dB3Marker.label()
         label.setText('-3dB at f = %4g' % frequency)
         self.dB3Marker.setLabel(label)
-
-    # show3dB()
 
     def setDamp(self, d):
         self.damping = d
@@ -237,10 +228,6 @@ class BodePlot(QwtPlot):
 
         self.replot()
 
-    # setDamp()
-
-# class BodePlot
-
 
 class BodeDemo(QMainWindow):
 
@@ -252,35 +239,6 @@ class BodeDemo(QMainWindow):
 
         self.setContextMenuPolicy(Qt.NoContextMenu)
         
-#        self.zoomers = []
-#        zoomer = QwtPlotZoomer(
-#            QwtPlot.xBottom,
-#            QwtPlot.yLeft,
-#            QwtPicker.DragSelection,
-#            QwtPicker.AlwaysOff,
-#            self.plot.canvas())
-#        zoomer.setRubberBandPen(QPen(Qt.green))
-#        self.zoomers.append(zoomer)
-#
-#        zoomer = QwtPlotZoomer(
-#            QwtPlot.xTop,
-#            QwtPlot.yRight,
-#            QwtPicker.PointSelection | QwtPicker.DragSelection,
-#            QwtPicker.AlwaysOff,
-#            self.plot.canvas())
-#        zoomer.setRubberBand(QwtPicker.NoRubberBand)
-#        self.zoomers.append(zoomer)
-
-#        self.picker = QwtPlotPicker(
-#            QwtPlot.xBottom,
-#            QwtPlot.yLeft,
-#            QwtPicker.PointSelection | QwtPicker.DragSelection,
-#            QwtPlotPicker.CrossRubberBand,
-#            QwtPicker.AlwaysOn,
-#            self.plot.canvas())
-#        self.picker.setRubberBandPen(QPen(Qt.green))
-#        self.picker.setTrackerPen(QPen(Qt.cyan))
- 
         self.setCentralWidget(self.plot)
 
         toolBar = QToolBar(self)
@@ -316,32 +274,11 @@ class BodeDemo(QMainWindow):
         dampLayout.addWidget(QLabel("Damping Factor", dampBox), 0)
         dampLayout.addSpacing(10)
 
-#        self.cntDamp = QwtCounter(dampBox)
-#        self.cntDamp.setRange(0.01, 5.0, 0.01)
-#        self.cntDamp.setValue(0.01)
-#        dampLayout.addWidget(self.cntDamp, 10)
-
         toolBar.addWidget(dampBox)
 
         self.statusBar()
         
-        self.zoom(False)
         self.showInfo()
-        
-#        self.connect(self.cntDamp,
-#                     SIGNAL('valueChanged(double)'),
-#                     self.plot.setDamp)
-        self.connect(btnZoom,
-                     SIGNAL('toggled(bool)'),
-                     self.zoom)
-#        self.connect(self.picker,
-#                     SIGNAL('moved(const QPoint &)'),
-#                     self.moved)
-#        self.connect(self.picker,
-#                     SIGNAL('selected(const QPolygon &)'),
-#                     self.selected)
-
-    # __init__()
 
     def print_(self):
         printer = QPrinter(QPrinter.HighResolution)
@@ -366,35 +303,12 @@ class BodeDemo(QMainWindow):
             renderer.renderTo(self.plot, printer)
 
     def exportDocument(self):
-        self.plot.exportTo("bode.pdf")
-
-    def zoom(self, on):
-#        self.zoomers[0].setEnabled(on)
-#        self.zoomers[0].zoom(0)
-#        
-#        self.zoomers[1].setEnabled(on)
-#        self.zoomers[1].zoom(0)
-
-#        if on:
-#            self.picker.setRubberBand(Qwt.QwtPicker.NoRubberBand)
-#        else:
-#            self.picker.setRubberBand(Qwt.QwtPicker.CrossRubberBand)
-
-        self.showInfo()
-
-    # zoom()
+        renderer = QwtPlotRenderer(self.plot)
+        renderer.exportTo(self.plot, "bode")
     
     def showInfo(self, text=""):
-#        if not text:
-#            if self.picker.rubberBand():
-#                text = 'Cursor Pos: Press left mouse button in plot region'
-#            else:
-#                text = 'Zoom: Press mouse button and drag'
-                
         self.statusBar().showMessage(text)
                 
-    # showInfo()
-    
     def moved(self, point):
         info = "Freq=%g, Ampl=%g, Phase=%g" % (
             self.plot.invTransform(Qwt.QwtPlot.xBottom, point.x()),
@@ -402,12 +316,9 @@ class BodeDemo(QMainWindow):
             self.plot.invTransform(Qwt.QwtPlot.yRight, point.y()))
         self.showInfo(info)
 
-    # moved()
-
     def selected(self, _):
         self.showInfo()
 
-    # selected()
 
 def make():
     demo = BodeDemo()
