@@ -1,0 +1,32 @@
+qwt
+===
+
+Copyright © 2014-2015 Pierre Raybaut
+Licensed under the terms of the MIT License (see qwt/LICENSE)
+
+
+    Overview
+
+      The `qwt` package is a pure Python implementation of Qwt C++ library with
+      the following limitations.
+
+      The following `Qwt` classes won't be reimplemented in `qwt` because most 
+      powerful features already exist in `guiqwt`:
+        - QwtPlotZoomer
+        - QwtCounter
+        - QwtEventPattern
+        - QwtPicker
+        - QwtPlotPicker
+
+    Dependencies
+    
+        Requirements
+            Python >=2.6 or Python >=3.0
+            PyQt4 >=4.4
+            NumPy >= 1.5
+
+    Installation
+    
+        From the source package:
+            python setup.py install
+            
