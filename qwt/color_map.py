@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#
+# Copyright © 2014-2015 Pierre Raybaut
+# Licensed under the terms of the MIT License
+# (see qwt/LICENSE for details)
 
 from qwt.qt.QtGui import QColor, qRed, qGreen, qBlue, qRgb, qRgba, qAlpha
 from qwt.qt.QtCore import Qt, qIsNaN

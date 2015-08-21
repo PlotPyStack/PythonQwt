@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright © 2014-2015 Pierre Raybaut
+# Licensed under the terms of the MIT License
+# (see qwt/LICENSE for details)
 
 __version__ = QWT_VERSION_STR = '6.1.2alpha1'
 

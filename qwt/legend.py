@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#
+# Copyright © 2014-2015 Pierre Raybaut
+# Licensed under the terms of the MIT License
+# (see qwt/LICENSE for details)
 
 from qwt.legend_data import QwtLegendData
 from qwt.dyngrid_layout import QwtDynGridLayout

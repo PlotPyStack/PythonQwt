@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+#
+# Copyright © 2014-2015 Pierre Raybaut
+# Licensed under the terms of the MIT License
+# (see qwt/LICENSE for details)
 
 from qwt.scale_draw import QwtScaleDraw
 from qwt.scale_engine import QwtLinearScaleEngine
