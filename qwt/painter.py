@@ -19,6 +19,8 @@ QWIDGETSIZE_MAX = (1<<24)-1
 def qwtIsClippingNeeded(painter):
     doClipping = False
     clipRect = QRectF()
+    #TODO: remove next line when QwtClipper will be implemented
+    return doClipping, clipRect
     pe = painter.paintEngine()
     if pe and pe.type() == QPaintEngine.SVG:
         if painter.hasClipping():
@@ -244,9 +246,9 @@ class QwtPainterClass(object):
         cpa = polygon
         if deviceClipping:
             if isinstance(polygon, QPolygonF):
-                cpa = QwtClipper.clipPolygonF(clipRect, polygon)
+                cpa = QwtClipper().clipPolygonF(clipRect, polygon)
             else:
-                cpa = QwtClipper.clipPolygon(clipRect, polygon)
+                cpa = QwtClipper().clipPolygon(clipRect, polygon)
         painter.drawPolygon(cpa)
     
     def drawPolyline(self, *args):
@@ -256,9 +258,9 @@ class QwtPainterClass(object):
             cpa = polygon
             if deviceClipping:
                 if isinstance(polygon, QPolygonF):
-                    cpa = QwtClipper.clipPolygonF(clipRect, polygon)
+                    cpa = QwtClipper().clipPolygonF(clipRect, polygon)
                 else:
-                    cpa = QwtClipper.clipPolygon(clipRect, polygon)
+                    cpa = QwtClipper().clipPolygon(clipRect, polygon)
             qwtDrawPolyline(painter, cpa, cpa.size(),
                             self.__polylineSplitting)
         elif len(args) == 3:
@@ -267,10 +269,10 @@ class QwtPainterClass(object):
             if deviceClipping:
                 if isinstance(points[0], QPointF):
                     polygon = QPolygonF(points)
-                    polygon = QwtClipper.clipPolygonF(clipRect, polygon)
+                    polygon = QwtClipper().clipPolygonF(clipRect, polygon)
                 else:
                     polygon = QPolygon(points)
-                    polygon = QwtClipper.clipPolygon(clipRect, polygon)
+                    polygon = QwtClipper().clipPolygon(clipRect, polygon)
                 qwtDrawPolyline(painter, polygon,
                                 polygon.size(), self.__polylineSplitting)
 #                polygon = QPolygonF(pointCount)

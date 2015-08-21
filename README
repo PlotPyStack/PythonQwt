@@ -18,6 +18,12 @@ Licensed under the terms of the MIT License (see qwt/LICENSE)
         - QwtPicker
         - QwtPlotPicker
 
+      QwtClipper is not implemented yet (and it will probably be very difficult
+      or impossible to implement it in pure Python without performance issues).
+      As a consequence, when zooming in a plot curve, the entire curve is still
+      painted (in other words, when working with large amount of data, there is
+      no performance gain when zooming in).
+
     Dependencies
     
         Requirements

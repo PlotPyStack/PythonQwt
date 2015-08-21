@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from qwt.qt.QtGui import QPolygon, QPolygonF
+from qwt.qt.QtCore import QRect, QRectF
+
+import numpy as np
+
 
 class LeftEdge(object):
     def __init__(self, x1, x2, y1, y2):
@@ -68,8 +73,44 @@ class PointBuffer(object):
     
     def operator(self, i):
         return self.m_buffer[i]
+
+
+class QwtPolygonClipper(object):
+    def __init__(self, clipRect):
+        self.__clipRect = clipRect
     
+    def clipPolygon(self, polygon, closePolygon):
+        if self.__clipRect.contains(polygon.boundingRect()):
+            return polygon
+        
 
 
 class QwtClipper(object):
-    pass
+    def __init__(self):
+        pass
+    
+    def clipPolygon(self, clipRect, polygon, closePolygon):
+        raise NotImplementedError("Nearly impossible to implement in pure Python")
+        #XXX: the only viable option would be to use Qt's intersected method 
+        # but unfortunately it's closing systematically the output polygon
+        # (how to test it: polygon.intersected(QPolygonF(clipRect)))
+        
+        if isinstance(clipRect, QRectF):
+            minX = np.ceil(clipRect.left())
+            maxX = np.floor(clipRect.right())
+            minY = np.ceil(clipRect.top())
+            maxY = np.floor(clipRect.bottom())
+            clipRect = QRect(minX, minY, maxX-minX, maxY-minY)
+        clipper = QwtPolygonClipper(clipRect)
+        return clipper.clipPolygon(polygon, closePolygon)
+    
+    def clipPolygonF(self, clipRect, polygon, closePolygon):
+        raise NotImplementedError("Nearly impossible to implement in pure Python")
+        #XXX: the only viable option would be to use Qt's intersected method 
+        # but unfortunately it's closing systematically the output polygon
+        # (how to test it: polygon.intersected(QPolygonF(clipRect)))
+        
+        if isinstance(clipRect, QRect):
+            clipRect = QRectF(clipRect)
+        clipper = QwtPolygonClipper(clipRect)
+        return clipper.clipPolygon(polygon, closePolygon)

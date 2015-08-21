@@ -101,6 +101,3 @@ class QwtPlotGrid(QPG):
                       RuntimeWarning)
         return self.setMinorPen(*args)
 ## ============================================================================
-
-
-#TODO: implement QwtClipper: needed for SVG export for example
