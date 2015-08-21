@@ -1,5 +1,5 @@
 
-QWT_VERSION_STR = '6.1.2'
+__version__ = QWT_VERSION_STR = '6.1.2alpha1'
 
 import warnings
 

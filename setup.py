@@ -21,7 +21,7 @@ from distutils.core import setup
 from distutils.command.build import build
 
 LIBNAME = 'qwt'
-from guidata import __version__ as version
+from qwt import __version__ as version
 
 DESCRIPTION = 'qwt is a pure Python implementation of Qwt C++ library, using PyQt and NumPy'
 LONG_DESCRIPTION = ''
