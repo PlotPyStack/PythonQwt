@@ -103,12 +103,17 @@ def qwtToPolylineFilteredF(xMap, yMap, series, from_, to, round_):
 def qwtToPointsFiltered(boundingRect, xMap, yMap, series, from_, to,
                         Polygon):
     Point = QPointF if isinstance(Polygon, QPolygonF) else QPoint
+    if isinstance(boundingRect, QRectF):
+        pixelMatrix = QwtPixelMatrix(boundingRect.toAlignedRect())
+    else:
+        pixelMatrix = QwtPixelMatrix(boundingRect)
     points = []
     for i in range(from_, to+1):
         sample = series.sample(i)
         x = int(round(xMap.transform(sample.x())))
         y = int(round(yMap.transform(sample.y())))
-        points.append(Point(x, y))
+        if pixelMatrix.testAndSetPixel(x, y, True) == False:
+            points.append(Point(x, y))
     return Polygon(list(set(points)))
 
 def qwtToPointsFilteredI(boundingRect, xMap, yMap, series, from_, to):
