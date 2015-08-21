@@ -26,7 +26,9 @@ from qwt import __version__ as version
 DESCRIPTION = 'qwt is a pure Python implementation of Qwt C++ library, using PyQt and NumPy'
 LONG_DESCRIPTION = ''
 KEYWORDS = ''
-CLASSIFIERS = ['Development Status :: 5 - Production/Stable',
+CLASSIFIERS = [
+               'Development Status :: 3 - Alpha',
+#               'Development Status :: 5 - Production/Stable',
                'Topic :: Scientific/Engineering']
 
 
@@ -87,8 +89,8 @@ if sphinx:
 
 
 setup(name=LIBNAME, version=version,
-      download_url='http://%s.googlecode.com/files/%s-%s.zip' % (
-                                                  LIBNAME, LIBNAME, version),
+#      download_url='http://%s.googlecode.com/files/%s-%s.zip' % (
+#                                                  LIBNAME, LIBNAME, version),
       description=DESCRIPTION, long_description=LONG_DESCRIPTION,
       packages=get_subpackages(LIBNAME),
       package_data={LIBNAME:
