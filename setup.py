@@ -26,10 +26,13 @@ from qwt import __version__ as version
 DESCRIPTION = 'qwt is a pure Python implementation of Qwt C++ library, using PyQt and NumPy'
 LONG_DESCRIPTION = ''
 KEYWORDS = ''
-CLASSIFIERS = [
-               'Development Status :: 3 - Alpha',
-#               'Development Status :: 5 - Production/Stable',
-               'Topic :: Scientific/Engineering']
+CLASSIFIERS = ['Topic :: Scientific/Engineering']
+if 'alpha' in version:
+    CLASSIFIERS += ['Development Status :: 3 - Alpha']
+elif 'beta' in version:
+    CLASSIFIERS += ['Development Status :: 4 - Beta']
+else:
+    CLASSIFIERS += ['Development Status :: 5 - Production/Stable']
 
 
 def get_package_data(name, extlist):
