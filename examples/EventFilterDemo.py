@@ -1,18 +1,24 @@
 #!/usr/bin/env python
 
 import sys
-from PyQt4 import Qt
-import qwt as Qwt
 import numpy as np
 
+from qwt.qt.QtGui import (QApplication, QPen, QBrush, QColor, QWidget,
+                          QMainWindow, QPainter, QPixmap, QToolBar, QWhatsThis)
+from qwt.qt.QtCore import QSize, QEvent, Signal, QRect, QObject, Qt, QPoint
+from qwt import (QwtPlot, QwtScaleDraw, QwtSymbol, QwtPlotGrid, QwtPlotCurve,
+                 QwtPlotCanvas, QwtScaleDiv)
 
-class ColorBar(Qt.QWidget):
+
+class ColorBar(QWidget):
+    SIG_COLOR_SELECTED = Signal(QColor)
+    
     def __init__(self, orientation, *args):
-        Qt.QWidget.__init__(self, *args)
+        QWidget.__init__(self, *args)
         self.__orientation = orientation
-        self.__light = Qt.QColor(Qt.Qt.white)
-        self.__dark = Qt.QColor(Qt.Qt.black)
-        self.setCursor(Qt.Qt.PointingHandCursor)
+        self.__light = QColor(Qt.white)
+        self.__dark = QColor(Qt.black)
+        self.setCursor(Qt.PointingHandCursor)
     
     def setOrientation(self, orientation):
         self.__orientation = orientation
@@ -41,15 +47,15 @@ class ColorBar(Qt.QWidget):
         return self.__dark
     
     def mousePressEvent(self, event):
-        if event.button() == Qt.Qt.LeftButton:
-            pm = Qt.QPixmap.grabWidget(self)
-            color = Qt.QColor()
+        if event.button() == Qt.LeftButton:
+            pm = QPixmap.grabWidget(self)
+            color = QColor()
             color.setRgb(pm.toImage().pixel(event.x(), event.y()))
-            self.emit(Qt.SIGNAL("colorSelected"), color)
+            self.SIG_COLOR_SELECTED.emit(color)
             event.accept()
 
     def paintEvent(self, _):
-        painter = Qt.QPainter(self)
+        painter = QPainter(self)
         self.drawColorBar(painter, self.rect())
 
     def drawColorBar(self, painter, rect):
@@ -58,22 +64,22 @@ class ColorBar(Qt.QWidget):
         painter.save()
         painter.setClipRect(rect)
         painter.setClipping(True)
-        painter.fillRect(rect, Qt.QBrush(self.__dark))
+        painter.fillRect(rect, QBrush(self.__dark))
         sectionSize = 2
-        if (self.__orientation == Qt.Qt.Horizontal):
+        if (self.__orientation == Qt.Horizontal):
             numIntervals = rect.width()/sectionSize
         else:
             numIntervals = rect.height()/sectionSize
-        section = Qt.QRect()
+        section = QRect()
         for i in range(int(numIntervals)):
-            if self.__orientation == Qt.Qt.Horizontal:
+            if self.__orientation == Qt.Horizontal:
                 section.setRect(rect.x() + i*sectionSize, rect.y(),
                                 sectionSize, rect.heigh())
             else:
                 section.setRect(rect.x(), rect.y() + i*sectionSize,
                                 rect.width(), sectionSize)
             ratio = float(i)/float(numIntervals)
-            color = Qt.QColor()
+            color = QColor()
             color.setHsv(h1 + int(ratio*(h2-h1) + 0.5),
                          s1 + int(ratio*(s2-s1) + 0.5),
                          v1 + int(ratio*(v2-v1) + 0.5))            
@@ -81,47 +87,44 @@ class ColorBar(Qt.QWidget):
         painter.restore()
 
 
-class Plot(Qwt.QwtPlot):
+class Plot(QwtPlot):
     def __init__(self, *args):
-        Qwt.QwtPlot.__init__(self, *args)
+        QwtPlot.__init__(self, *args)
 
         self.setTitle("Interactive Plot")
         
-        self.setCanvasColor(Qt.Qt.darkCyan)
+        self.setCanvasColor(Qt.darkCyan)
 
-        grid = Qwt.QwtPlotGrid()
+        grid = QwtPlotGrid()
         grid.attach(self)
-        grid.setMajorPen(Qt.QPen(Qt.Qt.white, 0, Qt.Qt.DotLine))
+        grid.setMajorPen(QPen(Qt.white, 0, Qt.DotLine))
         
-        self.setAxisScale(Qwt.QwtPlot.xBottom, 0.0, 100.0)
-        self.setAxisScale(Qwt.QwtPlot.yLeft, 0.0, 100.0)
+        self.setAxisScale(QwtPlot.xBottom, 0.0, 100.0)
+        self.setAxisScale(QwtPlot.yLeft, 0.0, 100.0)
 
         # Avoid jumping when label with 3 digits
         # appear/disappear when scrolling vertically
-        scaleDraw = self.axisScaleDraw(Qwt.QwtPlot.yLeft)
+        scaleDraw = self.axisScaleDraw(QwtPlot.yLeft)
         scaleDraw.setMinimumExtent(scaleDraw.extent(
-            self.axisWidget(Qwt.QwtPlot.yLeft).font()))
+            self.axisWidget(QwtPlot.yLeft).font()))
 
         self.plotLayout().setAlignCanvasToScales(True)
 
-        self.__insertCurve(Qt.Qt.Vertical, Qt.Qt.blue, 30.0)
-        self.__insertCurve(Qt.Qt.Vertical, Qt.Qt.magenta, 70.0)
-        self.__insertCurve(Qt.Qt.Horizontal, Qt.Qt.yellow, 30.0)
-        self.__insertCurve(Qt.Qt.Horizontal, Qt.Qt.white, 70.0)
+        self.__insertCurve(Qt.Vertical, Qt.blue, 30.0)
+        self.__insertCurve(Qt.Vertical, Qt.magenta, 70.0)
+        self.__insertCurve(Qt.Horizontal, Qt.yellow, 30.0)
+        self.__insertCurve(Qt.Horizontal, Qt.white, 70.0)
         
         self.replot()
 
-        scaleWidget = self.axisWidget(Qwt.QwtPlot.yLeft)
+        scaleWidget = self.axisWidget(QwtPlot.yLeft)
         scaleWidget.setMargin(10)
 
-        self.__colorBar = ColorBar(Qt.Qt.Vertical, scaleWidget)
+        self.__colorBar = ColorBar(Qt.Vertical, scaleWidget)
         self.__colorBar.setRange(
-            Qt.QColor(Qt.Qt.red), Qt.QColor(Qt.Qt.darkBlue))
-        self.__colorBar.setFocusPolicy(Qt.Qt.TabFocus)
-
-        self.connect(self.__colorBar,
-                     Qt.SIGNAL('colorSelected'),
-                     self.setCanvasColor)
+            QColor(Qt.red), QColor(Qt.darkBlue))
+        self.__colorBar.setFocusPolicy(Qt.TabFocus)
+        self.__colorBar.SIG_COLOR_SELECTED.connect(self.setCanvasColor)
         
         # we need the resize events, to lay out the color bar
         scaleWidget.installEventFilter(self)
@@ -133,7 +136,7 @@ class Plot(Qwt.QwtPlot):
             'Selecting a value at the scale will insert a new curve.')
         self.__colorBar.setWhatsThis(
             'Selecting a color will change the background of the plot.')
-        self.axisWidget(Qwt.QwtPlot.xBottom).setWhatsThis(
+        self.axisWidget(QwtPlot.xBottom).setWhatsThis(
             'Selecting a value at the scale will insert a new curve.')
     
     def setCanvasColor(self, color):
@@ -141,13 +144,13 @@ class Plot(Qwt.QwtPlot):
         self.replot()
 
     def scrollLeftAxis(self, value):
-        self.setAxisScale(Qwt.QwtPlot.yLeft, value, value + 100)
+        self.setAxisScale(QwtPlot.yLeft, value, value + 100)
         self.replot()
 
     def eventFilter(self, object, event):
-        if event.type() == Qt.QEvent.Resize:
+        if event.type() == QEvent.Resize:
             size = event.size()
-            if object == self.axisWidget(Qwt.QwtPlot.yLeft):
+            if object == self.axisWidget(QwtPlot.yLeft):
                 margin = 2
                 x = size.width() - object.margin() + margin
                 w = object.margin() - 2 * margin
@@ -155,35 +158,35 @@ class Plot(Qwt.QwtPlot):
                 h = (size.height()
                      - object.startBorderDist() - object.endBorderDist())
                 self.__colorBar.setGeometry(x, y, w, h)
-        return Qwt.QwtPlot.eventFilter(self, object, event)
+        return QwtPlot.eventFilter(self, object, event)
 
     def insertCurve(self, axis, base):
-        if axis == Qwt.QwtPlot.yLeft or axis == Qwt.QwtPlot.yRight:
-            o = Qt.Qt.Horizontal
+        if axis == QwtPlot.yLeft or axis == QwtPlot.yRight:
+            o = Qt.Horizontal
         else:
-            o = Qt.Qt.Vertical
-        self.__insertCurve(o, Qt.QColor(Qt.Qt.red), base)
+            o = Qt.Vertical
+        self.__insertCurve(o, QColor(Qt.red), base)
         self.replot()
 
     def __insertCurve(self, orientation, color, base):
-        curve = Qwt.QwtPlotCurve()
+        curve = QwtPlotCurve()
         curve.attach(self)
-        curve.setPen(Qt.QPen(color))
-        curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.Ellipse,
-                                      Qt.QBrush(Qt.Qt.gray),
-                                      Qt.QPen(color),
-                                      Qt.QSize(8, 8)))
+        curve.setPen(QPen(color))
+        curve.setSymbol(QwtSymbol(QwtSymbol.Ellipse,
+                                      QBrush(Qt.gray),
+                                      QPen(color),
+                                      QSize(8, 8)))
         fixed = base*np.ones(10, np.float)
         changing = np.arange(0, 95.0, 10.0, np.float) + 5.0
-        if orientation == Qt.Qt.Horizontal:
+        if orientation == Qt.Horizontal:
             curve.setData(changing, fixed)
         else:
             curve.setData(fixed, changing)
 
 
-class CanvasPicker(Qt.QObject):
+class CanvasPicker(QObject):
     def __init__(self, plot):
-        Qt.QObject.__init__(self, plot)
+        QObject.__init__(self, plot)
         self.__selectedCurve = None
         self.__selectedPoint = -1
         self.__plot = plot
@@ -191,9 +194,9 @@ class CanvasPicker(Qt.QObject):
         canvas.installEventFilter(self)        
         # We want the focus, but no focus rect.
         # The selected point will be highlighted instead.
-        canvas.setFocusPolicy(Qt.Qt.StrongFocus)
-        canvas.setCursor(Qt.Qt.PointingHandCursor)
-        canvas.setFocusIndicator(Qwt.QwtPlotCanvas.ItemFocusIndicator)
+        canvas.setFocusPolicy(Qt.StrongFocus)
+        canvas.setCursor(Qt.PointingHandCursor)
+        canvas.setFocusIndicator(QwtPlotCanvas.ItemFocusIndicator)
         canvas.setFocus()        
         canvas.setWhatsThis(
             'All points can be moved using the left mouse button '
@@ -207,67 +210,67 @@ class CanvasPicker(Qt.QObject):
         self.__shiftCurveCursor(True)
 
     def event(self, event):
-        if event.type() == Qt.QEvent.User:
+        if event.type() == QEvent.User:
             self.__showCursor(True)
             return True
-        return Qt.QObject.event(self, event)
+        return QObject.event(self, event)
     
     def eventFilter(self, object, event):
-        if event.type() == Qt.QEvent.FocusIn:
+        if event.type() == QEvent.FocusIn:
             self.__showCursor(True)
-        if event.type() == Qt.QEvent.FocusOut:
+        if event.type() == QEvent.FocusOut:
             self.__showCursor(False)
-        if event.type() == Qt.QEvent.Paint:
-            Qt.QApplication.postEvent(self, Qt.QEvent(Qt.QEvent.User))
-        elif event.type() == Qt.QEvent.MouseButtonPress:
+        if event.type() == QEvent.Paint:
+            QApplication.postEvent(self, QEvent(QEvent.User))
+        elif event.type() == QEvent.MouseButtonPress:
             self.__select(event.pos())
             return True
-        elif event.type() == Qt.QEvent.MouseMove:
+        elif event.type() == QEvent.MouseMove:
             self.__move(event.pos())
             return True
-        if event.type() == Qt.QEvent.KeyPress:
+        if event.type() == QEvent.KeyPress:
             delta = 5
             key = event.key()
-            if key == Qt.Qt.Key_Up:
+            if key == Qt.Key_Up:
                 self.__shiftCurveCursor(True)
                 return True
-            elif key == Qt.Qt.Key_Down:
+            elif key == Qt.Key_Down:
                 self.__shiftCurveCursor(False)
                 return True
-            elif key == Qt.Qt.Key_Right or key == Qt.Qt.Key_Plus:
+            elif key == Qt.Key_Right or key == Qt.Key_Plus:
                 if self.__selectedCurve:
                     self.__shiftPointCursor(True)
                 else:
                     self.__shiftCurveCursor(True)
                 return True
-            elif key == Qt.Qt.Key_Left or key == Qt.Qt.Key_Minus:
+            elif key == Qt.Key_Left or key == Qt.Key_Minus:
                 if self.__selectedCurve:
                     self.__shiftPointCursor(False)
                 else:
                     self.__shiftCurveCursor(True)
                 return True
-            if key == Qt.Qt.Key_1:
+            if key == Qt.Key_1:
                 self.__moveBy(-delta, delta)
-            elif key == Qt.Qt.Key_2:
+            elif key == Qt.Key_2:
                 self.__moveBy(0, delta)
-            elif key == Qt.Qt.Key_3:
+            elif key == Qt.Key_3:
                 self.__moveBy(delta, delta)
-            elif key == Qt.Qt.Key_4:
+            elif key == Qt.Key_4:
                 self.__moveBy(-delta, 0)
-            elif key == Qt.Qt.Key_6:
+            elif key == Qt.Key_6:
                 self.__moveBy(delta, 0)
-            elif key == Qt.Qt.Key_7:
+            elif key == Qt.Key_7:
                 self.__moveBy(-delta, -delta)
-            elif key == Qt.Qt.Key_8:
+            elif key == Qt.Key_8:
                 self.__moveBy(0, -delta)
-            elif key == Qt.Qt.Key_9:
+            elif key == Qt.Key_9:
                 self.__moveBy(delta, -delta)
-        return Qwt.QwtPlot.eventFilter(self.__plot, object, event)
+        return QwtPlot.eventFilter(self.__plot, object, event)
 
     def __select(self, pos):
         found, distance, point = None, 1e100, -1
         for curve in self.__plot.itemList():
-            if isinstance(curve, Qwt.QwtPlotCurve):
+            if isinstance(curve, QwtPlotCurve):
                 i, d = curve.closestPoint(pos)
                 if d < distance:
                     found = curve
@@ -290,7 +293,7 @@ class CanvasPicker(Qt.QObject):
         s = curve.sample(self.__selectedPoint)
         x = self.__plot.transform(curve.xAxis(), s.x()) + dx
         y = self.__plot.transform(curve.yAxis(), s.y()) + dy
-        self.__move(Qt.QPoint(x, y))
+        self.__move(QPoint(x, y))
 
     def __move(self, pos):
         curve = self.__selectedCurve
@@ -317,14 +320,14 @@ class CanvasPicker(Qt.QObject):
         symbol = curve.symbol()
         brush = symbol.brush()
         if showIt:
-            symbol.setBrush(symbol.brush().color().dark(180))
+            symbol.setBrush(symbol.brush().color().darker(180))
         curve.directPaint(self.__selectedPoint, self.__selectedPoint)
         if showIt:
             symbol.setBrush(brush)
     
     def __shiftCurveCursor(self, up):
         curves = [curve for curve in self.__plot.itemList()
-                  if isinstance(curve, Qwt.QwtPlotCurve)]
+                  if isinstance(curve, QwtPlotCurve)]
         if not curves:
             return
         if self.__selectedCurve in curves:
@@ -360,19 +363,21 @@ class CanvasPicker(Qt.QObject):
             self.__showCursor(True)
 
 
-class ScalePicker(Qt.QObject):
+class ScalePicker(QObject):
+    SIG_CLICKED = Signal(int, float)
+    
     def __init__(self, plot):
-        Qt.QObject.__init__(self, plot)
-        for i in range(Qwt.QwtPlot.axisCnt):
+        QObject.__init__(self, plot)
+        for i in range(QwtPlot.axisCnt):
             scaleWidget = plot.axisWidget(i)
             if scaleWidget:
                 scaleWidget.installEventFilter(self)
 
     def eventFilter(self, object, event):
-        if (event.type() == Qt.QEvent.MouseButtonPress):
+        if (event.type() == QEvent.MouseButtonPress):
             self.__mouseClicked(object, event.pos())
             return True
-        return Qt.QObject.eventFilter(self, object, event)
+        return QObject.eventFilter(self, object, event)
 
     def __mouseClicked(self, scale, pos):
         rect = self.__scaleRect(scale)
@@ -383,43 +388,43 @@ class ScalePicker(Qt.QObject):
             value = 0.0
             axis = -1
         sd = scale.scaleDraw()
-        if scale.alignment() == Qwt.QwtScaleDraw.LeftScale:
+        if scale.alignment() == QwtScaleDraw.LeftScale:
             value = sd.scaleMap().invTransform(pos.y())
-            axis = Qwt.QwtPlot.yLeft
-        elif scale.alignment() == Qwt.QwtScaleDraw.RightScale:
+            axis = QwtPlot.yLeft
+        elif scale.alignment() == QwtScaleDraw.RightScale:
             value = sd.scaleMap().invTransform(pos.y())
-            axis = Qwt.QwtPlot.yRight
-        elif scale.alignment() == Qwt.QwtScaleDraw.BottomScale:
+            axis = QwtPlot.yRight
+        elif scale.alignment() == QwtScaleDraw.BottomScale:
             value = sd.scaleMap().invTransform(pos.x())
-            axis = Qwt.QwtPlot.xBottom
-        elif scale.alignment() == Qwt.QwtScaleDraw.TopScale:
+            axis = QwtPlot.xBottom
+        elif scale.alignment() == QwtScaleDraw.TopScale:
             value = sd.scaleMap().invTransform(pos.x())
-            axis = Qwt.QwtPlot.xBottom
-        self.emit(Qt.SIGNAL("clicked"), axis, value)
+            axis = QwtPlot.xBottom
+        self.SIG_CLICKED.emit(axis, value)
  
     def __scaleRect(self, scale):
         bld = scale.margin()
-        mjt = scale.scaleDraw().tickLength(Qwt.QwtScaleDiv.MajorTick)
+        mjt = scale.scaleDraw().tickLength(QwtScaleDiv.MajorTick)
         sbd = scale.startBorderDist()
         ebd = scale.endBorderDist()
-        if scale.alignment() == Qwt.QwtScaleDraw.LeftScale:
-            return Qt.QRect(scale.width() - bld - mjt, sbd,
+        if scale.alignment() == QwtScaleDraw.LeftScale:
+            return QRect(scale.width() - bld - mjt, sbd,
                                 mjt, scale.height() - sbd - ebd)
-        elif scale.alignment() == Qwt.QwtScaleDraw.RightScale: 
-            return Qt.QRect(bld, sbd,mjt, scale.height() - sbd - ebd)
-        elif scale.alignment() == Qwt.QwtScaleDraw.BottomScale:
-            return Qt.QRect(sbd, bld, scale.width() - sbd - ebd, mjt)
-        elif scale.alignment() == Qwt.QwtScaleDraw.TopScale:
-            return Qt.QRect(sbd, scale.height() - bld - mjt,
+        elif scale.alignment() == QwtScaleDraw.RightScale: 
+            return QRect(bld, sbd,mjt, scale.height() - sbd - ebd)
+        elif scale.alignment() == QwtScaleDraw.BottomScale:
+            return QRect(sbd, bld, scale.width() - sbd - ebd, mjt)
+        elif scale.alignment() == QwtScaleDraw.TopScale:
+            return QRect(sbd, scale.height() - bld - mjt,
                                 scale.width() - sbd - ebd, mjt)
         else:
-            return Qt.QRect()
+            return QRect()
 
 
 def make():
-    demo = Qt.QMainWindow()
-    toolBar = Qt.QToolBar(demo)
-    toolBar.addAction(Qt.QWhatsThis.createAction(toolBar))
+    demo = QMainWindow()
+    toolBar = QToolBar(demo)
+    toolBar.addAction(QWhatsThis.createAction(toolBar))
     demo.addToolBar(toolBar)
     plot = Plot(demo)
     demo.setCentralWidget(plot)
@@ -430,13 +435,13 @@ def make():
         )
     CanvasPicker(plot)
     scalePicker = ScalePicker(plot)
-    Qt.QObject.connect(scalePicker, Qt.SIGNAL("clicked"), plot.insertCurve)
+    scalePicker.SIG_CLICKED.connect(plot.insertCurve)
     demo.resize(540, 400)
     demo.show()
     return demo
 
 
 if __name__ == '__main__':
-    app = Qt.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())

@@ -12,7 +12,7 @@ class ColorStop(object):
     def __init__(self, pos=0., color=None):
         self.pos = pos
         if color is None:
-            self.rgb = 0L
+            self.rgb = 0
         else:
             self.rgb = color.rgba()
         self.r = qRed(self.rgb)
@@ -131,7 +131,7 @@ class QwtColorMap(object):
         return self.__format
     
     def colorTable(self, interval):
-        table = [0L] * 256
+        table = [0] * 256
         if interval.isValid():
             step = interval.width()/(len(table)-1)
             for i in range(len(table)):
@@ -193,10 +193,10 @@ class QwtLinearColorMap(QwtColorMap):
     
     def rgb(self, interval, value):
         if qIsNaN(value):
-            return 0L
+            return 0
         width = interval.width()
         if width <= 0.:
-            return 0L
+            return 0
         ratio = (value-interval.minValue())/width
         return self.__data.colorStops.rgb(self.__data.mode, ratio)
     
@@ -235,10 +235,10 @@ class QwtAlphaColorMap(QwtColorMap):
     
     def rgb(self, interval, value):
         if qIsNaN(value):
-            return 0L
+            return 0
         width = interval.width()
         if width <= 0.:
-            return 0L
+            return 0
         if value <= interval.minValue():
             return self.__data.rgb
         if value >= interval.maxValue():

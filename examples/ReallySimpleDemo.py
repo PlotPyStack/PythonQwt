@@ -2,25 +2,27 @@
 
 import sys
 import numpy as np
-import qwt
-from PyQt4 import Qt
+
+from qwt.qt.QtGui import QApplication, QPen
+from qwt.qt.QtCore import Qt
+from qwt import QwtPlot, QwtPlotMarker, QwtLegend, QwtPlotCurve, QwtText
 
 
-class SimplePlot(qwt.QwtPlot):
+class SimplePlot(QwtPlot):
     def __init__(self, *args):
-        qwt.QwtPlot.__init__(self, *args)
+        QwtPlot.__init__(self, *args)
         self.setTitle('ReallySimpleDemo.py')
-        self.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.RightLegend)
-        self.setAxisTitle(qwt.QwtPlot.xBottom, 'x -->')
-        self.setAxisTitle(qwt.QwtPlot.yLeft, 'y -->')
+        self.insertLegend(QwtLegend(), QwtPlot.RightLegend)
+        self.setAxisTitle(QwtPlot.xBottom, 'x -->')
+        self.setAxisTitle(QwtPlot.yLeft, 'y -->')
         self.enableAxis(self.xBottom)
 
         # insert a few curves
-        cSin = qwt.QwtPlotCurve('y = sin(x)')
-        cSin.setPen(Qt.QPen(Qt.Qt.red))
+        cSin = QwtPlotCurve('y = sin(x)')
+        cSin.setPen(QPen(Qt.red))
         cSin.attach(self)
-        cCos = qwt.QwtPlotCurve('y = cos(x)')
-        cCos.setPen(Qt.QPen(Qt.Qt.blue))
+        cCos = QwtPlotCurve('y = cos(x)')
+        cCos.setPen(QPen(Qt.blue))
         cCos.attach(self)
         
         # make a Numeric array for the horizontal data
@@ -31,18 +33,18 @@ class SimplePlot(qwt.QwtPlot):
         cCos.setData(x, np.cos(x))
 
         # insert a horizontal marker at y = 0
-        mY = qwt.QwtPlotMarker()
-        mY.setLabel(qwt.QwtText('y = 0'))
-        mY.setLabelAlignment(Qt.Qt.AlignRight | Qt.Qt.AlignTop)
-        mY.setLineStyle(qwt.QwtPlotMarker.HLine)
+        mY = QwtPlotMarker()
+        mY.setLabel(QwtText('y = 0'))
+        mY.setLabelAlignment(Qt.AlignRight | Qt.AlignTop)
+        mY.setLineStyle(QwtPlotMarker.HLine)
         mY.setYValue(0.0)
         mY.attach(self)
 
         # insert a vertical marker at x = 2 pi
-        mX = qwt.QwtPlotMarker()
-        mX.setLabel(qwt.QwtText('x = 2 pi'))
-        mX.setLabelAlignment(Qt.Qt.AlignRight | Qt.Qt.AlignTop)
-        mX.setLineStyle(qwt.QwtPlotMarker.VLine)
+        mX = QwtPlotMarker()
+        mX.setLabel(QwtText('x = 2 pi'))
+        mX.setLabelAlignment(Qt.AlignRight | Qt.AlignTop)
+        mX.setLineStyle(QwtPlotMarker.VLine)
         mX.setXValue(2*np.pi)
         mX.attach(self)
 
@@ -58,7 +60,7 @@ def make():
 
 
 if __name__ == '__main__':
-    app = Qt.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     demo = make()
     demo.exportTo("demo.png", size=(1600, 900), resolution=200)
     sys.exit(app.exec_())

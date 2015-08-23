@@ -369,7 +369,7 @@ class QwtPainterClass(object):
         elif len(args) == 3:
             painter, widget, rect = args
             opt = QStyleOptionFocusRect()
-            opt.init(widget)
+            opt.initFrom(widget)
             opt.rect = rect
             opt.state |= QStyle.State_HasFocus
             widget.style().drawPrimitive(QStyle.PE_FrameFocusRect,

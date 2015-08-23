@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
 import sys
-from PyQt4 import Qt
-import qwt as Qwt
 import numpy as np
+
+from qwt.qt.QtGui import QApplication, QPen, qRgb
+from qwt.qt.QtCore import Qt
+from qwt import (QwtPlot, QwtPlotMarker, QwtLegend, QwtPlotGrid, QwtPlotCurve,
+                 QwtPlotItem, QwtText, QwtLegendData, QwtLinearColorMap,
+                 QwtInterval, QwtScaleMap, toQImage)
 
 #FIXME: This example is still not working: I suspect an issue related to image scaling (see PlotImage.draw)
 
@@ -33,11 +37,11 @@ def square(n, min, max):
     return np.cos(t)*np.sin(t)[:,np.newaxis]
     
 
-class PlotImage(Qwt.QwtPlotItem):
-    def __init__(self, title = Qwt.QwtText()):
-        Qwt.QwtPlotItem.__init__(self)
+class PlotImage(QwtPlotItem):
+    def __init__(self, title = QwtText()):
+        QwtPlotItem.__init__(self)
         self.setTitle(title)
-        self.setItemAttribute(Qwt.QwtPlotItem.Legend);
+        self.setItemAttribute(QwtPlotItem.Legend);
         self.xyzs = None
     
     def setData(self, xyzs, xRange = None, yRange = None):
@@ -48,17 +52,17 @@ class PlotImage(Qwt.QwtPlotItem):
         if not yRange:
             yRange = (0, shape[1])
 
-        self.xMap = Qwt.QwtScaleMap(0, xyzs.shape[0], *xRange)
-        self.plot().setAxisScale(Qwt.QwtPlot.xBottom, *xRange)
-        self.yMap = Qwt.QwtScaleMap(0, xyzs.shape[1], *yRange)
-        self.plot().setAxisScale(Qwt.QwtPlot.yLeft, *yRange)
+        self.xMap = QwtScaleMap(0, xyzs.shape[0], *xRange)
+        self.plot().setAxisScale(QwtPlot.xBottom, *xRange)
+        self.yMap = QwtScaleMap(0, xyzs.shape[1], *yRange)
+        self.plot().setAxisScale(QwtPlot.yLeft, *yRange)
         
-        self.image = Qwt.toQImage(bytescale(self.xyzs)).mirrored(False, True)
+        self.image = toQImage(bytescale(self.xyzs)).mirrored(False, True)
         for i in range(0, 256):
-            self.image.setColor(i, Qt.qRgb(i, 0, 255-i))
+            self.image.setColor(i, qRgb(i, 0, 255-i))
 
     def updateLegend(self, legend):
-        Qwt.QwtPlotItem.updateLegend(self, legend)
+        QwtPlotItem.updateLegend(self, legend)
         legend.find(self).setText(self.title())
 
     def draw(self, painter, xMap, yMap, rect):
@@ -67,7 +71,7 @@ class PlotImage(Qwt.QwtPlotItem):
         Calculate (x1, y1, x2, y2) so that it contains at least 1 pixel,
         and copy the visible region to scale it to the canvas.
         """
-        assert(isinstance(self.plot(), Qwt.QwtPlot))
+        assert(isinstance(self.plot(), QwtPlot))
         
         # calculate y1, y2
         # the scanline order (index y) is inverted with respect to the y-axis
@@ -94,68 +98,68 @@ class PlotImage(Qwt.QwtPlotItem):
         painter.drawImage(xMap.p1(), yMap.p2(), image)
     
 
-class ImagePlot(Qwt.QwtPlot):
+class ImagePlot(QwtPlot):
     def __init__(self, *args):
-        Qwt.QwtPlot.__init__(self, *args)
+        QwtPlot.__init__(self, *args)
         # set plot title
         self.setTitle('ImagePlot')
         # set plot layout
         self.plotLayout().setCanvasMargin(0)
         self.plotLayout().setAlignCanvasToScales(True)
         # set legend
-        legend = Qwt.QwtLegend()
-        legend.setDefaultItemMode(Qwt.QwtLegendData.Clickable)
-        self.insertLegend(legend, Qwt.QwtPlot.RightLegend)
+        legend = QwtLegend()
+        legend.setDefaultItemMode(QwtLegendData.Clickable)
+        self.insertLegend(legend, QwtPlot.RightLegend)
         # set axis titles
-        self.setAxisTitle(Qwt.QwtPlot.xBottom, 'time (s)')
-        self.setAxisTitle(Qwt.QwtPlot.yLeft, 'frequency (Hz)')
+        self.setAxisTitle(QwtPlot.xBottom, 'time (s)')
+        self.setAxisTitle(QwtPlot.yLeft, 'frequency (Hz)')
 
-        colorMap = Qwt.QwtLinearColorMap(Qt.Qt.blue, Qt.Qt.red)
-        interval = Qwt.QwtInterval(-1, 1)
-        self.enableAxis(Qwt.QwtPlot.yRight)
-        self.setAxisScale(Qwt.QwtPlot.yRight, -1, 1)
-        self.axisWidget(Qwt.QwtPlot.yRight).setColorBarEnabled(True)
-        self.axisWidget(Qwt.QwtPlot.yRight).setColorMap(interval, colorMap)
+        colorMap = QwtLinearColorMap(Qt.blue, Qt.red)
+        interval = QwtInterval(-1, 1)
+        self.enableAxis(QwtPlot.yRight)
+        self.setAxisScale(QwtPlot.yRight, -1, 1)
+        self.axisWidget(QwtPlot.yRight).setColorBarEnabled(True)
+        self.axisWidget(QwtPlot.yRight).setColorMap(interval, colorMap)
 
         # calculate 3 NumPy arrays
         x = np.arange(-2*np.pi, 2*np.pi, 0.01)
         y = np.pi*np.sin(x)
         z = 4*np.pi*np.cos(x)*np.cos(x)*np.sin(x)
         # attach a curve
-        curve = Qwt.QwtPlotCurve('y = pi*sin(x)')
+        curve = QwtPlotCurve('y = pi*sin(x)')
         curve.attach(self)
-        curve.setPen(Qt.QPen(Qt.Qt.green, 2))
+        curve.setPen(QPen(Qt.green, 2))
         curve.setData(x, y)
         # attach another curve
-        curve = Qwt.QwtPlotCurve('y = 4*pi*sin(x)*cos(x)**2')
+        curve = QwtPlotCurve('y = 4*pi*sin(x)*cos(x)**2')
         curve.attach(self)
-        curve.setPen(Qt.QPen(Qt.Qt.black, 2))
+        curve.setPen(QPen(Qt.black, 2))
         curve.setData(x, z)
         # attach a grid
-        grid = Qwt.QwtPlotGrid()
+        grid = QwtPlotGrid()
         grid.attach(self)
-        grid.setPen(Qt.QPen(Qt.Qt.black, 0, Qt.Qt.DotLine))
+        grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
         # attach a horizontal marker at y = 0
-        marker = Qwt.QwtPlotMarker()
+        marker = QwtPlotMarker()
         marker.attach(self)
         marker.setValue(0.0, 0.0)
-        marker.setLineStyle(Qwt.QwtPlotMarker.HLine)
-        marker.setLabelAlignment(Qt.Qt.AlignRight | Qt.Qt.AlignTop)
-        marker.setLabel(Qwt.QwtText('y = 0'))
+        marker.setLineStyle(QwtPlotMarker.HLine)
+        marker.setLabelAlignment(Qt.AlignRight | Qt.AlignTop)
+        marker.setLabel(QwtText('y = 0'))
         # attach a vertical marker at x = pi
-        marker = Qwt.QwtPlotMarker()
+        marker = QwtPlotMarker()
         marker.attach(self)
         marker.setValue(np.pi, 0.0)
-        marker.setLineStyle(Qwt.QwtPlotMarker.VLine)
-        marker.setLabelAlignment(Qt.Qt.AlignRight | Qt.Qt.AlignBottom)
-        marker.setLabel(Qwt.QwtText('x = pi'))
+        marker.setLineStyle(QwtPlotMarker.VLine)
+        marker.setLabelAlignment(Qt.AlignRight | Qt.AlignBottom)
+        marker.setLabel(QwtText('x = pi'))
         # attach a plot image
         plotImage = PlotImage('Image')
         plotImage.attach(self)
         plotImage.setData(square(512, -2*np.pi, 2*np.pi),
                           (-2*np.pi, 2*np.pi), (-2*np.pi, 2*np.pi))
 
-        self.connect(legend, legend.SIG_CLICKED, self.toggleVisibility)
+        legend.SIG_CLICKED.connect(self.toggleVisibility)
         
         # replot
         self.replot()
@@ -175,6 +179,6 @@ def make():
 
 
 if __name__ == '__main__':
-    app = Qt.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())

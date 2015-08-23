@@ -3,10 +3,12 @@
 import random
 import sys
 import time
-
-from PyQt4 import Qt
-import qwt as Qwt
 import numpy as np
+
+from qwt.qt.QtGui import QApplication, QPen, QBrush, QMainWindow, QToolBar
+from qwt.qt.QtCore import QSize
+from qwt.qt.QtCore import Qt
+from qwt import QwtPlot, QwtSymbol, QwtPlotCurve
 
 
 def standard_map(x, y, kappa):
@@ -22,30 +24,30 @@ def standard_map(x, y, kappa):
     return x_new, y_new
 
 
-class MapDemo(Qt.QMainWindow):
+class MapDemo(QMainWindow):
     def __init__(self, *args):
-        Qt.QMainWindow.__init__(self, *args)
-        self.plot = Qwt.QwtPlot(self)
+        QMainWindow.__init__(self, *args)
+        self.plot = QwtPlot(self)
         self.plot.setTitle("A Simple Map Demonstration")
-        self.plot.setCanvasBackground(Qt.Qt.white)
-        self.plot.setAxisTitle(Qwt.QwtPlot.xBottom, "x")
-        self.plot.setAxisTitle(Qwt.QwtPlot.yLeft, "y")    
-        self.plot.setAxisScale(Qwt.QwtPlot.xBottom, 0.0, 1.0)
-        self.plot.setAxisScale(Qwt.QwtPlot.yLeft, 0.0, 1.0)
+        self.plot.setCanvasBackground(Qt.white)
+        self.plot.setAxisTitle(QwtPlot.xBottom, "x")
+        self.plot.setAxisTitle(QwtPlot.yLeft, "y")    
+        self.plot.setAxisScale(QwtPlot.xBottom, 0.0, 1.0)
+        self.plot.setAxisScale(QwtPlot.yLeft, 0.0, 1.0)
         self.setCentralWidget(self.plot)
         # Initialize map data
         self.count = self.i = 1000
         self.xs = np.zeros(self.count, np.float)
         self.ys = np.zeros(self.count, np.float)
         self.kappa = 0.2
-        self.curve = Qwt.QwtPlotCurve("Map")
+        self.curve = QwtPlotCurve("Map")
         self.curve.attach(self.plot)
-        self.curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.Ellipse,
-                                           Qt.QBrush(Qt.Qt.red),
-                                           Qt.QPen(Qt.Qt.blue),
-                                           Qt.QSize(5, 5)))
-        self.curve.setPen(Qt.QPen(Qt.Qt.cyan))
-        toolBar = Qt.QToolBar(self)
+        self.curve.setSymbol(QwtSymbol(QwtSymbol.Ellipse,
+                                           QBrush(Qt.red),
+                                           QPen(Qt.blue),
+                                           QSize(5, 5)))
+        self.curve.setPen(QPen(Qt.cyan))
+        toolBar = QToolBar(self)
         self.addToolBar(toolBar)
         # 1 tick = 1 ms, 10 ticks = 10 ms (Linux clock is 100 Hz)
         self.ticks = 10
@@ -99,6 +101,6 @@ def make():
 
 
 if __name__ == '__main__':
-    app = Qt.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())

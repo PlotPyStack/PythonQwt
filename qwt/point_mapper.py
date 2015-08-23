@@ -114,7 +114,7 @@ def qwtToPointsFiltered(boundingRect, xMap, yMap, series, from_, to,
         y = int(round(yMap.transform(sample.y())))
         if pixelMatrix.testAndSetPixel(x, y, True) == False:
             points.append(Point(x, y))
-    return Polygon(list(set(points)))
+    return Polygon(list(points))
 
 def qwtToPointsFilteredI(boundingRect, xMap, yMap, series, from_, to):
     return qwtToPointsFiltered(boundingRect, xMap, yMap, series, from_, to,

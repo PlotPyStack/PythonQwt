@@ -9,7 +9,7 @@ from qwt.legend_data import QwtLegendData
 
 from qwt.qt.QtGui import (QStyleOption, QStyle, QPixmap, QApplication,
                           QPainter, qDrawWinButton)
-from qwt.qt.QtCore import SIGNAL, Qt, QSize, QRect, QPoint
+from qwt.qt.QtCore import Signal, Qt, QSize, QRect, QPoint
 
 
 BUTTONFRAME = 2
@@ -18,7 +18,7 @@ MARGIN = 2
 
 def buttonShift(w):
     option = QStyleOption()
-    option.init(w)
+    option.initFrom(w)
     ph = w.style().pixelMetric(QStyle.PM_ButtonShiftHorizontal, option, w)
     pv = w.style().pixelMetric(QStyle.PM_ButtonShiftVertical, option, w)
     return QSize(ph, pv)
@@ -34,10 +34,10 @@ class QwtLegendLabel_PrivateData(object):
         
 
 class QwtLegendLabel(QwtTextLabel):
-    SIG_CLICKED = SIGNAL("clicked()")
-    SIG_PRESSED = SIGNAL("pressed()")
-    SIG_RELEASED = SIGNAL("released()")
-    SIG_CHECKED = SIGNAL("checked(bool)")
+    SIG_CLICKED = Signal()
+    SIG_PRESSED = Signal()
+    SIG_RELEASED = Signal()
+    SIG_CHECKED = Signal(bool)
     
     def __init__(self, parent=None):
         QwtTextLabel.__init__(self, parent)
@@ -119,12 +119,12 @@ class QwtLegendLabel(QwtTextLabel):
         self.update()
         if self.__data.itemMode == QwtLegendData.Clickable:
             if self.__data.isDown:
-                self.emit(self.SIG_PRESSED)
+                self.SIG_PRESSED.emit()
             else:
-                self.emit(self.SIG_RELEASED)
-                self.emit(self.SIG_CLICKED)
+                self.SIG_RELEASED.emit()
+                self.SIG_CLICKED.emit()
         if self.__data.itemMode == QwtLegendData.Checkable:
-            self.emit(self.SIG_CHECKED, self.__data.isDown)
+            self.SIG_CHECKED.emit(self.__data.isDown)
     
     def isDown(self):
         return self.__data.isDown

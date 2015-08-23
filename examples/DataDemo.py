@@ -2,18 +2,21 @@
 
 import random
 import sys
-
-from PyQt4 import Qt
-import qwt as Qwt
 import numpy as np
 
+from qwt.qt.QtGui import QApplication, QPen, QBrush, QFrame
+from qwt.qt.QtCore import QSize
+from qwt.qt.QtCore import Qt
+from qwt import (QwtPlot, QwtPlotMarker, QwtSymbol, QwtLegend, QwtPlotCurve,
+                 QwtAbstractScaleDraw)
 
-class DataPlot(Qwt.QwtPlot):
+
+class DataPlot(QwtPlot):
 
     def __init__(self, *args):
-        Qwt.QwtPlot.__init__(self, *args)
+        QwtPlot.__init__(self, *args)
 
-        self.setCanvasBackground(Qt.Qt.white)
+        self.setCanvasBackground(Qt.white)
         self.alignScales()
 
         # Initialize data
@@ -22,44 +25,43 @@ class DataPlot(Qwt.QwtPlot):
         self.z = np.zeros(len(self.x), np.float)
 
         self.setTitle("A Moving QwtPlot Demonstration")
-        self.insertLegend(Qwt.QwtLegend(), Qwt.QwtPlot.BottomLegend);
+        self.insertLegend(QwtLegend(), QwtPlot.BottomLegend);
 
-        self.curveR = Qwt.QwtPlotCurve("Data Moving Right")
+        self.curveR = QwtPlotCurve("Data Moving Right")
         self.curveR.attach(self)
-        self.curveL = Qwt.QwtPlotCurve("Data Moving Left")
+        self.curveL = QwtPlotCurve("Data Moving Left")
         self.curveL.attach(self)
 
-        self.curveL.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.Ellipse,
-                                        Qt.QBrush(),
-                                        Qt.QPen(Qt.Qt.yellow),
-                                        Qt.QSize(7, 7)))
+        self.curveL.setSymbol(QwtSymbol(QwtSymbol.Ellipse,
+                                        QBrush(),
+                                        QPen(Qt.yellow),
+                                        QSize(7, 7)))
 
-        self.curveR.setPen(Qt.QPen(Qt.Qt.red))
-        self.curveL.setPen(Qt.QPen(Qt.Qt.blue))
+        self.curveR.setPen(QPen(Qt.red))
+        self.curveL.setPen(QPen(Qt.blue))
 
-        mY = Qwt.QwtPlotMarker()
-        mY.setLabelAlignment(Qt.Qt.AlignRight | Qt.Qt.AlignTop)
-        mY.setLineStyle(Qwt.QwtPlotMarker.HLine)
+        mY = QwtPlotMarker()
+        mY.setLabelAlignment(Qt.AlignRight | Qt.AlignTop)
+        mY.setLineStyle(QwtPlotMarker.HLine)
         mY.setYValue(0.0)
         mY.attach(self)
 
-        self.setAxisTitle(Qwt.QwtPlot.xBottom, "Time (seconds)")
-        self.setAxisTitle(Qwt.QwtPlot.yLeft, "Values")
+        self.setAxisTitle(QwtPlot.xBottom, "Time (seconds)")
+        self.setAxisTitle(QwtPlot.yLeft, "Values")
     
         self.startTimer(50)
         self.phase = 0.0
 
     def alignScales(self):
-        self.canvas().setFrameStyle(Qt.QFrame.Box | Qt.QFrame.Plain)
+        self.canvas().setFrameStyle(QFrame.Box | QFrame.Plain)
         self.canvas().setLineWidth(1)
-        for i in range(Qwt.QwtPlot.axisCnt):
+        for i in range(QwtPlot.axisCnt):
             scaleWidget = self.axisWidget(i)
             if scaleWidget:
                 scaleWidget.setMargin(0)
             scaleDraw = self.axisScaleDraw(i)
             if scaleDraw:
-                scaleDraw.enableComponent(
-                    Qwt.QwtAbstractScaleDraw.Backbone, False)
+                scaleDraw.enableComponent(QwtAbstractScaleDraw.Backbone, False)
     
     def timerEvent(self, e):
         if self.phase > np.pi - 0.0001:
@@ -90,6 +92,6 @@ def make():
 
 
 if __name__ == '__main__':
-    app = Qt.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())

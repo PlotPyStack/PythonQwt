@@ -269,7 +269,7 @@ class QwtTextEngineDict(object):
             text, format_ = args
         
             if format_ == QwtText.AutoText:
-                for key, engine in list(self.__map.iteritems()):
+                for key, engine in list(self.__map.items()):
                     if key != QwtText.PlainText:
                         if engine and engine.mightRender(text):
                             return engine

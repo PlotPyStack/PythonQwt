@@ -26,7 +26,7 @@ def array_to_qimage(arr, copy=False):
         if color_dim is None:
             qimage = QImage(data, nx, ny, stride, QImage.Format_Indexed8)
 #            qimage.setColorTable([qRgb(i, i, i) for i in range(256)])
-            qimage.setNumColors(256)
+            qimage.setColorCount(256)
         elif color_dim == 3:
             qimage = QImage(data, nx, ny, stride, QImage.Format_RGB888)
         elif color_dim == 4:

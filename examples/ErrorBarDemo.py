@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 
-
 import sys
-from PyQt4 import Qt
-import qwt as Qwt
 import numpy as np
 
+from qwt.qt.QtGui import QApplication, QPen, QBrush
+from qwt.qt.QtCore import QSize, QRectF, QLineF
+from qwt.qt.QtCore import Qt
+from qwt import QwtPlot, QwtSymbol, QwtPlotGrid, QwtPlotCurve, QwtText
 
-class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
+
+class ErrorBarPlotCurve(QwtPlotCurve):
     def __init__(self, x=[], y=[], dx=None, dy=None, curvePen=None,
                  curveStyle=None, curveSymbol=None, errorPen=None,
                  errorCap=0, errorOnTop=False):
@@ -38,16 +40,16 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
         - if False, plot the curve on top of the error bars.
         """
 
-        Qwt.QwtPlotCurve.__init__(self)
+        QwtPlotCurve.__init__(self)
         
         if curvePen is None:
-            curvePen = Qt.QPen(Qt.Qt.NoPen)
+            curvePen = QPen(Qt.NoPen)
         if curveStyle is None:
-            curveStyle = Qwt.QwtPlotCurve.Lines
+            curveStyle = QwtPlotCurve.Lines
         if curveSymbol is None:
-            curveSymbol = Qwt.QwtSymbol()
+            curveSymbol = QwtSymbol()
         if errorPen is None:
-            errorPen = Qt.QPen(Qt.Qt.NoPen)
+            errorPen = QPen(Qt.NoPen)
         
         self.setData(x, y, dx, dy)
         self.setPen(curvePen)
@@ -71,7 +73,7 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
           (x-dx[0], x+dx[1]) or (y-dy[0], y+dy[1]).
         """
         if len(args) == 1:
-            Qwt.QwtPlotCurve.setData(self, *args)
+            QwtPlotCurve.setData(self, *args)
             return
             
         dx = None
@@ -106,7 +108,7 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
         if len(self.__dy.shape) not in [0, 1, 2]:
             raise RuntimeError('len(asarray(dy).shape) not in [0, 1, 2]')
         
-        Qwt.QwtPlotCurve.setData(self, self.__x, self.__y)
+        QwtPlotCurve.setData(self, self.__x, self.__y)
         
     def boundingRect(self):
         """Return the bounding rectangle of the data, error bars included.
@@ -131,16 +133,16 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
             ymin = min(self.__y - self.__dy[0])
             ymax = max(self.__y + self.__dy[1])
 
-        return Qt.QRectF(xmin, ymin, xmax-xmin, ymax-ymin)
+        return QRectF(xmin, ymin, xmax-xmin, ymax-ymin)
 
     def drawSeries(self, painter, xMap, yMap, canvasRect, first, last = -1):
         """Draw an interval of the curve, including the error bars
 
         painter is the QPainter used to draw the curve
 
-        xMap is the Qwt.QwtDiMap used to map x-values to pixels
+        xMap is the QwtDiMap used to map x-values to pixels
 
-        yMap is the Qwt.QwtDiMap used to map y-values to pixels
+        yMap is the QwtDiMap used to map y-values to pixels
         
         first is the index of the first data point to draw
 
@@ -152,7 +154,7 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
             last = self.dataSize() - 1
 
         if self.errorOnTop:
-            Qwt.QwtPlotCurve.drawSeries(self, painter, xMap, yMap,
+            QwtPlotCurve.drawSeries(self, painter, xMap, yMap,
                                         canvasRect, first, last)
 
         # draw the error bars
@@ -173,7 +175,7 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
             lines = []
             while i < n:
                 yi = yMap.transform(y[i])
-                lines.append(Qt.QLine(xMap.transform(xmin[i]), yi,
+                lines.append(QLineF(xMap.transform(xmin[i]), yi,
                                           xMap.transform(xmax[i]), yi))
                 i += 1
             painter.drawLines(lines)
@@ -185,10 +187,10 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
                 while i < n:
                     yi = yMap.transform(y[i])
                     lines.append(
-                        Qt.QLine(xMap.transform(xmin[i]), yi - cap,
+                        QLineF(xMap.transform(xmin[i]), yi - cap,
                                      xMap.transform(xmin[i]), yi + cap))
                     lines.append(
-                        Qt.QLine(xMap.transform(xmax[i]), yi - cap,
+                        QLineF(xMap.transform(xmax[i]), yi - cap,
                                      xMap.transform(xmax[i]), yi + cap))
                     i += 1
             painter.drawLines(lines)
@@ -208,7 +210,7 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
             while i < n:
                 xi = xMap.transform(x[i])
                 lines.append(
-                    Qt.QLine(xi, yMap.transform(ymin[i]),
+                    QLineF(xi, yMap.transform(ymin[i]),
                                  xi, yMap.transform(ymax[i])))
                 i += 1
             painter.drawLines(lines)
@@ -220,10 +222,10 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
                 while i < n:
                     xi = xMap.transform(x[i])
                     lines.append(
-                        Qt.QLine(xi - cap, yMap.transform(ymin[i]),
+                        QLineF(xi - cap, yMap.transform(ymin[i]),
                                      xi + cap, yMap.transform(ymin[i])))
                     lines.append(
-                        Qt.QLine(xi - cap, yMap.transform(ymax[i]),
+                        QLineF(xi - cap, yMap.transform(ymax[i]),
                                      xi + cap, yMap.transform(ymax[i])))
                     i += 1
             painter.drawLines(lines)
@@ -231,19 +233,19 @@ class ErrorBarPlotCurve(Qwt.QwtPlotCurve):
         painter.restore()
 
         if not self.errorOnTop:
-            Qwt.QwtPlotCurve.drawSeries(self, painter, xMap, yMap,
+            QwtPlotCurve.drawSeries(self, painter, xMap, yMap,
                                         canvasRect, first, last)
 
 
 def make():
     # create a plot with a white canvas
-    demo = Qwt.QwtPlot(Qwt.QwtText("Errorbar Demonstation"))
-    demo.setCanvasBackground(Qt.Qt.white)
+    demo = QwtPlot(QwtText("Errorbar Demonstation"))
+    demo.setCanvasBackground(Qt.white)
     demo.plotLayout().setAlignCanvasToScales(True)
 
-    grid = Qwt.QwtPlotGrid()
+    grid = QwtPlotGrid()
     grid.attach(demo)
-    grid.setPen(Qt.QPen(Qt.Qt.black, 0, Qt.Qt.DotLine))
+    grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
     
     # calculate data and errors for a curve with error bars
     x = np.arange(0, 10.1, 0.5, np.float)
@@ -258,12 +260,12 @@ def make():
         y = y,
         dx = dx,
         dy = dy,
-        curvePen = Qt.QPen(Qt.Qt.black, 2),
-        curveSymbol = Qwt.QwtSymbol(Qwt.QwtSymbol.Ellipse,
-                                    Qt.QBrush(Qt.Qt.red),
-                                    Qt.QPen(Qt.Qt.black, 2),
-                                    Qt.QSize(9, 9)),
-        errorPen = Qt.QPen(Qt.Qt.blue, 2),
+        curvePen = QPen(Qt.black, 2),
+        curveSymbol = QwtSymbol(QwtSymbol.Ellipse,
+                                    QBrush(Qt.red),
+                                    QPen(Qt.black, 2),
+                                    QSize(9, 9)),
+        errorPen = QPen(Qt.blue, 2),
         errorCap = 10,
         errorOnTop = errorOnTop,
         )
@@ -274,6 +276,6 @@ def make():
 
 
 if __name__ == '__main__':
-    app = Qt.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())

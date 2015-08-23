@@ -11,7 +11,7 @@ from qwt.legend_label import QwtLegendLabel
 
 from qwt.qt.QtGui import (QFrame, QScrollArea, QWidget, QVBoxLayout, QPalette,
                           QApplication)
-from qwt.qt.QtCore import SIGNAL, QEvent, QSize, Qt, QRect, QRectF
+from qwt.qt.QtCore import Signal, QEvent, QSize, Qt, QRect, QRectF
 
 import numpy as np
 
@@ -131,7 +131,9 @@ class LegendView(QScrollArea):
         if tl is None:
             return
         visibleSize = self.viewport().contentsRect().size()
-        minW = int(tl.maxItemWidth()+2*tl.margin())
+        margins = tl.contentsMargins()
+        margin_w = margins.left() + margins.right()
+        minW = int(tl.maxItemWidth()+margin_w)
         w = max([visibleSize.width(), minW])
         h = max([tl.heightForWidth(w), visibleSize.height()])
         vpWidth = self.viewportSize(w, h).width()
@@ -148,8 +150,8 @@ class QwtLegend_PrivateData(object):
         self.itemMap = QwtLegendMap()    
 
 class QwtLegend(QwtAbstractLegend):
-    SIG_CLICKED = SIGNAL("clicked(PyQt_PyObject,int)")
-    SIG_CHECKED = SIGNAL("checked(PyQt_PyObject,bool,int)")
+    SIG_CLICKED = Signal("PyQt_PyObject", int)
+    SIG_CHECKED = Signal("PyQt_PyObject", bool, int)
     
     def __init__(self, parent=None):
         QwtAbstractLegend.__init__(self, parent)
@@ -219,9 +221,8 @@ class QwtLegend(QwtAbstractLegend):
     def createWidget(self, data):
         label = QwtLegendLabel()
         label.setItemMode(self.defaultItemMode())
-        self.connect(label, label.SIG_CLICKED, lambda: self.itemClicked(label))
-        self.connect(label, label.SIG_CHECKED,
-                     lambda state: self.itemChecked(state, label))
+        label.SIG_CLICKED.connect(lambda: self.itemClicked(label))
+        label.SIG_CHECKED.connect(lambda state: self.itemChecked(state, label))
         return label
     
     def updateWidget(self, widget, data):
@@ -276,7 +277,7 @@ class QwtLegend(QwtAbstractLegend):
                 widgetList = self.__data.itemMap.legendWidgets(itemInfo)
                 if w in widgetList:
                     index = widgetList.index(w)
-                    self.emit(self.SIG_CLICKED, itemInfo, index)
+                    self.SIG_CLICKED.emit(itemInfo, index)
     
     def itemChecked(self, on, widget):
 #        w = self.sender()  #TODO: cast to QWidget
@@ -287,7 +288,7 @@ class QwtLegend(QwtAbstractLegend):
                 widgetList = self.__data.itemMap.legendWidgets(itemInfo)
                 if w in widgetList:
                     index = widgetList.index(w)
-                    self.emit(self.SIG_CHECKED, itemInfo, on, index)
+                    self.SIG_CHECKED.emit(itemInfo, on, index)
     
     def renderLegend(self, painter, rect, fillBackground):
         if self.__data.itemMap.isEmpty():

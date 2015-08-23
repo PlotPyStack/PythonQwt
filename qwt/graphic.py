@@ -60,7 +60,8 @@ def qwtExecCommand(painter, cmd, renderHints, transform, initialTransform):
             path = tr.map(cmd.path())
             if initialTransform:
                 painter.setTransform(initialTransform)
-                path = initialTransform.inverted().map(path)
+                invt, _ok = initialTransform.inverted()
+                path = invt.map(path)
             painter.drawPath(path)
             painter.setTransform(tr)
         else:

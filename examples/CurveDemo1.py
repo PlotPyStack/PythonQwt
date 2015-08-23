@@ -1,22 +1,26 @@
 #!/usr/bin/env python
 
 import sys
-from PyQt4 import Qt
-import qwt as Qwt
 import numpy as np
 
+from qwt.qt.QtGui import (QApplication, QPen, QBrush, QFrame, QFont, QPainter,
+                          QPaintEngine)
+from qwt.qt.QtCore import QSize
+from qwt.qt.QtCore import Qt
+from qwt import QwtSymbol, QwtPlotCurve, QwtPlotItem, QwtScaleMap
 
-class CurveDemo(Qt.QFrame):
+
+class CurveDemo(QFrame):
     def __init__(self, *args):
-        Qt.QFrame.__init__(self, *args)
+        QFrame.__init__(self, *args)
 
-        self.xMap = Qwt.QwtScaleMap()
+        self.xMap = QwtScaleMap()
         self.xMap.setScaleInterval(-0.5, 10.5)
-        self.yMap = Qwt.QwtScaleMap()
+        self.yMap = QwtScaleMap()
         self.yMap.setScaleInterval(-1.1, 1.1)
 
         # frame style
-        self.setFrameStyle(Qt.QFrame.Box | Qt.QFrame.Raised)
+        self.setFrameStyle(QFrame.Box | QFrame.Raised)
         self.setLineWidth(2)
         self.setMidLineWidth(3)
 
@@ -29,41 +33,41 @@ class CurveDemo(Qt.QFrame):
         self.titles = []
         # curve 1
         self.titles.append('Style: Sticks, Symbol: Ellipse')
-        curve = Qwt.QwtPlotCurve()
-        curve.setPen(Qt.QPen(Qt.Qt.red))
-        curve.setStyle(Qwt.QwtPlotCurve.Sticks)
-        curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.Ellipse,
-                                      Qt.QBrush(Qt.Qt.yellow),
-                                      Qt.QPen(Qt.Qt.blue),
-                                      Qt.QSize(5, 5)))
+        curve = QwtPlotCurve()
+        curve.setPen(QPen(Qt.red))
+        curve.setStyle(QwtPlotCurve.Sticks)
+        curve.setSymbol(QwtSymbol(QwtSymbol.Ellipse,
+                                      QBrush(Qt.yellow),
+                                      QPen(Qt.blue),
+                                      QSize(5, 5)))
         self.curves.append(curve)
         # curve 2
         self.titles.append('Style: Lines, Symbol: None')
-        curve = Qwt.QwtPlotCurve()
-        curve.setPen(Qt.QPen(Qt.Qt.darkBlue))
-        curve.setStyle(Qwt.QwtPlotCurve.Lines)
+        curve = QwtPlotCurve()
+        curve.setPen(QPen(Qt.darkBlue))
+        curve.setStyle(QwtPlotCurve.Lines)
         self.curves.append(curve)
         # curve 3
         self.titles.append('Style: Lines, Symbol: None, Antialiased')
-        curve = Qwt.QwtPlotCurve()
-        curve.setPen(Qt.QPen(Qt.Qt.darkBlue))
-        curve.setStyle(Qwt.QwtPlotCurve.Lines)
-        curve.setRenderHint(Qwt.QwtPlotItem.RenderAntialiased)
+        curve = QwtPlotCurve()
+        curve.setPen(QPen(Qt.darkBlue))
+        curve.setStyle(QwtPlotCurve.Lines)
+        curve.setRenderHint(QwtPlotItem.RenderAntialiased)
         self.curves.append(curve)
         # curve 4
         self.titles.append('Style: Steps, Symbol: None')
-        curve = Qwt.QwtPlotCurve()
-        curve.setPen(Qt.QPen(Qt.Qt.darkCyan))
-        curve.setStyle(Qwt.QwtPlotCurve.Steps)
+        curve = QwtPlotCurve()
+        curve.setPen(QPen(Qt.darkCyan))
+        curve.setStyle(QwtPlotCurve.Steps)
         self.curves.append(curve)        
         # curve 5
         self.titles.append('Style: NoCurve, Symbol: XCross')
-        curve = Qwt.QwtPlotCurve()
-        curve.setStyle(Qwt.QwtPlotCurve.NoCurve)
-        curve.setSymbol(Qwt.QwtSymbol(Qwt.QwtSymbol.XCross,
-                                      Qt.QBrush(),
-                                      Qt.QPen(Qt.Qt.darkMagenta),
-                                      Qt.QSize(5, 5)))
+        curve = QwtPlotCurve()
+        curve.setStyle(QwtPlotCurve.NoCurve)
+        curve.setSymbol(QwtSymbol(QwtSymbol.XCross,
+                                      QBrush(),
+                                      QPen(Qt.darkMagenta),
+                                      QSize(5, 5)))
         self.curves.append(curve)
 
         # attach data, using Numeric
@@ -74,8 +78,8 @@ class CurveDemo(Qt.QFrame):
         rect.translate(0, offset)
 
     def paintEvent(self, event):
-        Qt.QFrame.paintEvent(self, event)
-        painter = Qt.QPainter(self)
+        QFrame.paintEvent(self, event)
+        painter = QPainter(self)
         painter.setClipRect(self.contentsRect())
         self.drawContents(painter)
 
@@ -88,21 +92,21 @@ class CurveDemo(Qt.QFrame):
             self.xMap.setPaintInterval(r.left(), r.right())
             self.yMap.setPaintInterval(r.top(), r.bottom())
             engine = painter.device().paintEngine()
-            if engine is not None and engine.hasFeature(Qt.QPaintEngine.Antialiasing):
+            if engine is not None and engine.hasFeature(QPaintEngine.Antialiasing):
                 painter.setRenderHint(
-                    Qt.QPainter.Antialiasing,
-                    curve.testRenderHint(Qwt.QwtPlotItem.RenderAntialiased))
+                    QPainter.Antialiasing,
+                    curve.testRenderHint(QwtPlotItem.RenderAntialiased))
             curve.draw(painter, self.xMap, self.yMap, r)
             self.shiftDown(r, dy)
         # draw titles
         r = self.contentsRect()
         r.setHeight(dy)
-        painter.setFont(Qt.QFont('Helvetica', 8))
-        painter.setPen(Qt.Qt.black)
+        painter.setFont(QFont('Helvetica', 8))
+        painter.setPen(Qt.black)
         for title in self.titles:
             painter.drawText(
                 0, r.top(), r.width(), painter.fontMetrics().height(),
-                Qt.Qt.AlignTop | Qt.Qt.AlignHCenter, title)
+                Qt.AlignTop | Qt.AlignHCenter, title)
             self.shiftDown(r, dy)
 
 
@@ -114,6 +118,6 @@ def make():
 
 
 if __name__ == '__main__':
-    app = Qt.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())

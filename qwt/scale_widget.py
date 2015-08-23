@@ -14,7 +14,7 @@ from qwt.color_map import QwtColorMap
 
 from qwt.qt.QtGui import (QWidget, QSizePolicy, QPainter, QStyleOption, QStyle,
                           QPalette)
-from qwt.qt.QtCore import Qt, QRectF, QSize, SIGNAL
+from qwt.qt.QtCore import Qt, QRectF, QSize, Signal
 
 import numpy as np
 
@@ -42,7 +42,7 @@ class QwtScaleWidget_PrivateData(object):
 
 class QwtScaleWidget(QWidget):
     
-    SIG_SCALE_DIV_CHANGED = SIGNAL("scaleDivChanged()")
+    SIG_SCALE_DIV_CHANGED = Signal()
     
     # enum LayoutFlag
     TitleInverted = 1
@@ -198,7 +198,7 @@ class QwtScaleWidget(QWidget):
         painter = QPainter(self)
         painter.setClipRegion(event.region())
         opt = QStyleOption()
-        opt.init(self)
+        opt.initFrom(self)
         self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
         self.draw(painter)
     
@@ -393,7 +393,7 @@ class QwtScaleWidget(QWidget):
         if sd.scaleDiv() != scaleDiv:
             sd.setScaleDiv(scaleDiv)
             self.layoutScale()
-            self.emit(self.SIG_SCALE_DIV_CHANGED)
+            self.SIG_SCALE_DIV_CHANGED.emit()
 
     def setTransformation(self, transformation):
         self.__data.scaleDraw.setTransformation(transformation)

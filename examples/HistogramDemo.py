@@ -2,21 +2,25 @@
 
 import random
 import sys
-from PyQt4 import Qt
-import qwt as Qwt
+
+from qwt.qt.QtGui import QApplication, QPen, QColor
+from qwt.qt.QtCore import QRect
+from qwt.qt.QtCore import Qt
+from qwt import (QwtPlot, QwtIntervalSample, QwtInterval, QwtPlotGrid,
+                 QwtPlotItem, QwtPainter, QwtIntervalSeriesData)
 
 
-class HistogramItem(Qwt.QwtPlotItem):
+class HistogramItem(QwtPlotItem):
     Auto = 0
     Xfy = 1
     def __init__(self, *args):
-        Qwt.QwtPlotItem.__init__(self, *args)
+        QwtPlotItem.__init__(self, *args)
         self.__attributes = HistogramItem.Auto
-        self.__data = Qwt.QwtIntervalSeriesData()
-        self.__color = Qt.QColor()
+        self.__data = QwtIntervalSeriesData()
+        self.__color = QColor()
         self.__reference = 0.0
-        self.setItemAttribute(Qwt.QwtPlotItem.AutoScale, True)
-        self.setItemAttribute(Qwt.QwtPlotItem.Legend, True)
+        self.setItemAttribute(QwtPlotItem.AutoScale, True)
+        self.setItemAttribute(QwtPlotItem.Legend, True)
         self.setZ(20.0)
 
     def setData(self, data):
@@ -39,7 +43,7 @@ class HistogramItem(Qwt.QwtPlotItem):
         if not result.isValid():
             return result
         if self.testHistogramAttribute(HistogramItem.Xfy):
-            result = Qwt.QwtDoubleRect(result.y(), result.x(),
+            result = QwtDoubleRect(result.y(), result.x(),
                                        result.height(), result.width())
             if result.left() > self.baseline():
                 result.setLeft(self.baseline())
@@ -53,7 +57,7 @@ class HistogramItem(Qwt.QwtPlotItem):
         return result
 
     def rtti(self):
-        return Qwt.QwtPlotItem.PlotHistogram
+        return QwtPlotItem.PlotHistogram
 
     def draw(self, painter, xMap, yMap, rect):
         iData = self.data()
@@ -84,7 +88,7 @@ class HistogramItem(Qwt.QwtPlotItem):
                             y2 += 1
 
                 self.drawBar(
-                    painter, Qt.Qt.Horizontal, Qt.QRect(x0, y1, x2-x0, y2-y1))
+                    painter, Qt.Horizontal, QRect(x0, y1, x2-x0, y2-y1))
             else:
                 y2 = yMap.transform(iData.sample(i).value)
                 if y2 == y0:
@@ -108,7 +112,7 @@ class HistogramItem(Qwt.QwtPlotItem):
                             x2 -= 1
                 
                 self.drawBar(
-                    painter, Qt.Qt.Vertical, Qt.QRect(x1, y0, x2-x1, y2-y0))
+                    painter, Qt.Vertical, QRect(x1, y0, x2-x1, y2-y0))
 
     def setBaseline(self, reference):
         if self.baseline() != reference:
@@ -137,53 +141,53 @@ class HistogramItem(Qwt.QwtPlotItem):
         color = painter.pen().color()
         r = rect.normalized()
         factor = 125;
-        light = color.light(factor)
-        dark = color.dark(factor)
+        light = color.lighter(factor)
+        dark = color.darker(factor)
 
         painter.setBrush(color)
-        painter.setPen(Qt.Qt.NoPen)
-        Qwt.QwtPainter.drawRect(painter, r.x()+1, r.y()+1,
+        painter.setPen(Qt.NoPen)
+        QwtPainter.drawRect(painter, r.x()+1, r.y()+1,
                                 r.width()-2, r.height()-2)
 
-        painter.setBrush(Qt.Qt.NoBrush)
+        painter.setBrush(Qt.NoBrush)
 
-        painter.setPen(Qt.QPen(light, 2))
-        Qwt.QwtPainter.drawLine(
+        painter.setPen(QPen(light, 2))
+        QwtPainter.drawLine(
             painter, r.left()+1, r.top()+2, r.right()+1, r.top()+2)
 
-        painter.setPen(Qt.QPen(dark, 2))
-        Qwt.QwtPainter.drawLine(
+        painter.setPen(QPen(dark, 2))
+        QwtPainter.drawLine(
             painter, r.left()+1, r.bottom(), r.right()+1, r.bottom())
 
-        painter.setPen(Qt.QPen(light, 1))
-        Qwt.QwtPainter.drawLine(
+        painter.setPen(QPen(light, 1))
+        QwtPainter.drawLine(
             painter, r.left(), r.top() + 1, r.left(), r.bottom())
-        Qwt.QwtPainter.drawLine(
+        QwtPainter.drawLine(
             painter, r.left()+1, r.top()+2, r.left()+1, r.bottom()-1)
 
-        painter.setPen(Qt.QPen(dark, 1))
-        Qwt.QwtPainter.drawLine(
+        painter.setPen(QPen(dark, 1))
+        QwtPainter.drawLine(
             painter, r.right()+1, r.top()+1, r.right()+1, r.bottom())
-        Qwt.QwtPainter.drawLine(
+        QwtPainter.drawLine(
             painter, r.right(), r.top()+2, r.right(), r.bottom()-1)
 
         painter.restore()
 
 
 def make():
-    demo = Qwt.QwtPlot()
-    demo.setCanvasBackground(Qt.Qt.white)
+    demo = QwtPlot()
+    demo.setCanvasBackground(Qt.white)
     demo.setTitle("Histogram")
 
-    grid = Qwt.QwtPlotGrid()
+    grid = QwtPlotGrid()
     grid.enableXMin(True)
     grid.enableYMin(True)
-    grid.setMajorPen(Qt.QPen(Qt.Qt.black, 0, Qt.Qt.DotLine));
-    grid.setMinorPen(Qt.QPen(Qt.Qt.gray, 0 , Qt.Qt.DotLine));
+    grid.setMajorPen(QPen(Qt.black, 0, Qt.DotLine));
+    grid.setMinorPen(QPen(Qt.gray, 0 , Qt.DotLine));
     grid.attach(demo)
 
     histogram = HistogramItem()
-    histogram.setColor(Qt.Qt.darkCyan)
+    histogram.setColor(Qt.darkCyan)
 
     numValues = 20
     samples = []
@@ -191,13 +195,13 @@ def make():
     for i in range(numValues):
         width = 5 + random.randint(0, 4)
         value = random.randint(0, 99)
-        samples.append(Qwt.QwtIntervalSample(value, Qwt.QwtInterval(pos, pos+width)));
+        samples.append(QwtIntervalSample(value, QwtInterval(pos, pos+width)));
         pos += width
 
-    histogram.setData(Qwt.QwtIntervalSeriesData(samples))
+    histogram.setData(QwtIntervalSeriesData(samples))
     histogram.attach(demo)
-    demo.setAxisScale(Qwt.QwtPlot.yLeft, 0.0, 100.0)
-    demo.setAxisScale(Qwt.QwtPlot.xBottom, 0.0, pos)
+    demo.setAxisScale(QwtPlot.yLeft, 0.0, 100.0)
+    demo.setAxisScale(QwtPlot.xBottom, 0.0, pos)
     demo.replot()
     demo.resize(600, 400)
     demo.show()
@@ -205,6 +209,6 @@ def make():
 
 
 if __name__ == '__main__':
-    app = Qt.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())

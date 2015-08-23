@@ -6,7 +6,7 @@
 
 from qwt.qt.QtGui import (QWidget, QFont, QSizePolicy, QFrame, QApplication,
                           QRegion, QPainter, QPalette)
-from qwt.qt.QtCore import Qt, SIGNAL, QEvent, QSize, QRectF
+from qwt.qt.QtCore import Qt, Signal, QEvent, QSize, QRectF
 
 from qwt.text import QwtText, QwtTextLabel
 from qwt.scale_widget import QwtScaleWidget
@@ -24,11 +24,9 @@ import numpy as np
 
 def qwtEnableLegendItems(plot, on):
     if on:
-        plot.connect(plot, QwtPlot.SIG_LEGEND_DATA_CHANGED,
-                     plot.updateLegendItems)
+        plot.SIG_LEGEND_DATA_CHANGED.connect(plot.updateLegendItems)
     else:
-        plot.disconnect(plot, QwtPlot.SIG_LEGEND_DATA_CHANGED,
-                        plot.updateLegendItems)
+        plot.SIG_LEGEND_DATA_CHANGED.disconnect(plot.updateLegendItems)
 
 def qwtSetTabOrder(first, second, with_children):
     tab_chain = [first, second]
@@ -56,7 +54,7 @@ def qwtSetTabOrder(first, second, with_children):
 
 class ItemList(list):
     def sortItems(self):
-        self.sort(cmp=lambda item1, item2: cmp(item1.z(), item2.z()))
+        self.sort(key=lambda item: item.z())
 
     def insertItem(self, obj):
         self.append(obj)
@@ -129,8 +127,8 @@ class AxisData(object):
 
 
 class QwtPlot(QFrame, QwtPlotDict):
-    SIG_ITEM_ATTACHED = SIGNAL("itemAttached(PyQt_PyObject,bool)")
-    SIG_LEGEND_DATA_CHANGED = SIGNAL("legendDataChanged(PyQt_PyObject,PyQt_PyObject)")
+    SIG_ITEM_ATTACHED = Signal("PyQt_PyObject", bool)
+    SIG_LEGEND_DATA_CHANGED = Signal("PyQt_PyObject", "PyQt_PyObject")
 
     # enum Axis
     yLeft, yRight, xBottom, xTop, axisCnt = range(5)
@@ -757,8 +755,8 @@ class QwtPlot(QFrame, QwtPlotDict):
                 del self.__data.legend
             self.__data.legend = legend
             if self.__data.legend:
-                self.connect(self, QwtPlot.SIG_LEGEND_DATA_CHANGED,
-                             self.__data.legend.updateLegend)
+                self.SIG_LEGEND_DATA_CHANGED.connect(
+                                            self.__data.legend.updateLegend)
                 if self.__data.legend.parent() is not self:
                     self.__data.legend.setParent(self)
                 
@@ -801,7 +799,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             legendData = []
             if plotItem.testItemAttribute(QwtPlotItem.Legend):
                 legendData = plotItem.legendData()
-            self.emit(QwtPlot.SIG_LEGEND_DATA_CHANGED, plotItem, legendData)
+            self.SIG_LEGEND_DATA_CHANGED.emit(plotItem, legendData)
 
     def updateLegendItems(self, plotItem, legendData):
         if plotItem is not None:
@@ -822,13 +820,13 @@ class QwtPlot(QFrame, QwtPlotDict):
         else:
             self.removeItem(plotItem)
         
-        self.emit(QwtPlot.SIG_ITEM_ATTACHED, plotItem, on)
+        self.SIG_ITEM_ATTACHED.emit(plotItem, on)
         
         if plotItem.testItemAttribute(QwtPlotItem.Legend):
             if on:
                 self.updateLegend(plotItem)
             else:
-                self.emit(QwtPlot.SIG_LEGEND_DATA_CHANGED, plotItem, [])
+                self.SIG_LEGEND_DATA_CHANGED.emit(plotItem, [])
         
         self.autoRefresh()
     

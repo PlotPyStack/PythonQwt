@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import sys
-from PyQt4 import Qt
-import qwt as Qwt
 import numpy as np
+
+from qwt.qt.QtGui import QApplication, QPen, QGridLayout, QWidget
+from qwt.qt.QtCore import Qt
+from qwt import QwtPlot, QwtPlotCurve
 
 
 def drange(start, stop, step):
@@ -18,41 +20,41 @@ def lorentzian(x):
     return 1.0/(1.0+(x-5.0)**2)
 
 
-class MultiDemo(Qt.QWidget):
+class MultiDemo(QWidget):
     def __init__(self, *args):
-        Qt.QWidget.__init__(self, *args)
-        layout = Qt.QGridLayout(self)        
+        QWidget.__init__(self, *args)
+        layout = QGridLayout(self)        
         # try to create a plot for SciPy arrays
 
         # make a curve and copy the data
-        numpy_curve = Qwt.QwtPlotCurve('y = lorentzian(x)')
+        numpy_curve = QwtPlotCurve('y = lorentzian(x)')
         x = np.arange(0.0, 10.0, 0.01)
         y = lorentzian(x)
         numpy_curve.setData(x, y)
         # here, we know we can plot NumPy arrays
-        numpy_plot = Qwt.QwtPlot(self)
+        numpy_plot = QwtPlot(self)
         numpy_plot.setTitle('numpy array')
-        numpy_plot.setCanvasBackground(Qt.Qt.white)
+        numpy_plot.setCanvasBackground(Qt.white)
         numpy_plot.plotLayout().setCanvasMargin(0)
         numpy_plot.plotLayout().setAlignCanvasToScales(True)
         # insert a curve and make it red
         numpy_curve.attach(numpy_plot)
-        numpy_curve.setPen(Qt.QPen(Qt.Qt.red))
+        numpy_curve.setPen(QPen(Qt.red))
         layout.addWidget(numpy_plot, 0, 0)
         numpy_plot.replot()
 
         # create a plot widget for lists of Python floats
-        list_plot = Qwt.QwtPlot(self)
+        list_plot = QwtPlot(self)
         list_plot.setTitle('Python list')
-        list_plot.setCanvasBackground(Qt.Qt.white)
+        list_plot.setCanvasBackground(Qt.white)
         list_plot.plotLayout().setCanvasMargin(0)
         list_plot.plotLayout().setAlignCanvasToScales(True)
         x = drange(0.0, 10.0, 0.01)
         y = [lorentzian(item) for item in x]
         # insert a curve, make it red and copy the lists
-        list_curve = Qwt.QwtPlotCurve('y = lorentzian(x)')
+        list_curve = QwtPlotCurve('y = lorentzian(x)')
         list_curve.attach(list_plot)
-        list_curve.setPen(Qt.QPen(Qt.Qt.red))
+        list_curve.setPen(QPen(Qt.red))
         list_curve.setData(x, y)
         layout.addWidget(list_plot, 0, 1)
         list_plot.replot()
@@ -66,6 +68,6 @@ def make():
 
 
 if __name__ == '__main__':
-    app = Qt.QApplication(sys.argv)
+    app = QApplication(sys.argv)
     demo = make()
     sys.exit(app.exec_())

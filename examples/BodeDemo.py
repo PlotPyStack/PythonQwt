@@ -9,9 +9,17 @@
 from __future__ import unicode_literals
 
 import sys
-from PyQt4.Qt import *
-from qwt import *
 import numpy as np
+
+from qwt.qt.QtGui import (QApplication, QPen, QBrush, QFrame, QFont, QWidget,
+                          QMainWindow, QToolButton, QIcon, QPixmap, QToolBar,
+                          QHBoxLayout, QLabel, QPrinter, QPrintDialog,
+                          QFontDatabase)
+from qwt.qt.QtCore import QSize
+from qwt.qt.QtCore import Qt
+from qwt import (QwtPlot, QwtPlotMarker, QwtSymbol, QwtLegend, QwtPlotGrid,
+                 QwtPlotCurve, QwtPlotItem, QwtLogScaleEngine, QwtText,
+                 QwtPlotRenderer)
 
 
 print_xpm = ['32 32 12 1',
@@ -256,14 +264,14 @@ class BodeDemo(QMainWindow):
         btnPrint.setIcon(QIcon(QPixmap(print_xpm)))
         btnPrint.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         toolBar.addWidget(btnPrint)
-        self.connect(btnPrint, SIGNAL('clicked()'), self.print_)
+        btnPrint.clicked.connect(self.print_)
 
         btnExport = QToolButton(toolBar)
         btnExport.setText("Export")
         btnExport.setIcon(QIcon(QPixmap(print_xpm)))
         btnExport.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         toolBar.addWidget(btnExport)
-        self.connect(btnExport, SIGNAL('clicked()'), self.exportDocument)
+        btnExport.clicked.connect(self.exportDocument)
             
         toolBar.addSeparator()
 
@@ -311,9 +319,9 @@ class BodeDemo(QMainWindow):
                 
     def moved(self, point):
         info = "Freq=%g, Ampl=%g, Phase=%g" % (
-            self.plot.invTransform(Qwt.QwtPlot.xBottom, point.x()),
-            self.plot.invTransform(Qwt.QwtPlot.yLeft, point.y()),
-            self.plot.invTransform(Qwt.QwtPlot.yRight, point.y()))
+            self.plot.invTransform(QwtPlot.xBottom, point.x()),
+            self.plot.invTransform(QwtPlot.yLeft, point.y()),
+            self.plot.invTransform(QwtPlot.yRight, point.y()))
         self.showInfo(info)
 
     def selected(self, _):

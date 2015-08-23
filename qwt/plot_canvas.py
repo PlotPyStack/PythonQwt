@@ -7,6 +7,7 @@
 from qwt.null_paintdevice import QwtNullPaintDevice
 from qwt.painter import QwtPainter
 
+from qwt.qt import PYQT5
 from qwt.qt.QtGui import (QFrame, QPaintEngine, QPen, QBrush, QRegion, QImage,
                           QPainterPath, QPixmap, QGradient, QPainter, qAlpha,
                           QPolygonF, QStyleOption, QStyle, QStyleOptionFrame)
@@ -98,6 +99,14 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
                 r.setBottom(rect.bottom())
 
 
+def _rects_conv_PyQt5(rects):
+    # PyQt5 compatibility: the conversion from QRect to QRectF should not 
+    # be necessary but it seems to be anyway... PyQt5 bug?
+    if PYQT5:
+        return [QRectF(rect) for rect in rects]
+    else:
+        return rects
+
 def qwtDrawBackground(painter, canvas):
     painter.save()
     borderClip = canvas.borderPath(canvas.rect())
@@ -128,17 +137,18 @@ def qwtDrawBackground(painter, canvas):
             p = QPainter(image)
             p.setPen(Qt.NoPen)
             p.setBrush(brush)
-            p.drawRects(rects)
+            p.drawRects(_rects_conv_PyQt5(rects))
             p.end()
             painter.drawImage(0, 0, image)
         else:
             painter.setPen(Qt.NoPen)
             painter.setBrush(brush)
-            painter.drawRects(rects)
+            painter.drawRects(_rects_conv_PyQt5(rects))
     else:
         painter.setPen(Qt.NoPen)
         painter.setBrush(brush)
-        painter.drawRects(painter.clipRegion().rects())
+        painter.drawRects(_rects_conv_PyQt5(painter.clipRegion().rects()))
+
     painter.restore()
 
 
@@ -488,9 +498,13 @@ class QwtPlotCanvas(QFrame):
                         self.palette(), self.frameWidth(), self.frameStyle())
         else:
             if QT_VERSION >= 0x040500:
-                from qwt.qt.QtGui import QStyleOptionFrameV3
-                opt = QStyleOptionFrameV3()
-                opt.init(self)
+                if PYQT5:
+                    from qwt.qt.QtGui import QStyleOptionFrame
+                else:
+                    from qwt.qt.QtGui import QStyleOptionFrameV3 as\
+                                             QStyleOptionFrame
+                opt = QStyleOptionFrame()
+                opt.initFrom(self)
                 frameShape = self.frameStyle() & QFrame.Shape_Mask
                 frameShadow = self.frameStyle() & QFrame.Shadow_Mask
                 opt.frameShape = QFrame.Shape(int(opt.frameShape)|frameShape)

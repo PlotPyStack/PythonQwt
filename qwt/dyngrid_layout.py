@@ -43,7 +43,7 @@ class QwtDynGridLayout(QLayout):
         QLayout.__init__(self, parent)
         self.__data = QwtDynGridLayout_PrivateData()
         self.setSpacing(spacing)
-        self.setMargin(margin)
+        self.setContentsMargins(margin, margin, margin, margin)
         
     def invalidate(self):
         self.__data.isDirty = True
@@ -118,7 +118,9 @@ class QwtDynGridLayout(QLayout):
         for index, hint in enumerate(self.__data.itemSizeHints):
             col = index % numColumns
             colWidth[col] = max([colWidth[col], hint.width()])
-        return 2*self.margin()+(numColumns-1)*self.spacing()+sum(colWidth)
+        margins = self.contentsMargins()
+        margin_w = margins.left() + margins.right()
+        return margin_w+(numColumns-1)*self.spacing()+sum(colWidth)
     
     def maxItemWidth(self):
         if self.isEmpty():
@@ -131,7 +133,7 @@ class QwtDynGridLayout(QLayout):
         itemGeometries = []
         if numColumns == 0 or self.isEmpty():
             return itemGeometries
-        numRows = self.itemCount()/numColumns
+        numRows = int(self.itemCount()/numColumns)
         if numColumns % self.itemCount():
             numRows += 1
         if numRows == 0:
@@ -152,15 +154,16 @@ class QwtDynGridLayout(QLayout):
         colX = [0] * numColumns
         rowY = [0] * numRows
         xySpace = self.spacing()
-        rowY[0] = yOffset + self.margin()
+        margins = self.contentsMargins()
+        rowY[0] = yOffset + margins.bottom()
         for r in range(1, numRows):
             rowY[r] = rowY[r-1] + rowHeight[r-1] + xySpace
-        colX[0] = xOffset + self.margin()
+        colX[0] = xOffset + margins.left()
         for c in range(1, numColumns):
             colX[c] = colX[c-1] + colWidth[c-1] + xySpace
         itemCount = len(self.__data.itemList)
         for i in range(itemCount):
-            row = i/numColumns
+            row = int(i/numColumns)
             col = i % numColumns
             itemGeometry = QRect(colX[col], rowY[row],
                                  colWidth[col], rowHeight[row])
@@ -173,7 +176,7 @@ class QwtDynGridLayout(QLayout):
         if self.__data.isDirty:
             self.__data.updateLayoutCache()
         for index in range(len(self.__data.itemSizeHints)):
-            row = index/numColumns
+            row = int(index/numColumns)
             col = index % numColumns
             size = self.__data.itemSizeHints[index]
             if col == 0:
@@ -192,13 +195,15 @@ class QwtDynGridLayout(QLayout):
         if self.isEmpty():
             return 0
         numColumns = self.columnsForWidth(width)
-        numRows = self.itemCount()/numColumns
+        numRows = int(self.itemCount()/numColumns)
         if self.itemCount() % numColumns:
             numRows += 1
         rowHeight = [0] * numRows
         colWidth = [0] * numColumns
         self.layoutGrid(numColumns, rowHeight, colWidth)
-        return 2*self.margin()+(numRows-1)*self.spacing()+sum(rowHeight)
+        margins = self.contentsMargins()
+        margin_h = margins.top() + margins.bottom()
+        return margin_h+(numRows-1)*self.spacing()+sum(rowHeight)
     
     def stretchGrid(self, rect, numColumns, rowHeight, colWidth):
         if numColumns == 0 or self.isEmpty():
@@ -233,14 +238,17 @@ class QwtDynGridLayout(QLayout):
         numColumns = self.itemCount()
         if self.__data.maxColumns > 0:
             numColumns = min([self.__data.maxColumns, numColumns])
-        numRows = self.itemCount()/numColumns
+        numRows = int(self.itemCount()/numColumns)
         if self.itemCount() % numColumns:
             numRows += 1
         rowHeight = [0] * numRows
         colWidth = [0] * numColumns
         self.layoutGrid(numColumns, rowHeight, colWidth)
-        h = 2*self.margin()+(numRows-1)*self.spacing()+sum(rowHeight)
-        w = 2*self.margin()+(numColumns-1)*self.spacing()+sum(colWidth)
+        margins = self.contentsMargins()
+        margin_h = margins.top() + margins.bottom()
+        margin_w = margins.left() + margins.right()
+        h = margin_h+(numRows-1)*self.spacing()+sum(rowHeight)
+        w = margin_w+(numColumns-1)*self.spacing()+sum(colWidth)
         return QSize(w, h)
     
     def numRows(self):
