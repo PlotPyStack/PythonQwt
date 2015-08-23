@@ -17,6 +17,7 @@ import os
 import sys
 import os.path as osp
 
+import setuptools  # analysis:ignore
 from distutils.core import setup
 from distutils.command.build import build
 
@@ -27,10 +28,10 @@ DESCRIPTION = 'qwt is a pure Python implementation of Qwt C++ library, using PyQ
 LONG_DESCRIPTION = ''
 KEYWORDS = ''
 CLASSIFIERS = ['Topic :: Scientific/Engineering']
-if 'alpha' in version:
-    CLASSIFIERS += ['Development Status :: 3 - Alpha']
-elif 'beta' in version:
+if 'beta' in version or 'b' in version:
     CLASSIFIERS += ['Development Status :: 4 - Beta']
+elif 'alpha' in version or 'a' in version:
+    CLASSIFIERS += ['Development Status :: 3 - Alpha']
 else:
     CLASSIFIERS += ['Development Status :: 5 - Production/Stable']
 
