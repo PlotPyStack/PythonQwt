@@ -67,9 +67,9 @@ class QwtPlainTextEngine(QwtTextEngine):
         self._fm_cache = {}
     
     def fontmetrics(self, font):
-        fm = self._fm_cache.get(font)
+        fm = self._fm_cache.get(id(font))
         if fm is None:
-            return self._fm_cache.setdefault(font, QFontMetricsF(font))
+            return self._fm_cache.setdefault(id(font), QFontMetricsF(font))
         else:
             return fm
     
