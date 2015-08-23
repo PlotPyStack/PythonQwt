@@ -68,7 +68,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     
     # enum CurveStyle
     NoCurve = -1
-    Lines, Sticks, Steps, Dots = range(4)
+    Lines, Sticks, Steps, Dots = list(range(4))
     UserCurve = 100
     
     # enum CurveAttribute

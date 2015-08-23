@@ -43,7 +43,7 @@ class QwtPainterCommand(object):
     
     # enum Type
     Invalid = -1
-    Path, Pixmap, Image, State = range(4)
+    Path, Pixmap, Image, State = list(range(4))
     
     def __init__(self, *args):
         if len(args) == 0:

@@ -113,7 +113,7 @@ class ColorStops(object):
 class QwtColorMap(object):
     
     # enum Format
-    RGB, Indexed = range(2)
+    RGB, Indexed = list(range(2))
     
     def __init__(self, format_=None):
         if format_ is None:
@@ -148,7 +148,7 @@ class QwtLinearColorMap_PrivateData(object):
 class QwtLinearColorMap(QwtColorMap):
     
     # enum Mode
-    FixedColors, ScaledColors = range(2)
+    FixedColors, ScaledColors = list(range(2))
     
     def __init__(self, *args):
         color1, color2 = QColor(Qt.blue), QColor(Qt.yellow)

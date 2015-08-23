@@ -131,10 +131,10 @@ class QwtPlot(QFrame, QwtPlotDict):
     SIG_LEGEND_DATA_CHANGED = Signal("PyQt_PyObject", "PyQt_PyObject")
 
     # enum Axis
-    yLeft, yRight, xBottom, xTop, axisCnt = range(5)
+    yLeft, yRight, xBottom, xTop, axisCnt = list(range(5))
     
     # enum LegendPosition
-    LeftLegend, RightLegend, BottomLegend, TopLegend = range(4)
+    LeftLegend, RightLegend, BottomLegend, TopLegend = list(range(4))
     
     def __init__(self, *args):
         if len(args) == 0:
@@ -867,7 +867,7 @@ class QwtPlotItem(object):
      Rtti_PlotIntervalCurve, Rtti_PlotHistogram, Rtti_PlotSpectrogram,
      Rtti_PlotSVG, Rtti_PlotTradingCurve, Rtti_PlotBarChart,
      Rtti_PlotMultiBarChart, Rtti_PlotShape, Rtti_PlotTextLabel,
-     Rtti_PlotZone) = range(17)
+     Rtti_PlotZone) = list(range(17))
     Rtti_PlotUserItem = 1000
     
     # enum ItemAttribute

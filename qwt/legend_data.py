@@ -10,10 +10,10 @@ from qwt.text import QwtText
 class QwtLegendData(object):
     
     # enum Mode
-    ReadOnly, Clickable, Checkable = range(3)
+    ReadOnly, Clickable, Checkable = list(range(3))
     
     # enum Role
-    ModeRole, TitleRole, IconRole = range(3)
+    ModeRole, TitleRole, IconRole = list(range(3))
     UserRole = 32
     
     def __init__(self):

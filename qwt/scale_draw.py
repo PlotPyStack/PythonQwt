@@ -188,7 +188,7 @@ class QwtScaleDraw_PrivateData(object):
 
 class QwtScaleDraw(QwtAbstractScaleDraw):
     # enum Alignment
-    BottomScale, TopScale, LeftScale, RightScale = range(4)
+    BottomScale, TopScale, LeftScale, RightScale = list(range(4))
     Flags = (
              Qt.AlignHCenter|Qt.AlignBottom, # BottomScale
              Qt.AlignHCenter|Qt.AlignTop,    # TopScale

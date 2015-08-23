@@ -18,7 +18,7 @@ import numpy as np
 class QwtTriangle(object):
     
     # enum Type
-    Left, Right, Up, Down = range(4)
+    Left, Right, Up, Down = list(range(4))
 
 
 def qwtPathGraphic(path, pen, brush):
@@ -452,11 +452,11 @@ class QwtSymbol(object):
     NoSymbol = -1
     (Ellipse, Rect, Diamond, Triangle, DTriangle, UTriangle, LTriangle,
      RTriangle, Cross, XCross, HLine, VLine, Star1, Star2, Hexagon, Path,
-     Pixmap, Graphic, SvgDocument) = range(19)
+     Pixmap, Graphic, SvgDocument) = list(range(19))
     UserStyle = 1000
     
     # enum CachePolicy
-    NoCache, Cache, AutoCache = range(3)
+    NoCache, Cache, AutoCache = list(range(3))
     
     def __init__(self, *args):
         if len(args) in (0, 1):

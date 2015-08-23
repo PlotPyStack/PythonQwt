@@ -38,7 +38,7 @@ class QwtPlotHistogram_PrivateData(object):
 class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
     
     # enum HistogramStyle
-    Outline, Columns, Lines = range(3)
+    Outline, Columns, Lines = list(range(3))
     UserStyle = 100
     
     def __init__(self, title=None):

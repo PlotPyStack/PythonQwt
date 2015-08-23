@@ -157,7 +157,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
 class QwtNullPaintDevice(QPaintDevice):
     
     # enum Mode
-    NormalMode, PolygonPathMode, PathMode = range(3)
+    NormalMode, PolygonPathMode, PathMode = list(range(3))
     
     def __init__(self):
         super(QwtNullPaintDevice, self).__init__()

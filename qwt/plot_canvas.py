@@ -314,7 +314,7 @@ class QwtPlotCanvas(QFrame):
     ImmediatePaint = 8
     
     # enum FocusIndicator
-    NoFocusIndicator, CanvasFocusIndicator, ItemFocusIndicator = range(3)
+    NoFocusIndicator, CanvasFocusIndicator, ItemFocusIndicator = list(range(3))
     
     def __init__(self, plot=None):
         super(QwtPlotCanvas, self).__init__(plot)

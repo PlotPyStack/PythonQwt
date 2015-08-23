@@ -26,7 +26,7 @@ class QwtSplineCurveFitter_PrivateData(object):
 
 class QwtSplineCurveFitter(QwtCurveFitter):
     # enum FitMode
-    Auto, Spline, ParametricSpline = range(3)
+    Auto, Spline, ParametricSpline = list(range(3))
     
     def __init__(self):
         super(QwtSplineCurveFitter, self).__init__()

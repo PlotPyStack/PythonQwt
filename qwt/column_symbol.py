@@ -86,7 +86,7 @@ class QwtColumnSymbol(object):
     UserStyle = 1000
     
     # enum FrameStyle
-    NoFrame, Plain, Raised = range(3)
+    NoFrame, Plain, Raised = list(range(3))
     
     def __init__(self, style):
         self.__data = QwtColumnSymbol_PrivateData()
@@ -140,7 +140,7 @@ class QwtColumnSymbol(object):
 class QwtColumnRect(object):
     
     # enum Direction
-    LeftToRight, RightToLeft, BottomToTop, TopToBottom = range(4)
+    LeftToRight, RightToLeft, BottomToTop, TopToBottom = list(range(4))
     
     def __init__(self):
         self.hInterval = QwtInterval()

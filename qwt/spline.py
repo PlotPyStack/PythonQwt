@@ -40,7 +40,7 @@ def lookup(x, values):
 class QwtSpline(object):
     
     # enum SplineType
-    Natural, Periodic = range(2)
+    Natural, Periodic = list(range(2))
     
     def __init__(self, other=None):
         if other is not None:

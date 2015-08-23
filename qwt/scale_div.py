@@ -12,7 +12,7 @@ import copy
 class QwtScaleDiv(object):
     # enum TickType
     NoTick = -1
-    MinorTick, MediumTick, MajorTick, NTickTypes = range(4)
+    MinorTick, MediumTick, MajorTick, NTickTypes = list(range(4))
     
     def __init__(self, *args):
         self.__ticks = None

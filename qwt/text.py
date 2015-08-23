@@ -39,7 +39,7 @@ class QwtText_LayoutCache(object):
 class QwtText(object):
 
     # enum TextFormat
-    AutoText, PlainText, RichText, MathMLText, TeXText = range(5)
+    AutoText, PlainText, RichText, MathMLText, TeXText = list(range(5))
     OtherFormat = 100
     
     # enum PaintAttribute

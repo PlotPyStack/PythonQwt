@@ -379,7 +379,7 @@ class QwtPainterClass(object):
                             "(s) (%s given)" % len(args))
     
     def drawRoundFrame(self, painter, rect, palette, lineWidth, frameStyle):
-        Plain, Sunken, Raised = range(3)
+        Plain, Sunken, Raised = list(range(3))
         style = Plain
         if (frameStyle & QFrame.Sunken) == QFrame.Sunken:
             style = Sunken
@@ -511,7 +511,7 @@ class QwtPainterClass(object):
         r = rect.adjusted(lw2, lw2, -lw2, -lw2)
         path = QPainterPath()
         path.addRoundedRect(r, xRadius, yRadius)
-        Plain, Sunken, Raised = range(3)
+        Plain, Sunken, Raised = list(range(3))
         style = Plain
         if (frameStyle & QFrame.Sunken) == QFrame.Sunken:
             style = Sunken

@@ -30,7 +30,7 @@ class QwtPlotMarker_PrivateData(object):
 class QwtPlotMarker(QwtPlotItem):
     
     # enum LineStyle
-    NoLine, HLine, VLine, Cross = range(4)
+    NoLine, HLine, VLine, Cross = list(range(4))
     
     
     def __init__(self, title=None):
