@@ -6,6 +6,7 @@ import numpy as np
 from qwt.qt.QtGui import (QApplication, QPen, QBrush, QColor, QWidget,
                           QMainWindow, QPainter, QPixmap, QToolBar, QWhatsThis)
 from qwt.qt.QtCore import QSize, QEvent, Signal, QRect, QObject, Qt, QPoint
+from qwt.qt import PYQT5
 from qwt import (QwtPlot, QwtScaleDraw, QwtSymbol, QwtPlotGrid, QwtPlotCurve,
                  QwtPlotCanvas, QwtScaleDiv)
 
@@ -48,7 +49,10 @@ class ColorBar(QWidget):
     
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
-            pm = QPixmap.grabWidget(self)
+            if PYQT5:
+                pm = self.grab()
+            else:
+                pm = QPixmap.grabWidget(self)
             color = QColor()
             color.setRgb(pm.toImage().pixel(event.x(), event.y()))
             self.SIG_COLOR_SELECTED.emit(color)
