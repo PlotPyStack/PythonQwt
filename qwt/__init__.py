@@ -4,7 +4,7 @@
 # Licensed under the terms of the MIT License
 # (see qwt/LICENSE for details)
 
-__version__ = QWT_VERSION_STR = '6.1.2alpha1'
+__version__ = QWT_VERSION_STR = '6.1.2alpha2'
 
 import warnings
 
