@@ -68,48 +68,6 @@ print_xpm = ['32 32 12 1',
              '...............###bbb#..........',
              '..................###...........']
 
-zoom_xpm = ['32 32 8 1',
-            '# c #000000',
-            'b c #c0c0c0',
-            'a c #ffffff',
-            'e c #585858',
-            'd c #a0a0a4',
-            'c c #0000ff',
-            'f c #00ffff',
-            '. c None',
-            '..######################........',
-            '.#a#baaaaaaaaaaaaaaaaaa#........',
-            '#aa#baaaaaaaaaaaaaccaca#........',
-            '####baaaaaaaaaaaaaaaaca####.....',
-            '#bbbbaaaaaaaaaaaacccaaa#da#.....',
-            '#aaaaaaaaaaaaaaaacccaca#da#.....',
-            '#aaaaaaaaaaaaaaaaaccaca#da#.....',
-            '#aaaaaaaaaabe###ebaaaaa#da#.....',
-            '#aaaaaaaaa#########aaaa#da#.....',
-            '#aaaaaaaa###dbbbb###aaa#da#.....',
-            '#aaaaaaa###aaaaffb###aa#da#.....',
-            '#aaaaaab##aaccaaafb##ba#da#.....',
-            '#aaaaaae#daaccaccaad#ea#da#.....',
-            '#aaaaaa##aaaaaaccaab##a#da#.....',
-            '#aaaaaa##aacccaaaaab##a#da#.....',
-            '#aaaaaa##aaccccaccab##a#da#.....',
-            '#aaaaaae#daccccaccad#ea#da#.....',
-            '#aaaaaab##aacccaaaa##da#da#.....',
-            '#aaccacd###aaaaaaa###da#da#.....',
-            '#aaaaacad###daaad#####a#da#.....',
-            '#acccaaaad##########da##da#.....',
-            '#acccacaaadde###edd#eda#da#.....',
-            '#aaccacaaaabdddddbdd#eda#a#.....',
-            '#aaaaaaaaaaaaaaaaaadd#eda##.....',
-            '#aaaaaaaaaaaaaaaaaaadd#eda#.....',
-            '#aaaaaaaccacaaaaaaaaadd#eda#....',
-            '#aaaaaaaaaacaaaaaaaaaad##eda#...',
-            '#aaaaaacccaaaaaaaaaaaaa#d#eda#..',
-            '########################dd#eda#.',
-            '...#dddddddddddddddddddddd##eda#',
-            '...#aaaaaaaaaaaaaaaaaaaaaa#.####',
-            '...########################..##.']
-
 
 class BodePlot(QwtPlot):
 
@@ -251,13 +209,6 @@ class BodeDemo(QMainWindow):
 
         toolBar = QToolBar(self)
         self.addToolBar(toolBar)
-        
-        btnZoom = QToolButton(toolBar)
-        btnZoom.setText("Zoom")
-        btnZoom.setIcon(QIcon(QPixmap(zoom_xpm)))
-        btnZoom.setCheckable(True)
-        btnZoom.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
-        toolBar.addWidget(btnZoom)
 
         btnPrint = QToolButton(toolBar)
         btnPrint.setText("Print")
