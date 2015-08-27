@@ -1,9 +1,21 @@
-qwt
-===
+python-qwt
+==========
 
-Copyright © 2014-2015 Pierre Raybaut
-Licensed under the terms of the MIT License (see qwt/LICENSE)
+    Written by Pierre Raybaut
 
+      The ``python-qwt`` project was initiated to solve -at least temporarily- 
+      the obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) 
+      which is no longer maintained. The idea was to translate the Qwt C++ code 
+      to Python and then to optimize some parts of the code by writing new 
+      modules based on NumPy and other libraries.
+      
+      The ``python-qwt`` project consists of a single Python package named `qwt` 
+      and of a few other files (examples, doc, ...).
+
+      The `qwt` Python package was partly (95%) translated from Qwt C++ library: 
+      the associated code is licensed under the terms of the Qwt license 1.0 
+      (see qwt/QwtLicense). The rest of the code was wrote from scratch and is 
+      licensed under the terms of the MIT License (see qwt/LICENSE).
 
     Overview
 

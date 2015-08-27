@@ -5,10 +5,10 @@
 # (see qwt/LICENSE for details)
 
 """
-qwt
-====
+python-qwt
+==========
 
-Qt Widget Tools for Python
+Qt plotting widgets for Python
 """
 
 from __future__ import print_function
@@ -21,13 +21,32 @@ import setuptools  # analysis:ignore
 from distutils.core import setup
 from distutils.command.build import build
 
-LIBNAME = 'qwt'
+LIBNAME = 'python-qwt'
+PACKAGE_NAME = 'qwt'
 from qwt import __version__ as version
 
-DESCRIPTION = 'qwt is a pure Python implementation of Qwt C++ library, using PyQt and NumPy'
-LONG_DESCRIPTION = ''
+DESCRIPTION = 'Qt plotting widgets for Python'
+LONG_DESCRIPTION = """\
+The ``python-qwt`` project is a pure Python translation of the Qwt C++ library 
+which implements Qt widgets for plotting curves. 
+It consists of a single Python package named `qwt` (and examples, doc, ...).
+
+The ``python-qwt`` project was initiated to solve -at least temporarily- the 
+obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
+no longer maintained. The idea was to translate the Qwt C++ code to Python and 
+then to optimize some parts of the code by writing new modules based on NumPy 
+and other libraries.
+
+The following ``Qwt`` classes won't be reimplemented in ``python-qwt`` because 
+most powerful features already exist in ``guiqwt``: QwtCounter, QwtPicker, 
+QwtPlotPicker, QwtPlotZoomer and QwtEventPattern.
+QwtClipper is not implemented (and it will probably be very difficult or 
+impossible to implement it in pure Python without performance issues). As a 
+consequence, when zooming in a plot curve, the entire curve is still painted 
+(in other words, when working with large amount of data, there is no 
+performance gain when zooming in)."""
 KEYWORDS = ''
-CLASSIFIERS = ['Topic :: Scientific/Engineering']
+CLASSIFIERS = []
 if 'beta' in version or 'b' in version:
     CLASSIFIERS += ['Development Status :: 4 - Beta']
 elif 'alpha' in version or 'a' in version:
@@ -92,9 +111,7 @@ if sphinx:
     cmdclass['build_doc'] = build_doc
 
 
-setup(name=LIBNAME, version=version,
-#      download_url='http://%s.googlecode.com/files/%s-%s.zip' % (
-#                                                  LIBNAME, LIBNAME, version),
+setup(name=PACKAGE_NAME, version=version,
       description=DESCRIPTION, long_description=LONG_DESCRIPTION,
       packages=get_subpackages(LIBNAME),
       package_data={LIBNAME:
@@ -102,8 +119,12 @@ setup(name=LIBNAME, version=version,
       requires=["PyQt4 (>4.3)",],
       author = "Pierre Raybaut",
       author_email = 'pierre.raybaut@gmail.com',
-#      url = 'http://www.cea.fr',
+      url = 'https://github.com/PierreRaybaut/%s' % LIBNAME,
+      platforms = 'Any',
       classifiers=CLASSIFIERS + [
+        'License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)',
+        'Topic :: Scientific/Engineering :: Visualization',
+        'Topic :: Software Development :: Widget Sets',
         'Operating System :: MacOS',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: OS Independent',
