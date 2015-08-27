@@ -110,11 +110,11 @@ if sphinx:
     cmdclass['build_doc'] = build_doc
 
 
-setup(name=PACKAGE_NAME, version=version,
+setup(name=LIBNAME, version=version,
       description=DESCRIPTION, long_description=LONG_DESCRIPTION,
-      packages=get_subpackages(LIBNAME),
-      package_data={LIBNAME:
-                    get_package_data(LIBNAME, ('.png', '.svg', '.mo'))},
+      packages=get_subpackages(PACKAGE_NAME),
+      package_data={PACKAGE_NAME:
+                    get_package_data(PACKAGE_NAME, ('.png', '.svg', '.mo'))},
       requires=["PyQt4 (>4.3)",],
       author = "Pierre Raybaut",
       author_email = 'pierre.raybaut@gmail.com',
