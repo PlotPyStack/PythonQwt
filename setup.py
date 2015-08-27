@@ -46,7 +46,7 @@ consequence, when zooming in a plot curve, the entire curve is still painted
 (in other words, when working with large amount of data, there is no 
 performance gain when zooming in)."""
 KEYWORDS = ''
-CLASSIFIERS = ['Topic :: Scientific/Engineering']
+CLASSIFIERS = []
 if 'beta' in version or 'b' in version:
     CLASSIFIERS += ['Development Status :: 4 - Beta']
 elif 'alpha' in version or 'a' in version:
@@ -120,7 +120,11 @@ setup(name=PACKAGE_NAME, version=version,
       author = "Pierre Raybaut",
       author_email = 'pierre.raybaut@gmail.com',
       url = 'https://github.com/PierreRaybaut/%s' % LIBNAME,
+      platforms = 'Any',
       classifiers=CLASSIFIERS + [
+        'License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)',
+        'Topic :: Scientific/Engineering :: Visualization',
+        'Topic :: Software Development :: Widget Sets',
         'Operating System :: MacOS',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: OS Independent',
