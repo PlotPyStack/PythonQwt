@@ -3,7 +3,7 @@
 # Licensed under the terms of the Qwt License
 # (see qwt/LICENSE for details)
 
-__version__ = QWT_VERSION_STR = '6.1.2a3'
+__version__ = QWT_VERSION_STR = '6.1.2a4'
 
 import warnings
 
