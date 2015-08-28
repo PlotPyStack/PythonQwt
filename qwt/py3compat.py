@@ -2,7 +2,7 @@
 #
 # Copyright © 2012-2013 Pierre Raybaut
 # Licensed under the terms of the MIT License
-# (see spyderlib/__init__.py for details)
+# (see LICENSE file for details)
 
 """
 guidata.py3compat (exact copy of spyderlib.py3compat)

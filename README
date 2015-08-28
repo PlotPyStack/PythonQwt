@@ -1,22 +1,37 @@
 python-qwt
 ==========
 
-    Written by Pierre Raybaut
+    Purpose and Motivation
 
       The ``python-qwt`` project was initiated to solve -at least temporarily- 
       the obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) 
-      which is no longer maintained. The idea was to translate the Qwt C++ code 
-      to Python and then to optimize some parts of the code by writing new 
-      modules based on NumPy and other libraries.
+      which is no longer maintained. The idea was to translate the original 
+      Qwt C++ code to Python and then to optimize some parts of the code by 
+      writing new modules based on NumPy and other libraries.
       
-      The ``python-qwt`` project consists of a single Python package named `qwt` 
-      and of a few other files (examples, doc, ...).
+      The ``python-qwt`` package consists of a single Python package named 
+      `qwt` and of a few other files (examples, doc, ...).
 
-      The `qwt` Python package was partly (95%) translated from Qwt C++ library: 
-      the associated code is licensed under the terms of the Qwt license 1.0 
-      (see qwt/QwtLicense, Copyright (C) 2002 Uwe Rathmann). The rest of the 
-      code was wrote from scratch and is licensed under the terms of the MIT 
-      License (see qwt/LICENSE).
+    Copyrights
+
+      Main code base
+        Copyright (c) 2002 Uwe Rathmann, for the original Qwt C++ code
+        Copyright (c) 2015 Pierre Raybaut, for the Qwt C++ to Python 
+        translation and optimization
+        Copyright (c) 2015 Pierre Raybaut, for the python-qwt specific and 
+        exclusive Python material
+
+      PyQt, PySide and Python2/Python3 compatibility modules
+        Copyright (c) 2009-2013 Pierre Raybaut
+        Copyright (c) 2013-2015 The Spyder Development Team
+
+    License
+
+      The `qwt` Python package was partly (>95%) translated from Qwt C++ 
+      library: the associated code is distributed under the terms of the LGPL 
+      license. The rest of the code was either wrote from scratch or strongly 
+      inspired from MIT licensed third-party software.
+      See included LICENSE file for more details about licensing terms.
 
     Overview
 

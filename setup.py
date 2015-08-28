@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 #
 # Licensed under the terms of the MIT License
-# (see qwt/LICENSE for details)
+# Copyright (c) 2015 Pierre Raybaut
+# (see LICENSE file for more details)
 
 """
 python-qwt

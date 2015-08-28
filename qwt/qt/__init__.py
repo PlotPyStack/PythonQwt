@@ -3,7 +3,7 @@
 # Copyright © 2011-2012 Pierre Raybaut
 #           © 2012-2014 anatoly techtonik
 # Licensed under the terms of the MIT License
-# (see spyderlib/__init__.py for details)
+# (see LICENSE file for details)
 
 """Transitional package (PyQt4 --> PySide)"""
 

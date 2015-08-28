@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 #
-# Licensed under the terms of the Qwt License, Copyright (C) 2002 Uwe Rathmann
-# (see qwt/LICENSE for details)
+# Licensed under the terms of the Qwt License
+# Copyright (c) 2002 Uwe Rathmann, for the original C++ code
+# Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
+# (see LICENSE file for more details)
 
-__version__ = QWT_VERSION_STR = '6.1.2a5'
+__version__ = QWT_VERSION_STR = '6.1.2a6'
 
 import warnings
 
