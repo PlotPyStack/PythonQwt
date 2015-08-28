@@ -123,6 +123,7 @@ setup(name=LIBNAME, version=version,
       platforms = 'Any',
       classifiers=CLASSIFIERS + [
         'License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)',
+        'License :: OSI Approved :: MIT License',
         'Topic :: Scientific/Engineering :: Visualization',
         'Topic :: Software Development :: Widget Sets',
         'Operating System :: MacOS',

@@ -25,6 +25,11 @@ python-qwt
         Copyright (c) 2009-2013 Pierre Raybaut
         Copyright (c) 2013-2015 The Spyder Development Team
 
+      Some examples
+        Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt code
+        Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and 
+        further developments (e.g. ported to python-qwt API)
+
     License
 
       The `qwt` Python package was partly (>95%) translated from Qwt C++ 

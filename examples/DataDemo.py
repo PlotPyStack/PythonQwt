@@ -1,4 +1,10 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Licensed under the terms of the PyQwt License
+# Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# developments (e.g. ported to python-qwt API)
+# (see LICENSE file for more details)
 
 import random
 import sys

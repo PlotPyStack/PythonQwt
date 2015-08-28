@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+#
+# Licensed under the terms of the MIT License
+# (see LICENSE file for more details)
 
 from qwt.qt.QtGui import QImage
 

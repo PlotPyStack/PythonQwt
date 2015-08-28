@@ -13,6 +13,13 @@ Independent Python modules purely based on new code (no contamination from the
 LGPL license inherited from the Qwt Project) are distributed under the terms 
 of the MIT License (see [*] and [**]).
 
+[3] Software licensed under the terms of PyQwt License
+
+Some files under the "examples" folder at the root directory of the source 
+package were derived from PyQwt PyQt4 examples and are thus distributed under 
+the terms of the GPL License from which the PyQwt License 1.0 is derived from 
+(see [****] for more details).
+
 
 [*] python-qwt License Agreement for new and exclusive Python material (MIT)
 
@@ -619,3 +626,34 @@ necessary.  Here is a sample; alter the names:
 That's all there is to it!
 
 
+[****] PyQwt License
+
+Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt code
+Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+developments (e.g. ported to python-qwt API)
+
+                          PyQwt LICENSE
+                     Version 3, March 2006
+
+PyQwt is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+PyQwt is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with PyQwt; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+In addition, as a special exception, Gerard Vermeulen gives permission
+to link PyQwt dynamically with non-free versions of Qt and PyQt,
+and to distribute PyQwt in this form, provided that equally powerful
+versions of Qt and PyQt have been released under the terms of the GNU
+General Public License.
+
+If PyQwt is dynamically linked with non-free versions of Qt and PyQt,
+PyQwt becomes a free plug-in for a non-free program.

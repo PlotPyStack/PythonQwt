@@ -5,7 +5,7 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
-__version__ = QWT_VERSION_STR = '6.1.2a6'
+__version__ = QWT_VERSION_STR = '6.1.2a7'
 
 import warnings
 
