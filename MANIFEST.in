@@ -5,3 +5,4 @@ include MANIFEST.in
 include LICENSE
 include README
 include CHANGELOG
+include QwtLicense 

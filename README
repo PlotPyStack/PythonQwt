@@ -14,8 +14,9 @@ python-qwt
 
       The `qwt` Python package was partly (95%) translated from Qwt C++ library: 
       the associated code is licensed under the terms of the Qwt license 1.0 
-      (see qwt/QwtLicense). The rest of the code was wrote from scratch and is 
-      licensed under the terms of the MIT License (see qwt/LICENSE).
+      (see qwt/QwtLicense, Copyright (C) 2002 Uwe Rathmann). The rest of the 
+      code was wrote from scratch and is licensed under the terms of the MIT 
+      License (see qwt/LICENSE).
 
     Overview
 

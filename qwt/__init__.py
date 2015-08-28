@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-# Licensed under the terms of the Qwt License
+# Licensed under the terms of the Qwt License, Copyright (C) 2002 Uwe Rathmann
 # (see qwt/LICENSE for details)
 
-__version__ = QWT_VERSION_STR = '6.1.2a4'
+__version__ = QWT_VERSION_STR = '6.1.2a5'
 
 import warnings
 

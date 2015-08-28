@@ -6,6 +6,7 @@ python-qwt License Agreement
 The essential part of the code was translated directly to Python from Qwt C++ 
 library and is thus licensed under the terms of the Qwt License 1.0 which is 
 derived from LGPL (see included 'QwtLicense' file for more details).
+Copyright (C) 2002 Uwe Rathmann
 
 [2] Software licensed under the terms of the MIT license
 

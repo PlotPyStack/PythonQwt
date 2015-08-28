@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Licensed under the terms of the Qwt License
+# Licensed under the terms of the Qwt License, Copyright (C) 2002 Uwe Rathmann
 # (see qwt/LICENSE for details)
 
 from qwt.plot import QwtPlotItem
