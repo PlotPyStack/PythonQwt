@@ -1,8 +1,8 @@
 recursive-include qwt *.png *.svg *.pot *.po *.mo *.dcm *.ui
+recursive-include examples *.py *.png *.svg *.pot *.po *.mo *.dcm *.ui
 recursive-include src *.hpp *.cpp *.pyx
 recursive-include doc *.py *.rst *.png *.ico
 include MANIFEST.in
 include LICENSE
 include README
-include CHANGELOG
-include QwtLicense 
+include CHANGELOG 
