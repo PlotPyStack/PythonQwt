@@ -64,6 +64,7 @@ As a consequence, when zooming in a plot curve, the entire curve is still
 painted (in other words, when working with large amount of data, there is
 no performance gain when zooming in).
 
+
 Dependencies
 ------------
 
@@ -71,6 +72,7 @@ Dependencies
 - Python >=2.6 or Python >=3.0
 - PyQt4 >=4.4 or PyQt5 >= 5.5
 - NumPy >= 1.5
+
 
 Installation
 ------------
