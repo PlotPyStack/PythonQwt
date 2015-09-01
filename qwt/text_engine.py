@@ -66,22 +66,32 @@ class QwtPlainTextEngine(QwtTextEngine):
     def __init__(self):
         self.qrectf_max = QRectF(0, 0, QWIDGETSIZE_MAX, QWIDGETSIZE_MAX)
         self._fm_cache = {}
+        self._fm_cache_f = {}
     
     def fontmetrics(self, font):
-        fm = self._fm_cache.get(id(font))
+        fid = font.toString()
+        fm = self._fm_cache.get(fid)
         if fm is None:
-            return self._fm_cache.setdefault(id(font), QFontMetricsF(font))
+            return self._fm_cache.setdefault(fid, QFontMetrics(font))
+        else:
+            return fm
+    
+    def fontmetrics_f(self, font):
+        fid = font.toString()
+        fm = self._fm_cache_f.get(fid)
+        if fm is None:
+            return self._fm_cache_f.setdefault(fid, QFontMetricsF(font))
         else:
             return fm
     
     def heightForWidth(self, font, flags, text, width):
-        fm = self.fontmetrics(font)
+        fm = self.fontmetrics_f(font)
         rect = fm.boundingRect(QRectF(0, 0, width, QWIDGETSIZE_MAX),
                                flags, text)
         return rect.height()
     
     def textSize(self, font, flags, text):
-        fm = self.fontmetrics(font)
+        fm = self.fontmetrics_f(font)
         rect = fm.boundingRect(self.qrectf_max, flags, text)
         return rect.size()
     
@@ -120,7 +130,7 @@ class QwtPlainTextEngine(QwtTextEngine):
 
     def textMargins(self, font):
         left = right = top = 0
-        fm = self.fontmetrics(font)
+        fm = self.fontmetrics_f(font)
         top = fm.ascent() - self.effectiveAscent(font)
         bottom = fm.descent()
         return left, right, top, bottom
