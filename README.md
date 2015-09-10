@@ -49,7 +49,7 @@ powerful features already exist in `guiqwt`: `QwtPlotZoomer`,
 Only the following plot items are currently implemented in `qwt` (the 
 only plot items needed by `guiqwt`): `QwtPlotItem` (base class), 
 `QwtPlotItem`, `QwtPlotMarker`, `QwtPlotSeriesItem`, `QwtPlotHistogram`, 
-`QwtPlotCurve` 
+`QwtPlotCurve`.
 
 The `QwtClipper` class is not implemented yet (and it will probably be 
 very difficult or even impossible to implement it in pure Python without 
