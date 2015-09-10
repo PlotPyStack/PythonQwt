@@ -63,6 +63,7 @@ amount of data, there is no performance gain when zooming in).
 - Python >=2.6 or Python >=3.0
 - PyQt4 >=4.4 or PyQt5 >= 5.5
 - NumPy >= 1.5
+- guidata >= 1.7 for the GUI-based test launcher
 
 ## Installation
 
