@@ -309,37 +309,28 @@ class QwtPainterClass(object):
                     return
         painter.drawPoint(pos)
 
-    def drawPoints(self, painter, points, pointCount):
-        deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-        if isinstance(points[0], QPointF):
-            if deviceClipping:
-                clippedPolygon = QPolygonF(pointCount)
-                clippedData = clippedPolygon.data()
-                numClippedPoints = 0
-                for point in points:
-                    if clipRect.contains(point):
-                        clippedData[numClippedPoints] = point
-                        numClippedPoints += 1
-                painter.drawPoints(clippedData, numClippedPoints)
-            else:
-                painter.drawPoints(points, pointCount)
+    def drawPoints(self, painter, *args):
+        if len(args) == 2:
+            points, pointCount = args
         else:
-            if deviceClipping:
+            polygon, = args
+            points, pointCount = polygon.data(), polygon.size()
+            if isinstance(polygon, QPolygonF):
+                points.setsize(pointCount*np.finfo(float).dtype.itemsize)
+            else:
+                points.setsize(pointCount*np.iinfo(int).dtype.itemsize)
+        deviceClipping, clipRect = qwtIsClippingNeeded(painter)
+        if deviceClipping:
+            if isinstance(polygon, QPointF):
                 minX = np.ceil(clipRect.left())
                 maxX = np.floor(clipRect.right())
                 minY = np.ceil(clipRect.top())
                 maxY = np.floor(clipRect.bottom())
-                r = QRect(minX, minY, maxX-minX, maxY-minY)
-                clippedPolygon = QPolygon(pointCount)
-                clippedData = clippedPolygon.data()
-                numClippedPoints = 0
-                for point in points:
-                    if r.contains(point):
-                        clippedData[numClippedPoints] = point
-                        numClippedPoints += 1
-                painter.drawPoints(clippedData, numClippedPoints)
-            else:
-                painter.drawPoints(points, pointCount)
+                clipRect = QRect(minX, minY, maxX-minX, maxY-minY)
+            clippedPolygon = polygon.intersected(QPolygon(clipRect))
+            painter.drawPoints(clippedPolygon)
+        else:
+            painter.drawPoints(polygon)
     
     def drawImage(self, painter, rect, image):
         alignedRect = rect.toAlignedRect()
