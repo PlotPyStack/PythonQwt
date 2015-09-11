@@ -50,24 +50,22 @@ class BMPlot(QwtPlot):
 
 
 class BMWidget(QWidget):
-    def __init__(self, points, parent=None):
-        super(BMWidget, self).__init__(parent)
-        layout = QGridLayout()
+    def __init__(self, points, *args):
+        super(BMWidget, self).__init__()
+        self.setup(points, *args)
+    
+    def params(self, *args):
+        return (
+                ('Lines', None),
+                ('Dots', None),
+                )
+    
+    def setup(self, points, *args):
         x = np.linspace(.001, 20., points)
         y = (np.sin(x)/x)*np.cos(20*x)
-        symb1 = QwtSymbol(QwtSymbol.Ellipse, QBrush(Qt.yellow),
-                          QPen(Qt.blue), QSize(5, 5))
-        symb2 = QwtSymbol(QwtSymbol.XCross, QBrush(),
-                          QPen(Qt.darkMagenta), QSize(5, 5))
+        layout = QGridLayout()
         nbcol, col, row = 2, 0, 0
-#        for style, symbol in (('Lines', None),
-#                              ('Lines', None),
-#                              ('Lines', None),
-#                              ('Lines', None)):
-        for style, symbol in (('Sticks', symb1),
-                              ('Lines', None),
-                              ('Steps', None),
-                              ('NoCurve', symb2)):
+        for style, symbol in self.params(*args):
            layout.addWidget(BMPlot(style, x, y, getattr(QwtPlotCurve, style),
                                    symbol=symbol), row, col)
            col += 1
@@ -103,17 +101,24 @@ class BMDemo(QMainWindow):
         self.setCentralWidget(tabs)
         contents = BMText()
         tabs.addTab(contents, 'Contents')
-        self.resize(1000, 800)
+        self.resize(1000, 600)
+
+        # Force window to show up and refresh (for test purpose only)
         self.show()
+        QApplication.processEvents()
+
         t0g = time.time()
-        for idx in range(3, -1, -1):
+        for idx in range(4, -1, -1):
             points = max_n/10**idx
             t0 = time.time()
             widget = BMWidget(points)
             title = '%d points' % points
             tabs.addTab(widget, title)
             tabs.setCurrentWidget(widget)
+
+            # Force widget to refresh (for test purpose only)
             QApplication.processEvents()
+
             time_str = "Elapsed time: %d ms" % ((time.time()-t0)*1000)
             widget.text.setText(time_str)
             contents.append("<br><i>%s:</i><br>%s" % (title, time_str))
@@ -128,5 +133,5 @@ if __name__ == '__main__':
         if name in QFontDatabase().families():
             app.setFont(QFont(name))
             break
-    demo = BMDemo(100000)
+    demo = BMDemo(1000000)
     app.exec_()
