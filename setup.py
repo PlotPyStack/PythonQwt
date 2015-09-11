@@ -59,6 +59,11 @@ elif 'alpha' in version or 'a' in version or version.startswith('0.'):
     CLASSIFIERS += ['Development Status :: 3 - Alpha']
 else:
     CLASSIFIERS += ['Development Status :: 5 - Production/Stable']
+if os.name == 'nt':
+    SCRIPTS = ['python-qwt-tests', 'python-qwt-tests.bat']
+else:
+    SCRIPTS = ['python-tests']
+SCRIPTS = [osp.join('scripts', fname) for fname in SCRIPTS]
 
 
 def get_package_data(name, extlist):
@@ -123,6 +128,7 @@ setup(name=LIBNAME, version=version,
       package_data={PACKAGE_NAME:
                     get_package_data(PACKAGE_NAME, ('.png', '.svg', '.mo'))},
       requires=["PyQt4 (>4.3)",],
+      scripts=SCRIPTS,
       author = "Pierre Raybaut",
       author_email = 'pierre.raybaut@gmail.com',
       url = 'https://github.com/PierreRaybaut/%s' % LIBNAME,
