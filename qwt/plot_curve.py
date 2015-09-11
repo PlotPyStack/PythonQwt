@@ -85,7 +85,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     # enum PaintAttribute
     ClipPolygons = 0x01
     FilterPoints = 0x02
-    MinimizeMemory = 0x04
+    # MinimizeMemory = 0x04 --> not necessary, see CHANGELOG
     ImageBuffer = 0x08
     
     def __init__(self, title=None):
@@ -322,16 +322,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
                             painter.testRenderHint(QPainter.Antialiasing),
                             self.renderThreadCount())
             painter.drawImage(canvasRect.toAlignedRect(), image)
-        elif self.__data.paintAttributes & self.MinimizeMemory:
-            series = self.data()
-            for i in range(from_, to+1):
-                sample = series.sample(i)
-                xi = xMap.transform(sample.x())
-                yi = yMap.transform(sample.y())
-                if doAlign:
-                    xi = round(xi)
-                    yi = round(yi)
-                QwtPainter.drawPoint(painter, QPointF(xi, yi))
         else:
             if doAlign:
                 points = mapper.toPoints(xMap, yMap, self.data(), from_, to)
