@@ -6,6 +6,10 @@
 # developments (e.g. ported to python-qwt API)
 # (see LICENSE file for more details)
 
+#FIXME: This example is still not working: image scaling issue (see PlotImage.draw)
+
+SHOW = True # Show test in GUI-based test launcher
+
 import sys
 import numpy as np
 
@@ -14,8 +18,6 @@ from qwt.qt.QtCore import Qt
 from qwt import (QwtPlot, QwtPlotMarker, QwtLegend, QwtPlotGrid, QwtPlotCurve,
                  QwtPlotItem, QwtText, QwtLegendData, QwtLinearColorMap,
                  QwtInterval, QwtScaleMap, toQImage)
-
-#FIXME: This example is still not working: I suspect an issue related to image scaling (see PlotImage.draw)
 
 def bytescale(data, cmin=None, cmax=None, high=255, low=0):
     if ((hasattr(data, 'dtype') and data.dtype.char == np.uint8)

@@ -6,13 +6,9 @@
 # developments (e.g. ported to python-qwt API)
 # (see LICENSE file for more details)
 
-# The Python version of Qwt-5.1.1/examples/bode
-
-# To get an impression of the expressive power of NumPy,
-# compare the Python and C++ versions of setDamp()
-
-# BodeDemo.py requires at least Python v2.6.
 from __future__ import unicode_literals
+
+SHOW = True # Show test in GUI-based test launcher
 
 import sys
 import numpy as np

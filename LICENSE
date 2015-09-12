@@ -15,9 +15,9 @@ of the MIT License (see [*] and [**]).
 
 [3] Software licensed under the terms of PyQwt License
 
-Some files under the "examples" folder at the root directory of the source 
-package were derived from PyQwt PyQt4 examples and are thus distributed under 
-the terms of the GPL License from which the PyQwt License 1.0 is derived from 
+Some files under the "tests" subfolder of the main Python package directory 
+were derived from PyQwt PyQt4 examples and are thus distributed under the 
+terms of the GPL License from which the PyQwt License 1.0 is derived from 
 (see [****] for more details).
 
 

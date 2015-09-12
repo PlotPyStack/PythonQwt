@@ -8,6 +8,8 @@
 
 #FIXME: scale issue!
 
+SHOW = True # Show test in GUI-based test launcher
+
 import sys
 import numpy as np
 

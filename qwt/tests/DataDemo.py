@@ -6,6 +6,8 @@
 # developments (e.g. ported to python-qwt API)
 # (see LICENSE file for more details)
 
+SHOW = True # Show test in GUI-based test launcher
+
 import random
 import sys
 import numpy as np
