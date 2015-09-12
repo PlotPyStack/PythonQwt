@@ -69,4 +69,17 @@ amount of data, there is no performance gain when zooming in).
 
 From the source package:
 
-    python setup.py install
+```python
+python setup.py install
+```
+
+## Examples/tests
+
+The GUI-based test launcher may be executed from Python:
+
+```python
+from qwt import tests
+tests.run()
+```
+
+or from the command line: `python-qwt-tests`.
