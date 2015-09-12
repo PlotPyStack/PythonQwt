@@ -15,7 +15,7 @@ from qwt.qt.QtGui import (QApplication, QPen, QBrush, QMainWindow, QTabWidget,
 from qwt.qt.QtCore import QSize
 from qwt.qt.QtCore import Qt
 
-from qwt.tests import curve_benchmark as cb
+from qwt.tests import CurveBenchmark as cb
 from qwt import QwtSymbol
 
 
