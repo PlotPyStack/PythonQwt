@@ -62,7 +62,7 @@ else:
 if os.name == 'nt':
     SCRIPTS = ['python-qwt-tests', 'python-qwt-tests.bat']
 else:
-    SCRIPTS = ['python-tests']
+    SCRIPTS = ['python-qwt-tests']
 SCRIPTS = [osp.join('scripts', fname) for fname in SCRIPTS]
 
 
