@@ -54,7 +54,7 @@ class QwtInterval(object):
             return self.__minValue < self.__maxValue
     
     def width(self):
-        if self.isValid:
+        if self.isValid():
             return self.__maxValue - self.__minValue
         else:
             return 0.
