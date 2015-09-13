@@ -39,8 +39,8 @@ See included LICENSE file for more details about licensing terms.
 
 ## Overview
 
-The `qwt` package is a pure Python implementation of Qwt C++ library with
-the following limitations.
+The `qwt` package is a pure Python implementation of `Qwt` C++ library 
+with the following limitations.
 
 The following `Qwt` classes won't be reimplemented in `qwt` because more
 powerful features already exist in `guiqwt`: `QwtPlotZoomer`, 
@@ -56,6 +56,11 @@ very difficult or even impossible to implement it in pure Python without
 performance issues). As a consequence, when zooming in a plot curve, the 
 entire curve is still painted (in other words, when working with large 
 amount of data, there is no performance gain when zooming in).
+
+Other API compatibility issues with `Qwt`:
+- `QwtPlot.MinimizeMemory` option was removed as this option has no sense 
+  in python-qwt (the polyline plotting is not taking more memory than the 
+  array data that is already there).
 
 ## Dependencies
 

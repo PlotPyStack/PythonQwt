@@ -1,11 +1,10 @@
-= History of changes =
+# History of changes
 
-== Version 0.1.0 ==
+## Version 0.1.1
 
-First public release.
+Fixed Issue #21 (blocking issue *only* on non-Windows platforms when building 
+the package): typo in "python-qwt-tests" script name (setup.py)
 
-API compatibility issues with Qwt 6.1.2:
-  * `QwtPlot.MinimizeMemory` option was removed as this option has no sense 
-    in python-qwt (the polyline plotting is not taking more memory than the 
-    array data that is already there).
-  * 
+## Version 0.1.0
+
+First alpha public release.

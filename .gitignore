@@ -1,5 +1,6 @@
 .spyderproject
 qwt-6.1.2
+qwt/tests/demo.png
 
 # Created by https://www.gitignore.io/api/python
 
