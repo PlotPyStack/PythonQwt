@@ -5,6 +5,8 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+#XXX: Unfinished (and not imported elsewhere) translation of QwtClipper class
+
 from qwt.qt.QtGui import QPolygon, QPolygonF
 from qwt.qt.QtCore import QRect, QRectF
 

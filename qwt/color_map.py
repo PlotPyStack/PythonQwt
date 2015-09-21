@@ -112,6 +112,26 @@ class ColorStops(object):
 
 
 class QwtColorMap(object):
+    """
+    QwtColorMap is used to map values into colors.
+
+    For displaying 3D data on a 2D plane the 3rd dimension is often
+    displayed using colors, like f.e in a spectrogram.
+
+    Each color map is optimized to return colors for only one of the
+    following image formats:
+
+        * `QImage.Format_Indexed8`
+        * `QImage.Format_ARGB32`
+
+    .. py:class:: QwtColorMap(format_)
+    
+        :param int format_: Preferred format of the color map (:py:data:`QwtColorMap.RGB` or :py:data:`QwtColorMap.Indexed`)
+
+    .. seealso ::
+        
+        :py:data:`qwt.QwtScaleWidget`
+    """
     
     # enum Format
     RGB, Indexed = list(range(2))
@@ -122,6 +142,21 @@ class QwtColorMap(object):
         self.__format = format_
     
     def color(self, interval, value):
+        """
+        .. py:method:: color(interval, value)
+        
+            Map a value into a color
+            
+            :param QwtInterval interval: valid interval for value
+            :param float value: value
+            :return: the color corresponding to value
+        
+        .. warning ::
+            
+            This method is slow for Indexed color maps. If it is necessary to 
+            map many values, its better to get the color table once and find 
+            the color using `colorIndex()`.
+        """
         if self.__format == self.RGB:
             return QColor.fromRgba(self.rgb(interval, value))
         else:
@@ -132,12 +167,26 @@ class QwtColorMap(object):
         return self.__format
     
     def colorTable(self, interval):
+        """
+        .. py:method:: colorTable(interval)
+        
+            Build and return a color map of 256 colors
+            
+            :param QwtInterval interval: range for the values
+            :return: a color table, that can be used for a `QImage`
+
+        The color table is needed for rendering indexed images in combination
+        with using `colorIndex()`.
+        """
         table = [0] * 256
         if interval.isValid():
             step = interval.width()/(len(table)-1)
             for i in range(len(table)):
                 table[i] = self.rgb(interval, interval.minValue()+step*i)
         return table
+
+    def colorIndex(self, interval, value):
+        raise NotImplementedError
 
 
 class QwtLinearColorMap_PrivateData(object):
@@ -147,6 +196,24 @@ class QwtLinearColorMap_PrivateData(object):
 
 
 class QwtLinearColorMap(QwtColorMap):
+    """
+    Build a linear color map with two stops.
+    
+    .. py:class:: QwtLinearColorMap(format_)
+    
+        Build a color map with two stops at 0.0 and 1.0.
+        The color at 0.0 is `Qt.blue`, at 1.0 it is `Qt.yellow`.
+    
+        :param int format_: Preferred format of the color map (:py:data:`QwtColorMap.RGB` or :py:data:`QwtColorMap.Indexed`)
+    
+    .. py:class:: QwtLinearColorMap(color1, color2, [format_=QwtColorMap.RGB]):
+        
+        Build a color map with two stops at 0.0 and 1.0.
+        
+        :param QColor color1: color at 0.
+        :param QColor color2: color at 1.
+        :param int format_: Preferred format of the color map (:py:data:`QwtColorMap.RGB` or :py:data:`QwtColorMap.Indexed`)
+    """
     
     # enum Mode
     FixedColors, ScaledColors = list(range(2))
@@ -169,9 +236,27 @@ class QwtLinearColorMap(QwtColorMap):
         self.setColorInterval(color1, color2)
     
     def setMode(self, mode):
+        """
+        .. py:method:: setMode(mode)
+
+            Set the mode of the color map
+            
+            :param int mode: :py:data:`QwtLinearColorMap.FixedColors` or :py:data:`QwtLinearColorMap.ScaledColors`
+
+        `FixedColors` means the color is calculated from the next lower color 
+        stop. `ScaledColors` means the color is calculated by interpolating 
+        the colors of the adjacent stops.
+        """
         self.__data.mode = mode
     
     def mode(self):
+        """
+        Return the mode of the color map
+        
+        .. seealso ::
+            
+            :py:meth:`QwtLinearColorMap.setMode`
+        """
         return self.__data.mode
     
     def setColorInterval(self, color1, color2):
@@ -246,3 +331,6 @@ class QwtAlphaColorMap(QwtColorMap):
             return self.__data.rgbMax
         ratio = (value-interval.minValue())/width
         return self.__data.rgb | (int(round(255*ratio)) << 24)
+    
+    def colorIndex(self, interval, value):
+        return 0
