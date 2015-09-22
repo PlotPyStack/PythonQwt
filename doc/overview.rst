@@ -32,6 +32,7 @@ entire curve is still painted (in other words, when working with large
 amount of data, there is no performance gain when zooming in).
 
 Other API compatibility issues with `Qwt`:
-- `QwtPlot.MinimizeMemory` option was removed as this option has no sense 
-  in python-qwt (the polyline plotting is not taking more memory than the 
-  array data that is already there).
+
+    - `QwtPlot.MinimizeMemory` option was removed as this option has no sense 
+      in python-qwt (the polyline plotting is not taking more memory than the 
+      array data that is already there).
