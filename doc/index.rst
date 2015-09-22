@@ -8,7 +8,7 @@ Contents:
     
     overview
     installation
-    reference
+    reference/index
     
 
 Indices and tables:

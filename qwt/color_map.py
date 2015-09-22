@@ -5,6 +5,23 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+qwt.color_map
+-------------
+
+The `color_map` module provides the `QwtColorMap` base class and derived 
+classes.
+
+.. autoclass:: QwtColorMap
+   :members:
+
+.. autoclass:: QwtLinearColorMap
+   :members:
+
+.. autoclass:: QwtAlphaColorMap
+   :members:
+"""
+
 from qwt.qt.QtGui import QColor, qRed, qGreen, qBlue, qRgb, qRgba, qAlpha
 from qwt.qt.QtCore import Qt, qIsNaN
 
@@ -306,17 +323,41 @@ class QwtAlphaColorMap_PrivateData(object):
         self.rgbMax = None
 
 class QwtAlphaColorMap(QwtColorMap):
+    """
+    QwtAlphaColorMap varies the alpha value of a color
+    
+    .. py:class:: QwtAlphaColorMap(color)
+    
+        Build a color map varying the alpha value of a color.
+    
+        :param QColor color: color of the map
+    """
+
     def __init__(self, color):
         super(QwtAlphaColorMap, self).__init__(QwtColorMap.RGB)
         self.__data = QwtAlphaColorMap_PrivateData()
         self.setColor(color)
     
     def setColor(self, color):
+        """
+        .. py:method:: setColor(color)
+
+            Set the color of the map
+            
+            :param QColor color: color of the map
+        """
         self.__data.color = color
         self.__data.rgb = color.rgb() & qRgba(255, 255, 255, 0)
         self.__data.rgbMax = self.__data.rgb | ( 255 << 24 )
     
     def color(self):
+        """
+        Return the color of the map
+        
+        .. seealso ::
+            
+            :py:meth:`QwtAlphaColorMap.setColor`
+        """
         return self.__data.color()
     
     def rgb(self, interval, value):
