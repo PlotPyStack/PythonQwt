@@ -5,7 +5,6 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
-from qwt.curve_fitter import QwtSplineCurveFitter
 from qwt.text import QwtText
 from qwt.plot import QwtPlotItem, QwtPlotItem_PrivateData
 from qwt.painter import QwtPainter
@@ -62,7 +61,6 @@ class QwtPlotCurve_PrivateData(QwtPlotItem_PrivateData):
         self.legendAttributes = QwtPlotCurve.LegendShowLine
         self.pen = QPen(Qt.black)
         self.brush = QBrush()
-        self.curveFitter = QwtSplineCurveFitter()
         
 
 class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
@@ -74,7 +72,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     
     # enum CurveAttribute
     Inverted = 0x01
-    Fitted = 0x02
     
     # enum LegendAttribute
     LegendNoAttribute = 0x00
@@ -213,9 +210,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     
     def drawCurve(self, painter, style, xMap, yMap, canvasRect, from_, to):
         if style == self.Lines:
-            if self.testCurveAttribute(self.Fitted):
-                from_ = 0
-                to = self.dataSize()-1
             self.drawLines(painter, xMap, yMap, canvasRect, from_, to)
         elif style == self.Sticks:
             self.drawSticks(painter, xMap, yMap, canvasRect, from_, to)
@@ -228,8 +222,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if from_ > to:
             return
         doAlign = QwtPainter.roundingAlignment(painter)
-        doFit = (self.__data.attributes & self.Fitted)\
-                and self.__data.curveFitter
         doFill = self.__data.brush.style() != Qt.NoBrush\
                  and self.__data.brush.color().alpha() > 0
         clipRect = QRectF()
@@ -239,7 +231,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         doIntegers = False
         if QT_VERSION < 0x040800:
             if painter.paintEngine().type() == QPaintEngine.Raster:
-                if not doFit and not doFill:
+                if not doFill:
                     doIntegers = True
         noDuplicates = self.__data.paintAttributes & self.FilterPoints
         mapper = QwtPointMapper()
@@ -254,8 +246,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             QwtPainter.drawPolyline(painter, polyline)
         else:
             polyline = mapper.toPolygonF(xMap, yMap, self.data(), from_, to)
-            if doFit:
-                polyline = self.__data.curveFitter.fitCurve(polyline)
             if doFill:
                 if painter.pen().style() != Qt.NoPen:
                     filled = QPolygonF(polyline)
@@ -372,13 +362,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     
     def testCurveAttribute(self, attribute):
         return self.__data.attributes & attribute
-    
-    def setCurveFitter(self, curveFitter):
-        self.__data.curveFitter = curveFitter
-        self.itemChanged()
-    
-    def curveFitter(self):
-        return self.__data.curveFitter
     
     def fillCurve(self, painter, xMap, yMap, canvasRect, polygon):
         if self.__data.brush.style() == Qt.NoBrush:
