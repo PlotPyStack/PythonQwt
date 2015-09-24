@@ -6,17 +6,20 @@
 # (see LICENSE file for more details)
 
 """
-qwt.color_map
--------------
-
-The `color_map` module provides the `QwtColorMap` base class and derived 
-classes.
+QwtColorMap
+-----------
 
 .. autoclass:: QwtColorMap
    :members:
 
+QwtLinearColorMap
+-----------------
+
 .. autoclass:: QwtLinearColorMap
    :members:
+
+QwtAlphaColorMap
+----------------
 
 .. autoclass:: QwtAlphaColorMap
    :members:
@@ -164,7 +167,7 @@ class QwtColorMap(object):
         
             Map a value into a color
             
-            :param QwtInterval interval: valid interval for value
+            :param qwt.interval.QwtInterval interval: valid interval for value
             :param float value: value
             :return: the color corresponding to value
         
@@ -189,7 +192,7 @@ class QwtColorMap(object):
         
             Build and return a color map of 256 colors
             
-            :param QwtInterval interval: range for the values
+            :param qwt.interval.QwtInterval interval: range for the values
             :return: a color table, that can be used for a `QImage`
 
         The color table is needed for rendering indexed images in combination
