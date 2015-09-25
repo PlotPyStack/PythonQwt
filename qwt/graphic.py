@@ -250,7 +250,7 @@ class QwtGraphic(QwtNullPaintDevice):
     
         Copy constructor
         
-        :param: QwtGraphic other: Source
+        :param qwt.graphic.QwtGraphic other: Source
     """
     
     # enum RenderHint
@@ -298,13 +298,11 @@ class QwtGraphic(QwtNullPaintDevice):
     
     def boundingRect(self):
         """
-        .. py:method:: boundingRect()
+        The bounding rectangle is the :py:meth:`controlPointRect`
+        extended by the areas needed for rendering the outlines
+        with unscaled pens.
 
-            The bounding rectangle is the :py:meth:`controlPointRect`
-            extended by the areas needed for rendering the outlines
-            with unscaled pens.
-
-            :return: Bounding rectangle of the graphic
+        :return: Bounding rectangle of the graphic
         
         .. seealso::
             
@@ -316,13 +314,11 @@ class QwtGraphic(QwtNullPaintDevice):
     
     def controlPointRect(self):
         """
-        .. py:method:: controlPointRect()
+        The control point rectangle is the bounding rectangle 
+        of all control points of the paths and the target
+        rectangles of the images/pixmaps.
 
-            The control point rectangle is the bounding rectangle 
-            of all control points of the paths and the target
-            rectangles of the images/pixmaps.
-
-            :return: Control point rectangle
+        :return: Control point rectangle
         
         .. seealso::
         
@@ -334,13 +330,11 @@ class QwtGraphic(QwtNullPaintDevice):
     
     def scaledBoundingRect(self, sx, sy):
         """
-        .. py:method:: scaledBoundingRect(sx, sy)
+        Calculate the target rectangle for scaling the graphic
         
-            Calculate the target rectangle for scaling the graphic
-            
-            :param: float sx: Horizontal scaling factor 
-            :param: float sy: Vertical scaling factor 
-            :return: Scaled bounding rectangle
+        :param float sx: Horizontal scaling factor 
+        :param float sy: Vertical scaling factor 
+        :return: Scaled bounding rectangle
             
         .. note::
         
@@ -369,14 +363,12 @@ class QwtGraphic(QwtNullPaintDevice):
         
     def setDefaultSize(self, size):
         """
-        .. py:method:: setDefaultSize(size)
+        The default size is used in all methods rendering the graphic,
+        where no size is explicitly specified. Assigning an empty size
+        means, that the default size will be calculated from the bounding 
+        rectangle.
         
-            The default size is used in all methods rendering the graphic,
-            where no size is explicitly specified. Assigning an empty size
-            means, that the default size will be calculated from the bounding 
-            rectangle.
-            
-            :param: QSizeF size: Default size
+        :param QSizeF size: Default size
 
         .. seealso::
         
@@ -388,16 +380,14 @@ class QwtGraphic(QwtNullPaintDevice):
         
     def defaultSize(self):
         """
-        .. py:method:: defaultSize()
-        
-            When a non empty size has been assigned by setDefaultSize() this
-            size will be returned. Otherwise the default size is the size
-            of the bounding rectangle.
+        When a non empty size has been assigned by setDefaultSize() this
+        size will be returned. Otherwise the default size is the size
+        of the bounding rectangle.
 
-            The default size is used in all methods rendering the graphic,
-            where no size is explicitly specified. 
-            
-            :return: Default size
+        The default size is used in all methods rendering the graphic,
+        where no size is explicitly specified. 
+        
+        :return: Default size
 
         .. seealso::
         
@@ -413,7 +403,7 @@ class QwtGraphic(QwtNullPaintDevice):
         
             Replay all recorded painter commands
             
-            :param: QPainter painter: Qt painter
+            :param QPainter painter: Qt painter
         
         .. py:method:: render(painter, size, aspectRatioMode)
         
@@ -422,9 +412,9 @@ class QwtGraphic(QwtNullPaintDevice):
             The graphic is scaled to fit into the rectangle
             of the given size starting at ( 0, 0 ).
             
-            :param: QPainter painter: Qt painter
-            :param: QSizeF size: Size for the scaled graphic
-            :param: Qt.AspectRatioMode aspectRatioMode: Mode how to scale
+            :param QPainter painter: Qt painter
+            :param QSizeF size: Size for the scaled graphic
+            :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale
         
         .. py:method:: render(painter, rect, aspectRatioMode)
         
@@ -432,9 +422,9 @@ class QwtGraphic(QwtNullPaintDevice):
             
             The graphic is scaled to fit into the given rectangle
             
-            :param: QPainter painter: Qt painter
-            :param: QRectF rect: Rectangle for the scaled graphic
-            :param: Qt.AspectRatioMode aspectRatioMode: Mode how to scale        
+            :param QPainter painter: Qt painter
+            :param QRectF rect: Rectangle for the scaled graphic
+            :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale        
         
         .. py:method:: render(painter, pos, aspectRatioMode)
         
@@ -443,9 +433,9 @@ class QwtGraphic(QwtNullPaintDevice):
             The graphic is scaled to the :py:meth:`defaultSize()` and aligned
             to a position.
             
-            :param: QPainter painter: Qt painter
-            :param: QPointF pos: Reference point, where to render
-            :param: Qt.AspectRatioMode aspectRatioMode: Mode how to scale        
+            :param QPainter painter: Qt painter
+            :param QPointF pos: Reference point, where to render
+            :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale        
         """
         if len(args) == 1:
             painter, = args
@@ -536,17 +526,15 @@ class QwtGraphic(QwtNullPaintDevice):
     
     def toPixmap(self, *args):
         """
-        .. py:method:: toPixmap()
+        Convert the graphic to a `QPixmap`
+
+        All pixels of the pixmap get initialized by `Qt.transparent`
+        before the graphic is scaled and rendered on it.
+
+        The size of the pixmap is the default size ( ceiled to integers )
+        of the graphic.
         
-            Convert the graphic to a `QPixmap`
-
-            All pixels of the pixmap get initialized by `Qt.transparent`
-            before the graphic is scaled and rendered on it.
-
-            The size of the pixmap is the default size ( ceiled to integers )
-            of the graphic.
-            
-            :return: The graphic as pixmap in default size
+        :return: The graphic as pixmap in default size
 
         .. seealso::
         
@@ -603,8 +591,8 @@ class QwtGraphic(QwtNullPaintDevice):
 
             The format of the image is `QImage.Format_ARGB32_Premultiplied`.
             
-            :param: QSize size: Size of the image
-            :param: `Qt.AspectRatioMode` aspectRatioMode: Aspect ratio how to scale the graphic
+            :param QSize size: Size of the image
+            :param `Qt.AspectRatioMode` aspectRatioMode: Aspect ratio how to scale the graphic
             :return: The graphic as image
 
         .. seealso::
@@ -638,11 +626,9 @@ class QwtGraphic(QwtNullPaintDevice):
         
     def drawPath(self, path):
         """
-        .. py:method:: drawPath(path)
+        Store a path command in the command list
         
-            Store a path command in the command list
-            
-            :param: QPainterPath path: Painter path
+        :param QPainterPath path: Painter path
 
         .. seealso::
         
@@ -666,13 +652,11 @@ class QwtGraphic(QwtNullPaintDevice):
     
     def drawPixmap(self, rect, pixmap, subRect):
         """
-        .. py:method:: drawPixmap(rect, pixmap, subRect)
+        Store a pixmap command in the command list
         
-            Store a pixmap command in the command list
-            
-            :param: QRectF rect: target rectangle
-            :param: QPixmap pixmap: Pixmap to be painted
-            :param: QRectF subRect: Reactangle of the pixmap to be painted
+        :param QRectF rect: target rectangle
+        :param QPixmap pixmap: Pixmap to be painted
+        :param QRectF subRect: Reactangle of the pixmap to be painted
 
         .. seealso::
         
@@ -688,14 +672,12 @@ class QwtGraphic(QwtNullPaintDevice):
     
     def drawImage(self, rect, image, subRect, flags):
         """
-        .. py:method:: drawImage(rect, image, subRect, flags)
+        Store a image command in the command list
         
-            Store a image command in the command list
-            
-            :param: QRectF rect: target rectangle
-            :param: QImage image: Pixmap to be painted
-            :param: QRectF subRect: Reactangle of the pixmap to be painted
-            :param: Qt.ImageConversionFlags flags: Pixmap to be painted
+        :param QRectF rect: target rectangle
+        :param QImage image: Pixmap to be painted
+        :param QRectF subRect: Reactangle of the pixmap to be painted
+        :param Qt.ImageConversionFlags flags: Pixmap to be painted
 
         .. seealso::
         
@@ -711,11 +693,9 @@ class QwtGraphic(QwtNullPaintDevice):
         
     def updateState(self, state):
         """
-        .. py:method:: updateState(state)
+        Store a state command in the command list
         
-            Store a state command in the command list
-            
-            :param: QPaintEngineState state: State to be stored
+        :param QPaintEngineState state: State to be stored
 
         .. seealso::
         

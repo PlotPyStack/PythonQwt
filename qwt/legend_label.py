@@ -5,6 +5,14 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtLegendLabel
+--------------
+
+.. autoclass:: QwtLegendLabel
+   :members:
+"""
+
 from qwt.text import QwtTextLabel
 from qwt.legend_data import QwtLegendData
 
@@ -35,6 +43,8 @@ class QwtLegendLabel_PrivateData(object):
         
 
 class QwtLegendLabel(QwtTextLabel):
+    """A widget representing something on a QwtLegend."""
+    
     SIG_CLICKED = Signal()
     SIG_PRESSED = Signal()
     SIG_RELEASED = Signal()
@@ -47,6 +57,15 @@ class QwtLegendLabel(QwtTextLabel):
         self.setIndent(MARGIN)
         
     def setData(self, legendData):
+        """
+        Set the attributes of the legend label
+        
+        :param QwtLegendData legendData: Attributes of the label
+
+        .. seealso::
+        
+            :py:meth:`data()`
+        """
         self.__data.legendData = legendData
         doUpdate = self.updatesEnabled()
         self.setUpdatesEnabled(False)
@@ -61,15 +80,41 @@ class QwtLegendLabel(QwtTextLabel):
             self.update()
     
     def data(self):
+        """
+        :return: Attributes of the label
+
+        .. seealso::
+        
+            :py:meth:`setData()`, :py:meth:`qwt.plot.QwtPlotItem.legendData()`
+        """
         return self.__data.legendData
     
     def setText(self, text):
+        """
+        Set the text to the legend item
+        
+        :param qwt.text.QwtText text: Text label
+
+        .. seealso::
+        
+            :py:meth:`text()`
+        """
         flags = Qt.AlignLeft|Qt.AlignVCenter|Qt.TextExpandTabs|Qt.TextWordWrap
         txt = text  #TODO: WTF?
         txt.setRenderFlags(flags)
         QwtTextLabel.setText(self, text)
     
     def setItemMode(self, mode):
+        """
+        Set the item mode.
+        The default is `QwtLegendData.ReadOnly`.
+        
+        :param int mode: Item mode
+
+        .. seealso::
+        
+            :py:meth:`itemMode()`
+        """
         if mode != self.__data.itemMode:
             self.__data.itemMode = mode
             self.__data.isDown = False
@@ -79,9 +124,25 @@ class QwtLegendLabel(QwtTextLabel):
             self.updateGeometry()
     
     def itemMode(self):
+        """
+        :return: Item mode
+
+        .. seealso::
+        
+            :py:meth:`setItemMode()`
+        """
         return self.__data.itemMode
     
     def setIcon(self, icon):
+        """
+        Assign the icon
+        
+        :param QPixmap icon: Pixmap representing a plot item
+
+        .. seealso::
+        
+            :py:meth:`icon()`, :py:meth:`qwt.plot.QwtPlotItem.legendIcon()`
+        """
         self.__data.icon = icon
         indent = self.margin()+self.__data.spacing
         if icon.width() > 0:
@@ -89,9 +150,25 @@ class QwtLegendLabel(QwtTextLabel):
         self.setIndent(indent)
     
     def icon(self):
+        """
+        :return: Pixmap representing a plot item
+
+        .. seealso::
+        
+            :py:meth:`setIcon()`
+        """
         return self.__data.icon
     
     def setSpacing(self, spacing):
+        """
+        Change the spacing between icon and text
+        
+        :param int spacing: Spacing
+
+        .. seealso::
+        
+            :py:meth:`spacing()`, :py:meth:`qwt.text.QwtTextLabel.margin()`
+        """
         spacing = max([spacing, 0])
         if spacing != self.__data.spacing:
             self.__data.spacing = spacing
@@ -101,9 +178,25 @@ class QwtLegendLabel(QwtTextLabel):
             self.setIndent(indent)
     
     def spacing(self):
+        """
+        :return: Spacing between icon and text
+
+        .. seealso::
+        
+            :py:meth:`setSpacing()`
+        """
         return self.__data.spacing
     
     def setChecked(self, on):
+        """
+        Check/Uncheck a the item
+        
+        :param bool on: check/uncheck
+
+        .. seealso::
+        
+            :py:meth:`isChecked()`, :py:meth:`setItemMode()`
+        """
         if self.__data.itemMode == QwtLegendData.Checkable:
             isBlocked = self.signalsBlocked()
             self.blockSignals(True)
@@ -111,9 +204,25 @@ class QwtLegendLabel(QwtTextLabel):
             self.blockSignals(isBlocked)
     
     def isChecked(self):
+        """
+        :return: true, if the item is checked
+
+        .. seealso::
+        
+            :py:meth:`setChecked()`
+        """
         return self.__data.itemMode == QwtLegendData.Checkable and self.isDown()
     
     def setDown(self, down):
+        """
+        Set the item being down
+        
+        :param bool on: true, if the item is down
+
+        .. seealso::
+        
+            :py:meth:`isDown()`
+        """
         if down == self.__data.isDown:
             return
         self.__data.isDown = down
@@ -128,9 +237,19 @@ class QwtLegendLabel(QwtTextLabel):
             self.SIG_CHECKED.emit(self.__data.isDown)
     
     def isDown(self):
+        """
+        :return: true, if the item is down
+
+        .. seealso::
+        
+            :py:meth:`setDown()`
+        """
         return self.__data.isDown
     
     def sizeHint(self):
+        """
+        :return: a size hint
+        """
         sz = QwtTextLabel.sizeHint(self)
         sz.setHeight(max([sz.height(), self.__data.icon.height()+4]))
         if self.__data.itemMode != QwtLegendData.ReadOnly:

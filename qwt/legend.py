@@ -176,7 +176,7 @@ class QwtLegend(QwtAbstractLegend):
     
         Constructor
         
-        :param: QWidget parent: Parent widget
+        :param QWidget parent: Parent widget
     """
 
     SIG_CLICKED = Signal("PyQt_PyObject", int)
@@ -199,14 +199,12 @@ class QwtLegend(QwtAbstractLegend):
     
     def setMaxColumns(self, numColumns):
         """
-        .. py:method:: setMaxColumns(numColumns)
-        
-            Set the maximum number of entries in a row
+        Set the maximum number of entries in a row
 
-            F.e when the maximum is set to 1 all items are aligned
-            vertically. 0 means unlimited
-            
-            :param: int numColumns: Maximum number of entries in a row
+        F.e when the maximum is set to 1 all items are aligned
+        vertically. 0 means unlimited
+        
+        :param int numColumns: Maximum number of entries in a row
 
         .. seealso::
         
@@ -219,9 +217,7 @@ class QwtLegend(QwtAbstractLegend):
     
     def maxColumns(self):
         """
-        .. py:method:: maxColumns()
-            
-            :return: Maximum number of entries in a row
+        :return: Maximum number of entries in a row
 
         .. seealso::
         
@@ -235,16 +231,14 @@ class QwtLegend(QwtAbstractLegend):
     
     def setDefaultItemMode(self, mode):
         """
-        .. py:method:: setDefaultItemMode(mode)
-        
-            Set the default mode for legend labels
+        Set the default mode for legend labels
 
-            Legend labels will be constructed according to the
-            attributes in a `QwtLegendData` object. When it doesn't
-            contain a value for the `QwtLegendData.ModeRole` the
-            label will be initialized with the default mode of the legend.
-            
-            :param: int mode: Default item mode
+        Legend labels will be constructed according to the
+        attributes in a `QwtLegendData` object. When it doesn't
+        contain a value for the `QwtLegendData.ModeRole` the
+        label will be initialized with the default mode of the legend.
+        
+        :param int mode: Default item mode
 
         .. seealso::
         
@@ -260,9 +254,7 @@ class QwtLegend(QwtAbstractLegend):
     
     def defaultItemMode(self):
         """
-        .. py:method:: defaultItemMode()
-            
-            :return: Default item mode
+        :return: Default item mode
 
         .. seealso::
         
@@ -272,21 +264,17 @@ class QwtLegend(QwtAbstractLegend):
         
     def contentsWidget(self):
         """
-        .. py:method:: contentsWidget()
-            
-            The contents widget is the only child of the viewport of 
-            the internal `QScrollArea` and the parent widget of all legend 
-            items.
+        The contents widget is the only child of the viewport of 
+        the internal `QScrollArea` and the parent widget of all legend 
+        items.
   
-            :return: Container widget of the legend items
+        :return: Container widget of the legend items
         """
         return self.__data.view.contentsWidget
     
     def horizontalScrollBar(self):
         """
-        .. py:method:: horizontalScrollBar()
-            
-            :return: Horizontal scrollbar
+        :return: Horizontal scrollbar
 
         .. seealso::
         
@@ -296,9 +284,7 @@ class QwtLegend(QwtAbstractLegend):
     
     def verticalScrollBar(self):
         """
-        .. py:method:: verticalScrollBar()
-            
-            :return: Vertical scrollbar
+        :return: Vertical scrollbar
 
         .. seealso::
         
@@ -308,12 +294,10 @@ class QwtLegend(QwtAbstractLegend):
     
     def updateLegend(self, itemInfo, data):
         """
-        .. py:method:: updateLegend(itemInfo, data)
+        Update the entries for an item
         
-            Update the entries for an item
-            
-            :param: QVariant itemInfo: Info for an item
-            :param: list data: Default item mode
+        :param QVariant itemInfo: Info for an item
+        :param list data: Default item mode
         """
         widgetList = self.legendWidgets(itemInfo)
         if len(widgetList) != len(data):
@@ -340,14 +324,12 @@ class QwtLegend(QwtAbstractLegend):
     
     def createWidget(self, data):
         """
-        .. py:method:: createWidget(data)
-        
-            Create a widget to be inserted into the legend
+        Create a widget to be inserted into the legend
 
-            The default implementation returns a `QwtLegendLabel`.
-            
-            :param: QwtLegendData data: Attributes of the legend entry
-            :return: Widget representing data on the legend
+        The default implementation returns a `QwtLegendLabel`.
+        
+        :param QwtLegendData data: Attributes of the legend entry
+        :return: Widget representing data on the legend
         
         ... note::
         
@@ -362,12 +344,10 @@ class QwtLegend(QwtAbstractLegend):
     
     def updateWidget(self, widget, data):
         """
-        .. py:method:: updateWidget(widget, data)
+        Update the widget
         
-            Update the widget
-            
-            :param: QWidget widget: Usually a QwtLegendLabel
-            :param: QwtLegendData data: Attributes to be displayed
+        :param QWidget widget: Usually a QwtLegendLabel
+        :param QwtLegendData data: Attributes to be displayed
 
         .. seealso::
         
@@ -401,10 +381,8 @@ class QwtLegend(QwtAbstractLegend):
         
     def heightForWidth(self, width):
         """
-        .. py:method:: heightForWidth(width)
-            
-            :param: int width: Width
-            :return: The preferred height, for a width.
+        :param int width: Width
+        :return: The preferred height, for a width.
         """
         width -= 2*self.frameWidth()
         h = self.__data.view.contentsWidget.heightForWidth(width)
@@ -414,14 +392,12 @@ class QwtLegend(QwtAbstractLegend):
     
     def eventFilter(self, object_, event):
         """
-        .. py:method:: eventFilter(object_, event)
-            
-            Handle QEvent.ChildRemoved andQEvent.LayoutRequest events 
-            for the contentsWidget().
-  
-            :param: QObject object: Object to be filtered
-            :param: QEvent event: Event
-            :return: Forwarded to QwtAbstractLegend.eventFilter()
+        Handle QEvent.ChildRemoved andQEvent.LayoutRequest events 
+        for the contentsWidget().
+
+        :param QObject object: Object to be filtered
+        :param QEvent event: Event
+        :return: Forwarded to QwtAbstractLegend.eventFilter()
         """
         if object_ is self.__data.view.contentsWidget:
             if event.type() == QEvent.ChildRemoved:
@@ -460,13 +436,11 @@ class QwtLegend(QwtAbstractLegend):
     
     def renderLegend(self, painter, rect, fillBackground):
         """
-        .. py:method:: renderLegend(painter, rect, fillBackground)
-            
-            Render the legend into a given rectangle.
-  
-            :param: QPainter painter: Painter
-            :param: QRectF rect: Bounding rectangle
-            :param: bool fillBackground: When true, fill rect with the widget background
+        Render the legend into a given rectangle.
+
+        :param QPainter painter: Painter
+        :param QRectF rect: Bounding rectangle
+        :param bool fillBackground: When true, fill rect with the widget background
         """
         if self.__data.itemMap.isEmpty():
             return
@@ -501,14 +475,12 @@ class QwtLegend(QwtAbstractLegend):
                 
     def renderItem(self, painter, widget, rect, fillBackground):
         """
-        .. py:method:: renderItem(painter, widget, rect, fillBackground)
-            
-            Render a legend entry into a given rectangle.
-  
-            :param: QPainter painter: Painter
-            :param: QWidget widget: Widget representing a legend entry
-            :param: QRectF rect: Bounding rectangle
-            :param: bool fillBackground: When true, fill rect with the widget background
+        Render a legend entry into a given rectangle.
+
+        :param QPainter painter: Painter
+        :param QWidget widget: Widget representing a legend entry
+        :param QRectF rect: Bounding rectangle
+        :param bool fillBackground: When true, fill rect with the widget background
         """
         if fillBackground:
             if widget.autoFillBackground() or\
@@ -530,21 +502,17 @@ class QwtLegend(QwtAbstractLegend):
             
     def legendWidgets(self, itemInfo):
         """
-        .. py:method:: legendWidgets(itemInfo)
-            
-            List of widgets associated to a item
-  
-            :param: QVariant itemInfo: Info about an item
+        List of widgets associated to a item
+
+        :param QVariant itemInfo: Info about an item
         """
         return self.__data.itemMap.legendWidgets(itemInfo)
     
     def legendWidget(self, itemInfo):
         """
-        .. py:method:: legendWidget(itemInfo)
-            
-            First widget in the list of widgets associated to an item
-  
-            :param: QVariant itemInfo: Info about an item
+        First widget in the list of widgets associated to an item
+
+        :param QVariant itemInfo: Info about an item
         """
         list_ = self.__data.itemMap.legendWidgets(itemInfo)
         if list_:
@@ -552,12 +520,10 @@ class QwtLegend(QwtAbstractLegend):
     
     def itemInfo(self, widget):
         """
-        .. py:method:: itemInfo(widget)
-            
-            Find the item that is associated to a widget
-  
-            :param: QWidget widget: Widget on the legend
-            :return: Associated item info
+        Find the item that is associated to a widget
+
+        :param QWidget widget: Widget on the legend
+        :return: Associated item info
         """
         return self.__data.itemMap.itemInfo(widget)
     

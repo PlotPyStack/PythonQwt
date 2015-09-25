@@ -5,6 +5,14 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtPainterClass
+---------------
+
+.. autoclass:: QwtPainterClass
+   :members:
+"""
+
 from qwt.clipper import QwtClipper
 from qwt.color_map import QwtColorMap
 
@@ -80,11 +88,29 @@ def isX11GraphicsSystem():
 
 
 class QwtPainterClass(object):
+    """A collection of `QPainter` workarounds"""
+    
     def __init__(self):
         self.__polylineSplitting = True
         self.__roundingAlignment = True
         
     def isAligning(self, painter):
+        """
+        Check if the painter is using a paint engine, that aligns
+        coordinates to integers. Today these are all paint engines
+        beside `QPaintEngine.Pdf` and `QPaintEngine.SVG`.
+
+        If we have an integer based paint engine it is also
+        checked if the painter has a transformation matrix,
+        that rotates or scales.
+        
+        :param QPainter painter: Painter
+        :return: true, when the painter is aligning
+
+        .. seealso::
+        
+            :py:meth:`setRoundingAlignment()`
+        """
         if painter and painter.isActive():
             if painter.paintEngine().type() in (QPaintEngine.Pdf,
                                                 QPaintEngine.SVG):
@@ -95,6 +121,21 @@ class QwtPainterClass(object):
         return True
     
     def setRoundingAlignment(self, enable):
+        """
+        Enable whether coordinates should be rounded, before they are 
+        painted to a paint engine that floors to integer values. For other 
+        paint engines this ( PDF, SVG ), this flag has no effect.
+        `QwtPainter` stores this flag only, the rounding itself is done in 
+        the painting code ( f.e the plot items ).
+        
+        The default setting is true.
+        
+        :param bool enable: enable/disable
+
+        .. seealso::
+        
+            :py:meth:`roundingAlignment()`, :py:meth:`isAligning()`
+        """
         self.__roundingAlignment = enable
     
     def roundingAlignment(self, painter=None):
@@ -104,6 +145,20 @@ class QwtPainterClass(object):
             return self.__roundingAlignment and self.isAligning(painter)
     
     def setPolylineSplitting(self, enable):
+        """
+        En/Disable line splitting for the raster paint engine
+
+        In some Qt versions the raster paint engine paints polylines of 
+        many points much faster when they are split in smaller chunks: 
+        f.e all supported Qt versions >= Qt 5.0 when drawing an 
+        antialiased polyline with a pen width >=2.
+        
+        :param bool enable: enable/disable
+
+        .. seealso::
+        
+            :py:meth:`polylineSplitting()`
+        """
         self.__polylineSplitting = enable
     
     def polylineSplitting(self):
@@ -191,6 +246,14 @@ class QwtPainterClass(object):
                             "(s) (%s given)" % len(args))
     
     def drawSimpleRichText(self, painter, rect, flags, text):
+        """
+        Draw a text document into a rectangle
+        
+        :param QPainter painter: Painter
+        :param QRectF rect: Target rectangle
+        :param int flags: Alignments/Text flags, see `QPainter.drawText()`
+        :param QTextDocument text: Text document
+        """
         txt = text.clone()
         painter.save()
         unscaledRect = QRectF(rect)
@@ -371,6 +434,15 @@ class QwtPainterClass(object):
                             "(s) (%s given)" % len(args))
     
     def drawRoundFrame(self, painter, rect, palette, lineWidth, frameStyle):
+        """
+        Draw a round frame
+        
+        :param QPainter painter: Painter
+        :param QRectF rect: Target rectangle
+        :param QPalette palette: `QPalette.WindowText` is used for plain borders, `QPalette.Dark` and `QPalette.Light` for raised or sunken borders
+        :param int lineWidth: Line width
+        :param int frameStyle: bitwise OR´ed value of `QFrame.Shape` and `QFrame.Shadow`
+        """
         Plain, Sunken, Raised = list(range(3))
         style = Plain
         if (frameStyle & QFrame.Sunken) == QFrame.Sunken:
@@ -397,6 +469,17 @@ class QwtPainterClass(object):
     
     def drawFrame(self, painter, rect, palette, foregroundRole,
                   frameWidth, midLineWidth, frameStyle):
+        """
+        Draw a rectangular frame
+        
+        :param QPainter painter: Painter
+        :param QRectF rect: Frame rectangle
+        :param QPalette palette: Palette
+        :param QPalette.ColorRole foregroundRole: Palette
+        :param int frameWidth: Frame width
+        :param int midLineWidth: Used for `QFrame.Box`
+        :param int frameStyle: bitwise OR´ed value of `QFrame.Shape` and `QFrame.Shadow`
+        """
         if frameWidth <= 0 or rect.isEmpty():
             return
         shadow = frameStyle & QFrame.Shadow_Mask
@@ -496,6 +579,17 @@ class QwtPainterClass(object):
         
     def drawRoundedFrame(self, painter, rect, xRadius, yRadius,
                          palette, lineWidth, frameStyle):
+        """
+        Draw a rectangular frame with rounded borders
+        
+        :param QPainter painter: Painter
+        :param QRectF rect: Frame rectangle
+        :param float xRadius: x-radius of the ellipses defining the corners
+        :param float yRadius: y-radius of the ellipses defining the corners
+        :param QPalette palette: `QPalette.WindowText` is used for plain borders, `QPalette.Dark` and `QPalette.Light` for raised or sunken borders
+        :param int lineWidth: Line width
+        :param int frameStyle: bitwise OR´ed value of `QFrame.Shape` and `QFrame.Shadow`
+        """
         painter.save()
         painter.setRenderHint(QPainter.Antialiasing, True)
         painter.setBrush(Qt.NoBrush)
@@ -569,6 +663,16 @@ class QwtPainterClass(object):
         
     def drawColorBar(self, painter, colorMap, interval, scaleMap,
                      orientation, rect):
+        """
+        Draw a color bar into a rectangle
+        
+        :param QPainter painter: Painter
+        :param qwt.color_map.QwtColorMap colorMap: Color map
+        :param qwt.interval.QwtInterval interval: Value range
+        :param qwt.scalemap.QwtScaleMap scaleMap: Scale map
+        :param Qt.Orientation orientation: Orientation
+        :param QRectF rect: Target rectangle
+        """
         colorTable = []
         if colorMap.format() == QwtColorMap.Indexed:
             colorTable = colorMap.colorTable(interval)
@@ -604,6 +708,21 @@ class QwtPainterClass(object):
         self.drawPixmap(painter, rect, pixmap)
     
     def fillPixmap(self, widget, pixmap, offset=None):
+        """
+        Fill a pixmap with the content of a widget
+
+        In Qt >= 5.0 `QPixmap.fill()` is a nop, in Qt 4.x it is buggy
+        for backgrounds with gradients. Thus `fillPixmap()` offers 
+        an alternative implementation.
+        
+        :param QWidget widget: Widget
+        :param QPixmap pixmap: Pixmap to be filled
+        :param QPoint offset: Offset
+        
+        .. seealso::
+        
+            :py:meth:`QPixmap.fill()`
+        """
         if offset is None:
             offset = QPoint()
         rect = QRect(offset, pixmap.size())
@@ -623,6 +742,17 @@ class QwtPainterClass(object):
                                          painter, widget)
     
     def drawBackground(self, painter, rect, widget):
+        """
+        Fill rect with the background of a widget
+        
+        :param QPainter painter: Painter
+        :param QRectF rect: Rectangle to be filled
+        :param QWidget widget: Widget
+        
+        .. seealso::
+        
+            :py:data:`QStyle.PE_Widget`, :py:meth:`QWidget.backgroundRole()`
+        """
         if widget.testAttribute(Qt.WA_StyledBackground):
             opt = QStyleOption()
             opt.initFrom(widget)
@@ -634,6 +764,11 @@ class QwtPainterClass(object):
             painter.fillRect(rect, brush)
         
     def backingStore(self, widget, size):
+        """
+        :param QWidget widget: Widget, for which the backinstore is intended
+        :param QSize size: Size of the pixmap
+        :return: A pixmap that can be used as backing store
+        """
         if QT_VERSION >= 0x050000:
             pixelRatio = 1.
             if widget and widget.windowHandle():

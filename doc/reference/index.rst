@@ -10,3 +10,6 @@ Main `python-qwt` classes:
     graphic
     interval
     legend
+    legend_data
+    legend_label
+    plot

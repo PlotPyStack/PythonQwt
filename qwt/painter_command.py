@@ -5,6 +5,14 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtPainterCommand
+-----------------
+
+.. autoclass:: QwtPainterCommand
+   :members:
+"""
+
 from qwt.qt.QtGui import QPainterPath, QPaintEngine
 
 
@@ -41,6 +49,51 @@ class StateData(object):
         self.opacity = None
 
 class QwtPainterCommand(object):
+    """
+    `QwtPainterCommand` represents the attributes of a paint operation
+    how it is used between `QPainter` and `QPaintDevice`
+    
+    It is used by :py:class:`qwt.graphic.QwtGraphic` to record and replay 
+    paint operations
+    
+    .. seealso::
+    
+        :py:meth:`qwt.graphic.QwtGraphic.commands()`
+
+        
+    .. py:class:: QwtPainterCommand()
+    
+        Construct an invalid command
+        
+    .. py:class:: QwtPainterCommand(path)
+    
+        Copy constructor
+        
+        :param QPainterPath path: Source
+        
+    .. py:class:: QwtPainterCommand(rect, pixmap, subRect)
+    
+        Constructor for Pixmap paint operation
+        
+        :param QRectF rect: Target rectangle
+        :param QPixmap pixmap: Pixmap
+        :param QRectF subRect: Rectangle inside the pixmap
+        
+    .. py:class:: QwtPainterCommand(rect, image, subRect, flags)
+    
+        Constructor for Image paint operation
+        
+        :param QRectF rect: Target rectangle
+        :param QImage image: Image
+        :param QRectF subRect: Rectangle inside the image
+        :param Qt.ImageConversionFlags flags: Conversion flags
+        
+    .. py:class:: QwtPainterCommand(state)
+    
+        Constructor for State paint operation
+        
+        :param QPaintEngineState state: Paint engine state
+    """
     
     # enum Type
     Invalid = -1

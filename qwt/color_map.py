@@ -163,13 +163,11 @@ class QwtColorMap(object):
     
     def color(self, interval, value):
         """
-        .. py:method:: color(interval, value)
+        Map a value into a color
         
-            Map a value into a color
-            
-            :param qwt.interval.QwtInterval interval: valid interval for value
-            :param float value: value
-            :return: the color corresponding to value
+        :param qwt.interval.QwtInterval interval: valid interval for value
+        :param float value: value
+        :return: the color corresponding to value
         
         .. warning ::
             
@@ -188,12 +186,10 @@ class QwtColorMap(object):
     
     def colorTable(self, interval):
         """
-        .. py:method:: colorTable(interval)
+        Build and return a color map of 256 colors
         
-            Build and return a color map of 256 colors
-            
-            :param qwt.interval.QwtInterval interval: range for the values
-            :return: a color table, that can be used for a `QImage`
+        :param qwt.interval.QwtInterval interval: range for the values
+        :return: a color table, that can be used for a `QImage`
 
         The color table is needed for rendering indexed images in combination
         with using `colorIndex()`.
@@ -257,11 +253,9 @@ class QwtLinearColorMap(QwtColorMap):
     
     def setMode(self, mode):
         """
-        .. py:method:: setMode(mode)
-
-            Set the mode of the color map
-            
-            :param int mode: :py:data:`QwtLinearColorMap.FixedColors` or :py:data:`QwtLinearColorMap.ScaledColors`
+        Set the mode of the color map
+        
+        :param int mode: :py:data:`QwtLinearColorMap.FixedColors` or :py:data:`QwtLinearColorMap.ScaledColors`
 
         `FixedColors` means the color is calculated from the next lower color 
         stop. `ScaledColors` means the color is calculated by interpolating 
@@ -271,7 +265,7 @@ class QwtLinearColorMap(QwtColorMap):
     
     def mode(self):
         """
-        Return the mode of the color map
+        :return: the mode of the color map
         
         .. seealso ::
             
@@ -343,11 +337,9 @@ class QwtAlphaColorMap(QwtColorMap):
     
     def setColor(self, color):
         """
-        .. py:method:: setColor(color)
-
-            Set the color of the map
-            
-            :param QColor color: color of the map
+        Set the color of the map
+        
+        :param QColor color: color of the map
         """
         self.__data.color = color
         self.__data.rgb = color.rgb() & qRgba(255, 255, 255, 0)
@@ -355,7 +347,7 @@ class QwtAlphaColorMap(QwtColorMap):
     
     def color(self):
         """
-        Return the color of the map
+        :return: the color of the map
         
         .. seealso ::
             
