@@ -8,6 +8,7 @@ Contents:
     
     overview
     installation
+    examples/index
     reference/index
     
 
