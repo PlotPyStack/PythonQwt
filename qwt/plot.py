@@ -139,7 +139,7 @@ class QwtPlotDict(object):
         """
         Insert a plot item
         
-        :param QwtPlotItem item: PlotItem
+        :param qwt.plot.QwtPlotItem item: PlotItem
 
         .. seealso::
         
@@ -151,7 +151,7 @@ class QwtPlotDict(object):
         """
         Remove a plot item
         
-        :param QwtPlotItem item: PlotItem
+        :param qwt.plot.QwtPlotItem item: PlotItem
 
         .. seealso::
         
@@ -231,7 +231,7 @@ class QwtPlot(QFrame, QwtPlotDict):
     are calculated from the plot items, using algorithms (`QwtScaleEngine`) 
     which can be configured separately for each axis.
     
-    The simpleplot example is a good starting point to see how to set up a 
+    The following example is a good starting point to see how to set up a 
     plot widget::
     
         from qwt.qt.QtGui import QApplication
@@ -1476,7 +1476,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         If plotItem is None, emit QwtPlot.SIG_LEGEND_DATA_CHANGED for all 
         plot item. Otherwise, emit the signal for passed plot item.
     
-        :param QwtPlotItem plotItem: Plot item
+        :param qwt.plot.QwtPlotItem plotItem: Plot item
 
         .. seealso::
         
@@ -1501,7 +1501,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         Call `QwtPlotItem.updateLegend()`, when the 
         `QwtPlotItem.LegendInterest` flag is set.
     
-        :param QwtPlotItem plotItem: Plot item
+        :param qwt.plot.QwtPlotItem plotItem: Plot item
         :param list legendData: Entries to be displayed for the plot item ( usually 1 )
 
         .. seealso::
@@ -1518,7 +1518,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         Attach/Detach a plot item
     
-        :param QwtPlotItem plotItem: Plot item
+        :param qwt.plot.QwtPlotItem plotItem: Plot item
         :param bool on: When true attach the item, otherwise detach it
         """
         if plotItem.testItemInterest(QwtPlotItem.LegendInterest):
@@ -1673,7 +1673,7 @@ class QwtPlotItem(object):
         call to attach (if necessary). If a None argument is passed, it will 
         detach from any `QwtPlot` it was attached to.
         
-        :param QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
 
         .. seealso::
         
@@ -2166,7 +2166,7 @@ class QwtPlotItem(object):
         updateLegend() is only called when the LegendInterest interest
         is enabled. The default implementation does nothing.
         
-        :param QwtPlotItem item: Plot item to be displayed on a legend
+        :param qwt.plot.QwtPlotItem item: Plot item to be displayed on a legend
         :param list data: Attributes how to display item on the legend
         
         .. note::

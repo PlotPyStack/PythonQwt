@@ -36,9 +36,9 @@ features are already implemented in `guiqwt`.
 
 Other API compatibility issues with `Qwt`:
 
-    - `QwtPlot.MinimizeMemory` option was removed as this option has no sense 
-      in python-qwt (the polyline plotting is not taking more memory than the 
-      array data that is already there).
+    - `QwtPlotCurve.MinimizeMemory` option was removed as this option has no 
+      sense in python-qwt (the polyline plotting is not taking more memory 
+      than the array data that is already there).
 
     - `QwtPlotCurve.Fitted` option was removed as this option is not supported 
       at the moment.

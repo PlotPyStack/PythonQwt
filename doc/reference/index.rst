@@ -13,3 +13,5 @@ Main `python-qwt` classes:
     legend_data
     legend_label
     plot
+    plot_canvas
+    plot_curve
