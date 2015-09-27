@@ -195,7 +195,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     
         Constructor
         
-        :param title: Parent plot widget
+        :param title: Curve title
         :type title: qwt.text.QwtText or str or None
     """
     

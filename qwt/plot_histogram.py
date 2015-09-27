@@ -5,6 +5,14 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtPlotHistogram
+----------------
+
+.. autoclass:: QwtPlotHistogram
+   :members:
+"""
+
 from qwt.plot_seriesitem import QwtPlotSeriesItem
 from qwt.series_store import QwtSeriesStore
 from qwt.interval import QwtInterval
@@ -37,16 +45,66 @@ class QwtPlotHistogram_PrivateData(object):
 
 
 class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
+    """
+    `QwtPlotHistogram` represents a series of samples, where an interval
+    is associated with a value (`y = f([x1,x2])`).
+
+    The representation depends on the style() and an optional symbol()
+    that is displayed for each interval.
+
+    .. note::
+    
+        The term "histogram" is used in a different way in the areas of
+        digital image processing and statistics. Wikipedia introduces the
+        terms "image histogram" and "color histogram" to avoid confusions.
+        While "image histograms" can be displayed by a QwtPlotCurve there
+        is no applicable plot item for a "color histogram" yet.
+        
+    Histogram styles:
+    
+      * `QwtPlotHistogram.Outline`:
+      
+        Draw an outline around the area, that is build by all intervals
+        using the `pen()` and fill it with the `brush()`. The outline style
+        requires, that the intervals are in increasing order and
+        not overlapping.
+
+      * `QwtPlotHistogram.Columns`:
+      
+        Draw a column for each interval. When a `symbol()` has been set
+        the symbol is used otherwise the column is displayed as 
+        plain rectangle using `pen()` and `brush()`.
+
+      * `QwtPlotHistogram.Lines`:
+      
+        Draw a simple line using the `pen()` for each interval.
+
+      * `QwtPlotHistogram.UserStyle`:
+      
+        Styles >= UserStyle are reserved for derived
+        classes that overload `drawSeries()` with
+        additional application specific ways to display a histogram.
+      
+            
+    .. py:class:: QwtPlotHistogram([title=None])
+    
+        Constructor
+        
+        :param title: Histogram title
+        :type title: qwt.text.QwtText or str or None
+    """
     
     # enum HistogramStyle
     Outline, Columns, Lines = list(range(3))
     UserStyle = 100
     
     def __init__(self, title=None):
+        QwtPlotSeriesItem.__init__(title)
         self.__data = None
         self.init()
     
     def init(self):
+        """Initialize data members"""
         self.__data = QwtPlotHistogram_PrivateData()
         self.setData(QwtIntervalSeriesData())
         self.setItemAttribute(QwtPlotItem.AutoScale, True)
@@ -54,15 +112,63 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
         self.setZ(20.)
     
     def setStyle(self, style):
+        """
+        Set the histogram's drawing style
+        
+        Valid histogram styles:
+
+            * `QwtPlotHistogram.Outline`:
+            * `QwtPlotHistogram.Columns`:
+            * `QwtPlotHistogram.Lines`:
+            * `QwtPlotHistogram.UserStyle`:
+
+        :param int style: Histogram style
+        
+        .. seealso::
+        
+            :py:meth:`style()`
+        """
         if style != self.__data.style:
             self.__data.style = style
             self.legendChanged()
             self.itemChanged()
             
     def style(self):
+        """
+        :return: Style of the histogram
+        
+        .. seealso::
+        
+            :py:meth:`setStyle()`
+        """
         return self.__data.style
     
     def setPen(self, *args):
+        """
+        Build and/or assign a pen
+        
+        .. py:method:: setPen(color, width, style)
+        
+            Build and assign a pen
+    
+            In Qt5 the default pen width is 1.0 ( 0.0 in Qt4 ) what makes it
+            non cosmetic (see `QPen.isCosmetic()`). This method signature has 
+            been introduced to hide this incompatibility.
+            
+            :param QColor color: Pen color
+            :param float width: Pen width
+            :param Qt.PenStyle style: Pen style
+        
+        .. py:method:: setPen(pen)
+        
+            Assign a pen
+    
+            :param QPen pen: New pen
+        
+        .. seealso::
+        
+            :py:meth:`pen()`, :py:meth:`brush()`
+        """
         if len(args) not in (1, 2, 3):
             raise TypeError
         if isinstance(args[0], QColor):
@@ -82,35 +188,114 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
                 self.itemChanged()
     
     def pen(self):
+        """
+        :return: Pen used in a style() depending way.
+        
+        .. seealso::
+        
+            :py:meth:`setPen()`, :py:meth:`brush()`
+        """
         return self.__data.pen
 
     def setBrush(self, brush):
+        """
+        Assign a brush, that is used in a style() depending way.
+        
+        :param brush: New brush
+        :type brush: QBrush or QColor
+        
+        .. seealso::
+        
+            :py:meth:`pen()`, :py:meth:`brush()`
+        """
         if brush != self.__data.brush:
             self.__data.brush = brush
             self.legendChanged()
             self.itemChanged()
     
     def brush(self):
+        """
+        :return: Brush used in a style() depending way.
+        
+        .. seealso::
+        
+            :py:meth:`setPen()`, :py:meth:`brush()`
+        """
         return self.__data.brush
 
     def setSymbol(self, symbol):
+        """
+        Assign a symbol
+
+        In Column style an optional symbol can be assigned, that is 
+        responsible for displaying the rectangle that is defined by the 
+        interval and the distance between `baseline()` and value. When no 
+        symbol has been defined the area is displayed as plain rectangle 
+        using `pen()` and `brush()`.
+        
+        :param qwt.symbol.QwtSymbol symbol: Symbol
+        
+        .. seealso::
+        
+            :py:meth:`style()`, :py:meth:`symbol()`, :py:meth:`drawColumn()`, 
+            :py:meth:`pen()`, :py:meth:`brush()`
+            
+        .. note::
+        
+            In applications, where different intervals need to be displayed
+            in a different way ( f.e different colors or even using different 
+            symbols) it is recommended to overload `drawColumn()`.
+        """
         if symbol != self.__data.symbol:
             self.__data.symbol = symbol
             self.legendChanged()
             self.itemChanged()
     
     def symbol(self):
+        """
+        :return: Current symbol or None, when no symbol has been assigned
+        
+        .. seealso::
+        
+            :py:meth:`setSymbol()`
+        """
         return self.__data.symbol
 
     def setBaseline(self, value):
+        """
+        Set the value of the baseline
+
+        Each column representing an `QwtIntervalSample` is defined by its
+        interval and the interval between baseline and the value of the sample.
+
+        The default value of the baseline is 0.0.
+        
+        :param float value: Value of the baseline
+        
+        .. seealso::
+        
+            :py:meth:`baseline()`
+        """
         if value != self.__data.baseline:
             self.__data.baseline = value
             self.itemChanged()
     
     def baseline(self):
+        """
+        :return: Value of the baseline
+        
+        .. seealso::
+        
+            :py:meth:`setBaseline()`
+        """
         return self.__data.baseline
 
     def boundingRect(self):
+        """
+        :return: Bounding rectangle of all samples.
+        
+        For an empty series the rectangle is invalid.
+        """
         rect = QRectF(self.data().boundingRect())
         if not rect.isValid():
             return rect
@@ -128,15 +313,36 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
         return rect
     
     def rtti(self):
+        """:return: Return `QwtPlotItem.Rtti_PlotHistogram`"""
         return QwtPlotItem.Rtti_PlotHistogram
     
     def setSamples(self, samples):
+        """
+        Initialize data with an array of samples.
+        
+        :param samples: Array of points
+        """
         if not isinstance(samples, QwtIntervalSeriesData):
             self.setData(QwtIntervalSeriesData(samples))
         else:
             self.setData(samples)
     
     def drawSeries(self, painter, xMap, yMap, canvasRect, from_, to):
+        """
+        Draw a subset of the histogram samples
+        
+        :param QPainter painter: Painter
+        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param QRectF canvasRect: Contents rectangle of the canvas
+        :param int from_: Index of the first point to be painted
+        :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
+        
+        .. seealso::
+        
+            :py:meth:`drawOutline()`, :py:meth:`drawLines()`, 
+            :py:meth:`drawColumns()`
+        """
         if not painter or self.dataSize() <= 0:
             return
         if to < 0:
@@ -149,6 +355,24 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
             self.drawColumns(painter, xMap, yMap, from_, to)
     
     def drawOutline(self, painter, xMap, yMap, from_, to):
+        """
+        Draw a histogram in Outline `style()`
+        
+        :param QPainter painter: Painter
+        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param int from_: Index of the first point to be painted
+        :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
+        
+        .. seealso::
+        
+            :py:meth:`setStyle()`, :py:meth:`style()`
+            
+        .. warning::
+        
+            The outline style requires, that the intervals are in increasing
+            order and not overlapping.
+        """
         doAlign = QwtPainter.roundingAlignment(painter)
         if self.orientation() == Qt.Horizontal:
             v0 = xMap.transform(self.baseline())
@@ -195,6 +419,20 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
         self.flushPolygon(painter, v0, polygon)
     
     def drawColumns(self, painter, xMap, yMap, from_, to):
+        """
+        Draw a histogram in Columns `style()`
+        
+        :param QPainter painter: Painter
+        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param int from_: Index of the first point to be painted
+        :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
+        
+        .. seealso::
+        
+            :py:meth:`setStyle()`, :py:meth:`style()`, 
+            :py:meth:`setSymbol()`, :py:meth:`drawColumn()`
+        """
         painter.setPen(self.__data.pen)
         painter.setBrush(self.__data.brush)
         series = self.data()
@@ -205,6 +443,20 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
                 self.drawColumn(painter, rect, sample)
     
     def drawLines(self, painter, xMap, yMap, from_, to):
+        """
+        Draw a histogram in Lines `style()`
+        
+        :param QPainter painter: Painter
+        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param int from_: Index of the first point to be painted
+        :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
+        
+        .. seealso::
+        
+            :py:meth:`setStyle()`, :py:meth:`style()`, 
+            :py:meth:`setPen()`
+        """
         doAlign = QwtPainter.roundingAlignment(painter)
         painter.setPen(self.__data.pen)
         painter.setBrush(self.__data.brush)
@@ -229,6 +481,7 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
                     QwtPainter.drawLine(painter, r.topRight(), r.topLeft())
 
     def flushPolygon(self, painter, baseline, polygon):
+        """Internal, used by the Outline style."""
         if polygon.size() == 0:
             return
         if self.orientation() == Qt.Horizontal:
@@ -254,6 +507,14 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
         polygon.clear()
     
     def columnRect(self, sample, xMap, yMap):
+        """
+        Calculate the area that is covered by a sample
+
+        :param sample: Sample
+        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :return: Rectangle, that is covered by a sample
+        """
         rect = QwtColumnRect()
         iv = sample.interval
         if not iv.isValid():
@@ -283,6 +544,22 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
         return rect
         
     def drawColumn(self, painter, rect, sample):
+        """
+        Draw a column for a sample in Columns `style()`
+        
+        When a `symbol()` has been set the symbol is used otherwise the
+        column is displayed as plain rectangle using `pen()` and `brush()`.
+        
+        :param QPainter painter: Painter
+        :param qwt.column_symbol.QwtColumnRect rect: Rectangle where to paint the column in paint device coordinates
+        :param sample: Sample to be displayed
+        
+        .. note::
+        
+            In applications, where different intervals need to be displayed
+            in a different way ( f.e different colors or even using different 
+            symbols) it is recommended to overload `drawColumn()`.
+        """
         if self.__data.symbol and\
            self.__data.symbol.style() != QwtColumnSymbol.NoStyle:
             self.__data.symbol.draw(painter, rect)
@@ -296,4 +573,16 @@ class QwtPlotHistogram(QwtPlotSeriesItem, QwtSeriesStore):
             QwtPainter.drawRect(painter, r)
     
     def legendIcon(self, index, size):
+        """
+        A plain rectangle without pen using the brush()
+
+        :param int index: Index of the legend entry (ignored as there is only one)
+        :param QSizeF size: Icon size
+        :return: A graphic displaying the icon
+    
+        .. seealso::
+        
+            :py:meth:`setLegendIconSize()`, 
+            :py:meth:`qwt.plot.QwtPlotItem.legendData()`
+        """
         return self.defaultIcon(self.__data.brush, size)

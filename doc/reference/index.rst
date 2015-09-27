@@ -15,3 +15,7 @@ Main `python-qwt` classes:
     plot
     plot_canvas
     plot_curve
+    plot_directpainter
+    plot_grid
+    plot_histogram
+    plot_layout
