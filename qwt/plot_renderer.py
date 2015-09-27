@@ -5,6 +5,14 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtPlotRenderer
+---------------
+
+.. autoclass:: QwtPlotRenderer
+   :members:
+"""
+
 from __future__ import division
 
 from qwt.painter import QwtPainter
@@ -25,6 +33,11 @@ import os.path as osp
 
 
 def qwtCanvasClip(canvas, canvasRect):
+    """
+    The clip region is calculated in integers
+    To avoid too much rounding errors better
+    calculate it in target device resolution
+    """
     x1 = np.ceil(canvasRect.left())
     x2 = np.floor(canvasRect.right())
     y1 = np.ceil(canvasRect.top())
@@ -39,6 +52,30 @@ class QwtPlotRenderer_PrivateData(object):
         self.layoutFlags = QwtPlotRenderer.DefaultLayout
 
 class QwtPlotRenderer(QObject):
+    """
+    Renderer for exporting a plot to a document, a printer
+    or anything else, that is supported by QPainter/QPaintDevice
+    
+    Discard flags:
+    
+      * `QwtPlotRenderer.DiscardNone`: Render all components of the plot
+      * `QwtPlotRenderer.DiscardBackground`: Don't render the background of the plot
+      * `QwtPlotRenderer.DiscardTitle`: Don't render the title of the plot
+      * `QwtPlotRenderer.DiscardLegend`: Don't render the legend of the plot
+      * `QwtPlotRenderer.DiscardCanvasBackground`: Don't render the background of the canvas
+      * `QwtPlotRenderer.DiscardFooter`: Don't render the footer of the plot
+      * `QwtPlotRenderer.DiscardCanvasFrame`: Don't render the frame of the canvas
+      
+    .. note::
+    
+        The `QwtPlotRenderer.DiscardCanvasFrame` flag has no effect when using
+        style sheets, where the frame is part of the background
+    
+    Layout flags:
+    
+      * `QwtPlotRenderer.DefaultLayout`: Use the default layout as on screen
+      * `QwtPlotRenderer.FrameWithScales`: Instead of the scales a box is painted around the plot canvas, where the scale ticks are aligned to.
+    """
     
     # enum DiscardFlag
     DiscardNone = 0x00
@@ -58,37 +95,123 @@ class QwtPlotRenderer(QObject):
         self.__data = QwtPlotRenderer_PrivateData()
     
     def setDiscardFlag(self, flag, on):
+        """
+        Change a flag, indicating what to discard from rendering
+
+        :param int flag: Flag to change
+        :param bool on: On/Off
+
+        .. seealso::
+        
+            :py:meth:`testDiscardFlag()`, :py:meth:`setDiscardFlags()`, 
+            :py:meth:`discardFlags()`
+        """
         if on:
             self.__data.discardFlags |= flag
         else:
             self.__data.discardFlags &= ~flag
     
     def testDiscardFlag(self, flag):
+        """
+        :param int flag: Flag to be tested
+        :return: True, if flag is enabled.
+
+        .. seealso::
+        
+            :py:meth:`setDiscardFlag()`, :py:meth:`setDiscardFlags()`, 
+            :py:meth:`discardFlags()`
+        """
         return self.__data.discardFlags & flag
     
     def setDiscardFlags(self, flags):
+        """
+        Set the flags, indicating what to discard from rendering
+
+        :param int flags: Flags
+
+        .. seealso::
+        
+            :py:meth:`testDiscardFlag()`, :py:meth:`setDiscardFlag()`, 
+            :py:meth:`discardFlags()`
+        """
         self.__data.discardFlags = flags
     
     def discardFlags(self):
+        """
+        :return: Flags, indicating what to discard from rendering
+
+        .. seealso::
+        
+            :py:meth:`setDiscardFlag()`, :py:meth:`setDiscardFlags()`, 
+            :py:meth:`testDiscardFlag()`
+        """
         return self.__data.discardFlags
     
     def setLayoutFlag(self, flag, on):
+        """
+        Change a layout flag
+
+        :param int flag: Flag to change
+
+        .. seealso::
+        
+            :py:meth:`testLayoutFlag()`, :py:meth:`setLayoutFlags()`, 
+            :py:meth:`layoutFlags()`
+        """
         if on:
             self.__data.layoutFlags |= flag
         else:
             self.__data.layoutFlags &= ~flag
     
     def testLayoutFlag(self, flag):
+        """
+        :param int flag: Flag to be tested
+        :return: True, if flag is enabled.
+
+        .. seealso::
+        
+            :py:meth:`setLayoutFlag()`, :py:meth:`setLayoutFlags()`, 
+            :py:meth:`layoutFlags()`
+        """
         return self.__data.layoutFlags & flag
 
     def setLayoutFlags(self, flags):
+        """
+        Set the layout flags
+
+        :param int flags: Flags
+
+        .. seealso::
+        
+            :py:meth:`setLayoutFlag()`, :py:meth:`testLayoutFlag()`, 
+            :py:meth:`layoutFlags()`
+        """
         self.__data.layoutFlags = flags
     
     def layoutFlags(self):
+        """
+        :return: Layout flags
+
+        .. seealso::
+        
+            :py:meth:`setLayoutFlags()`, :py:meth:`setLayoutFlag()`, 
+            :py:meth:`testLayoutFlag()`
+        """
         return self.__data.layoutFlags
     
     def renderDocument(self, plot, filename, sizeMM=(300, 200), resolution=85,
                        format_=None):
+        """
+        Render a plot to a file
+
+        The format of the document will be auto-detected from the
+        suffix of the file name.
+  
+        :param qwt.plot.QwtPlot plot: Plot widget
+        :param str fileName: Path of the file, where the document will be stored
+        :param QSizeF sizeMM: Size for the document in millimeters
+        :param int resolution: Resolution in dots per Inch (dpi)
+        """
         if isinstance(sizeMM, tuple):
             sizeMM = QSizeF(*sizeMM)
         if format_ is None:
@@ -144,6 +267,30 @@ class QwtPlotRenderer(QObject):
             raise TypeError("Unsupported file format '%s'" % fmt)
 
     def renderTo(self, plot, dest):
+        """
+        Render a plot to a file
+
+        Supported formats are:
+
+          - pdf: Portable Document Format PDF
+          - ps: Postcript
+          - svg: Scalable Vector Graphics SVG
+          - all image formats supported by Qt, see QImageWriter.supportedImageFormats()
+
+        Scalable vector graphic formats like PDF or SVG are superior to
+        raster graphics formats.
+
+        :param qwt.plot.QwtPlot plot: Plot widget
+        :param str fileName: Path of the file, where the document will be stored
+        :param str format: Format for the document
+        :param QSizeF sizeMM: Size for the document in millimeters.
+        :param int resolution: Resolution in dots per Inch (dpi)
+        
+        .. seealso::
+        
+            :py:meth:`renderTo()`, :py:meth:`render()`, 
+            :py:meth:`qwt.painter.QwtPainter.setRoundingAlignment()`
+        """
         if isinstance(dest, QPaintDevice):
             w = dest.width()
             h = dest.height()
@@ -165,12 +312,28 @@ class QwtPlotRenderer(QObject):
         self.render(plot, p, rect)
     
     def render(self, plot, painter, plotRect):
+        """
+        Paint the contents of a QwtPlot instance into a given rectangle.
+
+        :param qwt.plot.QwtPlot plot: Plot to be rendered
+        :param QPainter painter: Painter
+        :param str format: Format for the document
+        :param QRectF plotRect: Bounding rectangle
+        
+        .. seealso::
+        
+            :py:meth:`renderDocument()`, :py:meth:`renderTo()`, 
+            :py:meth:`qwt.painter.QwtPainter.setRoundingAlignment()`
+        """
         if painter == 0 or not painter.isActive() or not plotRect.isValid()\
            or plot.size().isNull():
             return
         if not self.__data.discardFlags & self.DiscardBackground:
             QwtPainter.drawBackground(painter, plotRect, plot)
 
+        #  The layout engine uses the same methods as they are used
+        #  by the Qt layout system. Therefore we need to calculate the
+        #  layout in screen coordinates and paint with a scaled painter.
         transform = QTransform()
         transform.scale(float(painter.device().logicalDpiX())/plot.logicalDpiX(),
                         float(painter.device().logicalDpiY())/plot.logicalDpiY())
@@ -194,6 +357,9 @@ class QwtPlotRenderer(QObject):
                     scaleWidget.setMargin(0)
                 if not plot.axisEnabled(axisId):
                     left, right, top, bottom = 0, 0, 0, 0
+                    #  When we have a scale the frame is painted on
+                    #  the position of the backbone - otherwise we
+                    #  need to introduce a margin around the canvas
                     if axisId == QwtPlot.yLeft:
                         layoutRect.adjust(1, 0, 0, 0)
                     elif axisId == QwtPlot.yRight:
@@ -204,6 +370,7 @@ class QwtPlotRenderer(QObject):
                         layoutRect.adjust(0, 0, 0, -1)
                     layoutRect.adjust(left, top, right, bottom)
         
+        #  Calculate the layout for the document.
         layoutOptions = QwtPlotLayout.IgnoreScrollbars
         
         if self.__data.layoutFlags & self.FrameWithScales or\
@@ -221,6 +388,8 @@ class QwtPlotRenderer(QObject):
 
         maps = self.buildCanvasMaps(plot, layout.canvasRect())
         if self.updateCanvasMargins(plot, layout.canvasRect(), maps):
+            #  recalculate maps and layout, when the margins
+            #  have been changed
             layout.activate(plot, layoutRect, layoutOptions)
             maps = self.buildCanvasMaps(plot, layout.canvasRect())
         
@@ -261,24 +430,57 @@ class QwtPlotRenderer(QObject):
         layout.invalidate()
     
     def renderTitle(self, plot, painter, rect):
+        """
+        Render the title into a given rectangle.
+
+        :param qwt.plot.QwtPlot plot: Plot widget
+        :param QPainter painter: Painter
+        :param QRectF rect: Bounding rectangle
+        """
         painter.setFont(plot.titleLabel().font())
         color = plot.titleLabel().palette().color(QPalette.Active, QPalette.Text)
         painter.setPen(color)
         plot.titleLabel().text().draw(painter, rect)
     
     def renderFooter(self, plot, painter, rect):
+        """
+        Render the footer into a given rectangle.
+
+        :param qwt.plot.QwtPlot plot: Plot widget
+        :param QPainter painter: Painter
+        :param QRectF rect: Bounding rectangle
+        """
         painter.setFont(plot.footerLabel().font())
         color = plot.footerLabel().palette().color(QPalette.Active, QPalette.Text)
         painter.setPen(color)
         plot.footerLabel().text().draw(painter, rect)
     
     def renderLegend(self, plot, painter, rect):
+        """
+        Render the legend into a given rectangle.
+
+        :param qwt.plot.QwtPlot plot: Plot widget
+        :param QPainter painter: Painter
+        :param QRectF rect: Bounding rectangle
+        """
         if plot.legend():
             fillBackground = not self.__data.discardFlags & self.DiscardBackground
             plot.legend().renderLegend(painter, rect, fillBackground)
         
     def renderScale(self, plot, painter, axisId, startDist, endDist,
                     baseDist, rect):
+        """
+        Paint a scale into a given rectangle.
+        Paint the scale into a given rectangle.
+
+        :param qwt.plot.QwtPlot plot: Plot widget
+        :param QPainter painter: Painter
+        :param int axisId: Axis
+        :param int startDist: Start border distance
+        :param int endDist: End border distance
+        :param int baseDist: Base distance
+        :param QRectF rect: Bounding rectangle
+        """
         if not plot.axisEnabled(axisId):
             return
         scaleWidget = plot.axisWidget(axisId)
@@ -322,6 +524,14 @@ class QwtPlotRenderer(QObject):
         painter.restore()
         
     def renderCanvas(self, plot, painter, canvasRect, maps):
+        """
+        Render the canvas into a given rectangle.
+
+        :param qwt.plot.QwtPlot plot: Plot widget
+        :param QPainter painter: Painter
+        :param qwt.scale_map.QwtScaleMap maps: mapping between plot and paint device coordinates
+        :param QRectF rect: Bounding rectangle
+        """
         canvas = plot.canvas()
         r = canvasRect.adjusted(0., 0., -1., 1.)
         if self.__data.layoutFlags & self.FrameWithScales:
@@ -385,6 +595,13 @@ class QwtPlotRenderer(QObject):
                 painter.restore()
 
     def buildCanvasMaps(self, plot, canvasRect):
+        """
+        Calculated the scale maps for rendering the canvas
+
+        :param qwt.plot.QwtPlot plot: Plot widget
+        :param QRectF canvasRect: Target rectangle
+        :return: Calculated scale maps
+        """
         maps = []
         for axisId in range(QwtPlot.axisCnt):
             map_ = QwtScaleMap()
@@ -426,6 +643,19 @@ class QwtPlotRenderer(QObject):
         return marginsChanged
     
     def exportTo(self, plot, documentname, sizeMM=None, resolution=85):
+        """
+        Execute a file dialog and render the plot to the selected file
+
+        :param qwt.plot.QwtPlot plot: Plot widget
+        :param str documentName: Default document name
+        :param QSizeF sizeMM: Size for the document in millimeters
+        :param int resolution: Resolution in dots per Inch (dpi)
+        :return: True, when exporting was successful
+        
+        .. seealso::
+        
+            :py:meth:`renderDocument()`
+        """
         if plot is None:
             return
         if sizeMM is None:

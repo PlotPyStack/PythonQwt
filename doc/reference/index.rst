@@ -20,3 +20,5 @@ Main `python-qwt` classes:
     plot_histogram
     plot_layout
     plot_marker
+    plot_renderer
+    plot_seriesitem
