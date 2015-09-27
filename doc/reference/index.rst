@@ -19,3 +19,4 @@ Main `python-qwt` classes:
     plot_grid
     plot_histogram
     plot_layout
+    plot_marker
