@@ -25,6 +25,31 @@ only plot items needed by `guiqwt`): `QwtPlotItem` (base class),
 `QwtPlotItem`, `QwtPlotMarker`, `QwtPlotSeriesItem`, `QwtPlotHistogram`, 
 `QwtPlotCurve`.
 
+The `HistogramItem` object implemented in PyQwt's HistogramDemo.py is not 
+available here as a similar item is already implemented in `guiqwt`. As a 
+consequence, the following classes are not implemented: `QwtPlotHistogram`, 
+`QwtIntervalSeriesData`, `QwtIntervalSample`.
+
+The following data structure objects are not implemented as they seemed not 
+relevant with Python and NumPy: `QwtCPointerData` (As a consequence, method 
+`QwtPlot.setRawSamples` is not implemented), `QwtSyntheticPointData`.
+
+The following sample data type objects are not implemented as they seemed 
+quite specific: `QwtSetSample`, `QwtOHLCSample`. For similar reasons, the 
+`QwtPointPolar` class and the following sample iterator objects are not 
+implemented: `QwtSetSeriesData`, `QwtTradingChartData`, 
+`QwtPoint3DSeriesData`, `QwtArraySeriesData`, `QwtPointSeriesData`.
+
+Threads:
+
+    - Multiple threads for graphic rendering is implemented in Qwt C++ code 
+      thanks to the `QtConcurrent` and `QFuture` Qt features which are 
+      currently not supported by PyQt.
+    - As a consequence the following API is not supported in `python-qwt`:
+        - `QwtPlotItem.renderThreadCount`
+        - `QwtPlotItem.setRenderThreadCount`
+        - option `numThreads` in `QwtPointMapper.toImage`
+
 The `QwtClipper` class is not implemented yet (and it will probably be 
 very difficult or even impossible to implement it in pure Python without 
 performance issues). As a consequence, when zooming in a plot curve, the 

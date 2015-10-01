@@ -5,6 +5,14 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtScaleWidget
+--------------
+
+.. autoclass:: QwtScaleWidget
+   :members:
+"""
+
 from qwt.scale_draw import QwtScaleDraw
 from qwt.scale_engine import QwtLinearScaleEngine
 from qwt.color_map import QwtLinearColorMap
@@ -42,6 +50,28 @@ class QwtScaleWidget_PrivateData(object):
 
 
 class QwtScaleWidget(QWidget):
+    """
+    A Widget which contains a scale
+
+    This Widget can be used to decorate composite widgets with
+    a scale.
+    
+    Layout flags:
+    
+      * `QwtScaleWidget.TitleInverted`: The title of vertical scales is painted from top to bottom. Otherwise it is painted from bottom to top.
+
+    .. py:class:: QwtScaleWidget([parent=None])
+    
+        Alignment default is `QwtScaleDraw.LeftScale`.
+        
+        :param parent: Parent widget
+        :type parent: QWidget or None
+        
+    .. py:class:: QwtScaleWidget(align, parent)
+    
+        :param int align: Alignment
+        :param QWidget parent: Parent widget
+    """
     
     SIG_SCALE_DIV_CHANGED = Signal()
     
@@ -64,6 +94,11 @@ class QwtScaleWidget(QWidget):
         self.initScale(align)
         
     def initScale(self, align):
+        """
+        Initialize the scale
+        
+        :param int align: Alignment
+        """
         self.__data = QwtScaleWidget_PrivateData()
         self.__data.layoutFlags = 0
         if align == QwtScaleDraw.RightScale:
@@ -99,6 +134,16 @@ class QwtScaleWidget(QWidget):
         self.setAttribute(Qt.WA_WState_OwnSizePolicy, False)
     
     def setLayoutFlag(self, flag, on=True):
+        """
+        Toggle an layout flag
+        
+        :param int flag: Layout flag
+        :param bool on: True/False
+        
+        .. seealso::
+        
+            :py:meth:`testLayoutFlag()`
+        """
         if (self.__data.layoutFlags & flag != 0) != on:
             if on:
                 self.__data.layoutFlags |= flag
@@ -106,9 +151,29 @@ class QwtScaleWidget(QWidget):
                 self.__data.layoutFlags &= ~flag
     
     def testLayoutFlag(self, flag):
+        """
+        Test a layout flag
+        
+        :param int flag: Layout flag
+        :return: True/False
+        
+        .. seealso::
+        
+            :py:meth:`setLayoutFlag()`
+        """
         return self.__data.layoutFlags & flag
     
     def setTitle(self, title):
+        """
+        Give title new text contents
+        
+        :param title: New title
+        :type title: qwt.text.QwtText or str
+        
+        .. seealso::
+        
+            :py:meth:`title()`
+        """
         if isinstance(title, QwtText):
             flags = title.renderFlags() & (~ int(Qt.AlignTop|Qt.AlignBottom))
             title.setRenderFlags(flags)
@@ -121,6 +186,17 @@ class QwtScaleWidget(QWidget):
                 self.layoutScale()
     
     def setAlignment(self, alignment):
+        """
+        Change the alignment
+        
+        :param int alignment: New alignment
+        
+        Valid alignment values: see :py:class:`qwt.scale_draw.QwtScaleDraw`
+        
+        .. seealso::
+        
+            :py:meth:`alignment()`
+        """
         if self.__data.scaleDraw:
             self.__data.scaleDraw.setAlignment(alignment)
         if not self.testAttribute(Qt.WA_WState_OwnSizePolicy):
@@ -133,37 +209,108 @@ class QwtScaleWidget(QWidget):
         self.layoutScale()
     
     def alignment(self):
+        """
+        :return: position
+        
+        .. seealso::
+        
+            :py:meth:`setAlignment()`
+        """
         if not self.scaleDraw():
             return QwtScaleDraw.LeftScale
         return self.scaleDraw().alignment()
     
     def setBorderDist(self, dist1, dist2):
+        """
+        Specify distances of the scale's endpoints from the
+        widget's borders. The actual borders will never be less
+        than minimum border distance.
+        
+        :param int dist1: Left or top Distance
+        :param int dist2: Right or bottom distance
+        
+        .. seealso::
+        
+            :py:meth:`borderDist()`
+        """
         if dist1 != self.__data.borderDist[0] or\
            dist2 != self.__data.borderDist[1]:
             self.__data.borderDist = [dist1, dist2]
             self.layoutScale()
     
     def setMargin(self, margin):
+        """
+        Specify the margin to the colorBar/base line.
+        
+        :param int margin: Margin
+        
+        .. seealso::
+        
+            :py:meth:`margin()`
+        """
         margin = max([0, margin])
         if margin != self.__data.margin:
             self.__data.margin = margin
             self.layoutScale()
     
     def setSpacing(self, spacing):
+        """
+        Specify the distance between color bar, scale and title
+        
+        :param int spacing: Spacing
+        
+        .. seealso::
+        
+            :py:meth:`spacing()`
+        """
         spacing = max([0, spacing])
         if spacing != self.__data.spacing:
             self.__data.spacing = spacing
             self.layoutScale()
     
     def setLabelAlignment(self, alignment):
+        """
+        Change the alignment for the labels.
+        
+        :param int spacing: Spacing
+        
+        .. seealso::
+        
+            :py:meth:`QwtScaleDraw.setLabelAlignment()`, 
+            :py:meth:`setLabelRotation()`
+        """
         self.__data.scaleDraw.setLabelAlignment(alignment)
         self.layoutScale()
     
     def setLabelRotation(self, rotation):
+        """
+        Change the rotation for the labels.
+        
+        :param float rotation: Rotation
+        
+        .. seealso::
+        
+            :py:meth:`QwtScaleDraw.setLabelRotation()`, 
+            :py:meth:`setLabelFlags()`
+        """
         self.__data.scaleDraw.setLabelRotation(rotation)
         self.layoutScale()
     
     def setScaleDraw(self, scaleDraw):
+        """
+        Set a scale draw
+
+        scaleDraw has to be created with new and will be deleted in
+        class destructor or the next call of `setScaleDraw()`.
+        scaleDraw will be initialized with the attributes of
+        the previous scaleDraw object.
+        
+        :param qwt.scale_draw.QwtScaleDraw scaleDraw: ScaleDraw object
+        
+        .. seealso::
+        
+            :py:meth:`scaleDraw()`
+        """
         if scaleDraw is None or scaleDraw == self.__data.scaleDraw:
             return
         sd = self.__data.scaleDraw
@@ -178,21 +325,63 @@ class QwtScaleWidget(QWidget):
         self.layoutScale()
     
     def scaleDraw(self):
+        """
+        :return: scaleDraw of this scale
+                
+        .. seealso::
+        
+            :py:meth:`QwtScaleDraw.setScaleDraw()`
+        """
         return self.__data.scaleDraw
     
     def title(self):
+        """
+        :return: title
+                
+        .. seealso::
+        
+            :py:meth:`setTitle`
+        """
         return self.__data.title
     
     def startBorderDist(self):
+        """
+        :return: start border distance
+                
+        .. seealso::
+        
+            :py:meth:`setBorderDist`
+        """
         return self.__data.borderDist[0]
     
     def endBorderDist(self):
+        """
+        :return: end border distance
+                
+        .. seealso::
+        
+            :py:meth:`setBorderDist`
+        """
         return self.__data.borderDist[1]
 
     def margin(self):
+        """
+        :return: margin
+                
+        .. seealso::
+        
+            :py:meth:`setMargin`
+        """
         return self.__data.margin
     
     def spacing(self):
+        """
+        :return: distance between scale and title
+                
+        .. seealso::
+        
+            :py:meth:`setSpacing`
+        """
         return self.__data.spacing
     
     def paintEvent(self, event):
@@ -204,6 +393,11 @@ class QwtScaleWidget(QWidget):
         self.draw(painter)
     
     def draw(self, painter):
+        """
+        Draw the scale
+        
+        :param QPainter painter: Painter
+        """
         self.__data.scaleDraw.draw(painter, self.palette())
         if self.__data.colorBar.isEnabled and\
            self.__data.colorBar.width > 0 and\
@@ -222,6 +416,12 @@ class QwtScaleWidget(QWidget):
             self.drawTitle(painter, self.__data.scaleDraw.alignment(), r)
     
     def colorBarRect(self, rect):
+        """
+        Calculate the the rectangle for the color bar
+
+        :param QRectF rect: Bounding rectangle for all components of the scale
+        :return: Rectangle for the color bar
+        """
         cr = QRectF(rect)
         if self.__data.scaleDraw.orientation() == Qt.Horizontal:
             cr.setLeft(cr.left() + self.__data.borderDist[0])
@@ -248,6 +448,12 @@ class QwtScaleWidget(QWidget):
         self.layoutScale(False)
     
     def layoutScale(self, update_geometry=True):
+        """
+        Recalculate the scale's geometry and layout based on
+        the current geometry and fonts.
+
+        :param bool update_geometry: Notify the layout system and call update to redraw the scale
+        """
         bd0, bd1 = self.getBorderDistHint()
         if self.__data.borderDist[0] > bd0:
             bd0 = self.__data.borderDist[0]
@@ -287,6 +493,16 @@ class QwtScaleWidget(QWidget):
             self.update()
     
     def drawColorBar(self, painter, rect):
+        """
+        Draw the color bar of the scale widget
+
+        :param QPainter painter: Painter
+        :param QRectF rect: Bounding rectangle for the color bar
+        
+        .. seealso::
+        
+            :py:meth:`setColorBarEnabled()`
+        """
         if not self.__data.colorBar.interval.isValid():
             return
         sd = self.__data.scaleDraw
@@ -295,6 +511,13 @@ class QwtScaleWidget(QWidget):
                                   sd.scaleMap(), sd.orientation(), rect)
     
     def drawTitle(self, painter, align, rect):
+        """
+        Rotate and paint a title according to its position into a given rectangle.
+
+        :param QPainter painter: Painter
+        :param int align: Alignment
+        :param QRectF rect: Bounding rectangle
+        """
         r = rect
         flags = self.__data.title.renderFlags()\
                 &(~ int(Qt.AlignTop|Qt.AlignBottom|Qt.AlignVCenter))
@@ -338,6 +561,12 @@ class QwtScaleWidget(QWidget):
         painter.restore()
     
     def scaleChange(self):
+        """
+        Notify a change of the scale
+
+        This method can be overloaded by derived classes. The default 
+        implementation updates the geometry and repaints the widget.
+        """
         self.layoutScale()
         
     def sizeHint(self):
@@ -364,9 +593,23 @@ class QwtScaleWidget(QWidget):
         return size + QSize(left + right, top + bottom)
     
     def titleHeightForWidth(self, width):
+        """
+        Find the height of the title for a given width.
+
+        :param int width: Width
+        :return: Height
+        """
         return np.ceil(self.__data.title.heightForWidth(width, self.font()))
     
     def dimForLength(self, length, scaleFont):
+        """
+        Find the minimum dimension for a given length.
+        dim is the height, length the width seen in direction of the title.
+        
+        :param int length: width for horizontal, height for vertical scales
+        :param QFont scaleFont: Font of the scale
+        :return: height for horizontal, width for vertical scales
+        """
         extent = np.ceil(self.__data.scaleDraw.extent(scaleFont))
         dim = self.__data.margin + extent + 1
         if not self.__data.title.isEmpty():
@@ -376,6 +619,27 @@ class QwtScaleWidget(QWidget):
         return dim
     
     def getBorderDistHint(self):
+        """
+        Calculate a hint for the border distances.
+
+        This member function calculates the distance
+        of the scale's endpoints from the widget borders which
+        is required for the mark labels to fit into the widget.
+        The maximum of this distance an the minimum border distance
+        is returned.
+
+        :param int start: Return parameter for the border width at the beginning of the scale
+        :param int end: Return parameter for the border width at the end of the scale
+
+        .. warning::
+        
+            The minimum border distance depends on the font.
+        
+        .. seealso::
+        
+            :py:meth:`setMinBorderDist()`, :py:meth:`getMinBorderDist()`, 
+            :py:meth:`setBorderDist()`
+        """
         start, end = self.__data.scaleDraw.getBorderDistHint(self.font())
         if start < self.__data.minBorderDist[0]:
             start = self.__data.minBorderDist[0]
@@ -384,12 +648,48 @@ class QwtScaleWidget(QWidget):
         return start, end
     
     def setMinBorderDist(self, start, end):
+        """
+        Set a minimum value for the distances of the scale's endpoints from
+        the widget borders. This is useful to avoid that the scales
+        are "jumping", when the tick labels or their positions change
+        often.
+
+        :param int start: Minimum for the start border
+        :param int end: Minimum for the end border
+        
+        .. seealso::
+        
+            :py:meth:`getMinBorderDist()`, :py:meth:`getBorderDistHint()`
+        """
         self.__data.minBorderDist = [start, end]
     
     def getMinBorderDist(self):
+        """
+        Get the minimum value for the distances of the scale's endpoints from
+        the widget borders.
+
+        :param int start: Return parameter for the border width at the beginning of the scale
+        :param int end: Return parameter for the border width at the end of the scale
+
+        .. seealso::
+            
+            :py:meth:`setMinBorderDist()`, :py:meth:`getBorderDistHint()`
+        """
         return self.__data.minBorderDist
     
     def setScaleDiv(self, scaleDiv):
+        """
+        Assign a scale division
+
+        The scale division determines where to set the tick marks.
+
+        :param qwt.scale_div.QwtScaleDiv scaleDiv: Scale Division
+        
+        .. seealso::
+        
+            For more information about scale divisions, 
+            see :py:class:`qwt.scale_div.QwtScaleDiv`.
+        """
         sd = self.__data.scaleDraw
         if sd.scaleDiv() != scaleDiv:
             sd.setScaleDiv(scaleDiv)
@@ -397,30 +697,90 @@ class QwtScaleWidget(QWidget):
             self.SIG_SCALE_DIV_CHANGED.emit()
 
     def setTransformation(self, transformation):
+        """
+        Set the transformation
+
+        :param qwt.transform.Transform transformation: Transformation
+        
+        .. seealso::
+        
+            :py:meth:`qwt.scale_draw.QwtAbstractScaleDraw.scaleDraw()`, 
+            :py:class:`qwt.scale_map.QwtScaleMap`
+        """
         self.__data.scaleDraw.setTransformation(transformation)
         self.layoutScale()
     
     def setColorBarEnabled(self, on):
+        """
+        En/disable a color bar associated to the scale
+        
+        :param bool on: On/Off
+
+        .. seealso::
+        
+            :py:meth:`isColorBarEnabled()`, :py:meth:`setColorBarWidth()`
+        """
         if on != self.__data.colorBar.isEnabled:
             self.__data.colorBar.isEnabled = on
             self.layoutScale()
     
     def isColorBarEnabled(self):
+        """
+        :return: True, when the color bar is enabled
+        
+        .. seealso::
+        
+            :py:meth:`setColorBarEnabled()`, :py:meth:`setColorBarWidth()`
+        """
         return self.__data.colorBar.isEnabled
     
     def setColorBarWidth(self, width):
+        """
+        Set the width of the color bar
+        
+        :param int width: Width
+
+        .. seealso::
+        
+            :py:meth:`colorBarWidth()`, :py:meth:`setColorBarEnabled()`
+        """
         if width != self.__data.colorBar.width:
             self.__data.colorBar.width = width
             if self.isColorBarEnabled():
                 self.layoutScale()
     
     def colorBarWidth(self):
+        """
+        :return: Width of the color bar
+        
+        .. seealso::
+        
+            :py:meth:`setColorBarWidth()`, :py:meth:`setColorBarEnabled()`
+        """
         return self.__data.colorBar.width
     
     def colorBarInterval(self):
+        """
+        :return: Value interval for the color bar
+        
+        .. seealso::
+        
+            :py:meth:`setColorMap()`, :py:meth:`colorMap()`
+        """
         return self.__data.colorBar.interval
     
     def setColorMap(self, interval, colorMap):
+        """
+        Set the color map and value interval, that are used for displaying
+        the color bar.
+        
+        :param qwt.interval.QwtInterval interval: Value interval
+        :param qwt.color_map.QwtColorMap colorMap: Color map
+
+        .. seealso::
+        
+            :py:meth:`colorMap()`, :py:meth:`colorBarInterval()`
+        """
         self.__data.colorBar.interval = interval
         if colorMap != self.__data.colorBar.colorMap:
             self.__data.colorBar.colorMap = colorMap
@@ -428,5 +788,12 @@ class QwtScaleWidget(QWidget):
             self.layoutScale()
     
     def colorMap(self):
+        """
+        :return: Color map
+        
+        .. seealso::
+        
+            :py:meth:`setColorMap()`, :py:meth:`colorBarInterval()`
+        """
         return self.__data.colorBar.colorMap
 

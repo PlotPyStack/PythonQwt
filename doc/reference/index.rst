@@ -17,8 +17,13 @@ Main `python-qwt` classes:
     plot_curve
     plot_directpainter
     plot_grid
-    plot_histogram
     plot_layout
     plot_marker
     plot_renderer
     plot_seriesitem
+    scale_div
+    scale_draw
+    scale_engine
+    scale_widget
+    series_data
+    toqimage

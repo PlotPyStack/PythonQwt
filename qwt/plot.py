@@ -1579,7 +1579,6 @@ class QwtPlotItem_PrivateData(object):
         self.attributes = 0
         self.interests = 0
         self.renderHints = 0
-        self.renderThreadCount = 1
         self.z = 0.
         self.xAxis = QwtPlot.xBottom
         self.yAxis = QwtPlot.yLeft
@@ -1873,32 +1872,6 @@ class QwtPlotItem(object):
             :py:meth:`setRenderHint()`
         """
         return bool(self.__data.renderHints & hint)
-    
-    def setRenderThreadCount(self, numThreads):
-        """
-        On multi core systems rendering of certain plot item 
-        ( f.e `QwtPlotRasterItem` ) can be done in parallel in 
-        several threads.
-
-        The default setting is set to 1.
-        
-        :param int numThreads: Number of threads to be used for rendering.
-
-        If numThreads is set to 0, the system specific 
-        ideal thread count is used.
-        
-        The default thread count is 1 ( = no additional threads )
-        """
-        self.__data.renderThreadCount = numThreads
-    
-    def renderThreadCount(self):
-        """
-        :return: Number of threads to be used for rendering.
-        
-        If numThreads() is set to 0, the system specific
-        ideal thread count is used.
-        """
-        return self.__data.renderThreadCount
     
     def setLegendIconSize(self, size):
         """

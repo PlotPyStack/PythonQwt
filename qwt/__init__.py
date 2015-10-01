@@ -45,12 +45,10 @@ from qwt.toqimage import array_to_qimage as toQImage
 from qwt.scale_div import QwtScaleDiv
 from qwt.scale_draw import QwtScaleDraw
 from qwt.scale_draw import QwtAbstractScaleDraw
-from qwt.series_data import QwtIntervalSeriesData
-from qwt.sample import QwtIntervalSample
 from qwt.painter import QwtPainter
 from qwt.legend_data import QwtLegendData
 
-from qwt.point_data import QwtPointArrayData
+from qwt.series_data import QwtPointArrayData
 
 from qwt.plot_renderer import QwtPlotRenderer
 

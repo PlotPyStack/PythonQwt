@@ -5,12 +5,29 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtScaleMap
+-----------
+
+.. autoclass:: QwtScaleMap
+   :members:
+"""
+
 from qwt.math import qwtFuzzyCompare
 
 from qwt.qt.QtCore import QRectF, QPointF
 
 
 class QwtScaleMap(object):
+    """
+    A scale map
+
+    `QwtScaleMap` offers transformations from the coordinate system
+    of a scale into the linear coordinate system of a paint device 
+    and vice versa.
+    
+    The scale and paint device intervals are both set to [0,1].
+    """
     def __init__(self, *args):
         self.__transform = None # QwtTransform
         self.__s1 = 0.
@@ -51,46 +68,107 @@ class QwtScaleMap(object):
                self.__ts1 == other.__ts1
 
     def s1(self):
+        """
+        :return: First border of the scale interval
+        """
         return self.__s1
         
     def s2(self):
+        """
+        :return: Second border of the scale interval
+        """
         return self.__s2
         
     def p1(self):
+        """
+        :return: First border of the paint interval
+        """
         return self.__p1
         
     def p2(self):
+        """
+        :return: Second border of the paint interval
+        """
         return self.__p2
     
     def pDist(self):
+        """
+        :return: `abs(p2() - p1())`
+        """
         return abs(self.__p2 - self.__p1)
         
     def sDist(self):
+        """
+        :return: `abs(s2() - s1())`
+        """
         return abs(self.__s2 - self.__s1)
 
     def transform_scalar(self, s):
+        """
+        Transform a point related to the scale interval into an point
+        related to the interval of the paint device
+
+        :param float s: Value relative to the coordinates of the scale
+        :return: Transformed value
+        
+        .. seealso::
+        
+            :py:meth:`invTransform_scalar()`
+        """
         if self.__transform:
             s = self.__transform.transform(s)
         return self.__p1 + (s - self.__ts1)*self.__cnv
     
     def invTransform_scalar(self, p):
+        """
+        Transform an paint device value into a value in the
+        interval of the scale.
+
+        :param float p: Value relative to the coordinates of the paint device
+        :return: Transformed value
+        
+        .. seealso::
+        
+            :py:meth:`transform_scalar()`
+        """
         s = self.__ts1 + ( p - self.__p1 ) / self.__cnv
         if self.__transform:
             s = self.__transform.invTransform(s)
         return s
     
     def isInverting(self):
+        """
+        :return: True, when ( p1() < p2() ) != ( s1() < s2() )
+        """
         return ( self.__p1 < self.__p2 ) != ( self.__s1 < self.__s2 )
     
     def setTransformation(self, transform):
+        """
+        Initialize the map with a transformation
+        
+        :param qwt.transform.QwtTransform transform: Transformation
+        """
         if self.__transform != transform:
             self.__transform = transform
         self.setScaleInterval(self.__s1, self.__s2)
     
     def transformation(self):
+        """
+        :return: the transformation
+        """
         return self.__transform
     
     def setScaleInterval(self, s1, s2):
+        """
+        Specify the borders of the scale interval
+
+        :param float s1: first border
+        :param float s2: second border
+        
+        .. warning::
+        
+            Scales might be aligned to transformation depending boundaries
+        """
         self.__s1 = s1
         self.__s2 = s2
         if self.__transform:
@@ -99,6 +177,12 @@ class QwtScaleMap(object):
         self.updateFactor()
 
     def setPaintInterval(self, p1, p2):
+        """
+        Specify the borders of the paint device interval
+
+        :param float p1: first border
+        :param float p2: second border
+        """
         self.__p1 = p1
         self.__p2 = p2
         self.updateFactor()
@@ -114,11 +198,36 @@ class QwtScaleMap(object):
             self.__cnv = (self.__p2 - self.__p1)/(ts2 - self.__ts1)
     
     def transform(self, *args):
-        """Transform from scale to paint coordinates
+        """
+        Transform a rectangle from scale to paint coordinates
         
+        .. py:method:: transform(scalar)
+        
+            :param float scalar: Scalar
+        
+        .. py:method:: transform(xMap, yMap, rect)
+        
+            Transform a rectangle from scale to paint coordinates
+        
+            :param qwt.scale_map.QwtScaleMap xMap: X map
+            :param qwt.scale_map.QwtScaleMap yMap: Y map
+            :param QRectF rect: Rectangle in paint coordinates
+        
+        .. py:method:: transform(xMap, yMap, pos)
+        
+            Transform a point from scale to paint coordinates
+        
+            :param qwt.scale_map.QwtScaleMap xMap: X map
+            :param qwt.scale_map.QwtScaleMap yMap: Y map
+            :param QPointF pos: Position in scale coordinates
+            
         Scalar: scalemap.transform(scalar)
         Point (QPointF): scalemap.transform(xMap, yMap, pos)
         Rectangle (QRectF): scalemap.transform(xMap, yMap, rect)
+        
+        .. seealso::
+        
+            :py:meth:`invTransform()`
         """
         if len(args) == 1:
             # Scalar transform

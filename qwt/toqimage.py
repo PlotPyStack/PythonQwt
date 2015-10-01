@@ -3,13 +3,26 @@
 # Licensed under the terms of the MIT License
 # (see LICENSE file for more details)
 
+"""
+NumPy array to QImage
+---------------------
+
+.. autofunction:: array_to_qimage
+"""
+
 from qwt.qt.QtGui import QImage
 
 import numpy as np
 
 
 def array_to_qimage(arr, copy=False):
-    """Convert NumPy array to QImage object"""
+    """
+    Convert NumPy array to QImage object
+    
+    :param numpy.array arr: NumPy array
+    :param bool copy: if True, make a copy of the array
+    :return: QImage object
+    """
     # https://gist.githubusercontent.com/smex/5287589/raw/toQImage.py
     if arr is None:
         return QImage()

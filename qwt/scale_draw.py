@@ -5,6 +5,20 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtAbstractScaleDraw
+--------------------
+
+.. autoclass:: QwtAbstractScaleDraw
+   :members:
+
+QwtScaleDraw
+------------
+
+.. autoclass:: QwtScaleDraw
+   :members:
+"""
+
 from qwt.scale_div import QwtScaleDiv
 from qwt.scale_map import QwtScaleMap
 from qwt.text import QwtText
@@ -39,47 +53,182 @@ class QwtAbstractScaleDraw_PrivateData(object):
         
 
 class QwtAbstractScaleDraw(object):
+    """
+    A abstract base class for drawing scales
+
+    `QwtAbstractScaleDraw` can be used to draw linear or logarithmic scales.
+    
+    After a scale division has been specified as a `QwtScaleDiv` object
+    using `setScaleDiv()`, the scale can be drawn with the `draw()` member.
+    
+    Scale components:
+    
+      * `QwtAbstractScaleDraw.Backbone`: Backbone = the line where the ticks are located
+      * `QwtAbstractScaleDraw.Ticks`: Ticks
+      * `QwtAbstractScaleDraw.Labels`: Labels
+      
+    .. py:class:: QwtAbstractScaleDraw()
+    
+        The range of the scale is initialized to [0, 100],
+        The spacing (distance between ticks and labels) is
+        set to 4, the tick lengths are set to 4,6 and 8 pixels      
+    """
+    
     # enum ScaleComponent
     Backbone = 0x01
     Ticks = 0x02
     Labels = 0x04
     def __init__(self):
         self.__data = QwtAbstractScaleDraw_PrivateData()
+
+    def extent(self, font):
+        """
+        Calculate the extent
+
+        The extent is the distance from the baseline to the outermost
+        pixel of the scale draw in opposite to its orientation.
+        It is at least minimumExtent() pixels.
+
+        :param QFont font: Font used for drawing the tick labels
+        :return: Number of pixels
+        
+        .. seealso::
+        
+            :py:meth:`setMinimumExtent()`, :py:meth:`minimumExtent()`
+        """
+        return 0.
+
+    def drawTick(self, painter, value, len_):
+        """
+        Draw a tick
+
+        :param QPainter painter: Painter
+        :param float value: Value of the tick
+        :param float len: Length of the tick
+
+        .. seealso::
+        
+            :py:meth:`drawBackbone()`, :py:meth:`drawLabel()`
+        """
+        pass
+
+    def drawBackbone(self, painter):
+        """
+        Draws the baseline of the scale
+        
+        :param QPainter painter: Painter
+
+        .. seealso::
+        
+            :py:meth:`drawTick()`, :py:meth:`drawLabel()`
+        """
+        pass
+
+    def drawLabel(self, painter, value):
+        """
+        Draws the label for a major scale tick
+        
+        :param QPainter painter: Painter
+        :param float value: Value
+
+        .. seealso::
+        
+            :py:meth:`drawTick()`, :py:meth:`drawBackbone()`
+        """
+        pass
     
     def enableComponent(self, component, enable):
+        """
+        En/Disable a component of the scale
+
+        :param int component: Scale component
+        :param bool enable: On/Off
+        
+        .. seealso::
+        
+            :py:meth:`hasComponent()`
+        """
         if enable:
             self.__data.components |= component
         else:
             self.__data.components &= ~component
     
     def hasComponent(self, component):
+        """
+        Check if a component is enabled
+
+        :param int component: Component type
+        :return: True, when component is enabled
+        
+        .. seealso::
+        
+            :py:meth:`enableComponent()`
+        """
         return self.__data.components & component
     
     def setScaleDiv(self, scaleDiv):
+        """
+        Change the scale division
+        
+        :param qwt.scale_div.QwtScaleDiv scaleDiv: New scale division
+        """
         self.__data.scaleDiv = scaleDiv
         self.__data.map.setScaleInterval(scaleDiv.lowerBound(),
                                          scaleDiv.upperBound())
         self.__data.labelCache.clear()
     
     def setTransformation(self, transformation):
+        """
+        Change the transformation of the scale
+
+        :param qwt.transform.QwtTransform transformation: New scale transformation
+        """
         self.__data.map.setTransformation(transformation)
     
     def scaleMap(self):
+        """
+        :return: Map how to translate between scale and pixel values
+        """
         return self.__data.map
     
     def scaleDiv(self):
+        """
+        :return: scale division
+        """
         return self.__data.scaleDiv
     
     def setPenWidth(self, width):
+        """
+        Specify the width of the scale pen
+        
+        :param int width: Pen width
+        
+        .. seealso::
+        
+            :py:meth:`penWidth()`
+        """
         if width < 0:
             width = 0
         if width != self.__data.penWidth:
             self.__data.penWidth = width
 
     def penWidth(self):
+        """
+        :return: Scale pen width
+        
+        .. seealso::
+        
+            :py:meth:`setPenWidth()`
+        """
         return self.__data.penWidth
     
     def draw(self, painter, palette):
+        """
+        Draw the scale
+        
+        :param QPainter painter: The painter
+        :param QPalette palette: Palette, text color is used for the labels, foreground color for ticks and backbone
+        """
         painter.save()
         
         pen = painter.pen()
@@ -124,22 +273,80 @@ class QwtAbstractScaleDraw(object):
         painter.restore()
         
     def setSpacing(self, spacing):
+        """
+        Set the spacing between tick and labels
+
+        The spacing is the distance between ticks and labels.
+        The default spacing is 4 pixels.
+        
+        :param float spacing: Spacing
+        
+        .. seealso::
+        
+            :py:meth:`spacing()`
+        """
         if spacing < 0:
             spacing = 0
         self.__data.spacing = spacing
     
     def spacing(self):
+        """
+        Get the spacing
+
+        The spacing is the distance between ticks and labels.
+        The default spacing is 4 pixels.
+        
+        :return: Spacing
+        
+        .. seealso::
+        
+            :py:meth:`setSpacing()`
+        """
         return self.__data.spacing
     
     def setMinimumExtent(self, minExtent):
+        """
+        Set a minimum for the extent
+
+        The extent is calculated from the components of the
+        scale draw. In situations, where the labels are
+        changing and the layout depends on the extent (f.e scrolling
+        a scale), setting an upper limit as minimum extent will
+        avoid jumps of the layout.
+        
+        :param float minExtent: Minimum extent
+        
+        .. seealso::
+        
+            :py:meth:`extent()`, :py:meth:`minimumExtent()`
+        """
         if minExtent < 0.:
             minExtent = 0.
         self.__data.minExtent = minExtent
     
     def minimumExtent(self):
+        """
+        Get the minimum extent
+        
+        :return: Minimum extent
+        
+        .. seealso::
+        
+            :py:meth:`extent()`, :py:meth:`setMinimumExtent()`
+        """
         return self.__data.minExtent
         
     def setTickLength(self, tickType, length):
+        """
+        Set the length of the ticks
+        
+        :param int tickType: Tick type
+        :param float length: New length
+        
+        .. warning::
+        
+            the length is limited to [0..1000]
+        """
         if tickType < QwtScaleDiv.MinorTick or\
            tickType > QwtScaleDiv.MajorTick:
             return
@@ -151,21 +358,60 @@ class QwtAbstractScaleDraw(object):
         self.__data.tickLength[tickType] = length
     
     def tickLength(self, tickType):
+        """
+        :return: Length of the ticks
+        
+        .. seealso::
+        
+            :py:meth:`setTickLength()`, :py:meth:`maxTickLength()`
+        """
         if tickType < QwtScaleDiv.MinorTick or\
            tickType > QwtScaleDiv.MajorTick:
             return 0
         return self.__data.tickLength[tickType]
     
     def maxTickLength(self):
+        """
+        :return: Length of the longest tick
+        
+        Useful for layout calculations
+        
+        .. seealso::
+        
+            :py:meth:`tickLength()`, :py:meth:`setTickLength()`
+        """
         length = 0.
         for tickType in range(QwtScaleDiv.NTickTypes):
             length = max([length, self.__data.tickLength[tickType]])
         return length
     
     def label(self, value):
+        """
+        Convert a value into its representing label
+
+        The value is converted to a plain text using
+        `QLocale().toString(value)`.
+        This method is often overloaded by applications to have individual
+        labels.
+        
+        :param float value: Value
+        :return: Label string
+        """
         return QLocale().toString(value)
     
     def tickLabel(self, font, value):
+        """
+        Convert a value into its representing label and cache it.
+
+        The conversion between value and label is called very often
+        in the layout and painting code. Unfortunately the
+        calculation of the label sizes might be slow (really slow
+        for rich text in Qt4), so it's necessary to cache the labels.
+        
+        :param QFont font: Font
+        :param float value: Value
+        :return: Tick label
+        """
         lbl = self.__data.labelCache.get(value)
         if lbl is None:
             lbl = QwtText(self.label(value))
@@ -174,6 +420,16 @@ class QwtAbstractScaleDraw(object):
             lbl.textSize(font)
             self.__data.labelCache[value] = lbl
         return lbl
+        
+    def invalidateCache(self):
+        """
+        Invalidate the cache used by `tickLabel()`
+
+        The cache is invalidated, when a new `QwtScaleDiv` is set. If
+        the labels need to be changed. while the same `QwtScaleDiv` is set,
+        `invalidateCache()` needs to be called manually.
+        """
+        self.__data.labelCache.clear()
             
 
 
@@ -188,6 +444,32 @@ class QwtScaleDraw_PrivateData(object):
 
 
 class QwtScaleDraw(QwtAbstractScaleDraw):
+    """
+    A class for drawing scales
+
+    QwtScaleDraw can be used to draw linear or logarithmic scales.
+    A scale has a position, an alignment and a length, which can be specified .
+    The labels can be rotated and aligned
+    to the ticks using `setLabelRotation()` and `setLabelAlignment()`.
+
+    After a scale division has been specified as a QwtScaleDiv object
+    using `QwtAbstractScaleDraw.setScaleDiv(scaleDiv)`,
+    the scale can be drawn with the `QwtAbstractScaleDraw.draw()` member.
+    
+    Alignment of the scale draw:
+    
+      * `QwtScaleDraw.BottomScale`: The scale is below
+      * `QwtScaleDraw.TopScale`: The scale is above
+      * `QwtScaleDraw.LeftScale`: The scale is left
+      * `QwtScaleDraw.RightScale`: The scale is right
+      
+    .. py:class:: QwtAbstractScaleDraw()
+    
+        The range of the scale is initialized to [0, 100],
+        The position is at (0, 0) with a length of 100.
+        The orientation is `QwtAbstractScaleDraw.Bottom`.
+    """
+    
     # enum Alignment
     BottomScale, TopScale, LeftScale, RightScale = list(range(4))
     Flags = (
@@ -203,18 +485,69 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         self.setLength(100)
         
     def alignment(self):
+        """
+        :return: Alignment of the scale
+        
+        .. seealso::
+        
+            :py:meth:`setAlignment()`
+        """
         return self.__data.alignment
     
     def setAlignment(self, align):
+        """
+        Set the alignment of the scale
+        
+        :param int align: Alignment of the scale
+
+        Alignment of the scale draw:
+        
+          * `QwtScaleDraw.BottomScale`: The scale is below
+          * `QwtScaleDraw.TopScale`: The scale is above
+          * `QwtScaleDraw.LeftScale`: The scale is left
+          * `QwtScaleDraw.RightScale`: The scale is right
+          
+         The default alignment is `QwtScaleDraw.BottomScale`
+        
+        .. seealso::
+        
+            :py:meth:`alignment()`
+        """
         self.__data.alignment = align
     
     def orientation(self):
+        """
+        Return the orientation
+
+        TopScale, BottomScale are horizontal (`Qt.Horizontal`) scales,
+        LeftScale, RightScale are vertical (`Qt.Vertical`) scales.
+        
+        :return: Orientation of the scale
+        
+        .. seealso::
+        
+            :py:meth:`alignment()`
+        """
         if self.__data.alignment in (self.TopScale, self.BottomScale):
             return Qt.Horizontal
         elif self.__data.alignment in (self.LeftScale, self.RightScale):
             return Qt.Vertical
     
     def getBorderDistHint(self, font):
+        """
+        Determine the minimum border distance
+
+        This member function returns the minimum space
+        needed to draw the mark labels at the scale's endpoints.
+        
+        :param QFont font: Font
+        :return: tuple `(start, end)`
+
+        Returned tuple:
+        
+            * start: Start border distance
+            * end: End border distance
+        """
         start, end = 0, 1.
         
         if not self.hasComponent(QwtAbstractScaleDraw.Labels):
@@ -257,6 +590,17 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return start, end
     
     def minLabelDist(self, font):
+        """
+        Determine the minimum distance between two labels, that is necessary
+        that the texts don't overlap.
+
+        :param QFont font: Font
+        :return: The maximum width of a label
+        
+        .. seealso::
+        
+            :py:meth:`getBorderDistHint()`
+        """
         if not self.hasComponent(QwtAbstractScaleDraw.Labels):
             return 0
         
@@ -314,6 +658,21 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return np.ceil(labelDist)
         
     def extent(self, font):
+        """
+        Calculate the width/height that is needed for a
+        vertical/horizontal scale.
+
+        The extent is calculated from the pen width of the backbone,
+        the major tick length, the spacing and the maximum width/height
+        of the labels.
+
+        :param QFont font: Font used for painting the labels
+        :return: Extent
+        
+        .. seealso::
+        
+            :py:meth:`minLength()`
+        """
         d = 0.
         if self.hasComponent(QwtAbstractScaleDraw.Labels):
             if self.orientation() == Qt.Vertical:
@@ -330,6 +689,16 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return max([d, self.minimumExtent()])
     
     def minLength(self, font):
+        """
+        Calculate the minimum length that is needed to draw the scale
+
+        :param QFont font: Font used for painting the labels
+        :return: Minimum length that is needed to draw the scale
+        
+        .. seealso::
+        
+            :py:meth:`extent()`
+        """
         startDist, endDist = self.getBorderDistHint(font)
         sd = self.scaleDiv()
         minorCount = len(sd.ticks(QwtScaleDiv.MinorTick))+\
@@ -345,6 +714,15 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return startDist + endDist + max([lengthForLabels, lengthForTicks])
     
     def labelPosition(self, value):
+        """
+        Find the position, where to paint a label
+
+        The position has a distance that depends on the length of the ticks 
+        in direction of the `alignment()`.
+
+        :param float value: Value
+        :return: Position, where to paint a label
+        """
         tval = self.scaleMap().transform(value)
         dist = self.spacing()
         if self.hasComponent(QwtAbstractScaleDraw.Backbone):
@@ -370,6 +748,17 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return QPointF(px, py)
     
     def drawTick(self, painter, value, len_):
+        """
+        Draw a tick
+
+        :param QPainter painter: Painter
+        :param float value: Value of the tick
+        :param float len: Length of the tick
+        
+        .. seealso::
+        
+            :py:meth:`drawBackbone()`, :py:meth:`drawLabel()`
+        """
         if len_ <= 0:
             return
         
@@ -414,6 +803,15 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             QwtPainter.drawLine(painter, tval, y1, tval, y2)
         
     def drawBackbone(self, painter):
+        """
+        Draws the baseline of the scale
+
+        :param QPainter painter: Painter
+        
+        .. seealso::
+        
+            :py:meth:`drawTick()`, :py:meth:`drawLabel()`
+        """
         doAlign = QwtPainter.roundingAlignment(painter)
         pos = self.__data.pos
         len_ = self.__data.len
@@ -449,6 +847,48 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             QwtPainter.drawLine(painter, pos.x(), y, pos.x()+len_, y)
         
     def move(self, *args):
+        """
+        Move the position of the scale
+        
+        The meaning of the parameter pos depends on the alignment:
+        
+          * `QwtScaleDraw.LeftScale`:
+          
+            The origin is the topmost point of the backbone. The backbone is a 
+            vertical line. Scale marks and labels are drawn at the left of the 
+            backbone.
+            
+          * `QwtScaleDraw.RightScale`:
+          
+            The origin is the topmost point of the backbone. The backbone is a 
+            vertical line. Scale marks and labels are drawn at the right of 
+            the backbone.
+          
+          * `QwtScaleDraw.TopScale`:
+          
+            The origin is the leftmost point of the backbone. The backbone is 
+            a horizontal line. Scale marks and labels are drawn above the 
+            backbone.
+          
+          * `QwtScaleDraw.BottomScale`:
+          
+            The origin is the leftmost point of the backbone. The backbone is 
+            a horizontal line Scale marks and labels are drawn below the 
+            backbone.
+        
+        .. py:method:: move(x, y)
+        
+            :param float x: X coordinate
+            :param float y: Y coordinate
+        
+        .. py:method:: move(pos)
+        
+            :param QPointF pos: position
+        
+        .. seealso::
+        
+            :py:meth:`pos()`, :py:meth:`setLength()`
+        """
         if len(args) == 2:
             x, y = args
             self.move(QPointF(x, y))
@@ -461,9 +901,27 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
                             % (self.__class__.__name__, len(args)))
     
     def pos(self):
+        """
+        :return: Origin of the scale
+        
+        .. seealso::
+        
+            :py:meth:`pos()`, :py:meth:`setLength()`
+        """
         return self.__data.pos
     
     def setLength(self, length):
+        """
+        Set the length of the backbone.
+
+        The length doesn't include the space needed for overlapping labels.
+
+        :param float length: Length of the backbone
+        
+        .. seealso::
+        
+            :py:meth:`move()`, :py:meth:`minLabelDist()`
+        """
         if length >= 0 and length < 10:
             length = 10
         if length < 0 and length > -10:
@@ -472,9 +930,27 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         self.updateMap()
     
     def length(self):
+        """
+        :return: the length of the backbone
+        
+        .. seealso::
+        
+            :py:meth:`setLength()`, :py:meth:`pos()`
+        """
         return self.__data.len
     
     def drawLabel(self, painter, value):
+        """
+        Draws the label for a major scale tick
+
+        :param QPainter painter: Painter
+        :param float value: Value
+        
+        .. seealso::
+        
+            :py:meth:`drawTick()`, :py:meth:`drawBackbone()`, 
+            :py:meth:`boundingLabelRect()`
+        """
         lbl = self.tickLabel(painter.font(), value)
         if lbl is None or lbl.isEmpty():
             return
@@ -487,6 +963,20 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         painter.restore()
     
     def boundingLabelRect(self, font, value):
+        """
+        Find the bounding rectangle for the label.
+
+        The coordinates of the rectangle are absolute (calculated from 
+        `pos()`) in direction of the tick.
+
+        :param QFont font: Font used for painting
+        :param float value: Value
+        :return: Bounding rectangle
+        
+        .. seealso::
+        
+            :py:meth:`labelRect()`
+        """
         lbl = self.tickLabel(font, value)
         if lbl.isEmpty():
             return QRect()
@@ -496,6 +986,18 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return transform.mapRect(QRect(QPoint(0, 0), labelSize.toSize()))
     
     def labelTransformation(self, pos, size):
+        """
+        Calculate the transformation that is needed to paint a label
+        depending on its alignment and rotation.
+
+        :param QPointF pos: Position where to paint the label
+        :param QSizeF size: Size of the label
+        :return: Transformation matrix
+        
+        .. seealso::
+        
+            :py:meth:`setLabelAlignment()`, :py:meth:`setLabelRotation()`
+        """
         transform = QTransform()
         transform.translate(pos.x(), pos.y())
         transform.rotate(self.labelRotation())
@@ -523,6 +1025,15 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return transform
     
     def labelRect(self, font, value):
+        """
+        Find the bounding rectangle for the label. The coordinates of
+        the rectangle are relative to spacing + tick length from the backbone
+        in direction of the tick.
+
+        :param QFont font: Font used for painting
+        :param float value: Value
+        :return: Bounding rectangle that is needed to draw a label
+        """
         lbl = self.tickLabel(font, value)
         if not lbl or lbl.isEmpty():
             return QRectF(0., 0., 0., 0.)
@@ -534,21 +1045,91 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         return br
     
     def labelSize(self, font, value):
+        """
+        Calculate the size that is needed to draw a label
+
+        :param QFont font: Label font
+        :param float value: Value
+        :return: Size that is needed to draw a label
+        """
         return self.labelRect(font, value).size()
     
     def setLabelRotation(self, rotation):
+        """
+        Rotate all labels.
+
+        When changing the rotation, it might be necessary to
+        adjust the label flags too. Finding a useful combination is
+        often the result of try and error.
+
+        :param float rotation: Angle in degrees. When changing the label rotation, the label flags often needs to be adjusted too.
+        
+        .. seealso::
+        
+            :py:meth:`setLabelAlignment()`, :py:meth:`labelRotation()`, 
+            :py:meth:`labelAlignment()`
+        """
         self.__data.labelRotation = rotation
     
     def labelRotation(self):
+        """
+        :return: the label rotation
+        
+        .. seealso::
+        
+            :py:meth:`setLabelRotation()`, :py:meth:`labelAlignment()`
+        """
         return self.__data.labelRotation
     
     def setLabelAlignment(self, alignment):
+        """
+        Change the label flags
+
+        Labels are aligned to the point tick length + spacing away from the 
+        backbone.
+
+        The alignment is relative to the orientation of the label text.
+        In case of an flags of 0 the label will be aligned
+        depending on the orientation of the scale:
+        
+            * `QwtScaleDraw.TopScale`: `Qt.AlignHCenter | Qt.AlignTop`
+            * `QwtScaleDraw.BottomScale`: `Qt.AlignHCenter | Qt.AlignBottom`
+            * `QwtScaleDraw.LeftScale`: `Qt.AlignLeft | Qt.AlignVCenter`
+            * `QwtScaleDraw.RightScale`: `Qt.AlignRight | Qt.AlignVCenter`
+
+        Changing the alignment is often necessary for rotated labels.
+
+        :param Qt.Alignment alignment Or'd `Qt.AlignmentFlags`
+        
+        .. seealso::
+        
+            :py:meth:`setLabelRotation()`, :py:meth:`labelRotation()`, 
+            :py:meth:`labelAlignment()`
+            
+        .. warning::
+        
+            The various alignments might be confusing. The alignment of the 
+            label is not the alignment of the scale and is not the alignment 
+            of the flags (`QwtText.flags()`) returned from 
+            `QwtAbstractScaleDraw.label()`.
+        """
         self.__data.labelAlignment = alignment
     
     def labelAlignment(self):
+        """
+        :return: the label flags
+        
+        .. seealso::
+        
+            :py:meth:`setLabelAlignment()`, :py:meth:`labelRotation()`
+        """
         return self.__data.labelAlignment
     
     def maxLabelWidth(self, font):
+        """
+        :param QFont font: Font
+        :return: the maximum width of a label
+        """
         ticks = self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
         if not ticks:
             return 0
@@ -556,6 +1137,10 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
                             for v in ticks if self.scaleDiv().contains(v)]))
     
     def maxLabelHeight(self, font):
+        """
+        :param QFont font: Font
+        :return: the maximum height of a label
+        """
         ticks = self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
         if not ticks:
             return 0

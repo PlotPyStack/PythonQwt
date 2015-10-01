@@ -5,6 +5,26 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtScaleEngine
+--------------
+
+.. autoclass:: QwtScaleEngine
+   :members:
+
+QwtLinearScaleEngine
+--------------------
+
+.. autoclass:: QwtLinearScaleEngine
+   :members:
+
+QwtLogScaleEngine
+-----------------
+
+.. autoclass:: QwtLogScaleEngine
+   :members:
+"""
+
 from __future__ import division
 
 from qwt.interval import QwtInterval
@@ -34,32 +54,75 @@ def qwtPowInterval(base, interval):
                        np.power(base, interval.maxValue()))
 
 def qwtStepSize(intervalSize, maxSteps, base):
+    """this version often doesn't find the best ticks: f.e for 15: 5, 10"""
     minStep = divideInterval(intervalSize, maxSteps, base)
     if minStep != 0.:
+        #  # ticks per interval
         numTicks = np.ceil(abs(intervalSize/minStep))-1
+        #  Do the minor steps fit into the interval?
         if qwtFuzzyCompare((numTicks+1)*abs(minStep),
                            abs(intervalSize), intervalSize) > 0:
+            #  The minor steps doesn't fit into the interval
             return .5*intervalSize
     return minStep
 
 EPS = 1.0e-6
 
 def ceilEps(value, intervalSize):
+    """
+    Ceil a value, relative to an interval
+
+    :param float value: Value to be ceiled
+    :param float intervalSize: Interval size
+    :return: Rounded value
+    
+    .. seealso::
+    
+        :py:func:`qwt.scale_engine.floorEps()`
+    """
     eps = EPS*intervalSize
     value = (value-eps)/intervalSize
     return np.ceil(value)*intervalSize
 
 def floorEps(value, intervalSize):
+    """
+    Floor a value, relative to an interval
+
+    :param float value: Value to be floored
+    :param float intervalSize: Interval size
+    :return: Rounded value
+    
+    .. seealso::
+    
+        :py:func:`qwt.scale_engine.ceilEps()`
+    """
     eps = EPS*intervalSize
     value = (value+eps)/intervalSize
     return np.floor(value)*intervalSize
 
 def divideEps(intervalSize, numSteps):
+    """
+    Divide an interval into steps
+    
+    `stepSize = (intervalSize - intervalSize * 10**-6) / numSteps`
+
+    :param float intervalSize: Interval size
+    :param float numSteps: Number of steps
+    :return: Step size
+    """
     if numSteps == 0. or intervalSize == 0.:
         return 0.
     return (intervalSize-(EPS*intervalSize))/numSteps
 
 def divideInterval(intervalSize, numSteps, base):
+    """
+    Calculate a step size for a given interval
+    
+    :param float intervalSize: Interval size
+    :param float numSteps: Number of steps
+    :param int base: Base for the division (usually 10)
+    :return: Calculated step size
+    """
     if numSteps <= 0:
         return 0.
     v = divideEps(intervalSize, numSteps)
@@ -91,6 +154,29 @@ class QwtScaleEngine_PrivateData(object):
 
 
 class QwtScaleEngine(object):
+    """
+    Base class for scale engines.
+
+    A scale engine tries to find "reasonable" ranges and step sizes
+    for scales.
+
+    The layout of the scale can be varied with `setAttribute()`.
+
+    `python-qwt` offers implementations for logarithmic and linear scales. 
+    
+    Layout attributes:
+    
+      * `QwtScaleEngine.NoAttribute`: No attributes
+      * `QwtScaleEngine.IncludeReference`: Build a scale which includes the 
+        `reference()` value
+      * `QwtScaleEngine.Symmetric`: Build a scale which is symmetric to the 
+        `reference()` value
+      * `QwtScaleEngine.Floating`: The endpoints of the scale are supposed to 
+        be equal the outmost included values plus the specified margins (see 
+        `setMargins()`). If this attribute is *not* set, the endpoints of the 
+        scale will be integer multiples of the step size.
+      * `QwtScaleEngine.Inverted`: Turn the scale upside down
+    """
     
     # enum Attribute
     NoAttribute = 0x00
@@ -103,29 +189,129 @@ class QwtScaleEngine(object):
         self.__data = QwtScaleEngine_PrivateData()
         self.setBase(base)
     
+    def autoScale(self, maxNumSteps, x1, x2, stepSize):
+        """
+        Align and divide an interval
+
+        :param int maxNumSteps: Max. number of steps
+        :param float x1: First limit of the interval (In/Out)
+        :param float x2: Second limit of the interval (In/Out)
+        :param float stepSize: Step size
+        :return: tuple (x1, x2, stepSize)
+        """
+        pass
+    
+    def divideScale(self, x1, x2, maxMajorSteps, maxMinorSteps, stepSize=0.):
+        """
+        Calculate a scale division
+
+        :param float x1: First interval limit
+        :param float x2: Second interval limit
+        :param int maxMajorSteps: Maximum for the number of major steps
+        :param int maxMinorSteps: Maximum number of minor steps
+        :param float stepSize: Step size. If stepSize == 0.0, the scaleEngine calculates one
+        :return: Calculated scale division
+        """
+        pass
+        
     def setTransformation(self, transform):
+        """
+        Assign a transformation
+
+        :param qwt.transform.QwtTransform transform: Transformation
+
+        The transformation object is used as factory for clones
+        that are returned by `transformation()`
+
+        The scale engine takes ownership of the transformation.
+
+        .. seealso::
+        
+            :py:meth:`QwtTransform.copy()`, :py:meth:`transformation()`
+        """
         assert transform is None or isinstance(transform, QwtTransform)
         if transform != self.__data.transform:
             self.__data.transform = transform
     
     def transformation(self):
+        """
+        Create and return a clone of the transformation 
+        of the engine. When the engine has no special transformation
+        None is returned, indicating no transformation.
+
+        :return: A clone of the transfomation
+        
+        .. seealso::
+            
+            :py:meth:`setTransformation()`
+        """
         if self.__data.transform:
             return self.__data.transform.copy()
     
     def lowerMargin(self):
+        """
+        :return: the margin at the lower end of the scale
+        
+        The default margin is 0.
+        
+        .. seealso::
+        
+            :py:meth:`setMargins()`
+        """
         return self.__data.lowerMargin
     
     def upperMargin(self):
+        """
+        :return: the margin at the upper end of the scale
+        
+        The default margin is 0.
+        
+        .. seealso::
+        
+            :py:meth:`setMargins()`
+        """
         return self.__data.upperMargin
     
     def setMargins(self, lower, upper):
+        """
+        Specify margins at the scale's endpoints
+
+        :param float lower: minimum distance between the scale's lower boundary and the smallest enclosed value
+        :param float upper: minimum distance between the scale's upper boundary and the greatest enclosed value
+        :return: A clone of the transfomation
+        
+        Margins can be used to leave a minimum amount of space between
+        the enclosed intervals and the boundaries of the scale.
+        
+        .. warning::
+        
+            `QwtLogScaleEngine` measures the margins in decades.
+        
+        .. seealso::
+            
+            :py:meth:`upperMargin()`, :py:meth:`lowerMargin()`
+        """
         self.__data.lowerMargin = max([lower, 0.])
         self.__data.upperMargin = max([upper, 0.])
     
     def divideInterval(self, intervalSize, numSteps):
+        """
+        Calculate a step size for a given interval
+        
+        :param float intervalSize: Interval size
+        :param float numSteps: Number of steps
+        :return: Step size
+        """
         return divideInterval(intervalSize, numSteps, self.__data.base)
     
     def contains(self, interval, value):
+        """
+        Check if an interval "contains" a value
+        
+        :param float intervalSize: Interval size
+        :param float value: Value
+        :return: True, when the value is inside the interval
+        """
         if not interval.isValid():
             return False
         elif qwtFuzzyCompare(value, interval.minValue(), interval.width()) < 0:
@@ -136,6 +322,13 @@ class QwtScaleEngine(object):
             return True
     
     def strip(self, ticks, interval):
+        """
+        Remove ticks from a list, that are not inside an interval
+        
+        :param list ticks: Tick list
+        :param qwt.interval.QwtInterval interval: Interval
+        :return: Stripped tick list
+        """
         if not interval.isValid() or not ticks:
             return []
         if self.contains(interval, ticks[0]) and\
@@ -145,6 +338,15 @@ class QwtScaleEngine(object):
                 if self.contains(interval, tick)]
     
     def buildInterval(self, value):
+        """
+        Build an interval around a value
+
+        In case of v == 0.0 the interval is [-0.5, 0.5],
+        otherwide it is [0.5 * v, 1.5 * v]
+        
+        :param float value: Initial value
+        :return: Calculated interval
+        """
         if value == 0.:
             delta = .5
         else:
@@ -156,38 +358,129 @@ class QwtScaleEngine(object):
         return QwtInterval(value-delta, value+delta)
     
     def setAttribute(self, attribute, on=True):
+        """
+        Change a scale attribute
+        
+        :param int attribute: Attribute to change
+        :param bool on: On/Off
+        :return: Calculated interval
+        
+        .. seealso::
+            
+            :py:meth:`testAttribute()`
+        """
         if on:
             self.__data.attributes |= attribute
         else:
             self.__data.attributes &= ~attribute
     
     def testAttribute(self, attribute):
+        """
+        :param int attribute: Attribute to be tested
+        :return: True, if attribute is enabled
+        
+        .. seealso::
+            
+            :py:meth:`setAttribute()`
+        """
         return self.__data.attributes & attribute
     
     def setAttributes(self, attributes):
+        """
+        Change the scale attribute
+        
+        :param attributes: Set scale attributes
+        
+        .. seealso::
+            
+            :py:meth:`attributes()`
+        """
         self.__data.attributes = attributes
     
     def attributes(self):
+        """
+        :return: Scale attributes
+        
+        .. seealso::
+            
+            :py:meth:`setAttributes()`, :py:meth:`testAttribute()`
+        """
         return self.__data.attributes
     
     def setReference(self, r):
+        """
+        Specify a reference point
+        
+        :param float r: new reference value
+        
+        The reference point is needed if options `IncludeReference` or
+        `Symmetric` are active. Its default value is 0.0.
+        """
         self.__data.referenceValue = r
     
     def reference(self):
+        """
+        :return: the reference value
+        
+        .. seealso::
+            
+            :py:meth:`setReference()`, :py:meth:`setAttribute()`
+        """
         return self.__data.referenceValue
     
     def setBase(self, base):
+        """
+        Set the base of the scale engine
+
+        While a base of 10 is what 99.9% of all applications need
+        certain scales might need a different base: f.e 2
+
+        The default setting is 10
+        
+        :param int base: Base of the engine
+        
+        .. seealso::
+            
+            :py:meth:`base()`
+        """
         self.__data.base = max([base, 2])
     
     def base(self):
+        """
+        :return: Base of the scale engine
+        
+        .. seealso::
+            
+            :py:meth:`setBase()`
+        """
         return self.__data.base
 
 
 class QwtLinearScaleEngine(QwtScaleEngine):
+    """
+    A scale engine for linear scales
+
+    The step size will fit into the pattern
+    \f$\left\{ 1,2,5\right\} \cdot 10^{n}\f$, where n is an integer.
+    """
+    
     def __init__(self, base=10):
         super(QwtLinearScaleEngine, self).__init__(base)
     
     def autoScale(self, maxNumSteps, x1, x2, stepSize):
+        """
+        Align and divide an interval
+
+        :param int maxNumSteps: Max. number of steps
+        :param float x1: First limit of the interval (In/Out)
+        :param float x2: Second limit of the interval (In/Out)
+        :param float stepSize: Step size
+        :return: tuple (x1, x2, stepSize)
+        
+        .. seealso::
+            
+            :py:meth:`setAttribute()`
+        """
         interval = QwtInterval(x1, x2)
         interval = interval.normalized()
         interval.setMinValue(interval.minValue()-self.lowerMargin())
@@ -210,6 +503,16 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         return x1, x2, stepSize
     
     def divideScale(self, x1, x2, maxMajorSteps, maxMinorSteps, stepSize=0.):
+        """
+        Calculate a scale division for an interval
+
+        :param float x1: First interval limit
+        :param float x2: Second interval limit
+        :param int maxMajorSteps: Maximum for the number of major steps
+        :param int maxMinorSteps: Maximum number of minor steps
+        :param float stepSize: Step size. If stepSize == 0.0, the scaleEngine calculates one
+        :return: Calculated scale division
+        """
         interval = QwtInterval(x1, x2).normalized()
         if interval.width() <= 0:
             return QwtScaleDiv()
@@ -228,6 +531,14 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         return scaleDiv
         
     def buildTicks(self, interval, stepSize, maxMinorSteps):
+        """
+        Calculate ticks for an interval
+        
+        :param qwt.interval.QwtInterval interval: Interval
+        :param float stepSize: Step size
+        :param int maxMinorSteps: Maximum number of minor steps
+        :return: Calculated ticks
+        """
         ticks = [[] for _i in range(QwtScaleDiv.NTickTypes)]
         boundingInterval = self.align(interval, stepSize)
         ticks[QwtScaleDiv.MajorTick] = self.buildMajorTicks(boundingInterval,
@@ -242,6 +553,13 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         return ticks
     
     def buildMajorTicks(self, interval, stepSize):
+        """
+        Calculate major ticks for an interval
+        
+        :param qwt.interval.QwtInterval interval: Interval
+        :param float stepSize: Step size
+        :return: Calculated ticks
+        """
         numTicks = min([round(interval.width()/stepSize)+1, 10000])
         ticks = [interval.minValue()]
         for i in range(1, int(numTicks-1)):
@@ -250,6 +568,13 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         return ticks
     
     def buildMinorTicks(self, ticks, maxMinorSteps, stepSize):
+        """
+        Calculate minor ticks for an interval
+        
+        :param list ticks: Major ticks (returned)
+        :param int maxMinorSteps: Maximum number of minor steps
+        :param float stepSize: Step size
+        """
         minStep = qwtStepSize(stepSize, maxMinorSteps, self.base())
         if minStep == 0.:
             return
@@ -269,6 +594,16 @@ class QwtLinearScaleEngine(QwtScaleEngine):
                     ticks[QwtScaleDiv.MinorTick] += [alignedValue]
     
     def align(self, interval, stepSize):
+        """
+        Align an interval to a step size
+
+        The limits of an interval are aligned that both are integer
+        multiples of the step size.
+        
+        :param qwt.interval.QwtInterval interval: Interval
+        :param float stepSize: Step size
+        :return: Aligned interval
+        """
         x1 = interval.minValue()
         x2 = interval.maxValue()
         if -DBL_MAX+stepSize <= x1:
@@ -283,11 +618,36 @@ class QwtLinearScaleEngine(QwtScaleEngine):
 
 
 class QwtLogScaleEngine(QwtScaleEngine):
+    """
+    A scale engine for logarithmic scales
+
+    The step size is measured in *decades*
+    and the major step size will be adjusted to fit the pattern
+    \f$\left\{ 1,2,3,5\right\} \cdot 10^{n}\f$, where n is a natural number
+    including zero.
+
+    .. warning::
+    
+        The step size as well as the margins are measured in *decades*.
+    """
     def __init__(self, base=10):
         super(QwtLogScaleEngine, self).__init__(base)
         self.setTransformation(QwtLogTransform())
         
     def autoScale(self, maxNumSteps, x1, x2, stepSize):
+        """
+        Align and divide an interval
+
+        :param int maxNumSteps: Max. number of steps
+        :param float x1: First limit of the interval (In/Out)
+        :param float x2: Second limit of the interval (In/Out)
+        :param float stepSize: Step size
+        :return: tuple (x1, x2, stepSize)
+        
+        .. seealso::
+            
+            :py:meth:`setAttribute()`
+        """
         if x1 > x2:
             x1, x2 = x2, x1
         logBase = self.base()
@@ -343,8 +703,20 @@ class QwtLogScaleEngine(QwtScaleEngine):
         if self.testAttribute(QwtScaleEngine.Inverted):
             x1, x2 = x2, x1
             stepSize = -stepSize
+
+        return x1, x2, stepSize
     
     def divideScale(self, x1, x2, maxMajorSteps, maxMinorSteps, stepSize=0.):
+        """
+        Calculate a scale division for an interval
+
+        :param float x1: First interval limit
+        :param float x2: Second interval limit
+        :param int maxMajorSteps: Maximum for the number of major steps
+        :param int maxMinorSteps: Maximum number of minor steps
+        :param float stepSize: Step size. If stepSize == 0.0, the scaleEngine calculates one
+        :return: Calculated scale division
+        """
         interval = QwtInterval(x1, x2).normalized()
         interval = interval.limited(LOG_MIN, LOG_MAX)
         
@@ -388,6 +760,14 @@ class QwtLogScaleEngine(QwtScaleEngine):
         return scaleDiv
     
     def buildTicks(self, interval, stepSize, maxMinorSteps):
+        """
+        Calculate ticks for an interval
+        
+        :param qwt.interval.QwtInterval interval: Interval
+        :param float stepSize: Step size
+        :param int maxMinorSteps: Maximum number of minor steps
+        :return: Calculated ticks
+        """
         ticks = [[] for _i in range(QwtScaleDiv.NTickTypes)]
         boundingInterval = self.align(interval, stepSize)
         ticks[QwtScaleDiv.MajorTick] = self.buildMajorTicks(boundingInterval,
@@ -399,6 +779,13 @@ class QwtLogScaleEngine(QwtScaleEngine):
         return ticks
     
     def buildMajorTicks(self, interval, stepSize):
+        """
+        Calculate major ticks for an interval
+        
+        :param qwt.interval.QwtInterval interval: Interval
+        :param float stepSize: Step size
+        :return: Calculated ticks
+        """
         width = qwtLogInterval(self.base(), interval).width()
         numTicks = min([int(round(width/stepSize))+1, 10000])
 
@@ -413,6 +800,13 @@ class QwtLogScaleEngine(QwtScaleEngine):
         return ticks
 
     def buildMinorTicks(self, ticks, maxMinorSteps, stepSize):
+        """
+        Calculate minor ticks for an interval
+        
+        :param list ticks: Major ticks (returned)
+        :param int maxMinorSteps: Maximum number of minor steps
+        :param float stepSize: Step size
+        """
         logBase = self.base()
         
         if stepSize < 1.1:
@@ -472,6 +866,16 @@ class QwtLogScaleEngine(QwtScaleEngine):
                         ticks[QwtScaleDiv.MinorTick] += [tick]
 
     def align(self, interval, stepSize):
+        """
+        Align an interval to a step size
+
+        The limits of an interval are aligned that both are integer
+        multiples of the step size.
+        
+        :param qwt.interval.QwtInterval interval: Interval
+        :param float stepSize: Step size
+        :return: Aligned interval
+        """
         intv = qwtLogInterval(self.base(), interval)
         
         x1 = floorEps(intv.minValue(), stepSize)

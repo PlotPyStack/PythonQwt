@@ -20,10 +20,9 @@ from qwt.point_mapper import QwtPointMapper
 from qwt.clipper import QwtClipper
 from qwt.math import qwtSqr
 from qwt.graphic import QwtGraphic
-from qwt.series_data import QwtPointSeriesData, QwtSeriesData
+from qwt.series_data import QwtSeriesData, QwtPointArrayData
 from qwt.series_store import QwtSeriesStore
 from qwt.plot_seriesitem import QwtPlotSeriesItem
-from qwt.point_data import QwtPointArrayData, QwtCPointerData
 from qwt.symbol import QwtSymbol
 from qwt.plot_directpainter import QwtPlotDirectPainter
 
@@ -81,7 +80,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     
     .. seealso::
     
-        :py:class:`qwt.series_data.QwtPointSeriesData()`, 
         :py:class:`qwt.symbol.QwtSymbol()`, 
         :py:class:`qwt.scale_map.QwtScaleMap()`
         
@@ -234,7 +232,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         self.__data = QwtPlotCurve_PrivateData()
         self.setItemAttribute(QwtPlotItem.Legend)
         self.setItemAttribute(QwtPlotItem.AutoScale)
-        self.setData(QwtPointSeriesData())
+        self.setData(QwtPointArrayData())
         self.setZ(20.)
     
     def rtti(self):
@@ -680,9 +678,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             self.fillCurve(painter, xMap, yMap, canvasRect, points)
         elif self.__data.paintAttributes & self.ImageBuffer:
             image = mapper.toImage(xMap, yMap, self.data(), from_, to,
-                            self.__data.pen,
-                            painter.testRenderHint(QPainter.Antialiasing),
-                            self.renderThreadCount())
+                               self.__data.pen,
+                               painter.testRenderHint(QPainter.Antialiasing))
             painter.drawImage(canvasRect.toAlignedRect(), image)
         else:
             if doAlign:
@@ -994,7 +991,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
         .. py:method:: setSamples(samples):
         
-            Same as `setData(QwtPointSeriesData(samples))`
+            Same as `setData(QwtPointArrayData(samples))`
         
             :param samples: List/array of points
         
@@ -1010,14 +1007,13 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         .. seealso::
         
             :py:class:`qwt.point_data.QwtPointArrayData`,
-            :py:class:`qwt.series_data.QwtPointSeriesData`
         """
         if len(args) == 1:
             samples, = args
             if isinstance(samples, QwtSeriesData):
                 self.setData(samples)
             else:
-                self.setData(QwtPointSeriesData(samples))
+                self.setData(QwtPointArrayData(samples))
         elif len(args) == 3:
             xData, yData, size = args
             self.setData(QwtPointArrayData(xData, yData, size))
@@ -1027,18 +1023,3 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         else:
             raise TypeError("%s().setSamples() takes 1, 2 or 3 argument(s) "\
                             "(%s given)" % (self.__class__.__name__, len(args)))
-    
-    def setRawSamples(self, xData, yData, size):
-        """
-        Initialize the data by pointing to memory blocks which 
-        are not managed by `QwtPlotCurve`.
-
-        :param xData: List/array of x values
-        :param yData: List/array of y values
-        :param int size: size of xData and yData
-        
-        .. seealso::
-        
-            :py:class:`qwt.point_data.QwtCPointerData`
-        """
-        self.setData(QwtCPointerData(xData, yData, size))
