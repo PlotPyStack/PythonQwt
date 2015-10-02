@@ -26,19 +26,23 @@ only plot items needed by `guiqwt`): `QwtPlotItem` (base class),
 `QwtPlotCurve`.
 
 The `HistogramItem` object implemented in PyQwt's HistogramDemo.py is not 
-available here as a similar item is already implemented in `guiqwt`. As a 
+available here (a similar item is already implemented in `guiqwt`). As a 
 consequence, the following classes are not implemented: `QwtPlotHistogram`, 
 `QwtIntervalSeriesData`, `QwtIntervalSample`.
 
-The following data structure objects are not implemented as they seemed not 
-relevant with Python and NumPy: `QwtCPointerData` (As a consequence, method 
+The following data structure objects are not implemented as they seemed 
+irrelevant with Python and NumPy: `QwtCPointerData` (as a consequence, method 
 `QwtPlot.setRawSamples` is not implemented), `QwtSyntheticPointData`.
 
 The following sample data type objects are not implemented as they seemed 
 quite specific: `QwtSetSample`, `QwtOHLCSample`. For similar reasons, the 
 `QwtPointPolar` class and the following sample iterator objects are not 
-implemented: `QwtSetSeriesData`, `QwtTradingChartData`, 
-`QwtPoint3DSeriesData`, `QwtArraySeriesData`, `QwtPointSeriesData`.
+implemented: `QwtSetSeriesData`, `QwtTradingChartData` and 
+`QwtPoint3DSeriesData`.
+
+The following classes are not implemented because they seem inappropriate in 
+the Python/NumPy context: `QwtArraySeriesData`, `QwtPointSeriesData`, 
+`QwtAbstractSeriesStore`.
 
 Threads:
 

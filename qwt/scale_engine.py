@@ -621,9 +621,8 @@ class QwtLogScaleEngine(QwtScaleEngine):
     """
     A scale engine for logarithmic scales
 
-    The step size is measured in *decades*
-    and the major step size will be adjusted to fit the pattern
-    \f$\left\{ 1,2,3,5\right\} \cdot 10^{n}\f$, where n is a natural number
+    The step size is measured in *decades* and the major step size will be 
+    adjusted to fit the pattern {1,2,3,5}.10**n, where n is a natural number
     including zero.
 
     .. warning::

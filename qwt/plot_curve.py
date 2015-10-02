@@ -374,7 +374,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     
     def setPen(self, *args):
         """
-        Build and/or assigna a pen, depending on the arguments.
+        Build and/or assign a pen, depending on the arguments.
         
         .. py:method:: setPen(color, width, style)
         

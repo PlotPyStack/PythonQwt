@@ -7,7 +7,6 @@ Contents:
     :maxdepth: 2
     
     overview
-    limitations
     installation
     examples/index
     reference/index

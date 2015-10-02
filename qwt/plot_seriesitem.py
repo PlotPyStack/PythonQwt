@@ -15,7 +15,6 @@ QwtPlotSeriesItem
 
 from qwt.plot import QwtPlotItem, QwtPlotItem_PrivateData
 from qwt.text import QwtText
-from qwt.series_store import QwtAbstractSeriesStore
 
 from qwt.qt.QtCore import Qt, QRectF
 
@@ -26,12 +25,11 @@ class QwtPlotSeriesItem_PrivateData(QwtPlotItem_PrivateData):
         self.orientation = Qt.Vertical
 
 
-class QwtPlotSeriesItem(QwtPlotItem, QwtAbstractSeriesStore):
+class QwtPlotSeriesItem(QwtPlotItem):
     """
     Base class for plot items representing a series of samples
     """
     def __init__(self, title):
-        QwtAbstractSeriesStore.__init__(self)
         if not isinstance(title, QwtText):
             title = QwtText(title)
         QwtPlotItem.__init__(self, title)

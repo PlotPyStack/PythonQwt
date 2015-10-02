@@ -1,0 +1,2 @@
+.. automodule:: qwt.symbol
+   :members:

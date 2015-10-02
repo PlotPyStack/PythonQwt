@@ -26,4 +26,6 @@ Main `python-qwt` classes:
     scale_engine
     scale_widget
     series_data
+    series_store
+    symbol
     toqimage
