@@ -22,8 +22,7 @@ powerful features already exist in `guiqwt`: `QwtPlotZoomer`,
 
 Only the following plot items are currently implemented in `qwt` (the 
 only plot items needed by `guiqwt`): `QwtPlotItem` (base class), 
-`QwtPlotItem`, `QwtPlotMarker`, `QwtPlotSeriesItem`, `QwtPlotHistogram`, 
-`QwtPlotCurve`.
+`QwtPlotItem`, `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
 
 The `HistogramItem` object implemented in PyQwt's HistogramDemo.py is not 
 available here (a similar item is already implemented in `guiqwt`). As a 
@@ -49,6 +48,7 @@ Threads:
     - Multiple threads for graphic rendering is implemented in Qwt C++ code 
       thanks to the `QtConcurrent` and `QFuture` Qt features which are 
       currently not supported by PyQt.
+
     - As a consequence the following API is not supported in `python-qwt`:
         - `QwtPlotItem.renderThreadCount`
         - `QwtPlotItem.setRenderThreadCount`
