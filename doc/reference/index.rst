@@ -28,4 +28,5 @@ Main `python-qwt` classes:
     series_data
     series_store
     symbol
+    text
     toqimage
