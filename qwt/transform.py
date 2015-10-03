@@ -6,26 +6,29 @@
 # (see LICENSE file for more details)
 
 """
+Coordinates tranformations
+--------------------------
+
 QwtTransform
-------------
+~~~~~~~~~~~~
 
 .. autoclass:: QwtTransform
    :members:
       
 QwtNullTransform
-----------------
+~~~~~~~~~~~~~~~~
 
 .. autoclass:: QwtNullTransform
    :members:
 
 QwtLogTransform
----------------
+~~~~~~~~~~~~~~~
 
 .. autoclass:: QwtLogTransform
    :members:
    
 QwtPowerTransform
------------------
+~~~~~~~~~~~~~~~~~
 
 .. autoclass:: QwtPowerTransform
    :members:

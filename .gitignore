@@ -1,7 +1,7 @@
 .spyderproject
 qwt-6.1.2
 qwt/tests/demo.png
-qwtdoc.chm
+python-qwtdoc.chm
 
 # Created by https://www.gitignore.io/api/python
 

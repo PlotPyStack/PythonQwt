@@ -6,14 +6,17 @@
 # (see LICENSE file for more details)
 
 """
+Series data
+-----------
+
 QwtSeriesData
--------------
+~~~~~~~~~~~~~
 
 .. autoclass:: QwtSeriesData
    :members:
    
 QwtPointArrayData
------------------
+~~~~~~~~~~~~~~~~~
 
 .. autoclass:: QwtPointArrayData
    :members:

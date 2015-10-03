@@ -6,12 +6,6 @@
 # (see LICENSE file for more details)
 
 """
-QwtPlotDict
------------
-
-.. autoclass:: QwtPlotDict
-   :members:
-
 QwtPlot
 -------
 

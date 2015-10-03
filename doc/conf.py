@@ -168,7 +168,7 @@ html_use_modindex = True
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'qwtdoc'
+htmlhelp_basename = 'python-qwtdoc'
 
 
 # -- Options for LaTeX output --------------------------------------------------

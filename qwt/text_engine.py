@@ -6,20 +6,23 @@
 # (see LICENSE file for more details)
 
 """
+Text engine
+-----------
+
 QwtTextEngine
--------------
+~~~~~~~~~~~~~
 
 .. autoclass:: QwtTextEngine
    :members:
    
 QwtPlainTextEngine
-------------------
+~~~~~~~~~~~~~~~~~~
 
 .. autoclass:: QwtPlainTextEngine
    :members:
    
 QwtRichTextEngine
------------------
+~~~~~~~~~~~~~~~~~
 
 .. autoclass:: QwtRichTextEngine
    :members:

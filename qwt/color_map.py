@@ -6,20 +6,23 @@
 # (see LICENSE file for more details)
 
 """
+Color maps
+----------
+
 QwtColorMap
------------
+~~~~~~~~~~~
 
 .. autoclass:: QwtColorMap
    :members:
 
 QwtLinearColorMap
------------------
+~~~~~~~~~~~~~~~~~
 
 .. autoclass:: QwtLinearColorMap
    :members:
 
 QwtAlphaColorMap
-----------------
+~~~~~~~~~~~~~~~~
 
 .. autoclass:: QwtAlphaColorMap
    :members:

@@ -1,34 +1,29 @@
 Reference
 =========
 
-Main `python-qwt` classes:
+Public API:
 
 .. toctree::
     :maxdepth: 2
     
-    color_map
-    graphic
-    interval
-    legend
-    legend_data
-    legend_label
     plot
-    plot_canvas
-    plot_curve
-    plot_directpainter
-    plot_grid
-    plot_layout
-    plot_marker
-    plot_renderer
-    plot_seriesitem
-    scale_div
-    scale_draw
-    scale_engine
-    scale_widget
-    series_data
-    series_store
+    scale
     symbol
     text
-    text_engine
-    transform
     toqimage
+
+Private API:
+
+.. toctree::
+    :maxdepth: 2
+    
+    graphic
+    interval
+    legend_data
+    legend_label
+    plot_directpainter
+    plot_layout
+    plot_seriesitem
+    series_data
+    series_store
+    transform
