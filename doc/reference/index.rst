@@ -30,4 +30,5 @@ Main `python-qwt` classes:
     symbol
     text
     text_engine
+    transform
     toqimage
