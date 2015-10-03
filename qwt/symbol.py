@@ -1077,7 +1077,7 @@ class QwtSymbol(object):
         """
         if isinstance(point_or_rect, (QPointF, QPoint)):
             # drawSymbol( QPainter *, const QPointF & )
-            self.drawSymbols(painter, [point_or_rect], 1)
+            self.drawSymbols(painter, [point_or_rect])
             return
         # drawSymbol( QPainter *, const QRectF & )
         rect = point_or_rect

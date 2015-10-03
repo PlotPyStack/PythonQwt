@@ -1,5 +1,10 @@
 # History of changes
 
+## Version 0.2.1
+
+Fixed Issue #23: "argument numPoints is not implemented" error was showing up 
+when calling QwtSymbol.drawSymbol(symbol, QPoint(x, y)).
+
 ## Version 0.2.0
 
 Added docstrings in all Python modules and a complete documentation based on 
