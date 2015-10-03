@@ -50,8 +50,8 @@ Only the following plot items are currently implemented in `qwt` (the
 only plot items needed by `guiqwt`): `QwtPlotItem` (base class), 
 `QwtPlotItem`, `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
 
-See the "Overview" section in package documentation for more details on 
-API limitations when comparing to Qwt.
+See "Overview" section in [documentation](http://pythonhosted.org/python-qwt/) 
+for more details on API limitations when comparing to Qwt.
 
 ## Dependencies
 
