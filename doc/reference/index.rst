@@ -29,4 +29,5 @@ Main `python-qwt` classes:
     series_store
     symbol
     text
+    text_engine
     toqimage

@@ -5,6 +5,26 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
+"""
+QwtTextEngine
+-------------
+
+.. autoclass:: QwtTextEngine
+   :members:
+   
+QwtPlainTextEngine
+------------------
+
+.. autoclass:: QwtPlainTextEngine
+   :members:
+   
+QwtRichTextEngine
+-----------------
+
+.. autoclass:: QwtRichTextEngine
+   :members:
+"""
+
 from qwt.painter import QwtPainter
 
 from qwt.qt.QtGui import (QTextDocument, QTextOption, QColor, QFontMetricsF,
@@ -56,13 +76,92 @@ class QwtRichTextDocument(QTextDocument):
 
 
 class QwtTextEngine(object):
+    """
+    Abstract base class for rendering text strings
+
+    A text engine is responsible for rendering texts for a
+    specific text format. They are used by `QwtText` to render a text.
+
+    `QwtPlainTextEngine` and `QwtRichTextEngine` are part of the 
+    `python-qwt` library.
+    The implementation of `QwtMathMLTextEngine` uses code from the 
+    `Qt` solution package. Because of license implications it is built into
+    a separate library.
+ 
+    .. seealso::
+    
+        :py:meth:`qwt.text.QwtText.setTextEngine()`
+    """
     def __init__(self):
+        pass
+    
+    def heightForWidth(self, font, flags, text, width):
+        """
+        Find the height for a given width
+
+        :param QFont font: Font of the text
+        :param int flags: Bitwise OR of the flags used like in QPainter::drawText
+        :param str text: Text to be rendered
+        :param float width: Width
+        :return: Calculated height
+        """
+        pass
+    
+    def textSize(self, font, flags, text):
+        """
+        Returns the size, that is needed to render text
+
+        :param QFont font: Font of the text
+        :param int flags: Bitwise OR of the flags like in for QPainter::drawText
+        :param str text: Text to be rendered
+        :return: Calculated size
+        """
+        pass
+
+    def mightRender(self, text):
+        """
+        Test if a string can be rendered by this text engine
+
+        :param str text: Text to be tested
+        :return: True, if it can be rendered
+        """
+        pass
+
+    def textMargins(self, font):
+        """
+        Return margins around the texts
+
+        The textSize might include margins around the
+        text, like QFontMetrics::descent(). In situations
+        where texts need to be aligned in detail, knowing
+        these margins might improve the layout calculations.
+
+        :param QFont font: Font of the text
+        :return: tuple (left, right, top, bottom) representing margins
+        """
+        pass
+
+    def draw(self, painter, rect, flags, text):
+        """
+        Draw the text in a clipping rectangle
+
+        :param QPainter painter: Painter
+        :param QRectF rect: Clipping rectangle
+        :param int flags: Bitwise OR of the flags like in for QPainter::drawText()
+        :param str text: Text to be rendered
+        """
         pass
 
 
 ASCENTCACHE = {}
 
 class QwtPlainTextEngine(QwtTextEngine):
+    """
+    A text engine for plain texts
+
+    `QwtPlainTextEngine` renders texts using the basic `Qt` classes
+    `QPainter` and `QFontMetrics`.
+    """
     def __init__(self):
         self.qrectf_max = QRectF(0, 0, QWIDGETSIZE_MAX, QWIDGETSIZE_MAX)
         self._fm_cache = {}
@@ -85,12 +184,29 @@ class QwtPlainTextEngine(QwtTextEngine):
             return fm
     
     def heightForWidth(self, font, flags, text, width):
+        """
+        Find the height for a given width
+
+        :param QFont font: Font of the text
+        :param int flags: Bitwise OR of the flags used like in QPainter::drawText
+        :param str text: Text to be rendered
+        :param float width: Width
+        :return: Calculated height
+        """
         fm = self.fontmetrics_f(font)
         rect = fm.boundingRect(QRectF(0, 0, width, QWIDGETSIZE_MAX),
                                flags, text)
         return rect.height()
     
     def textSize(self, font, flags, text):
+        """
+        Returns the size, that is needed to render text
+
+        :param QFont font: Font of the text
+        :param int flags: Bitwise OR of the flags like in for QPainter::drawText
+        :param str text: Text to be rendered
+        :return: Calculated size
+        """
         fm = self.fontmetrics_f(font)
         rect = fm.boundingRect(self.qrectf_max, flags, text)
         return rect.size()
@@ -129,6 +245,17 @@ class QwtPlainTextEngine(QwtTextEngine):
         return fm.ascent()
 
     def textMargins(self, font):
+        """
+        Return margins around the texts
+
+        The textSize might include margins around the
+        text, like QFontMetrics::descent(). In situations
+        where texts need to be aligned in detail, knowing
+        these margins might improve the layout calculations.
+
+        :param QFont font: Font of the text
+        :return: tuple (left, right, top, bottom) representing margins
+        """
         left = right = top = 0
         fm = self.fontmetrics_f(font)
         top = fm.ascent() - self.effectiveAscent(font)
@@ -136,22 +263,59 @@ class QwtPlainTextEngine(QwtTextEngine):
         return left, right, top, bottom
 
     def draw(self, painter, rect, flags, text):
+        """
+        Draw the text in a clipping rectangle
+
+        :param QPainter painter: Painter
+        :param QRectF rect: Clipping rectangle
+        :param int flags: Bitwise OR of the flags like in for QPainter::drawText()
+        :param str text: Text to be rendered
+        """
         QwtPainter.drawText(painter, rect, flags, text)
     
     def mightRender(self, text):
+        """
+        Test if a string can be rendered by this text engine
+
+        :param str text: Text to be tested
+        :return: True, if it can be rendered
+        """
         return True
 
 
 class QwtRichTextEngine(QwtTextEngine):
+    """
+    A text engine for `Qt` rich texts
+
+    `QwtRichTextEngine` renders `Qt` rich texts using the classes
+    of the Scribe framework of `Qt`.
+    """
     def __init__(self):
         pass
     
     def heightForWidth(self, font, flags, text, width):
+        """
+        Find the height for a given width
+
+        :param QFont font: Font of the text
+        :param int flags: Bitwise OR of the flags used like in QPainter::drawText
+        :param str text: Text to be rendered
+        :param float width: Width
+        :return: Calculated height
+        """
         doc = QwtRichTextDocument(text, flags, font)
         doc.setPageSize(QSizeF(width, QWIDGETSIZE_MAX))
         return doc.documentLayout().documentSize().height()
     
     def textSize(self, font, flags, text):
+        """
+        Returns the size, that is needed to render text
+
+        :param QFont font: Font of the text
+        :param int flags: Bitwise OR of the flags like in for QPainter::drawText
+        :param str text: Text to be rendered
+        :return: Calculated size
+        """
         doc = QwtRichTextDocument(text, flags, font)
         option = doc.defaultTextOption()
         if option.wrapMode() != QTextOption.NoWrap:
@@ -161,6 +325,14 @@ class QwtRichTextEngine(QwtTextEngine):
         return doc.size()
     
     def draw(self, painter, rect, flags, text):
+        """
+        Draw the text in a clipping rectangle
+
+        :param QPainter painter: Painter
+        :param QRectF rect: Clipping rectangle
+        :param int flags: Bitwise OR of the flags like in for QPainter::drawText()
+        :param str text: Text to be rendered
+        """
         doc = QwtRichTextDocument(text, flags, painter.font())
         QwtPainter.drawSimpleRichText(painter, rect, flags, doc)
     
@@ -168,7 +340,24 @@ class QwtRichTextEngine(QwtTextEngine):
         return self.taggedRichText(text,flags)
 
     def mightRender(self, text):
+        """
+        Test if a string can be rendered by this text engine
+
+        :param str text: Text to be tested
+        :return: True, if it can be rendered
+        """
         return Qt.mightBeRichText(text)
     
     def textMargins(self, font):
+        """
+        Return margins around the texts
+
+        The textSize might include margins around the
+        text, like QFontMetrics::descent(). In situations
+        where texts need to be aligned in detail, knowing
+        these margins might improve the layout calculations.
+
+        :param QFont font: Font of the text
+        :return: tuple (left, right, top, bottom) representing margins
+        """
         return 0, 0, 0, 0
