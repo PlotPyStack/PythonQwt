@@ -1,3 +1,4 @@
+del doc.zip
 sphinx-build -b html doc doctmp
 cd doctmp
 7z a -r ..\doc.zip *.*

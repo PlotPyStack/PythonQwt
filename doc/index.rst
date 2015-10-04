@@ -1,5 +1,6 @@
 .. automodule:: qwt
 
+Download :download:`CHM Documentation (unzip and open) <../python-qwt.chm.zip>`.
 
 Contents:
 
