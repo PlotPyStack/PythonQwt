@@ -33,7 +33,6 @@ Here are some examples from the `qwt.test` module:
     data_demo
     error_bar
     event_filter_demo
-    histogram_demo
     image_plot_demo
     map_demo
     really_simple_demo
