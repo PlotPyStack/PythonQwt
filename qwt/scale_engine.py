@@ -162,7 +162,7 @@ class QwtScaleEngine(object):
 
     The layout of the scale can be varied with `setAttribute()`.
 
-    `python-qwt` offers implementations for logarithmic and linear scales. 
+    `PythonQwt` offers implementations for logarithmic and linear scales. 
     
     Layout attributes:
     

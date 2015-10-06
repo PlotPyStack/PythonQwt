@@ -41,7 +41,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'python-qwt'
+project = 'PythonQwt'
 import time
 this_year = time.strftime("%Y", time.localtime())
 copyright = "2002 Uwe Rathmann (for the original C++ code/doc), 2015 Pierre Raybaut (for the Python translation/optimization/doc adaptation)"
@@ -168,7 +168,7 @@ html_use_modindex = True
 #html_file_suffix = ''
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'python-qwt'
+htmlhelp_basename = 'PythonQwt'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -182,7 +182,7 @@ htmlhelp_basename = 'python-qwt'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'qwt.tex', 'python-qwt Documentation', 'Pierre Raybaut', 'manual'),
+  ('index', 'qwt.tex', 'PythonQwt Manual', 'Pierre Raybaut', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

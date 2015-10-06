@@ -23,4 +23,4 @@ External resources:
 
     * Bug reports and feature requests: `GitHub`_
 
-.. _GitHub: https://github.com/PierreRaybaut/python-qwt
+.. _GitHub: https://github.com/PierreRaybaut/PythonQwt

@@ -31,7 +31,7 @@ class QwtSeriesData(object):
     """
     Abstract interface for iterating over samples
 
-    `python-qwt` offers several implementations of the QwtSeriesData API,
+    `PythonQwt` offers several implementations of the QwtSeriesData API,
     but in situations, where data of an application specific format
     needs to be displayed, without having to copy it, it is recommended
     to implement an individual data access.

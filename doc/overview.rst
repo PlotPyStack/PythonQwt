@@ -1,13 +1,13 @@
 Purpose and Motivation
 ======================
 
-The ``python-qwt`` project was initiated to solve -at least temporarily-
+The ``PythonQwt`` project was initiated to solve -at least temporarily-
 the obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library)
 which is no longer maintained. The idea was to translate the original
 Qwt C++ code to Python and then to optimize some parts of the code by
 writing new modules based on NumPy and other libraries.
 
-The ``python-qwt`` package consists of a single Python package named
+The ``PythonQwt`` package consists of a single Python package named
 `qwt` and of a few other files (examples, doc, ...).
 
 Overview
@@ -49,7 +49,7 @@ Threads:
       thanks to the `QtConcurrent` and `QFuture` Qt features which are 
       currently not supported by PyQt.
 
-    - As a consequence the following API is not supported in `python-qwt`:
+    - As a consequence the following API is not supported in `PythonQwt`:
         - `QwtPlotItem.renderThreadCount`
         - `QwtPlotItem.setRenderThreadCount`
         - option `numThreads` in `QwtPointMapper.toImage`
@@ -66,7 +66,7 @@ features are already implemented in `guiqwt`.
 Other API compatibility issues with `Qwt`:
 
     - `QwtPlotCurve.MinimizeMemory` option was removed as this option has no 
-      sense in python-qwt (the polyline plotting is not taking more memory 
+      sense in PythonQwt (the polyline plotting is not taking more memory 
       than the array data that is already there).
 
     - `QwtPlotCurve.Fitted` option was removed as this option is not supported 

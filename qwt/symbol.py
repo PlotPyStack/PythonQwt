@@ -1019,7 +1019,7 @@ class QwtSymbol(object):
         :param QPainter painter: Painter
         :param QPolygonF points: Positions of the symbols in screen coordinates
         """
-        #TODO: remove argument numPoints (not necessary in `python-qwt`)
+        #TODO: remove argument numPoints (not necessary in `PythonQwt`)
         if numPoints is not None and numPoints <= 0:
             return
         useCache = False
@@ -1124,12 +1124,12 @@ class QwtSymbol(object):
         :param QPainter painter: Painter
         :param point_or_rect: Positions of the symbols
         """
-        #TODO: remove argument numPoints (not necessary in `python-qwt`)
+        #TODO: remove argument numPoints (not necessary in `PythonQwt`)
         try:
             assert numPoints is None
         except AssertionError:
             raise RuntimeError("argument numPoints is not implemented "\
-                               "in `python-qwt`")
+                               "in `PythonQwt`")
         if self.__data.style == QwtSymbol.Ellipse:
             qwtDrawEllipseSymbols(painter, points, numPoints, self)
         elif self.__data.style == QwtSymbol.Rect:

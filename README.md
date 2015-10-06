@@ -1,14 +1,14 @@
-# python-qwt
+# PythonQwt
 
 ## Purpose and Motivation
 
-The ``python-qwt`` project was initiated to solve -at least temporarily-
+The ``PythonQwt`` project was initiated to solve -at least temporarily-
 the obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library)
 which is no longer maintained. The idea was to translate the original
 Qwt C++ code to Python and then to optimize some parts of the code by
 writing new modules based on NumPy and other libraries.
 
-The ``python-qwt`` package consists of a single Python package named
+The ``PythonQwt`` package consists of a single Python package named
 `qwt` and of a few other files (examples, doc, ...).
 
 ## Copyrights
@@ -17,7 +17,7 @@ The ``python-qwt`` package consists of a single Python package named
   - Copyright © 2002 Uwe Rathmann, for the original Qwt C++ code
   - Copyright © 2015 Pierre Raybaut, for the Qwt C++ to Python
 translation and optimization
-  - Copyright © 2015 Pierre Raybaut, for the python-qwt specific and
+  - Copyright © 2015 Pierre Raybaut, for the PythonQwt specific and
 exclusive Python material
 
 #### PyQt, PySide and Python2/Python3 compatibility modules
@@ -27,7 +27,7 @@ exclusive Python material
 #### Some examples
   - Copyright © 2003-2009 Gerard Vermeulen, for the original PyQwt code
   - Copyright © 2015 Pierre Raybaut, for the PyQt5/PySide port and
-further developments (e.g. ported to python-qwt API)
+further developments (e.g. ported to PythonQwt API)
 
 ## License
 
@@ -50,7 +50,7 @@ Only the following plot items are currently implemented in `qwt` (the
 only plot items needed by `guiqwt`): `QwtPlotItem` (base class), 
 `QwtPlotItem`, `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
 
-See "Overview" section in [documentation](http://pythonhosted.org/python-qwt/) 
+See "Overview" section in [documentation](http://pythonhosted.org/PythonQwt/) 
 for more details on API limitations when comparing to Qwt.
 
 ## Dependencies
@@ -78,4 +78,4 @@ from qwt import tests
 tests.run()
 ```
 
-or from the command line: `python-qwt-tests`.
+or from the command line: `PythonQwt-tests`.

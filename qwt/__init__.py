@@ -5,10 +5,10 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 """
-python-qwt
-==========
+PythonQwt
+=========
 
-The ``python-qwt`` package is a 2D-data plotting library using Qt graphical 
+The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical 
 user interfaces for the Python programming language.
 
 It consists of a single Python package named `qwt` which is a pure Python 
@@ -19,7 +19,7 @@ implementation of Qwt C++ library with some limitations.
 External resources:
     * Bug reports and feature requests: `GitHub`_
 
-.. _GitHub: https://github.com/PierreRaybaut/python-qwt
+.. _GitHub: https://github.com/PierreRaybaut/PythonQwt
 """
 __version__ = '0.2.1'
 QWT_VERSION_STR = '6.1.2'

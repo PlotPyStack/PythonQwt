@@ -11,7 +11,7 @@ A lot of examples are available in the `qwt.test` module ::
     from qwt import tests
     tests.run()
 
-The two lines above execute the `python-qwt` test launcher:
+The two lines above execute the `PythonQwt` test launcher:
 
 .. image:: /images/tests/__init__.png
 

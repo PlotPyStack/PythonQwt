@@ -591,7 +591,7 @@ class QwtText(object):
         """
         Assign/Replace a text engine for a text format
 
-        With setTextEngine it is possible to extend `python-qwt` with
+        With setTextEngine it is possible to extend `PythonQwt` with
         other types of text formats.
 
         For `QwtText.PlainText` it is not allowed to assign a engine to None.

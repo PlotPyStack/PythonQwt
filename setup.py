@@ -5,8 +5,8 @@
 # (see LICENSE file for more details)
 
 """
-python-qwt
-==========
+PythonQwt
+=========
 
 Qt plotting widgets for Python
 """
@@ -21,20 +21,20 @@ import setuptools  # analysis:ignore
 from distutils.core import setup
 from distutils.command.build import build
 
-LIBNAME = 'python-qwt'
+LIBNAME = 'PythonQwt'
 PACKAGE_NAME = 'qwt'
 from qwt import __version__ as version
 
 DESCRIPTION = 'Qt plotting widgets for Python'
 LONG_DESCRIPTION = """\
-The ``python-qwt`` project was initiated to solve -at least temporarily- the 
+The ``PythonQwt`` project was initiated to solve -at least temporarily- the 
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
 no longer maintained. The idea was to translate the original Qwt C++ code to 
 Python and then to optimize some parts of the code by writing new modules 
 based on NumPy and other libraries.
 
 
-The ``python-qwt`` package consists of a single Python package named `qwt` 
+The ``PythonQwt`` package consists of a single Python package named `qwt` 
 which is a pure Python implementation of Qwt C++ library with the following 
 limitations.
 
@@ -60,9 +60,9 @@ elif 'alpha' in version or 'a' in version or version.startswith('0.'):
 else:
     CLASSIFIERS += ['Development Status :: 5 - Production/Stable']
 if os.name == 'nt':
-    SCRIPTS = ['python-qwt-tests', 'python-qwt-tests.bat']
+    SCRIPTS = ['PythonQwt-tests', 'PythonQwt-tests.bat']
 else:
-    SCRIPTS = ['python-qwt-tests']
+    SCRIPTS = ['PythonQwt-tests']
 SCRIPTS = [osp.join('scripts', fname) for fname in SCRIPTS]
 
 

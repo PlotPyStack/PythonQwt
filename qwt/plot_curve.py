@@ -130,7 +130,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
 
         .. warning ::
         
-            This option is *not* supported in `python-qwt`.
+            This option is *not* supported in `PythonQwt`.
     
     Legend attributes:
     
@@ -163,7 +163,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
         .. warning::
             
-            This option is currently *not* supported in `python-qwt`.
+            This option is currently *not* supported in `PythonQwt`.
 
       * `QwtPlotCurve.FilterPoints`:
 
@@ -176,7 +176,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
         .. warning::
 
-            This option was removed as it has no sense in `python-qwt` 
+            This option was removed as it has no sense in `PythonQwt` 
             (the polyline plotting is not taking more memory than the 
             array data that is already there).
             

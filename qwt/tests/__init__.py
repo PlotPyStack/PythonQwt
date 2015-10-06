@@ -5,12 +5,12 @@
 # (see LICENSE file for more details)
 
 """
-python-qwt test package
-=======================
+PythonQwt test package
+======================
 """
 
 def run():
-    """Run python-qwt test launcher (requires `guidata`)"""
+    """Run PythonQwt test launcher (requires `guidata`)"""
     import qwt
     try:
         from guidata.guitest import run_testlauncher
