@@ -45,10 +45,10 @@ class QwtLegendLabel_PrivateData(object):
 class QwtLegendLabel(QwtTextLabel):
     """A widget representing something on a QwtLegend."""
     
-    SIG_CLICKED = Signal()
-    SIG_PRESSED = Signal()
-    SIG_RELEASED = Signal()
-    SIG_CHECKED = Signal(bool)
+    clicked = Signal()
+    pressed = Signal()
+    released = Signal()
+    checked = Signal(bool)
     
     def __init__(self, parent=None):
         QwtTextLabel.__init__(self, parent)
@@ -229,12 +229,12 @@ class QwtLegendLabel(QwtTextLabel):
         self.update()
         if self.__data.itemMode == QwtLegendData.Clickable:
             if self.__data.isDown:
-                self.SIG_PRESSED.emit()
+                self.pressed.emit()
             else:
-                self.SIG_RELEASED.emit()
-                self.SIG_CLICKED.emit()
+                self.released.emit()
+                self.clicked.emit()
         if self.__data.itemMode == QwtLegendData.Checkable:
-            self.SIG_CHECKED.emit(self.__data.isDown)
+            self.checked.emit(self.__data.isDown)
     
     def isDown(self):
         """

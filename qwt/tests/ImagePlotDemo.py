@@ -167,7 +167,7 @@ class ImagePlot(QwtPlot):
         plotImage.setData(square(512, -2*np.pi, 2*np.pi),
                           (-2*np.pi, 2*np.pi), (-2*np.pi, 2*np.pi))
 
-        legend.SIG_CLICKED.connect(self.toggleVisibility)
+        legend.clicked.connect(self.toggleVisibility)
         
         # replot
         self.replot()

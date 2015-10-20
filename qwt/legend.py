@@ -177,10 +177,35 @@ class QwtLegend(QwtAbstractLegend):
         Constructor
         
         :param QWidget parent: Parent widget
+
+    .. py:data:: clicked
+
+        A signal which is emitted when the user has clicked on
+        a legend label, which is in `QwtLegendData.Clickable` mode.
+
+        :param itemInfo: Info for the item item of the selected legend item
+        :param index: Index of the legend label in the list of widgets that are associated with the plot item
+        
+        .. note::
+            
+            Clicks are disabled as default
+
+    .. py:data:: checked
+    
+        A signal which is emitted when the user has clicked on
+        a legend label, which is in `QwtLegendData.Checkable` mode
+
+        :param itemInfo: Info for the item of the selected legend label
+        :param index: Index of the legend label in the list of widgets that are associated with the plot item
+        :param on: True when the legend label is checked
+        
+        .. note::
+            
+            Clicks are disabled as default
     """
 
-    SIG_CLICKED = Signal("PyQt_PyObject", int)
-    SIG_CHECKED = Signal("PyQt_PyObject", bool, int)
+    clicked = Signal("PyQt_PyObject", int)
+    checked = Signal("PyQt_PyObject", bool, int)
     
     def __init__(self, parent=None):
         QwtAbstractLegend.__init__(self, parent)
@@ -338,8 +363,8 @@ class QwtLegend(QwtAbstractLegend):
         """
         label = QwtLegendLabel()
         label.setItemMode(self.defaultItemMode())
-        label.SIG_CLICKED.connect(lambda: self.itemClicked(label))
-        label.SIG_CHECKED.connect(lambda state: self.itemChecked(state, label))
+        label.clicked.connect(lambda: self.itemClicked(label))
+        label.checked.connect(lambda state: self.itemChecked(state, label))
         return label
     
     def updateWidget(self, widget, data):
@@ -421,7 +446,7 @@ class QwtLegend(QwtAbstractLegend):
                 widgetList = self.__data.itemMap.legendWidgets(itemInfo)
                 if w in widgetList:
                     index = widgetList.index(w)
-                    self.SIG_CLICKED.emit(itemInfo, index)
+                    self.clicked.emit(itemInfo, index)
     
     def itemChecked(self, on, widget):
 #        w = self.sender()  #TODO: cast to QWidget
@@ -432,7 +457,7 @@ class QwtLegend(QwtAbstractLegend):
                 widgetList = self.__data.itemMap.legendWidgets(itemInfo)
                 if w in widgetList:
                     index = widgetList.index(w)
-                    self.SIG_CHECKED.emit(itemInfo, on, index)
+                    self.checked.emit(itemInfo, on, index)
     
     def renderLegend(self, painter, rect, fillBackground):
         """

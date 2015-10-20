@@ -73,7 +73,7 @@ class QwtScaleWidget(QWidget):
         :param QWidget parent: Parent widget
     """
     
-    SIG_SCALE_DIV_CHANGED = Signal()
+    scaleDivChanged = Signal()
     
     # enum LayoutFlag
     TitleInverted = 1
@@ -694,7 +694,7 @@ class QwtScaleWidget(QWidget):
         if sd.scaleDiv() != scaleDiv:
             sd.setScaleDiv(scaleDiv)
             self.layoutScale()
-            self.SIG_SCALE_DIV_CHANGED.emit()
+            self.scaleDivChanged.emit()
 
     def setTransformation(self, transformation):
         """

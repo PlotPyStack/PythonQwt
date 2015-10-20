@@ -20,7 +20,7 @@ from qwt import (QwtPlot, QwtScaleDraw, QwtSymbol, QwtPlotGrid, QwtPlotCurve,
 
 
 class ColorBar(QWidget):
-    SIG_COLOR_SELECTED = Signal(QColor)
+    colorSelected = Signal(QColor)
     
     def __init__(self, orientation, *args):
         QWidget.__init__(self, *args)
@@ -63,7 +63,7 @@ class ColorBar(QWidget):
                 pm = QPixmap.grabWidget(self)
             color = QColor()
             color.setRgb(pm.toImage().pixel(event.x(), event.y()))
-            self.SIG_COLOR_SELECTED.emit(color)
+            self.colorSelected.emit(color)
             event.accept()
 
     def paintEvent(self, _):
@@ -136,7 +136,7 @@ class Plot(QwtPlot):
         self.__colorBar.setRange(
             QColor(Qt.red), QColor(Qt.darkBlue))
         self.__colorBar.setFocusPolicy(Qt.TabFocus)
-        self.__colorBar.SIG_COLOR_SELECTED.connect(self.setCanvasColor)
+        self.__colorBar.colorSelected.connect(self.setCanvasColor)
         
         # we need the resize events, to lay out the color bar
         scaleWidget.installEventFilter(self)
@@ -376,7 +376,7 @@ class CanvasPicker(QObject):
 
 
 class ScalePicker(QObject):
-    SIG_CLICKED = Signal(int, float)
+    clicked = Signal(int, float)
     
     def __init__(self, plot):
         QObject.__init__(self, plot)
@@ -412,7 +412,7 @@ class ScalePicker(QObject):
         elif scale.alignment() == QwtScaleDraw.TopScale:
             value = sd.scaleMap().invTransform(pos.x())
             axis = QwtPlot.xBottom
-        self.SIG_CLICKED.emit(axis, value)
+        self.clicked.emit(axis, value)
  
     def __scaleRect(self, scale):
         bld = scale.margin()
@@ -447,7 +447,7 @@ def make():
         )
     CanvasPicker(plot)
     scalePicker = ScalePicker(plot)
-    scalePicker.SIG_CLICKED.connect(plot.insertCurve)
+    scalePicker.clicked.connect(plot.insertCurve)
     demo.resize(540, 400)
     demo.show()
     return demo

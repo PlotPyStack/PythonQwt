@@ -39,9 +39,9 @@ import numpy as np
 
 def qwtEnableLegendItems(plot, on):
     if on:
-        plot.SIG_LEGEND_DATA_CHANGED.connect(plot.updateLegendItems)
+        plot.legendDataChanged.connect(plot.updateLegendItems)
     else:
-        plot.SIG_LEGEND_DATA_CHANGED.disconnect(plot.updateLegendItems)
+        plot.legendDataChanged.disconnect(plot.updateLegendItems)
 
 def qwtSetTabOrder(first, second, with_children):
     tab_chain = [first, second]
@@ -255,10 +255,26 @@ class QwtPlot(QFrame, QwtPlotDict):
     
         :param str title: Title text
         :param QWidget parent: Parent widget
+        
+    .. py:data:: itemAttached
+    
+        A signal indicating, that an item has been attached/detached
+        
+        :param plotItem: Plot item
+        :param on: Attached/Detached
+
+    .. py:data:: legendDataChanged
+    
+        A signal with the attributes how to update 
+        the legend entries for a plot item.
+
+        :param itemInfo: Info about a plot item, build from itemToInfo()
+        :param data: Attributes of the entries (usually <= 1) for the plot item.
+
     """
     
-    SIG_ITEM_ATTACHED = Signal("PyQt_PyObject", bool)
-    SIG_LEGEND_DATA_CHANGED = Signal("PyQt_PyObject", "PyQt_PyObject")
+    itemAttached = Signal("PyQt_PyObject", bool)
+    legendDataChanged = Signal("PyQt_PyObject", "PyQt_PyObject")
 
     # enum Axis
     yLeft, yRight, xBottom, xTop, axisCnt = list(range(5))
@@ -1432,8 +1448,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                 del self.__data.legend
             self.__data.legend = legend
             if self.__data.legend:
-                self.SIG_LEGEND_DATA_CHANGED.connect(
-                                            self.__data.legend.updateLegend)
+                self.legendDataChanged.connect(self.__data.legend.updateLegend)
                 if self.__data.legend.parent() is not self:
                     self.__data.legend.setParent(self)
                 
@@ -1467,14 +1482,14 @@ class QwtPlot(QFrame, QwtPlotDict):
     
     def updateLegend(self, plotItem=None):
         """
-        If plotItem is None, emit QwtPlot.SIG_LEGEND_DATA_CHANGED for all 
+        If plotItem is None, emit QwtPlot.legendDataChanged for all 
         plot item. Otherwise, emit the signal for passed plot item.
     
         :param qwt.plot.QwtPlotItem plotItem: Plot item
 
         .. seealso::
         
-            :py:meth:`QwtPlotItem.legendData()`, :py:data:`QwtPlot.SIG_LEGEND_DATA_CHANGED`
+            :py:meth:`QwtPlotItem.legendData()`, :py:data:`QwtPlot.legendDataChanged`
         """
         if plotItem is None:
             items = list(self.itemList())
@@ -1486,7 +1501,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             legendData = []
             if plotItem.testItemAttribute(QwtPlotItem.Legend):
                 legendData = plotItem.legendData()
-            self.SIG_LEGEND_DATA_CHANGED.emit(plotItem, legendData)
+            self.legendDataChanged.emit(plotItem, legendData)
 
     def updateLegendItems(self, plotItem, legendData):
         """
@@ -1527,13 +1542,13 @@ class QwtPlot(QFrame, QwtPlotDict):
         else:
             self.removeItem(plotItem)
         
-        self.SIG_ITEM_ATTACHED.emit(plotItem, on)
+        self.itemAttached.emit(plotItem, on)
         
         if plotItem.testItemAttribute(QwtPlotItem.Legend):
             if on:
                 self.updateLegend(plotItem)
             else:
-                self.SIG_LEGEND_DATA_CHANGED.emit(plotItem, [])
+                self.legendDataChanged.emit(plotItem, [])
         
         self.autoRefresh()
     

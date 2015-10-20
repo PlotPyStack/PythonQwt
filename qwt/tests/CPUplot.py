@@ -347,7 +347,7 @@ class CpuPlot(QwtPlot):
 
         self.startTimer(1000)
 
-        legend.SIG_CHECKED.connect(self.showCurve)
+        legend.checked.connect(self.showCurve)
         self.replot()
 
     def timerEvent(self, e):
