@@ -692,7 +692,7 @@ class QwtPainterClass(object):
                 else:
                     c = colorTable[colorMap.colorIndex(interval, value)]
                 pmPainter.setPen(c)
-                pmPainter.drawLine(x, devRect.top(), devRect.bottom())
+                pmPainter.drawLine(x, devRect.top(), x, devRect.bottom())
         else:
             sMap = scaleMap
             sMap.setPaintInterval(rect.bottom(), rect.top())
