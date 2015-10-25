@@ -15,6 +15,7 @@ QwtPainterClass
 
 from qwt.clipper import QwtClipper
 from qwt.color_map import QwtColorMap
+from qwt.scale_map import QwtScaleMap
 
 from qwt.qt.QtGui import (QPaintEngine, QApplication, QFont, QFontInfo, QFrame,
                           QPixmap, QPainter, QPolygonF, QPalette, QStyle, QPen,
@@ -683,7 +684,7 @@ class QwtPainterClass(object):
         pmPainter = QPainter(pixmap)
         pmPainter.translate(-devRect.x(), -devRect.y())
         if orientation == Qt.Horizontal:
-            sMap = scaleMap
+            sMap = QwtScaleMap(scaleMap)
             sMap.setPaintInterval(rect.left(), rect.right())
             for x in range(devRect.left(), devRect.right()+1):
                 value = sMap.invTransform(x)
@@ -694,7 +695,7 @@ class QwtPainterClass(object):
                 pmPainter.setPen(c)
                 pmPainter.drawLine(x, devRect.top(), x, devRect.bottom())
         else:
-            sMap = scaleMap
+            sMap = QwtScaleMap(scaleMap)
             sMap.setPaintInterval(rect.bottom(), rect.top())
             for y in range(devRect.top(), devRect.bottom()+1):
                 value = sMap.invTransform(y)
