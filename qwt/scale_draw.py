@@ -439,7 +439,7 @@ class QwtScaleDraw_PrivateData(object):
         self.alignment = QwtScaleDraw.BottomScale
         self.labelAlignment = 0
         self.labelRotation = 0.
-        self.fixedSize = False
+        self.labelAutoSize = True
         self.pos = QPointF()
 
 
@@ -1126,15 +1126,14 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         """
         return self.__data.labelAlignment
 
-    def setFixedSize(self, state):    
+    def setLabelAutoSize(self, state):    
         """
-        Set fixed size option state
+        Set label automatic size option state
 
-        When drawing text labels, if fixed size option is enabled, the axes 
-        width and height won't change when axis range is changing. On the 
-        contrary, if this option is disabled (default behavior), axes are 
-        drawn in order to optimize layout space and depends on text label 
-        individual sizes.
+        When drawing text labels, if automatic size mode is enabled (default 
+        behavior), the axes are drawn in order to optimize layout space and 
+        depends on text label individual sizes. Otherwise, width and height 
+        won't change when axis range is changing.
         
         This option is not implemented in Qwt C++ library: this may be used 
         either as an optimization (updating plot layout is faster when this 
@@ -1146,26 +1145,28 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
 
         .. seealso::
         
-            :py:meth:`fixedSize()`
+            :py:meth:`labelAutoSize()`
         """
-        self.__data.fixedSize = state
+        self.__data.labelAutoSize = state
     
-    def fixedSize(self):
+    def labelAutoSize(self):
         """
-        :return: True if fixed size option is enabled for labels
+        :return: True if automatic size option is enabled for labels
         
         .. seealso::
         
-            :py:meth:`setFixedSize()`
+            :py:meth:`setLabelAutoSize()`
         """
-        return self.__data.fixedSize
+        return self.__data.labelAutoSize
 
     def _get_max_label_size(self, font):
-        fid = font.toString()
-        size = self._max_label_sizes.get(fid)
+        key = (font.toString(), self.labelRotation())
+        size = self._max_label_sizes.get(key)
         if size is None:
-            size = self.labelSize(font, -999999)
-            return self._max_label_sizes.setdefault(fid, size)
+            size = self.labelSize(font, -999999) # -999999 is the biggest label
+            size.setWidth(np.ceil(size.width()))
+            size.setHeight(np.ceil(size.height()))
+            return self._max_label_sizes.setdefault(key, size)
         else:
             return size
     
@@ -1177,11 +1178,11 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         ticks = self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
         if not ticks:
             return 0
-        if self.fixedSize():
-            return self._get_max_label_size(font).width()
-        else:
+        if self.labelAutoSize():
             return np.ceil(max([self.labelSize(font, v).width()
                             for v in ticks if self.scaleDiv().contains(v)]))
+        else:
+            return self._get_max_label_size(font).width()
     
     def maxLabelHeight(self, font):
         """
@@ -1191,11 +1192,11 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         ticks = self.scaleDiv().ticks(QwtScaleDiv.MajorTick)
         if not ticks:
             return 0
-        if self.fixedSize():
-            return self._get_max_label_size(font).height()
-        else:
+        if self.labelAutoSize():
             return np.ceil(max([self.labelSize(font, v).height()
                             for v in ticks if self.scaleDiv().contains(v)]))
+        else:
+            return self._get_max_label_size(font).height()
     
     def updateMap(self):
         pos = self.__data.pos

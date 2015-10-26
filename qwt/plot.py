@@ -774,19 +774,19 @@ class QwtPlot(QFrame, QwtPlotDict):
         if self.axisValid(axisId):
             self.axisWidget(axisId).setLabelRotation(rotation)
             
-    def setAxisFixedSize(self, axisId, state):
+    def setAxisLabelAutoSize(self, axisId, state):
         """
-        Set tick labels fixed size option
+        Set tick labels automatic size option (default: on)
   
         :param int axisId: Axis index
         :param bool state: On/off 
         
         .. seealso::
         
-            :py:meth:`qwt.scale_draw.QwtScaleDraw.setFixedSize()`
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setLabelAutoSize()`
         """
         if self.axisValid(axisId):
-            self.axisWidget(axisId).setFixedSize(state)
+            self.axisWidget(axisId).setLabelAutoSize(state)
             
     def setAxisMaxMinor(self, axisId, maxMinor):
         """

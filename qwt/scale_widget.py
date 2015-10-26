@@ -276,7 +276,7 @@ class QwtScaleWidget(QWidget):
         
         .. seealso::
         
-            :py:meth:`QwtScaleDraw.setLabelAlignment()`, 
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setLabelAlignment()`, 
             :py:meth:`setLabelRotation()`
         """
         self.__data.scaleDraw.setLabelAlignment(alignment)
@@ -290,12 +290,25 @@ class QwtScaleWidget(QWidget):
         
         .. seealso::
         
-            :py:meth:`QwtScaleDraw.setLabelRotation()`, 
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setLabelRotation()`, 
             :py:meth:`setLabelFlags()`
         """
         self.__data.scaleDraw.setLabelRotation(rotation)
         self.layoutScale()
     
+    def setLabelAutoSize(self, state):
+        """
+        Set the automatic size option for labels (default: on).
+        
+        :param bool state: On/off
+        
+        .. seealso::
+        
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setLabelAutoSize()`
+        """
+        self.__data.scaleDraw.setLabelAutoSize(state)
+        self.layoutScale()
+
     def setScaleDraw(self, scaleDraw):
         """
         Set a scale draw
@@ -330,7 +343,7 @@ class QwtScaleWidget(QWidget):
                 
         .. seealso::
         
-            :py:meth:`QwtScaleDraw.setScaleDraw()`
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setScaleDraw()`
         """
         return self.__data.scaleDraw
     
