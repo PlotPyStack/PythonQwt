@@ -159,9 +159,12 @@ class QwtText(object):
     # enum LayoutAttribute
     MinimumLayout = 0x01
 
+    # Optimization: a single text engine for all QwtText objects
+    # (this is not how it's implemented in Qwt6 C++ library)
+    __map = {PlainText: QwtPlainTextEngine(), RichText:  QwtRichTextEngine()}
+
     def __init__(self, text=None, textFormat=None, other=None):
         self.__desktopwidget = None
-        self._dict = QwtTextEngineDict()
         if text is None:
             text = ''
         if textFormat is None:
@@ -569,7 +572,7 @@ class QwtText(object):
                                     self.__data.renderFlags, self.__data.text)
         painter.restore()
     
-    def textEngine(self, *args):
+    def textEngine(self, text=None, format_=None):
         """
         Find the text engine for a text format
 
@@ -585,7 +588,21 @@ class QwtText(object):
         :param int format: Text format
         :return: Corresponding text engine
         """
-        return self._dict.textEngine(*args)
+        if text is None:
+            return self.__map.get(format_)
+        elif format_ is not None:
+            if format_ == QwtText.AutoText:
+                for key, engine in list(self.__map.items()):
+                    if key != QwtText.PlainText:
+                        if engine and engine.mightRender(text):
+                            return engine
+            engine = self.__map.get(format_)
+            if engine is not None:
+                return engine
+            return self.__map[QwtText.PlainText]
+        else:
+            raise TypeError("%s().textEngine() takes 1 or 2 argument(s) (none"\
+                            " given)" % self.__class__.__name__)
     
     def setTextEngine(self, format_, engine):
         """
@@ -607,39 +624,6 @@ class QwtText(object):
             
             Using `QwtText.AutoText` does nothing.
         """
-        self._dict.setTextEngine(format_, engine)
-
-
-class QwtTextEngineDict(object):
-    # Optimization: a single text engine for all QwtText objects
-    # (this is not how it's implemented in Qwt6 C++ library)
-    __map = {QwtText.PlainText: QwtPlainTextEngine(),
-             QwtText.RichText:  QwtRichTextEngine()}
-    
-    def textEngine(self, *args):
-        if len(args) == 1:
-            format_ = args[0]
-            return self.__map.get(format_)
-        elif len(args) == 2:
-            text, format_ = args
-        
-            if format_ == QwtText.AutoText:
-                for key, engine in list(self.__map.items()):
-                    if key != QwtText.PlainText:
-                        if engine and engine.mightRender(text):
-                            return engine
-            
-            engine = self.__map.get(format_)
-            if engine is not None:
-                return engine
-            
-            engine = self.__map[QwtText.PlainText]
-            return engine
-        else:
-            raise TypeError("%s().textEngine() takes 1 or 2 argument(s) (%s "\
-                            "given)" % (self.__class__.__name__, len(args)))
-        
-    def setTextEngine(self, format_, engine):
         if format_ == QwtText.AutoText:
             return
         if format_ == QwtText.PlainText and engine is None:
