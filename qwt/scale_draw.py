@@ -1179,8 +1179,12 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if not ticks:
             return 0
         if self.labelAutoSize():
-            return np.ceil(max([self.labelSize(font, v).width()
-                            for v in ticks if self.scaleDiv().contains(v)]))
+            vmax = sorted([v for v in ticks if self.scaleDiv().contains(v)],
+                           key=lambda obj: len(QLocale().toString(obj)))[-1]
+            return np.ceil(self.labelSize(font, vmax).width())
+            ## Original implementation (closer to Qwt's C++ code, but slower):
+            #return np.ceil(max([self.labelSize(font, v).width()
+            #                for v in ticks if self.scaleDiv().contains(v)]))
         else:
             return self._get_max_label_size(font).width()
     
@@ -1193,8 +1197,12 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if not ticks:
             return 0
         if self.labelAutoSize():
-            return np.ceil(max([self.labelSize(font, v).height()
-                            for v in ticks if self.scaleDiv().contains(v)]))
+            vmax = sorted([v for v in ticks if self.scaleDiv().contains(v)],
+                           key=lambda obj: len(QLocale().toString(obj)))[-1]
+            return np.ceil(self.labelSize(font, vmax).height())
+            ## Original implementation (closer to Qwt's C++ code, but slower):
+            #return np.ceil(max([self.labelSize(font, v).height()
+            #                for v in ticks if self.scaleDiv().contains(v)]))
         else:
             return self._get_max_label_size(font).height()
     
