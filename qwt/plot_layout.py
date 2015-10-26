@@ -56,14 +56,14 @@ class ScaleData(object):
 
 class CanvasData(object):
     def __init__(self):
-        self.contentsMargins = [0 for _i in range(QwtPlot.axisCnt)]
+        self.contentsMargins = [0 for _i in QwtPlot.validAxes]
 
 class QwtPlotLayout_LayoutData(object):
     def __init__(self):
         self.legend = LegendData()
         self.title = TitleData()
         self.footer = FooterData()
-        self.scale = [ScaleData() for _i in range(QwtPlot.axisCnt)]
+        self.scale = [ScaleData() for _i in QwtPlot.validAxes]
         self.canvas = CanvasData()
     
     def init(self, plot, rect):
@@ -100,7 +100,7 @@ class QwtPlotLayout_LayoutData(object):
                 self.footer.text.setFont(label.font())
             self.footer.frameWidth = plot.footerLabel().frameWidth()
         # scales
-        for axis in range(QwtPlot.axisCnt):
+        for axis in QwtPlot.validAxes:
             if plot.axisEnabled(axis):
                 scaleWidget = plot.axisWidget(axis)
                 self.scale[axis].isEnabled = True
@@ -133,7 +133,7 @@ class QwtPlotLayout_PrivateData(object):
         self.titleRect = QRectF()
         self.footerRect = QRectF()
         self.legendRect = QRectF()
-        self.scaleRect = [QRectF() for _i in range(QwtPlot.axisCnt)]
+        self.scaleRect = [QRectF() for _i in QwtPlot.validAxes]
         self.canvasRect = QRectF()
         self.layoutData = QwtPlotLayout_LayoutData()
         self.legendPos = None
@@ -199,9 +199,9 @@ class QwtPlotLayout(object):
         if margin < 1:
             margin = -1
         if axis == -1:
-            for axis in range(QwtPlot.axisCnt):
+            for axis in QwtPlot.validAxes:
                 self.__data.canvasMargin[axis] = margin
-        elif axis >= 0 and axis < QwtPlot.axisCnt:
+        elif axis in QwtPlot.validAxes:
             self.__data.canvasMargin[axis] = margin
     
     def canvasMargin(self, axisId):
@@ -213,7 +213,7 @@ class QwtPlotLayout(object):
         
             :py:meth:`setCanvasMargin()`
         """
-        if axisId < 0 or axisId >= QwtPlot.axisCnt:
+        if axisId not in QwtPlot.validAxes:
             return 0
         return self.__data.canvasMargin[axisId]
     
@@ -250,11 +250,11 @@ class QwtPlotLayout(object):
         """
         if len(args) == 1:
             on, = args
-            for axis in range(QwtPlot.axisCnt):
+            for axis in QwtPlot.validAxes:
                 self.__data.alignCanvasToScales[axis] = on
         elif len(args) == 2:
             axisId, on = args
-            if axis >= 0 and axis < QwtPlot.axisCnt:
+            if axis in QwtPlot.validAxes:
                 self.__data.alignCanvasToScales[axisId] = on
         else:
             raise TypeError("%s().setAlignCanvasToScales() takes 1 or 2 "\
@@ -276,7 +276,7 @@ class QwtPlotLayout(object):
         
             :py:meth:`setAlignCanvasToScale()`, :py:meth:`setCanvasMargin()`
         """
-        if axisId < 0 or axisId >= QwtPlot.axisCnt:
+        if axisId not in QwtPlot.validAxes:
             return False
         return self.__data.alignCanvasToScales[axisId]
     
@@ -477,7 +477,7 @@ class QwtPlotLayout(object):
         
             :py:meth:`scaleRect()`, :py:meth:`activate()`
         """
-        if axis >= 0 and axis < QwtPlot.axisCnt:
+        if axis in QwtPlot.validAxes:
             self.__data.scaleRect[axis] = rect
     
     def scaleRect(self, axis):
@@ -489,7 +489,7 @@ class QwtPlotLayout(object):
         
             :py:meth:`invalidate()`, :py:meth:`activate()`
         """
-        if axis < 0 or axis >= QwtPlot.axisCnt:
+        if axis not in QwtPlot.validAxes:
             return QRectF()
         return self.__data.scaleRect[axis]
     
@@ -530,7 +530,7 @@ class QwtPlotLayout(object):
         self.__data.footerRect = QRectF()
         self.__data.legendRect = QRectF()
         self.__data.canvasRect = QRectF()
-        for axis in range(QwtPlot.axisCnt):
+        for axis in QwtPlot.validAxes:
             self.__data.scaleRect[axis] = QRectF()
     
     def minimumSizeHint(self, plot):
@@ -549,10 +549,10 @@ class QwtPlotLayout(object):
                 self.minLeft = 0
                 self.minRight = 0
                 self.tickOffset = 0
-        scaleData = [_ScaleData() for _i in range(QwtPlot.axisCnt)]
-        canvasBorder = [0 for _i in range(QwtPlot.axisCnt)]
+        scaleData = [_ScaleData() for _i in QwtPlot.validAxes]
+        canvasBorder = [0 for _i in QwtPlot.validAxes]
         fw, _, _, _ = plot.canvas().getContentsMargins()
-        for axis in range(QwtPlot.axisCnt):
+        for axis in QwtPlot.validAxes:
             if plot.axisEnabled(axis):
                 scl = plot.axisWidget(axis)
                 sd = scaleData[axis]
@@ -564,7 +564,7 @@ class QwtPlotLayout(object):
                 if scl.scaleDraw().hasComponent(QwtAbstractScaleDraw.Ticks):
                     sd.tickOffset += np.ceil(scl.scaleDraw().maxTickLength())
             canvasBorder[axis] = fw + self.__data.canvasMargin[axis] + 1
-        for axis in range(QwtPlot.axisCnt):
+        for axis in QwtPlot.validAxes:
             sd = scaleData[axis]
             if sd.w and axis in (QwtPlot.xBottom, QwtPlot.xTop):
                 if sd.minLeft > canvasBorder[QwtPlot.yLeft]\
@@ -707,9 +707,9 @@ class QwtPlotLayout(object):
             * `dimAxis`: Expanded heights of the axis in axis orientation.
         """
         dimTitle = dimFooter = 0
-        dimAxis = [0 for axis in range(QwtPlot.axisCnt)]
-        backboneOffset = [0 for _i in range(QwtPlot.axisCnt)]
-        for axis in range(QwtPlot.axisCnt):
+        dimAxis = [0 for axis in QwtPlot.validAxes]
+        backboneOffset = [0 for _i in QwtPlot.validAxes]
+        for axis in QwtPlot.validAxes:
             if not (options & self.IgnoreFrames):
                 backboneOffset[axis] += self.__data.layoutData.canvas.contentsMargins[axis]
             if not self.__data.alignCanvasToScales[axis]:
@@ -748,7 +748,7 @@ class QwtPlotLayout(object):
                 if d > dimFooter:
                     dimFooter = d
                     done = False
-            for axis in range(QwtPlot.axisCnt):
+            for axis in QwtPlot.validAxes:
                 scaleData = self.__data.layoutData.scale[axis]
                 if scaleData.isEnabled:
                     if axis in (QwtPlot.xTop, QwtPlot.xBottom):
@@ -793,14 +793,14 @@ class QwtPlotLayout(object):
         :param QRectF canvasRect: Geometry of the canvas ( IN/OUT )
         :param QRectF scaleRect: Geometry of the scales ( IN/OUT )
         """
-        backboneOffset = [0 for _i in range(QwtPlot.axisCnt)]
-        for axis in range(QwtPlot.axisCnt):
+        backboneOffset = [0 for _i in QwtPlot.validAxes]
+        for axis in QwtPlot.validAxes:
             backboneOffset[axis] = 0
             if not self.__data.alignCanvasToScales[axis]:
                 backboneOffset[axis] += self.__data.canvasMargin[axis]
             if not options & self.IgnoreFrames:
                 backboneOffset[axis] += self.__data.layoutData.canvas.contentsMargins[axis]
-        for axis in range(QwtPlot.axisCnt):
+        for axis in QwtPlot.validAxes:
             if not scaleRect[axis].isValid():
                 continue
             startDist = self.__data.layoutData.scale[axis].start
@@ -881,7 +881,7 @@ class QwtPlotLayout(object):
                     else:
                         if topOffset > 0:
                             axisRect.setTop(axisRect.top()+topOffset)
-        for axis in range(QwtPlot.axisCnt):
+        for axis in QwtPlot.validAxes:
             sRect = scaleRect[axis]
             if not sRect.isValid():
                 continue
@@ -990,7 +990,7 @@ class QwtPlotLayout(object):
                 rect.y()+dimAxes[QwtPlot.xTop],
                 rect.width()-dimAxes[QwtPlot.yRight]-dimAxes[QwtPlot.yLeft],
                 rect.height()-dimAxes[QwtPlot.xBottom]-dimAxes[QwtPlot.xTop])
-        for axis in range(QwtPlot.axisCnt):
+        for axis in QwtPlot.validAxes:
             if dimAxes[axis]:
                 dim = dimAxes[axis]
                 scaleRect = self.__data.scaleRect[axis]

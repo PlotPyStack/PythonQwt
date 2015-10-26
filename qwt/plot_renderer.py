@@ -348,7 +348,7 @@ class QwtPlotRenderer(QObject):
         baseLineDists = [None]*QwtPlot.axisCnt
         canvasMargins = [None]*QwtPlot.axisCnt
 
-        for axisId in range(QwtPlot.axisCnt):
+        for axisId in QwtPlot.validAxes:
             canvasMargins[axisId] = layout.canvasMargin(axisId)
             if self.__data.layoutFlags & self.FrameWithScales:
                 scaleWidget = plot.axisWidget(axisId)
@@ -410,7 +410,7 @@ class QwtPlotRenderer(QObject):
            plot.titleLabel().text():
             self.renderLegend(plot, painter, layout.legendRect())
             
-        for axisId in range(QwtPlot.axisCnt):
+        for axisId in QwtPlot.validAxes:
             scaleWidget = plot.axisWidget(axisId)
             if scaleWidget:
                 baseDist = scaleWidget.margin()
@@ -420,7 +420,7 @@ class QwtPlotRenderer(QObject):
         
         painter.restore()
         
-        for axisId in range(QwtPlot.axisCnt):
+        for axisId in QwtPlot.validAxes:
             if self.__data.layoutFlags & self.FrameWithScales:
                 scaleWidget = plot.axisWidget(axisId)
                 if scaleWidget:
@@ -603,7 +603,7 @@ class QwtPlotRenderer(QObject):
         :return: Calculated scale maps
         """
         maps = []
-        for axisId in range(QwtPlot.axisCnt):
+        for axisId in QwtPlot.validAxes:
             map_ = QwtScaleMap()
             map_.setTransformation(
                                 plot.axisScaleEngine(axisId).transformation())
@@ -635,7 +635,7 @@ class QwtPlotRenderer(QObject):
     def updateCanvasMargins(self, plot, canvasRect, maps):
         margins = plot.getCanvasMarginsHint(maps, canvasRect)
         marginsChanged = False
-        for axisId in range(QwtPlot.axisCnt):
+        for axisId in QwtPlot.validAxes:
             if margins[axisId] >= 0.:
                 m = np.ceil(margins[axisId])
                 plot.plotLayout().setCanvasMargin(m, axisId)

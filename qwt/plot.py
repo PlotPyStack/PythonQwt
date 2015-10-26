@@ -277,7 +277,8 @@ class QwtPlot(QFrame, QwtPlotDict):
     legendDataChanged = Signal("PyQt_PyObject", "PyQt_PyObject")
 
     # enum Axis
-    yLeft, yRight, xBottom, xTop, axisCnt = list(range(5))
+    validAxes = yLeft, yRight, xBottom, xTop = list(range(4))
+    axisCnt = len(validAxes)
     
     # enum LegendPosition
     LeftLegend, RightLegend, BottomLegend, TopLegend = list(range(4))
@@ -363,7 +364,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         
     def initAxesData(self):
         """Initialize axes"""
-        self.__axisData = [AxisData() for axisId in range(self.axisCnt)]
+        self.__axisData = [AxisData() for axisId in self.validAxes]
         
         self.__axisData[self.yLeft].scaleWidget = \
             QwtScaleWidget(QwtScaleDraw.LeftScale, self)
@@ -386,7 +387,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         fscl = QFont(self.fontInfo().family(), 10)
         fttl = QFont(self.fontInfo().family(), 12, QFont.Bold)
         
-        for axisId in range(self.axisCnt):
+        for axisId in self.validAxes:
             d = self.__axisData[axisId]
 
             d.scaleEngine = QwtLinearScaleEngine()
@@ -414,7 +415,7 @@ class QwtPlot(QFrame, QwtPlotDict):
 
     def deleteAxesData(self):
         #XXX Is is really necessary in Python? (pure transcription of C++)
-        for axisId in range(self.axisCnt):
+        for axisId in self.validAxes:
             self.__axisData[axisId].scaleEngine = None
             self.__axisData[axisId] = None
 
@@ -851,7 +852,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`setAxisScaleDiv()`, :py:meth:`replot()`,
             :py:meth:`QwtPlotItem.boundingRect()`
         """
-        intv = [QwtInterval() for _i in range(self.axisCnt)]
+        intv = [QwtInterval() for _i in self.validAxes]
         itmList = self.itemList()
         for item in itmList:
             if not item.testItemAttribute(QwtPlotItem.AutoScale):
@@ -864,7 +865,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                     intv[item.xAxis()] |= QwtInterval(rect.left(), rect.right())
                 if rect.height() >= 0.:
                     intv[item.yAxis()] |= QwtInterval(rect.top(), rect.bottom())
-        for axisId in range(self.axisCnt):
+        for axisId in self.validAxes:
             d = self.__axisData[axisId]
             minValue = d.minValue
             maxValue = d.maxValue
@@ -1084,7 +1085,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`minimumSizeHint()`
         """
         dw = dh = 0
-        for axisId in range(self.axisCnt):
+        for axisId in self.validAxes:
             if self.axisEnabled(axisId):
                 niceDist = 40
                 scaleWidget = self.axisWidget(axisId)
@@ -1145,7 +1146,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         return (self.contentsRect(),
                 self.__data.titleLabel.text(), self.__data.footerLabel.text(),
                 [(self.axisEnabled(axisId), self.axisTitle(axisId).text())
-                 for axisId in range(self.axisCnt)],
+                 for axisId in self.validAxes],
                 self.__data.legend)
     
     def updateLayout(self):
@@ -1166,9 +1167,8 @@ class QwtPlot(QFrame, QwtPlotDict):
         
         titleRect = self.__data.layout.titleRect().toRect()
         footerRect = self.__data.layout.footerRect().toRect()
-        scaleRect = [None] * self.axisCnt
-        for axisId in range(self.axisCnt):
-            scaleRect[axisId] = self.__data.layout.scaleRect(axisId).toRect()
+        scaleRect = [self.__data.layout.scaleRect(axisId).toRect()
+                     for axisId in self.validAxes]
         legendRect = self.__data.layout.legendRect().toRect()
         canvasRect = self.__data.layout.canvasRect().toRect()
         
@@ -1186,7 +1186,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         else:
             self.__data.footerLabel.hide()
         
-        for axisId in range(self.axisCnt):
+        for axisId in self.validAxes:
             if self.axisEnabled(axisId):
                 self.axisWidget(axisId).setGeometry(scaleRect[axisId])
                 
@@ -1254,12 +1254,12 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`getCanvasMarginsHint()`, 
             :py:meth:`QwtPlotItem.getCanvasMarginHint()`
         """
-        maps = [self.canvasMap(axisId) for axisId in range(self.axisCnt)]
+        maps = [self.canvasMap(axisId) for axisId in self.validAxes]
         margins = self.getCanvasMarginsHint(maps, self.canvas().contentsRect())
         
         doUpdate = False
         
-        for axisId in range(self.axisCnt):
+        for axisId in self.validAxes:
             if margins[axisId] >= 0.:
                 m = np.ceil(margins[axisId])
                 self.plotLayout().setCanvasMargin(m, axisId)
@@ -1285,7 +1285,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`getCanvasMarginsHint()`, 
             :py:meth:`QwtPlotItem.getCanvasMarginHint()`
         """
-        maps = [self.canvasMap(axisId) for axisId in range(self.axisCnt)]
+        maps = [self.canvasMap(axisId) for axisId in self.validAxes]
         self.drawItems(painter, self.__data.canvas.contentsRect(), maps)
     
     def drawItems(self, painter, canvasRect, maps):
@@ -1397,7 +1397,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         :param int axisId: Axis
         :return: True if the specified axis exists, otherwise False
         """
-        return axisId in range(QwtPlot.axisCnt)
+        return axisId in QwtPlot.validAxes
     
     def insertLegend(self, legend, pos=None, ratio=-1):
         """
