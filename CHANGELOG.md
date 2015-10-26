@@ -1,5 +1,16 @@
 # History of changes
 
+## Version 0.5.0
+
+Various optimizations
+Added QwtScaleDraw.setFixedSize/fixedSize methods to set the new fixed size option (see documentation)
+
+## Version 0.4.0
+
+Color bar: fixed axis ticks shaking when color bar is enabled
+Fixed QwtPainter.drawColorBar for horizontal color bars (typo)
+Restored compatibility with original Qwt signals (QwtPlot, ...)
+
 ## Version 0.3.0
 
 Renamed the project (python-qwt --> PythonQwt), for various reasons.

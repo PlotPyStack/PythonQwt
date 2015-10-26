@@ -774,6 +774,20 @@ class QwtPlot(QFrame, QwtPlotDict):
         if self.axisValid(axisId):
             self.axisWidget(axisId).setLabelRotation(rotation)
             
+    def setAxisFixedSize(self, axisId, state):
+        """
+        Set tick labels fixed size option
+  
+        :param int axisId: Axis index
+        :param bool state: On/off 
+        
+        .. seealso::
+        
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setFixedSize()`
+        """
+        if self.axisValid(axisId):
+            self.axisWidget(axisId).setFixedSize(state)
+            
     def setAxisMaxMinor(self, axisId, maxMinor):
         """
         Set the maximum number of minor scale intervals for a specified axis
