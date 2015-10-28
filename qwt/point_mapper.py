@@ -87,9 +87,9 @@ def qwtToPolylineFiltered(xMap, yMap, series, from_, to, round_,
     pointer.setsize(2*polyline.size()*tinfo(dtype).dtype.itemsize)
     memory = np.frombuffer(pointer, dtype)
     memory[:(to-from_)*2+1:2] =\
-                        round_(xMap.transform(series.xData()))[from_:to+1]
+                        round_(xMap.transform(series.xData()[from_:to+1]))
     memory[1:(to-from_)*2+2:2] =\
-                        round_(yMap.transform(series.yData()))[from_:to+1]
+                        round_(yMap.transform(series.yData()[from_:to+1]))
     return polyline    
 #    # Pure Python implementation (catastophic performance)
 #    points = polyline.data()
