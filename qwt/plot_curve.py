@@ -637,9 +637,9 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
                 xi = round(xi)
                 yi = round(yi)
             if o == Qt.Horizontal:
-                QwtPainter.drawLine(painter, x0, yi, xi, yi)
-            else:
                 QwtPainter.drawLine(painter, xi, y0, xi, yi)
+            else:
+                QwtPainter.drawLine(painter, x0, yi, xi, yi)
         painter.restore()
         
     def drawDots(self, painter, xMap, yMap, canvasRect, from_, to):
@@ -814,7 +814,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             return
         doAlign = QwtPainter.roundingAlignment(painter)
         baseline = self.__data.baseline
-        if self.orientation() == Qt.Vertical:
+        if self.orientation() == Qt.Horizontal:
             if yMap.transformation():
                 baseline = yMap.transformation().bounded(baseline)
             refY = yMap.transform(baseline)
