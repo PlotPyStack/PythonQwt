@@ -170,18 +170,13 @@ class QwtPlotMarker(QwtPlotItem):
         """
         if self.__data.style == self.NoLine:
             return
-        doAlign = QwtPainter.roundingAlignment(painter)
         painter.setPen(self.__data.pen)
         if self.__data.style in (QwtPlotMarker.HLine, QwtPlotMarker.Cross):
             y = pos.y()
-            if doAlign:
-                y = round(y)
             QwtPainter.drawLine(painter, canvasRect.left(),
                                   y, canvasRect.right()-1., y)
         if self.__data.style in (QwtPlotMarker.VLine, QwtPlotMarker.Cross):
             x = pos.x()
-            if doAlign:
-                x = round(x)
             QwtPainter.drawLine(painter, x,
                                   canvasRect.top(), x, canvasRect.bottom()-1.)
     

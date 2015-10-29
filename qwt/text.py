@@ -547,7 +547,7 @@ class QwtText(object):
                 painter.setPen(self.__data.borderPen)
                 painter.setBrush(self.__data.backgroundBrush)
                 if self.__data.borderRadius == 0:
-                    QwtPainter.drawRect(painter, rect)
+                    painter.drawRect(rect)
                 else:
                     painter.setRenderHint(QPainter.Antialiasing, True)
                     painter.drawRoundedRect(rect, self.__data.borderRadius,

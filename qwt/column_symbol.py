@@ -125,11 +125,6 @@ class QwtColumnSymbol(object):
     
     def drawBox(self, painter, rect):
         r = rect.toRect()
-        if QwtPainter().roundingAlignment(painter):
-            r.setLeft(round(r.left()))
-            r.setRight(round(r.right()))
-            r.setTop(round(r.top()))
-            r.setBottom(round(r.bottom()))
         if self.__data.frameStyle == QwtColumnSymbol.Raised:
             qwtDrawPanel(painter, r, self.__data.palette, self.__data.lineWidth)
         elif self.__data.frameStyle == QwtColumnSymbol.Plain:

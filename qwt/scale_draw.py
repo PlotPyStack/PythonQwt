@@ -762,45 +762,25 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         """
         if len_ <= 0:
             return
-        
-        roundingAlignment = QwtPainter.roundingAlignment(painter)
         pos = self.__data.pos
         tval = self.scaleMap().transform(value)
-        if roundingAlignment:
-            tval = round(tval)
-        
         pw = self.penWidth()
         a = 0
-        if pw > 1 and roundingAlignment:
-            a = 1
-        
         if self.alignment() == self.LeftScale:
             x1 = pos.x() + a
             x2 = pos.x() + a - pw - len_
-            if roundingAlignment:
-                x1 = round(x1)
-                x2 = round(x2)
             QwtPainter.drawLine(painter, x1, tval, x2, tval)
         elif self.alignment() == self.RightScale:
             x1 = pos.x()
             x2 = pos.x() + pw + len_
-            if roundingAlignment:
-                x1 = round(x1)
-                x2 = round(x2)
             QwtPainter.drawLine(painter, x1, tval, x2, tval)
         elif self.alignment() == self.BottomScale:
             y1 = pos.y()
             y2 = pos.y() + pw + len_
-            if roundingAlignment:
-                y1 = round(y1)
-                y2 = round(y2)
             QwtPainter.drawLine(painter, tval, y1, tval, y2)
         elif self.alignment() == self.TopScale:
             y1 = pos.y() + a
             y2 = pos.y() - pw - len_ + a
-            if roundingAlignment:
-                y1 = round(y1)
-                y2 = round(y2)
             QwtPainter.drawLine(painter, tval, y1, tval, y2)
         
     def drawBackbone(self, painter):
@@ -813,38 +793,20 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         
             :py:meth:`drawTick()`, :py:meth:`drawLabel()`
         """
-        doAlign = QwtPainter.roundingAlignment(painter)
         pos = self.__data.pos
         len_ = self.__data.len
-        pw = max([self.penWidth(), 1])
-        
-        if doAlign:
-            if self.alignment() in (self.LeftScale, self.TopScale):
-                off = (pw-1)/2
-            else:
-                off = pw/2
-        else:
-            off = .5*self.penWidth()
-            
+        off = .5*self.penWidth()
         if self.alignment() == self.LeftScale:
             x = pos.x() - off
-            if doAlign:
-                x = round(x)
             QwtPainter.drawLine(painter, x, pos.y(), x, pos.y()+len_)
         elif self.alignment() == self.RightScale:
             x = pos.x() + off
-            if doAlign:
-                x = round(x)
             QwtPainter.drawLine(painter, x, pos.y(), x, pos.y()+len_)
         elif self.alignment() == self.TopScale:
             y = pos.y() - off
-            if doAlign:
-                y = round(y)
             QwtPainter.drawLine(painter, pos.x(), y, pos.x()+len_, y)
         elif self.alignment() == self.BottomScale:
             y = pos.y() + off
-            if doAlign:
-                y = round(y)
             QwtPainter.drawLine(painter, pos.x(), y, pos.x()+len_, y)
         
     def move(self, *args):

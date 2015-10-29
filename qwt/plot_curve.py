@@ -16,8 +16,6 @@ QwtPlotCurve
 from qwt.text import QwtText
 from qwt.plot import QwtPlotItem, QwtPlotItem_PrivateData
 from qwt.painter import QwtPainter
-from qwt.point_mapper import QwtPointMapper
-from qwt.clipper import QwtClipper
 from qwt.math import qwtSqr
 from qwt.graphic import QwtGraphic
 from qwt.series_data import QwtSeriesData, QwtPointArrayData
@@ -26,9 +24,8 @@ from qwt.plot_seriesitem import QwtPlotSeriesItem
 from qwt.symbol import QwtSymbol
 from qwt.plot_directpainter import QwtPlotDirectPainter
 
-from qwt.qt.QtGui import (QPen, QBrush, QPaintEngine, QPainter, QPolygonF,
-                          QColor)
-from qwt.qt.QtCore import QSize, Qt, QT_VERSION, QRectF, QPointF
+from qwt.qt.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
+from qwt.qt.QtCore import QSize, Qt, QRectF, QPointF
 
 import numpy as np
 
@@ -55,6 +52,25 @@ def qwtVerifyRange(size, i1, i2):
     return i2-i1+1
 
 
+def series_to_polyline(xMap, yMap, series, from_, to, Polygon=None):
+    """
+    Convert series data to QPolygon(F) polyline
+    """
+    if Polygon is None:
+        Polygon = QPolygonF
+    polyline = Polygon(to-from_+1)
+    pointer = polyline.data()
+    if Polygon is QPolygonF:
+        dtype, tinfo = np.float, np.finfo
+    else:
+        dtype, tinfo = np.int, np.iinfo
+    pointer.setsize(2*polyline.size()*tinfo(dtype).dtype.itemsize)
+    memory = np.frombuffer(pointer, dtype)
+    memory[:(to-from_)*2+1:2] = xMap.transform(series.xData()[from_:to+1])
+    memory[1:(to-from_)*2+2:2] = yMap.transform(series.yData()[from_:to+1])
+    return polyline    
+
+
 class QwtPlotCurve_PrivateData(QwtPlotItem_PrivateData):
     def __init__(self):
         QwtPlotItem_PrivateData.__init__(self)
@@ -62,9 +78,6 @@ class QwtPlotCurve_PrivateData(QwtPlotItem_PrivateData):
         self.baseline = 0.
         self.symbol = None
         self.attributes = 0
-        self.paintAttributes = QwtPlotCurve.FilterPoints
-        #TODO: uncomment next line when QwtClipper will be implemented
-#        self.paintAttributes = QwtPlotCurve.ClipPolygons|QwtPlotCurve.FilterPoints
         self.legendAttributes = QwtPlotCurve.LegendShowLine
         self.pen = QPen(Qt.black)
         self.brush = QBrush()
@@ -152,41 +165,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
         If the curve has a brush a rectangle filled with the
         curve brush() is painted.
-            
-    Paint attributes:
-    
-      * `QwtPlotCurve.ClipPolygons`:
-        
-        Clip polygons before painting them. In situations, where points
-        are far outside the visible area (f.e when zooming deep) this
-        might be a substantial improvement for the painting performance
-        
-        .. warning::
-            
-            This option is currently *not* supported in `PythonQwt`.
-
-      * `QwtPlotCurve.FilterPoints`:
-
-        Tries to reduce the data that has to be painted, by sorting out
-        duplicates, or paintings outside the visible area. Might have a
-        notable impact on curves with many close points.
-        Only a couple of very basic filtering algorithms are implemented.
-
-      * `QwtPlotCurve.MinimizeMemory`:
-        
-        .. warning::
-
-            This option was removed as it has no sense in `PythonQwt` 
-            (the polyline plotting is not taking more memory than the 
-            array data that is already there).
-            
-      * `QwtPlotCurve.ImageBuffer`:
-        
-        Render the points to a temporary image and paint the image.
-        This is a very special optimization for Dots style, when
-        having a huge amount of points. 
-        With a reasonable number of points QPainter.drawPoints()
-        will be faster.
 
             
     .. py:class:: QwtPlotCurve([title=None])
@@ -211,12 +189,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     LegendShowSymbol = 0x02
     LegendShowBrush = 0x04
     
-    # enum PaintAttribute
-    ClipPolygons = 0x01
-    FilterPoints = 0x02
-    # MinimizeMemory = 0x04 --> not necessary, see CHANGELOG
-    ImageBuffer = 0x08
-    
     def __init__(self, title=None):
         if title is None:
             title = QwtText("")
@@ -238,38 +210,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     def rtti(self):
         """:return: `QwtPlotItem.Rtti_PlotCurve`"""
         return QwtPlotItem.Rtti_PlotCurve
-        
-    def setPaintAttribute(self, attribute, on=True):
-        """
-        Specify an attribute how to draw the curve
-
-        Supported paint attributes:
-        
-            * `QwtPlotCurve.FilterPoints`
-            * `QwtPlotCurve.ImageBuffer`
-        
-        :param int attribute: Paint attribute
-        :param bool on: On/Off
-        
-        .. seealso::
-        
-            :py:meth:`testPaintAttribute()`
-        """
-        if on:
-            self.__data.paintAttributes |= attribute
-        else:
-            self.__data.paintAttributes &= ~attribute
-    
-    def testPaintAttribute(self, attribute):
-        """
-        :param int attribute: Paint attribute
-        :return: True, when attribute is enabled
-        
-        .. seealso::
-        
-            :py:meth:`setPaintAttribute()`
-        """
-        return self.__data.paintAttributes & attribute
     
     def setLegendAttribute(self, attribute, on=True):
         """
@@ -561,47 +501,19 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         """
         if from_ > to:
             return
-        doAlign = QwtPainter.roundingAlignment(painter)
         doFill = self.__data.brush.style() != Qt.NoBrush\
                  and self.__data.brush.color().alpha() > 0
-        clipRect = QRectF()
-        if self.__data.paintAttributes & self.ClipPolygons:
-            pw = max([1., painter.pen().widthF()])
-            clipRect = canvasRect.adjusted(-pw, -pw, pw, pw)
-        doIntegers = False
-        if QT_VERSION < 0x040800:
-            if painter.paintEngine().type() == QPaintEngine.Raster:
-                if not doFill:
-                    doIntegers = True
-        noDuplicates = self.__data.paintAttributes & self.FilterPoints
-        mapper = QwtPointMapper()
-        mapper.setFlag(QwtPointMapper.RoundPoints, doAlign)
-        mapper.setFlag(QwtPointMapper.WeedOutPoints, noDuplicates)
-        mapper.setBoundingRect(canvasRect)
-        if doIntegers:
-            polyline = mapper.toPolygon(xMap, yMap, self.data(), from_, to)
-            if self.__data.paintAttributes & self.ClipPolygons:
-                polyline = QwtClipper().clipPolygon(clipRect.toAlignedRect(),
-                                                   polyline, False)
-            QwtPainter.drawPolyline(painter, polyline)
-        else:
-            polyline = mapper.toPolygonF(xMap, yMap, self.data(), from_, to)
-            if doFill:
-                if painter.pen().style() != Qt.NoPen:
-                    filled = QPolygonF(polyline)
-                    self.fillCurve(painter, xMap, yMap, canvasRect, filled)
-                    filled.clear()
-                    if self.__data.paintAttributes & self.ClipPolygons:
-                        polyline = QwtClipper().clipPolygonF(clipRect,
-                                                             polyline, False)
-                    QwtPainter.drawPolyline(painter, polyline)
-                else:
-                    self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
+        polyline = series_to_polyline(xMap, yMap, self.data(), from_, to)
+        if doFill:
+            if painter.pen().style() != Qt.NoPen:
+                filled = QPolygonF(polyline)
+                self.fillCurve(painter, xMap, yMap, canvasRect, filled)
+                filled.clear()
+                painter.drawPolyline(polyline)
             else:
-                if self.__data.paintAttributes & self.ClipPolygons:
-                    polyline = QwtClipper().clipPolygonF(clipRect, polyline,
-                                                         False)
-                QwtPainter.drawPolyline(painter, polyline)
+                self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
+        else:
+            painter.drawPolyline(polyline)
     
     def drawSticks(self, painter, xMap, yMap, canvasRect, from_, to):
         """
@@ -621,21 +533,14 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         """
         painter.save()
         painter.setRenderHint(QPainter.Antialiasing, False)
-        doAlign = QwtPainter.roundingAlignment(painter)
         x0 = xMap.transform(self.__data.baseline)
         y0 = yMap.transform(self.__data.baseline)
-        if doAlign:
-            x0 = round(x0)
-            y0 = round(y0)
         o = self.orientation()
         series = self.data()
         for i in range(from_, to+1):
             sample = series.sample(i)
             xi = xMap.transform(sample.x())
             yi = yMap.transform(sample.y())
-            if doAlign:
-                xi = round(xi)
-                yi = round(yi)
             if o == Qt.Horizontal:
                 QwtPainter.drawLine(painter, xi, y0, xi, yi)
             else:
@@ -663,31 +568,10 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             return
         doFill = self.__data.brush.style() != Qt.NoBrush\
                  and self.__data.brush.color().alpha() > 0
-        doAlign = QwtPainter.roundingAlignment(painter)
-        mapper = QwtPointMapper()
-        mapper.setBoundingRect(canvasRect)
-        mapper.setFlag(QwtPointMapper.RoundPoints, doAlign)
-        if self.__data.paintAttributes & self.FilterPoints:
-            if color.alpha() == 255\
-               and not (painter.renderHints() & QPainter.Antialiasing):
-                mapper.setFlag(QwtPointMapper.WeedOutPoints, True)
+        points = series_to_polyline(xMap, yMap, self.data(), from_, to)
+        QwtPainter.drawPoints(painter, points)
         if doFill:
-            mapper.setFlag(QwtPointMapper.WeedOutPoints, False)
-            points = mapper.toPointsF(xMap, yMap, self.data(), from_, to)
-            QwtPainter.drawPoints(painter, points)
             self.fillCurve(painter, xMap, yMap, canvasRect, points)
-        elif self.__data.paintAttributes & self.ImageBuffer:
-            image = mapper.toImage(xMap, yMap, self.data(), from_, to,
-                               self.__data.pen,
-                               painter.testRenderHint(QPainter.Antialiasing))
-            painter.drawImage(canvasRect.toAlignedRect(), image)
-        else:
-            if doAlign:
-                points = mapper.toPoints(xMap, yMap, self.data(), from_, to)
-                QwtPainter.drawPoints(painter, points)
-            else:
-                points = mapper.toPointsF(xMap, yMap, self.data(), from_, to)
-                QwtPainter.drawPoints(painter, points)
     
     def drawSteps(self, painter, xMap, yMap, canvasRect, from_, to):
         """
@@ -705,7 +589,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`draw()`, :py:meth:`drawSticks()`, 
             :py:meth:`drawDots()`, :py:meth:`drawLines()`
         """
-        doAlign = QwtPainter.roundingAlignment(painter)
         polygon = QPolygonF(2*(to-from_)+1)
         inverted = self.orientation() == Qt.Vertical
         if self.__data.attributes & self.Inverted:
@@ -716,9 +599,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             sample = series.sample(i)
             xi = xMap.transform(sample.x())
             yi = yMap.transform(sample.y())
-            if doAlign:
-                xi = round(xi)
-                yi = round(yi)
             if ip > 0:
                 p0 = polygon[ip-2]
                 if inverted:
@@ -727,11 +607,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
                     polygon[ip-1] = QPointF(xi, p0.y())
             polygon[ip] = QPointF(xi, yi)
             ip += 2
-        if self.__data.paintAttributes & self.ClipPolygons:
-            clipped = QwtClipper().clipPolygonF(canvasRect, polygon, False)
-            QwtPainter.drawPolyline(painter, clipped)
-        else:
-            QwtPainter.drawPolyline(painter, polygon)
+        painter.drawPolyline(polygon)
         if self.__data.brush.style() != Qt.NoBrush:
             self.fillCurve(painter, xMap, yMap, canvasRect, polygon)
     
@@ -792,12 +668,10 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         brush = self.__data.brush
         if not brush.color().isValid():
             brush.setColor(self.__data.pen.color())
-        if self.__data.paintAttributes & self.ClipPolygons:
-            polygon = QwtClipper().clipPolygonF(canvasRect, polygon, True)
         painter.save()
         painter.setPen(Qt.NoPen)
         painter.setBrush(brush)
-        QwtPainter.drawPolygon(painter, polygon)
+        painter.drawPolyline(polygon)
         painter.restore()
     
     def closePolyline(self, painter, xMap, yMap, polygon):
@@ -812,22 +686,17 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         """
         if polygon.size() < 2:
             return
-        doAlign = QwtPainter.roundingAlignment(painter)
         baseline = self.__data.baseline
         if self.orientation() == Qt.Horizontal:
             if yMap.transformation():
                 baseline = yMap.transformation().bounded(baseline)
             refY = yMap.transform(baseline)
-            if doAlign:
-                refY = round(refY)
             polygon += QPointF(polygon.last().x(), refY)
             polygon += QPointF(polygon.first().x(), refY)
         else:
             if xMap.transformation():
                 baseline = xMap.transformation().bounded(baseline)
             refX = xMap.transform(baseline)
-            if doAlign:
-                refX = round(refX)
             polygon += QPointF(refX, polygon.last().y())
             polygon += QPointF(refX, polygon.first().y())
     
@@ -848,16 +717,10 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`setSymbol()`, :py:meth:`drawSeries()`, 
             :py:meth:`drawCurve()`
         """
-        mapper = QwtPointMapper()
-        mapper.setFlag(QwtPointMapper.RoundPoints,
-                       QwtPainter.roundingAlignment(painter))
-        mapper.setFlag(QwtPointMapper.WeedOutPoints,
-                       self.testPaintAttribute(QwtPlotCurve.FilterPoints))
-        mapper.setBoundingRect(canvasRect)
         chunkSize = 500
         for i in range(from_, to+1, chunkSize):
             n = min([chunkSize, to-i+1])
-            points = mapper.toPointsF(xMap, yMap, self.data(), i, i+n-1)
+            points = series_to_polyline(xMap, yMap, self.data(), i, i+n-1)
             if points.size() > 0:
                 symbol.drawSymbols(painter, points)
     

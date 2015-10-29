@@ -541,7 +541,7 @@ class QwtPlotRenderer(QObject):
             if not (self.__data.discardFlags & self.DiscardCanvasBackground):
                 bgBrush = canvas.palette().brush(plot.backgroundRole())
                 painter.setBrush(bgBrush)
-            QwtPainter.drawRect(painter, r)
+            painter.drawRect(r)
             painter.restore()
             painter.save()
             painter.setClipRect(canvasRect)

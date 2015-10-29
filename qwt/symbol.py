@@ -17,7 +17,7 @@ from qwt.graphic import QwtGraphic
 from qwt.painter import QwtPainter
 
 from qwt.qt.QtGui import (QPainter, QTransform, QPixmap, QPen, QPolygonF,
-                          QPainterPath, QBrush, QPaintEngine)
+                          QPainterPath, QBrush)
 from qwt.qt.QtCore import QSize, QRect, QPointF, QRectF, QSizeF, Qt, QPoint
 from qwt.qt.QtSvg import QSvgRenderer
 
@@ -125,26 +125,15 @@ def qwtDrawEllipseSymbols(painter, points, numPoints, symbol):
     painter.setBrush(symbol.brush())
     painter.setPen(symbol.pen())
     size =symbol.size()
-    if QwtPainter.roundingAlignment(painter):
-        sw = size.width()
-        sh = size.height()
-        sw2 = size.width()//2
-        sh2 = size.height()//2
-        for pos in points:
-            x = round(pos.x())
-            y = round(pos.y())
-            r = QRectF(x-sw2, y-sh2, sw, sh)
-            QwtPainter.drawEllipse(painter, r)
-    else:
-        sw = size.width()
-        sh = size.height()
-        sw2 = .5*size.width()
-        sh2 = .5*size.height()
-        for pos in points:
-            x = pos.x()
-            y = pos.y()
-            r = QRectF(x-sw2, y-sh2, sw, sh)
-            QwtPainter.drawEllipse(painter, r)
+    sw = size.width()
+    sh = size.height()
+    sw2 = .5*size.width()
+    sh2 = .5*size.height()
+    for pos in points:
+        x = pos.x()
+        y = pos.y()
+        r = QRectF(x-sw2, y-sh2, sw, sh)
+        painter.drawEllipse(r)
 
 
 def qwtDrawRectSymbols(painter, points, numPoints, symbol):
@@ -154,26 +143,15 @@ def qwtDrawRectSymbols(painter, points, numPoints, symbol):
     painter.setPen(pen)
     painter.setBrush(symbol.brush())
     painter.setRenderHint(QPainter.Antialiasing, False)
-    if QwtPainter.roundingAlignment(painter):
-        sw = size.width()
-        sh = size.height()
-        sw2 = size.width()//2
-        sh2 = size.height()//2
-        for pos in points:
-            x = round(pos.x())
-            y = round(pos.y())
-            r = QRectF(x-sw2, y-sh2, sw, sh)
-            QwtPainter.drawRect(painter, r)
-    else:
-        sw = size.width()
-        sh = size.height()
-        sw2 = .5*size.width()
-        sh2 = .5*size.height()
-        for pos in points:
-            x = pos.x()
-            y = pos.y()
-            r = QRectF(x-sw2, y-sh2, sw, sh)
-            QwtPainter.drawRect(painter, r)
+    sw = size.width()
+    sh = size.height()
+    sw2 = .5*size.width()
+    sh2 = .5*size.height()
+    for pos in points:
+        x = pos.x()
+        y = pos.y()
+        r = QRectF(x-sw2, y-sh2, sw, sh)
+        painter.drawRect(r)
 
 
 def qwtDrawDiamondSymbols(painter, points, numPoints, symbol):
@@ -182,32 +160,17 @@ def qwtDrawDiamondSymbols(painter, points, numPoints, symbol):
     pen.setJoinStyle(Qt.MiterJoin)
     painter.setPen(pen)
     painter.setBrush(symbol.brush())
-    if QwtPainter.roundingAlignment(painter):
-        for pos in points:
-            x = round(pos.x())
-            y = round(pos.y())
-            x1 = x-size.width()//2
-            y1 = y-size.height()//2
-            x2 = x1+size.width()
-            y2 = y1+size.height()
-            polygon = QPolygonF()
-            polygon += QPointF(x, y1)
-            polygon += QPointF(x1, y)
-            polygon += QPointF(x, y2)
-            polygon += QPointF(x2, y)
-            QwtPainter.drawPolygon(painter, polygon)
-    else:
-        for pos in points:
-            x1 = pos.x()-.5*size.width()
-            y1 = pos.y()-.5*size.height()
-            x2 = x1+size.width()
-            y2 = y1+size.height()
-            polygon = QPolygonF()
-            polygon += QPointF(pos.x(), y1)
-            polygon += QPointF(x1, pos.y())
-            polygon += QPointF(pos.x(), y2)
-            polygon += QPointF(x2, pos.y())
-            QwtPainter.drawPolygon(painter, polygon)
+    for pos in points:
+        x1 = pos.x()-.5*size.width()
+        y1 = pos.y()-.5*size.height()
+        x2 = x1+size.width()
+        y2 = y1+size.height()
+        polygon = QPolygonF()
+        polygon += QPointF(pos.x(), y1)
+        polygon += QPointF(x1, pos.y())
+        polygon += QPointF(pos.x(), y2)
+        polygon += QPointF(x2, pos.y())
+        painter.drawPolyline(polygon)
 
 
 def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
@@ -216,18 +179,11 @@ def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
     pen.setJoinStyle(Qt.MiterJoin)
     painter.setPen(pen)
     painter.setBrush(symbol.brush())
-    doAlign = QwtPainter.roundingAlignment(painter)
     sw2 = .5*size.width()
     sh2 = .5*size.height()
-    if doAlign:
-        sw2 = np.floor(sw2)
-        sh2 = np.floor(sh2)
     for pos in points:
         x = pos.x()
         y = pos.y()
-        if doAlign:
-            x = round(x)
-            y = round(y)
         x1 = x-sw2
         x2 = x1+size.width()
         y1 = y-sh2
@@ -240,114 +196,65 @@ def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
             triangle = [QPointF(x1, y2), QPointF(x, y1), QPointF(x2, y2)]
         elif type == QwtTriangle.Down:
             triangle = [QPointF(x1, y1), QPointF(x, y2), QPointF(x2, y1)]
-        QwtPainter.drawPolygon(painter, QPolygonF(triangle))
+        painter.drawPolyline(QPolygonF(triangle))
 
 
 def qwtDrawLineSymbols(painter, orientations, points, numPoints, symbol):
     size =symbol.size()
-    off = 0
     pen = QPen(symbol.pen())
     if pen.width() > 1:
         pen.setCapStyle(Qt.FlatCap)
-        off = 1
     painter.setPen(pen)
     painter.setRenderHint(QPainter.Antialiasing, False)
-    if QwtPainter.roundingAlignment(painter):
-        sw = np.floor(size.width())
-        sh = np.floor(size.height())
-        sw2 = size.width()//2
-        sh2 = size.height()//2
-        for pos in points:
-            if orientations & Qt.Horizontal:
-                x = round(pos.x())-sw2
-                y = round(pos.y())
-                QwtPainter.drawLine(painter, x, y, x+sw+off, y)
-            if orientations & Qt.Vertical:
-                x = round(pos.x())
-                y = round(pos.y())-sh2
-                QwtPainter.drawLine(painter, x, y, x, y+sh+off)
-    else:
-        sw = size.width()
-        sh = size.height()
-        sw2 = .5*size.width()
-        sh2 = .5*size.height()
-        for pos in points:
-            if orientations & Qt.Horizontal:
-                x = round(pos.x())-sw2
-                y = round(pos.y())
-                QwtPainter.drawLine(painter, x, y, x+sw, y)
-            if orientations & Qt.Vertical:
-                x = round(pos.x())
-                y = round(pos.y())-sh2
-                QwtPainter.drawLine(painter, x, y, x, y+sh)
+    sw = size.width()
+    sh = size.height()
+    sw2 = .5*size.width()
+    sh2 = .5*size.height()
+    for pos in points:
+        if orientations & Qt.Horizontal:
+            x = round(pos.x())-sw2
+            y = round(pos.y())
+            QwtPainter.drawLine(painter, x, y, x+sw, y)
+        if orientations & Qt.Vertical:
+            x = round(pos.x())
+            y = round(pos.y())-sh2
+            QwtPainter.drawLine(painter, x, y, x, y+sh)
 
 
 def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
     size =symbol.size()
-    off = 0
     pen = QPen(symbol.pen())
     if pen.width() > 1:
         pen.setCapStyle(Qt.FlatCap)
-        off = 1
     painter.setPen(pen)
-    if QwtPainter.roundingAlignment(painter):
-        sw = np.floor(size.width())
-        sh = np.floor(size.height())
-        sw2 = size.width()//2
-        sh2 = size.height()//2
-        for pos in points:
-            x = round(pos.x())
-            y = round(pos.y())
-            x1 = x-sw2
-            x2 = x1+sw+off
-            y1 = y-sh2
-            y2 = y1+sh+off
-            QwtPainter.drawLine(painter, x1, y1, x2, y2)
-            QwtPainter.drawLine(painter, x2, y1, x1, y2)
-    else:
-        sw = size.width()
-        sh = size.height()
-        sw2 = .5*size.width()
-        sh2 = .5*size.height()
-        for pos in points:
-            x1 = pos.x()-sw2
-            x2 = x1+sw
-            y1 = pos.y()-sh2
-            y2 = y1+sh
-            QwtPainter.drawLine(painter, x1, y1, x2, y2)
-            QwtPainter.drawLine(painter, x2, y1, x1, y2)
+    sw = size.width()
+    sh = size.height()
+    sw2 = .5*size.width()
+    sh2 = .5*size.height()
+    for pos in points:
+        x1 = pos.x()-sw2
+        x2 = x1+sw
+        y1 = pos.y()-sh2
+        y2 = y1+sh
+        QwtPainter.drawLine(painter, x1, y1, x2, y2)
+        QwtPainter.drawLine(painter, x2, y1, x1, y2)
 
 
 def qwtDrawStar1Symbols(painter, points, numPoints, symbol):
     size =symbol.size()
     painter.setPen(symbol.pen())
     sqrt1_2 = np.sqrt(.5)
-    if QwtPainter.roundingAlignment(painter):
-        r = QRect(0, 0, size.width(), size.height())
-        for pos in points:
-            r.moveCenter(pos.toPoint())
-            d1 = r.width()/2.*(1.-sqrt1_2)
-            QwtPainter.drawLine(painter,
-                                  round(r.left()+d1), round(r.top()+d1),
-                                  round(r.right()-d1), round(r.bottom()-d1))
-            QwtPainter.drawLine(painter,
-                                  round(r.left()+d1), round(r.bottom()-d1),
-                                  round(r.right()-d1), round(r.top()+d1))
-            c = QPoint(r.center())
-            QwtPainter.drawLine(painter, c.x(), r.top(), c.x(), r.bottom())
-            QwtPainter.drawLine(painter, r.left(), c.y(), r.right(), c.y())
-    else:
-        r = QRectF(0, 0, size.width(), size.height())
-        for pos in points:
-            r.moveCenter(pos.toPoint())
-            c = QPointF(r.center())
-            d1 = r.width()/2.*(1.-sqrt1_2)
-            QwtPainter.drawLine(painter, r.left()+d1, r.top()+d1,
-                                  r.right()-d1, r.bottom()-d1)
-            QwtPainter.drawLine(painter, r.left()+d1, r.bottom()-d1,
-                                  r.right()-d1, r.top()+d1)
-            QwtPainter.drawLine(painter, c.x(), r.top(), c.x(), r.bottom())
-            QwtPainter.drawLine(painter, r.left(), c.y(), r.right(), c.y())
+    r = QRectF(0, 0, size.width(), size.height())
+    for pos in points:
+        r.moveCenter(pos.toPoint())
+        c = QPointF(r.center())
+        d1 = r.width()/2.*(1.-sqrt1_2)
+        QwtPainter.drawLine(painter, r.left()+d1, r.top()+d1,
+                              r.right()-d1, r.bottom()-d1)
+        QwtPainter.drawLine(painter, r.left()+d1, r.bottom()-d1,
+                              r.right()-d1, r.top()+d1)
+        QwtPainter.drawLine(painter, c.x(), r.top(), c.x(), r.bottom())
+        QwtPainter.drawLine(painter, r.left(), c.y(), r.right(), c.y())
 
 
 def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
@@ -360,18 +267,11 @@ def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
     cos30 = np.cos(30*np.pi/180.)
     dy = .25*symbol.size().height()
     dx = .5*symbol.size().width()*cos30/3.
-    doAlign = QwtPainter.roundingAlignment(painter)
     for pos in points:
-        if doAlign:
-            x = round(pos.x())
-            y = round(pos.y())
-            x1 = round(x-3*dx)
-            y1 = round(y-2*dy)
-        else:
-            x = pos.x()
-            y = pos.y()
-            x1 = x-3*dx
-            y1 = y-2*dy
+        x = pos.x()
+        y = pos.y()
+        x1 = x-3*dx
+        y1 = y-2*dy
         x2 = x1+1*dx
         x3 = x1+2*dx
         x4 = x1+3*dx
@@ -386,7 +286,7 @@ def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
                 QPointF(x6, y3), QPointF(x7, y4), QPointF(x5, y4),
                 QPointF(x4, y5), QPointF(x3, y4), QPointF(x1, y4),
                 QPointF(x2, y3), QPointF(x1, y2), QPointF(x3, y2)]
-        QwtPainter.drawPolygon(painter, QPolygonF(star))
+        painter.drawPolyline(QPolygonF(star))
 
 
 def qwtDrawHexagonSymbols(painter, points, numPoints, symbol):
@@ -395,18 +295,11 @@ def qwtDrawHexagonSymbols(painter, points, numPoints, symbol):
     cos30 = np.cos(30*np.pi/180.)
     dx = .5*(symbol.size().width()-cos30)
     dy = .25*symbol.size().height()
-    doAlign = QwtPainter.roundingAlignment(painter)
     for pos in points:
-        if doAlign:
-            x = round(pos.x())
-            y = round(pos.y())
-            x1 = np.ceil(x-dx)
-            y1 = np.ceil(y-2*dy)
-        else:
-            x = pos.x()
-            y = pos.y()
-            x1 = x-dx
-            y1 = y-2*dy
+        x = pos.x()
+        y = pos.y()
+        x1 = x-dx
+        y1 = y-2*dy
         x2 = x1+1*dx
         x3 = x1+2*dx
         y2 = y1+1*dy
@@ -414,7 +307,7 @@ def qwtDrawHexagonSymbols(painter, points, numPoints, symbol):
         y4 = y1+4*dy
         hexa = [QPointF(x2, y1), QPointF(x3, y2), QPointF(x3, y3),
                 QPointF(x2, y4), QPointF(x1, y3), QPointF(x1, y2)]
-        QwtPainter.drawPolygon(painter, QPolygonF(hexa))
+        painter.drawPolyline(QPolygonF(hexa))
 
 
 class QwtSymbol_PrivateData(object):
@@ -1022,45 +915,9 @@ class QwtSymbol(object):
         #TODO: remove argument numPoints (not necessary in `PythonQwt`)
         if numPoints is not None and numPoints <= 0:
             return
-        useCache = False
-        if QwtPainter.roundingAlignment(painter) and\
-           not painter.transform().isScaling():
-            if self.__data.cache.policy == QwtSymbol.Cache:
-                useCache = True
-            elif self.__data.cache.policy == QwtSymbol.AutoCache:
-                if painter.paintEngine().type() == QPaintEngine.Raster:
-                    useCache = True
-                else:
-                    if self.__data.style in (QwtSymbol.XCross, QwtSymbol.HLine,
-                                             QwtSymbol.VLine, QwtSymbol.Cross):
-                        pass
-                    elif self.__data.style == QwtSymbol.Pixmap:
-                        if not self.__data.size.isEmpty() and\
-                           self.__data.size != self.__data.pixmap.pixmap.size():
-                            useCache = True
-                    else:
-                        useCache = True
-        if useCache:
-            br = QRect(self.boundingRect())
-            rect = QRect(0, 0, br.width(), br.height())
-            if self.__data.cache.pixmap.isNull():
-                self.__data.cache.pixmap = QwtPainter.backingStore(None, br.size())
-                self.__data.cache.pixmap.fill(Qt.transparent)
-                p = QPainter(self.__data.cache.pixmap)
-                p.setRenderHints(painter.renderHints())
-                p.translate(-br.topLeft())
-                pos = QPointF()
-                self.renderSymbols(p, pos, 1)
-            dx = br.left()
-            dy = br.top()
-            for point in points:
-                left = round(point.x())+dx
-                top = round(point.y())+dy
-                painter.drawPixmap(left, top, self.__data.cache.pixmap)
-        else:
-            painter.save()
-            self.renderSymbols(painter, points, numPoints)
-            painter.restore()
+        painter.save()
+        self.renderSymbols(painter, points, numPoints)
+        painter.restore()
     
     def drawSymbol(self, painter, point_or_rect):
         """

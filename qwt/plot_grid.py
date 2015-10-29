@@ -302,11 +302,8 @@ class QwtPlotGrid(QwtPlotItem):
         x2 = canvasRect.right()-1.
         y1 = canvasRect.top()
         y2 = canvasRect.bottom()-1.
-        doAlign = QwtPainter.roundingAlignment(painter)
         for val in values:
             value = scaleMap.transform(val)
-            if doAlign:
-                value = round(value)
             if orientation == Qt.Horizontal:
                 if qwtFuzzyGreaterOrEqual(value, y1) and\
                    qwtFuzzyLessOrEqual(value, y2):

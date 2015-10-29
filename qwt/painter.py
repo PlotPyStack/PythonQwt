@@ -13,7 +13,6 @@ QwtPainterClass
    :members:
 """
 
-from qwt.clipper import QwtClipper
 from qwt.color_map import QwtColorMap
 from qwt.scale_map import QwtScaleMap
 
@@ -21,41 +20,13 @@ from qwt.qt.QtGui import (QPaintEngine, QApplication, QFont, QFontInfo, QFrame,
                           QPixmap, QPainter, QPolygonF, QPalette, QStyle, QPen,
                           QAbstractTextDocumentLayout, QStyleOptionFocusRect,
                           QBrush, QLinearGradient, QPainterPath, QColor,
-                          QStyleOption, QPolygon, QTransform)
+                          QStyleOption, QTransform)
 from qwt.qt.QtCore import (QSize, QRectF, Qt, QPointF, QSizeF, QRect, QPoint,
                            QT_VERSION)
 
 import numpy as np
 
 QWIDGETSIZE_MAX = (1<<24)-1
-
-
-def qwtIsClippingNeeded(painter):
-    doClipping = False
-    clipRect = QRectF()
-    #TODO: remove next line when QwtClipper will be implemented
-    return doClipping, clipRect
-    pe = painter.paintEngine()
-    if pe and pe.type() == QPaintEngine.SVG:
-        if painter.hasClipping():
-            doClipping = True
-            clipRect = painter.clipRegion().boundingRect()
-    return doClipping, clipRect
-
-
-def qwtDrawPolyline(painter, points, pointCount, polylineSplitting):
-    doSplit = False
-    if polylineSplitting:
-        pe = painter.paintEngine()
-        if pe and pe.type() == QPaintEngine.Raster:
-            doSplit = True
-    if False:#doSplit:  #FIXME: uncomment "doSplit", and fix associated bug (or solve performance issue...)
-        splitSize = 6
-        for i in range(0, pointCount, splitSize):
-            n = min([splitSize+1, pointCount-i])
-            painter.drawPolyline(points+i, n)
-    else:
-        painter.drawPolyline(points)
 
 
 def qwtScreenResolution():
@@ -91,134 +62,6 @@ def isX11GraphicsSystem():
 class QwtPainterClass(object):
     """A collection of `QPainter` workarounds"""
     
-    def __init__(self):
-        self.__polylineSplitting = True
-        self.__roundingAlignment = True
-        
-    def isAligning(self, painter):
-        """
-        Check if the painter is using a paint engine, that aligns
-        coordinates to integers. Today these are all paint engines
-        beside `QPaintEngine.Pdf` and `QPaintEngine.SVG`.
-
-        If we have an integer based paint engine it is also
-        checked if the painter has a transformation matrix,
-        that rotates or scales.
-        
-        :param QPainter painter: Painter
-        :return: true, when the painter is aligning
-
-        .. seealso::
-        
-            :py:meth:`setRoundingAlignment()`
-        """
-        if painter and painter.isActive():
-            if painter.paintEngine().type() in (QPaintEngine.Pdf,
-                                                QPaintEngine.SVG):
-                return False
-            tr = painter.transform()
-            if tr.isRotating() or tr.isScaling():
-                return False
-        return True
-    
-    def setRoundingAlignment(self, enable):
-        """
-        Enable whether coordinates should be rounded, before they are 
-        painted to a paint engine that floors to integer values. For other 
-        paint engines this ( PDF, SVG ), this flag has no effect.
-        `QwtPainter` stores this flag only, the rounding itself is done in 
-        the painting code ( f.e the plot items ).
-        
-        The default setting is true.
-        
-        :param bool enable: enable/disable
-
-        .. seealso::
-        
-            :py:meth:`roundingAlignment()`, :py:meth:`isAligning()`
-        """
-        self.__roundingAlignment = enable
-    
-    def roundingAlignment(self, painter=None):
-        if painter is None:
-            return self.__roundingAlignment
-        else:
-            return self.__roundingAlignment and self.isAligning(painter)
-    
-    def setPolylineSplitting(self, enable):
-        """
-        En/Disable line splitting for the raster paint engine
-
-        In some Qt versions the raster paint engine paints polylines of 
-        many points much faster when they are split in smaller chunks: 
-        f.e all supported Qt versions >= Qt 5.0 when drawing an 
-        antialiased polyline with a pen width >=2.
-        
-        :param bool enable: enable/disable
-
-        .. seealso::
-        
-            :py:meth:`polylineSplitting()`
-        """
-        self.__polylineSplitting = enable
-    
-    def polylineSplitting(self):
-        return self.__polylineSplitting
-    
-    def drawPath(self, painter, path):
-        painter.drawPath(path)
-    
-    def drawRect(self, *args):
-        if len(args) == 5:
-            painter, x, y, w, h = args
-            self.drawRect(painter, QRectF(x, y, w, h))
-        elif len(args) == 2:
-            painter, rect = args
-            r = rect
-            deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-            if deviceClipping:
-                if not clipRect.intersects(r):
-                    return
-                if not clipRect.contains(r):
-                    self.fillRect(painter, r & clipRect, painter.brush())
-                    painter.save()
-                    painter.setBrush(Qt.NoBrush)
-                    self.drawPolyline(painter, QPolygonF(r))
-                    painter.restore()
-                    return
-            painter.drawRect(r)
-        else:
-            raise TypeError("QwtPainter.drawRect() takes 2 or 5 argument(s) "\
-                            "(%s given)" % len(args))
-    
-    def fillRect(self, painter, rect, brush):
-        if not rect.isValid():
-            return
-        deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-        if deviceClipping:
-            clipRect &= painter.window()
-        else:
-            clipRect = painter.window()
-        if painter.hasClipping():
-            clipRect &= painter.clipRegion().boundingRect()
-        r = rect
-        if deviceClipping:
-            r = r.intersected(clipRect)
-        if r.isValid():
-            painter.fillRect(r, brush)
-    
-    def drawPie(self, painter, rect, a, alen):
-        deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-        if deviceClipping and not clipRect.contains(rect):
-            return
-        painter.drawPie(rect, a, alen)
-        
-    def drawEllipse(self, painter, rect):
-        deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-        if deviceClipping and not clipRect.contains(rect):
-            return
-        painter.drawEllipse(rect)
-    
     def drawText(self, *args):
         if len(args) == 4:
             if isinstance(args[1], (QRectF, QRect)):
@@ -232,9 +75,6 @@ class QwtPainterClass(object):
                 self.drawText(painter, QPointF(x, y), text)
         elif len(args) == 3:
             painter, pos, text = args
-            deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-            if deviceClipping and not clipRect.contains(pos):
-                return
             painter.save()
             qwtUnscaleFont(painter)
             painter.drawText(pos, text)
@@ -291,14 +131,6 @@ class QwtPainterClass(object):
                 p1 = p1.toPoint()
             if isinstance(p2, QPointF):
                 p2 = p2.toPoint()
-            deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-            if deviceClipping and not clipRect.contains(p1)\
-               and not clipRect.contains(p2):
-                polygon = QPolygonF()
-                polygon += p1
-                polygon += p2
-                self.drawPolyline(painter, polygon)
-                return
             painter.drawLine(p1, p2)
         elif len(args) == 5:
             painter, x1, y1, x2, y2 = args
@@ -309,69 +141,6 @@ class QwtPainterClass(object):
         else:
             raise TypeError("QwtPainter.drawLine() takes 2, 3 or 5 argument"\
                             "(s) (%s given)" % len(args))
-    
-    def drawPolygon(self, painter, polygon):
-        deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-        cpa = polygon
-        if deviceClipping:
-            if isinstance(polygon, QPolygonF):
-                cpa = QwtClipper().clipPolygonF(clipRect, polygon)
-            else:
-                cpa = QwtClipper().clipPolygon(clipRect, polygon)
-        painter.drawPolygon(cpa)
-    
-    def drawPolyline(self, *args):
-        if len(args) == 2:
-            painter, polygon = args
-            deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-            cpa = polygon
-            if deviceClipping:
-                if isinstance(polygon, QPolygonF):
-                    cpa = QwtClipper().clipPolygonF(clipRect, polygon)
-                else:
-                    cpa = QwtClipper().clipPolygon(clipRect, polygon)
-            qwtDrawPolyline(painter, cpa, cpa.size(),
-                            self.__polylineSplitting)
-        elif len(args) == 3:
-            painter, points, pointCount = args
-            deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-            if deviceClipping:
-                if isinstance(points[0], QPointF):
-                    polygon = QPolygonF(points)
-                    polygon = QwtClipper().clipPolygonF(clipRect, polygon)
-                else:
-                    polygon = QPolygon(points)
-                    polygon = QwtClipper().clipPolygon(clipRect, polygon)
-                qwtDrawPolyline(painter, polygon,
-                                polygon.size(), self.__polylineSplitting)
-#                polygon = QPolygonF(pointCount)
-#                pointer = polygon.data()
-#                pointer.setsize(pointCount*2*np.finfo(float).dtype.itemsize)
-#                memory = np.frombuffer(pointer, float)
-#                memory[0::2] = xdata
-#                memory[1::2] = ydata
-            else:
-                qwtDrawPolyline(painter, points, pointCount,
-                                self.__polylineSplitting)
-        else:
-            raise TypeError("QwtPainter.drawPolyline() takes 2 or 3 argument"\
-                            "(s) (%s given)" % len(args))
-    
-    def drawPoint(self, painter, pos):
-        deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-        if isinstance(pos, QPointF):
-            if deviceClipping and not clipRect.contains(pos):
-                return
-        else:
-            if deviceClipping:
-                minX = np.ceil(clipRect.left())
-                maxX = np.floor(clipRect.right())
-                minY = np.ceil(clipRect.top())
-                maxY = np.floor(clipRect.bottom())
-                if pos.x() < minX or pos.x() > maxX or\
-                   pos.y() < minY or pos.y() > maxY:
-                    return
-        painter.drawPoint(pos)
 
     def drawPoints(self, painter, *args):
         if len(args) == 2:
@@ -383,18 +152,7 @@ class QwtPainterClass(object):
                 points.setsize(pointCount*np.finfo(float).dtype.itemsize)
             else:
                 points.setsize(pointCount*np.iinfo(int).dtype.itemsize)
-        deviceClipping, clipRect = qwtIsClippingNeeded(painter)
-        if deviceClipping:
-            if isinstance(polygon, QPointF):
-                minX = np.ceil(clipRect.left())
-                maxX = np.floor(clipRect.right())
-                minY = np.ceil(clipRect.top())
-                maxY = np.floor(clipRect.bottom())
-                clipRect = QRect(minX, minY, maxX-minX, maxY-minY)
-            clippedPolygon = polygon.intersected(QPolygon(clipRect))
-            painter.drawPoints(clippedPolygon)
-        else:
-            painter.drawPoints(polygon)
+        painter.drawPoints(polygon)
     
     def drawImage(self, painter, rect, image):
         alignedRect = rect.toAlignedRect()
