@@ -6,8 +6,8 @@
 # (see LICENSE file for more details)
 
 """
-Coordinates tranformations
---------------------------
+Coordinate tranformations
+-------------------------
 
 QwtTransform
 ~~~~~~~~~~~~

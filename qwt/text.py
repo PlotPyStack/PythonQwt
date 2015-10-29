@@ -21,14 +21,23 @@ QwtTextLabel
 .. autoclass:: QwtTextLabel
    :members:
 
-Text engine
-~~~~~~~~~~~
+Text engines
+------------
+
+QwtTextEngine
+~~~~~~~~~~~~~
 
 .. autoclass:: QwtTextEngine
    :members:
+
+QwtPlainTextEngine
+~~~~~~~~~~~~~~~~~~
    
 .. autoclass:: QwtPlainTextEngine
    :members:
+
+QwtRichTextEngine
+~~~~~~~~~~~~~~~~~
    
 .. autoclass:: QwtRichTextEngine
    :members:
