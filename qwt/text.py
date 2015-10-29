@@ -39,7 +39,8 @@ import struct
 
 from qwt.qt.QtGui import (QPainter, QFrame, QSizePolicy, QPalette, QFont,
                           QFontMetrics, QApplication, QColor, QWidget,
-                          QTextDocument, QTextOption, QFontMetricsF, QPixmap)
+                          QTextDocument, QTextOption, QFontMetricsF, QPixmap,
+                          QFontInfo, QTransform, QAbstractTextDocumentLayout)
 from qwt.qt.QtCore import Qt, QSizeF, QSize, QRectF
 
 from qwt.painter import QwtPainter
@@ -166,6 +167,26 @@ class QwtTextEngine(object):
 
 ASCENTCACHE = {}
 
+def qwtScreenResolution():
+    screenResolution = QSize()
+    if not screenResolution.isValid():
+        desktop = QApplication.desktop()
+        if desktop is not None:
+            screenResolution.setWidth(desktop.logicalDpiX())
+            screenResolution.setHeight(desktop.logicalDpiY())
+    return screenResolution
+
+def qwtUnscaleFont(painter):
+    if painter.font().pixelSize() >= 0:
+        return
+    screenResolution = qwtScreenResolution()
+    pd = painter.device()
+    if pd.logicalDpiX() != screenResolution.width() or\
+       pd.logicalDpiY() != screenResolution.height():
+        pixelFont = QFont(painter.font(), QApplication.desktop())
+        pixelFont.setPixelSize(QFontInfo(pixelFont).pixelSize())
+        painter.setFont(pixelFont)
+
 class QwtPlainTextEngine(QwtTextEngine):
     """
     A text engine for plain texts
@@ -282,7 +303,10 @@ class QwtPlainTextEngine(QwtTextEngine):
         :param int flags: Bitwise OR of the flags like in for QPainter::drawText()
         :param str text: Text to be rendered
         """
-        QwtPainter.drawText(painter, rect, flags, text)
+        painter.save()
+        qwtUnscaleFont(painter)
+        painter.drawText(rect, flags, text)
+        painter.restore()
     
     def mightRender(self, text):
         """
@@ -344,8 +368,34 @@ class QwtRichTextEngine(QwtTextEngine):
         :param int flags: Bitwise OR of the flags like in for QPainter::drawText()
         :param str text: Text to be rendered
         """
-        doc = QwtRichTextDocument(text, flags, painter.font())
-        QwtPainter.drawSimpleRichText(painter, rect, flags, doc)
+        txt = QwtRichTextDocument(text, flags, painter.font())
+        painter.save()
+        unscaledRect = QRectF(rect)
+        if painter.font().pixelSize() < 0:
+            res = qwtScreenResolution()
+            pd = painter.device()
+            if pd.logicalDpiX() != res.width()\
+               or pd.logicalDpiY() != res.height():
+                transform = QTransform()
+                transform.scale(res.width()/float(pd.logicalDpiX()),
+                                res.height()/float(pd.logicalDpiY()))
+                painter.setWorldTransform(transform, True)
+                invtrans, _ok = transform.inverted()
+                unscaledRect = invtrans.mapRect(rect)
+        txt.setDefaultFont(painter.font())
+        txt.setPageSize(QSizeF(unscaledRect.width(), QWIDGETSIZE_MAX))
+        layout = txt.documentLayout()
+        height = layout.documentSize().height()
+        y = unscaledRect.y()
+        if flags & Qt.AlignBottom:
+            y += unscaledRect.height()-height
+        elif flags & Qt.AlignVCenter:
+            y += (unscaledRect.height()-height)/2
+        context = QAbstractTextDocumentLayout.PaintContext()
+        context.palette.setColor(QPalette.Text, painter.pen().color())
+        painter.translate(unscaledRect.x(), y)
+        layout.draw(painter, context)
+        painter.restore()
     
     def taggedText(self, text, flags):
         return self.taggedRichText(text,flags)

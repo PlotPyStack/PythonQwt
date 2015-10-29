@@ -51,18 +51,13 @@ def qwtVerifyRange(size, i1, i2):
     return i2-i1+1
 
 
-def series_to_polyline(xMap, yMap, series, from_, to, Polygon=None):
+def series_to_polyline(xMap, yMap, series, from_, to):
     """
     Convert series data to QPolygon(F) polyline
     """
-    if Polygon is None:
-        Polygon = QPolygonF
-    polyline = Polygon(to-from_+1)
+    polyline = QPolygonF(to-from_+1)
     pointer = polyline.data()
-    if Polygon is QPolygonF:
-        dtype, tinfo = np.float, np.finfo
-    else:
-        dtype, tinfo = np.int, np.iinfo
+    dtype, tinfo = np.float, np.finfo  # integers: = np.int, np.iinfo
     pointer.setsize(2*polyline.size()*tinfo(dtype).dtype.itemsize)
     memory = np.frombuffer(pointer, dtype)
     memory[:(to-from_)*2+1:2] = xMap.transform(series.xData()[from_:to+1])
@@ -525,9 +520,9 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             xi = xMap.transform(sample.x())
             yi = yMap.transform(sample.y())
             if o == Qt.Horizontal:
-                QwtPainter.drawLine(painter, x0, yi, xi, yi)
+                painter.drawLine(x0, yi, xi, yi)
             else:
-                QwtPainter.drawLine(painter, xi, y0, xi, yi)
+                painter.drawLine(xi, y0, xi, yi)
         painter.restore()
         
     def drawDots(self, painter, xMap, yMap, canvasRect, from_, to):
@@ -546,15 +541,12 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`draw()`, :py:meth:`drawSticks()`, 
             :py:meth:`drawSteps()`, :py:meth:`drawLines()`
         """
-        color = painter.pen().color()
-        if painter.pen().style() == Qt.NoPen or color.alpha() == 0:
-            return
         doFill = self.__data.brush.style() != Qt.NoBrush\
                  and self.__data.brush.color().alpha() > 0
-        points = series_to_polyline(xMap, yMap, self.data(), from_, to)
-        QwtPainter.drawPoints(painter, points)
+        polyline = series_to_polyline(xMap, yMap, self.data(), from_, to)
+        painter.drawPoints(polyline)
         if doFill:
-            self.fillCurve(painter, xMap, yMap, canvasRect, points)
+            self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
     
     def drawSteps(self, painter, xMap, yMap, canvasRect, from_, to):
         """
@@ -814,7 +806,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
 #                pn.setCapStyle(Qt.FlatCap)
                 painter.setPen(pn)
                 y = .5*size.height()
-                QwtPainter.drawLine(painter, 0., y, size.width(), y)
+                painter.drawLine(0., y, size.width(), y)
         if self.__data.legendAttributes & QwtPlotCurve.LegendShowSymbol:
             if self.__data.symbol:
                 r = QRectF(0, 0, size.width(), size.height())

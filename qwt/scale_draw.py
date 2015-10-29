@@ -769,19 +769,19 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if self.alignment() == self.LeftScale:
             x1 = pos.x() + a
             x2 = pos.x() + a - pw - len_
-            QwtPainter.drawLine(painter, x1, tval, x2, tval)
+            painter.drawLine(x1, tval, x2, tval)
         elif self.alignment() == self.RightScale:
             x1 = pos.x()
             x2 = pos.x() + pw + len_
-            QwtPainter.drawLine(painter, x1, tval, x2, tval)
+            painter.drawLine(x1, tval, x2, tval)
         elif self.alignment() == self.BottomScale:
             y1 = pos.y()
             y2 = pos.y() + pw + len_
-            QwtPainter.drawLine(painter, tval, y1, tval, y2)
+            painter.drawLine(tval, y1, tval, y2)
         elif self.alignment() == self.TopScale:
             y1 = pos.y() + a
             y2 = pos.y() - pw - len_ + a
-            QwtPainter.drawLine(painter, tval, y1, tval, y2)
+            painter.drawLine(tval, y1, tval, y2)
         
     def drawBackbone(self, painter):
         """
@@ -798,16 +798,16 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         off = .5*self.penWidth()
         if self.alignment() == self.LeftScale:
             x = pos.x() - off
-            QwtPainter.drawLine(painter, x, pos.y(), x, pos.y()+len_)
+            painter.drawLine(x, pos.y(), x, pos.y()+len_)
         elif self.alignment() == self.RightScale:
             x = pos.x() + off
-            QwtPainter.drawLine(painter, x, pos.y(), x, pos.y()+len_)
+            painter.drawLine(x, pos.y(), x, pos.y()+len_)
         elif self.alignment() == self.TopScale:
             y = pos.y() - off
-            QwtPainter.drawLine(painter, pos.x(), y, pos.x()+len_, y)
+            painter.drawLine(pos.x(), y, pos.x()+len_, y)
         elif self.alignment() == self.BottomScale:
             y = pos.y() + off
-            QwtPainter.drawLine(painter, pos.x(), y, pos.x()+len_, y)
+            painter.drawLine(pos.x(), y, pos.x()+len_, y)
         
     def move(self, *args):
         """

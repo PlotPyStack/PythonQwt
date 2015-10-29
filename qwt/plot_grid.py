@@ -307,11 +307,11 @@ class QwtPlotGrid(QwtPlotItem):
             if orientation == Qt.Horizontal:
                 if qwtFuzzyGreaterOrEqual(value, y1) and\
                    qwtFuzzyLessOrEqual(value, y2):
-                    QwtPainter.drawLine(painter, x1, value, x2, value)
+                    painter.drawLine(x1, value, x2, value)
             else:
                 if qwtFuzzyGreaterOrEqual(value, x1) and\
                    qwtFuzzyLessOrEqual(value, x2):
-                    QwtPainter.drawLine(painter, value, y1, value, y2)
+                    painter.drawLine(value, y1, value, y2)
     
     def majorPen(self):
         """

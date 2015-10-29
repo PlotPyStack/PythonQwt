@@ -214,11 +214,11 @@ def qwtDrawLineSymbols(painter, orientations, points, numPoints, symbol):
         if orientations & Qt.Horizontal:
             x = round(pos.x())-sw2
             y = round(pos.y())
-            QwtPainter.drawLine(painter, x, y, x+sw, y)
+            painter.drawLine(x, y, x+sw, y)
         if orientations & Qt.Vertical:
             x = round(pos.x())
             y = round(pos.y())-sh2
-            QwtPainter.drawLine(painter, x, y, x, y+sh)
+            painter.drawLine(x, y, x, y+sh)
 
 
 def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
@@ -236,8 +236,8 @@ def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
         x2 = x1+sw
         y1 = pos.y()-sh2
         y2 = y1+sh
-        QwtPainter.drawLine(painter, x1, y1, x2, y2)
-        QwtPainter.drawLine(painter, x2, y1, x1, y2)
+        painter.drawLine(x1, y1, x2, y2)
+        painter.drawLine(x2, y1, x1, y2)
 
 
 def qwtDrawStar1Symbols(painter, points, numPoints, symbol):
@@ -249,12 +249,10 @@ def qwtDrawStar1Symbols(painter, points, numPoints, symbol):
         r.moveCenter(pos.toPoint())
         c = QPointF(r.center())
         d1 = r.width()/2.*(1.-sqrt1_2)
-        QwtPainter.drawLine(painter, r.left()+d1, r.top()+d1,
-                              r.right()-d1, r.bottom()-d1)
-        QwtPainter.drawLine(painter, r.left()+d1, r.bottom()-d1,
-                              r.right()-d1, r.top()+d1)
-        QwtPainter.drawLine(painter, c.x(), r.top(), c.x(), r.bottom())
-        QwtPainter.drawLine(painter, r.left(), c.y(), r.right(), c.y())
+        painter.drawLine(r.left()+d1, r.top()+d1, r.right()-d1, r.bottom()-d1)
+        painter.drawLine(r.left()+d1, r.bottom()-d1, r.right()-d1, r.top()+d1)
+        painter.drawLine(c.x(), r.top(), c.x(), r.bottom())
+        painter.drawLine(r.left(), c.y(), r.right(), c.y())
 
 
 def qwtDrawStar2Symbols(painter, points, numPoints, symbol):

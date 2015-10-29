@@ -16,39 +16,12 @@ QwtPainterClass
 from qwt.color_map import QwtColorMap
 from qwt.scale_map import QwtScaleMap
 
-from qwt.qt.QtGui import (QPaintEngine, QApplication, QFont, QFontInfo, QFrame,
-                          QPixmap, QPainter, QPolygonF, QPalette, QStyle, QPen,
-                          QAbstractTextDocumentLayout, QStyleOptionFocusRect,
-                          QBrush, QLinearGradient, QPainterPath, QColor,
-                          QStyleOption, QTransform)
-from qwt.qt.QtCore import (QSize, QRectF, Qt, QPointF, QSizeF, QRect, QPoint,
-                           QT_VERSION)
-
-import numpy as np
+from qwt.qt.QtGui import (QPaintEngine, QFrame, QPixmap, QPainter, QPalette, 
+                          QStyle, QPen, QStyleOptionFocusRect, QBrush, 
+                          QLinearGradient, QPainterPath, QColor, QStyleOption)
+from qwt.qt.QtCore import Qt, QRect, QPoint, QT_VERSION
 
 QWIDGETSIZE_MAX = (1<<24)-1
-
-
-def qwtScreenResolution():
-    screenResolution = QSize()
-    if not screenResolution.isValid():
-        desktop = QApplication.desktop()
-        if desktop is not None:
-            screenResolution.setWidth(desktop.logicalDpiX())
-            screenResolution.setHeight(desktop.logicalDpiY())
-    return screenResolution
-
-
-def qwtUnscaleFont(painter):
-    if painter.font().pixelSize() >= 0:
-        return
-    screenResolution = qwtScreenResolution()
-    pd = painter.device()
-    if pd.logicalDpiX() != screenResolution.width() or\
-       pd.logicalDpiY() != screenResolution.height():
-        pixelFont = QFont(painter.font(), QApplication.desktop())
-        pixelFont.setPixelSize(QFontInfo(pixelFont).pixelSize())
-        painter.setFont(pixelFont)
 
 
 def isX11GraphicsSystem():
@@ -58,101 +31,23 @@ def isX11GraphicsSystem():
     del painter
     return isX11
 
+def qwtFillRect(widget, painter, rect, brush):
+    if brush.style() == Qt.TexturePattern:
+        painter.save()
+        painter.setClipRect(rect)
+        painter.drawTiledPixmap(rect, brush.texture(), rect.topLeft())
+        painter.restore()
+    elif brush.gradient():
+        painter.save()
+        painter.setClipRect(rect)
+        painter.fillRect(0, 0, widget.width(), widget.height(), brush)
+        painter.restore()
+    else:
+        painter.fillRect(rect, brush)
+
 
 class QwtPainterClass(object):
     """A collection of `QPainter` workarounds"""
-    
-    def drawText(self, *args):
-        if len(args) == 4:
-            if isinstance(args[1], (QRectF, QRect)):
-                painter, rect, flags, text = args
-                painter.save()
-                qwtUnscaleFont(painter)
-                painter.drawText(rect, flags, text)
-                painter.restore()
-            else:
-                painter, x, y, text = args
-                self.drawText(painter, QPointF(x, y), text)
-        elif len(args) == 3:
-            painter, pos, text = args
-            painter.save()
-            qwtUnscaleFont(painter)
-            painter.drawText(pos, text)
-            painter.restore()        
-        elif len(args) == 7:
-            painter, x, y, w, h, flags, text = args
-            self.drawText(painter, QRectF( x, y, w, h ), flags, text)
-        else:
-            raise TypeError("QwtPainter.drawText() takes 3, 4 or 7 argument"\
-                            "(s) (%s given)" % len(args))
-    
-    def drawSimpleRichText(self, painter, rect, flags, text):
-        """
-        Draw a text document into a rectangle
-        
-        :param QPainter painter: Painter
-        :param QRectF rect: Target rectangle
-        :param int flags: Alignments/Text flags, see `QPainter.drawText()`
-        :param QTextDocument text: Text document
-        """
-        txt = text.clone()
-        painter.save()
-        unscaledRect = QRectF(rect)
-        if painter.font().pixelSize() < 0:
-            res = qwtScreenResolution()
-            pd = painter.device()
-            if pd.logicalDpiX() != res.width()\
-               or pd.logicalDpiY() != res.height():
-                transform = QTransform()
-                transform.scale(res.width()/float(pd.logicalDpiX()),
-                                res.height()/float(pd.logicalDpiY()))
-                painter.setWorldTransform(transform, True)
-                invtrans, _ok = transform.inverted()
-                unscaledRect = invtrans.mapRect(rect)
-        txt.setDefaultFont(painter.font())
-        txt.setPageSize(QSizeF(unscaledRect.width(), QWIDGETSIZE_MAX))
-        layout = txt.documentLayout()
-        height = layout.documentSize().height()
-        y = unscaledRect.y()
-        if flags & Qt.AlignBottom:
-            y += unscaledRect.height()-height
-        elif flags & Qt.AlignVCenter:
-            y += (unscaledRect.height()-height)/2
-        context = QAbstractTextDocumentLayout.PaintContext()
-        context.palette.setColor(QPalette.Text, painter.pen().color())
-        painter.translate(unscaledRect.x(), y)
-        layout.draw(painter, context)
-        painter.restore()
-        
-    def drawLine(self, *args):
-        if len(args) == 3:
-            painter, p1, p2 = args
-            if isinstance(p1, QPointF):
-                p1 = p1.toPoint()
-            if isinstance(p2, QPointF):
-                p2 = p2.toPoint()
-            painter.drawLine(p1, p2)
-        elif len(args) == 5:
-            painter, x1, y1, x2, y2 = args
-            self.drawLine(painter, QPointF(x1, y1), QPointF(x2, y2))
-        elif len(args) == 2:
-            painter, line = args
-            self.drawLine(painter, line.p1(), line.p2())
-        else:
-            raise TypeError("QwtPainter.drawLine() takes 2, 3 or 5 argument"\
-                            "(s) (%s given)" % len(args))
-
-    def drawPoints(self, painter, *args):
-        if len(args) == 2:
-            points, pointCount = args
-        else:
-            polygon, = args
-            points, pointCount = polygon.data(), polygon.size()
-            if isinstance(polygon, QPolygonF):
-                points.setsize(pointCount*np.finfo(float).dtype.itemsize)
-            else:
-                points.setsize(pointCount*np.iinfo(int).dtype.itemsize)
-        painter.drawPoints(polygon)
     
     def drawImage(self, painter, rect, image):
         alignedRect = rect.toAlignedRect()
@@ -549,18 +444,3 @@ class QwtPainterClass(object):
         return pm
 
 QwtPainter = QwtPainterClass()
-
-
-def qwtFillRect(widget, painter, rect, brush):
-    if brush.style() == Qt.TexturePattern:
-        painter.save()
-        painter.setClipRect(rect)
-        painter.drawTiledPixmap(rect, brush.texture(), rect.topLeft())
-        painter.restore()
-    elif brush.gradient():
-        painter.save()
-        painter.setClipRect(rect)
-        painter.fillRect(0, 0, widget.width(), widget.height(), brush)
-        painter.restore()
-    else:
-        painter.fillRect(rect, brush)
