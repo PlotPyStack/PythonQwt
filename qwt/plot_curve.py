@@ -504,16 +504,9 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         doFill = self.__data.brush.style() != Qt.NoBrush\
                  and self.__data.brush.color().alpha() > 0
         polyline = series_to_polyline(xMap, yMap, self.data(), from_, to)
+        painter.drawPolyline(polyline)
         if doFill:
-            if painter.pen().style() != Qt.NoPen:
-                filled = QPolygonF(polyline)
-                self.fillCurve(painter, xMap, yMap, canvasRect, filled)
-                filled.clear()
-                painter.drawPolyline(polyline)
-            else:
-                self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
-        else:
-            painter.drawPolyline(polyline)
+            self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
     
     def drawSticks(self, painter, xMap, yMap, canvasRect, from_, to):
         """
@@ -542,9 +535,9 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             xi = xMap.transform(sample.x())
             yi = yMap.transform(sample.y())
             if o == Qt.Horizontal:
-                QwtPainter.drawLine(painter, xi, y0, xi, yi)
-            else:
                 QwtPainter.drawLine(painter, x0, yi, xi, yi)
+            else:
+                QwtPainter.drawLine(painter, xi, y0, xi, yi)
         painter.restore()
         
     def drawDots(self, painter, xMap, yMap, canvasRect, from_, to):
@@ -671,7 +664,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         painter.save()
         painter.setPen(Qt.NoPen)
         painter.setBrush(brush)
-        painter.drawPolyline(polygon)
+        painter.drawPolygon(polygon)
         painter.restore()
     
     def closePolyline(self, painter, xMap, yMap, polygon):

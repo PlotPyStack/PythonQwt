@@ -170,7 +170,7 @@ def qwtDrawDiamondSymbols(painter, points, numPoints, symbol):
         polygon += QPointF(x1, pos.y())
         polygon += QPointF(pos.x(), y2)
         polygon += QPointF(x2, pos.y())
-        painter.drawPolyline(polygon)
+        painter.drawPolygon(polygon)
 
 
 def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
@@ -196,7 +196,7 @@ def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
             triangle = [QPointF(x1, y2), QPointF(x, y1), QPointF(x2, y2)]
         elif type == QwtTriangle.Down:
             triangle = [QPointF(x1, y1), QPointF(x, y2), QPointF(x2, y1)]
-        painter.drawPolyline(QPolygonF(triangle))
+        painter.drawPolygon(QPolygonF(triangle))
 
 
 def qwtDrawLineSymbols(painter, orientations, points, numPoints, symbol):
@@ -286,7 +286,7 @@ def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
                 QPointF(x6, y3), QPointF(x7, y4), QPointF(x5, y4),
                 QPointF(x4, y5), QPointF(x3, y4), QPointF(x1, y4),
                 QPointF(x2, y3), QPointF(x1, y2), QPointF(x3, y2)]
-        painter.drawPolyline(QPolygonF(star))
+        painter.drawPolygon(QPolygonF(star))
 
 
 def qwtDrawHexagonSymbols(painter, points, numPoints, symbol):
@@ -307,7 +307,7 @@ def qwtDrawHexagonSymbols(painter, points, numPoints, symbol):
         y4 = y1+4*dy
         hexa = [QPointF(x2, y1), QPointF(x3, y2), QPointF(x3, y3),
                 QPointF(x2, y4), QPointF(x1, y3), QPointF(x1, y2)]
-        painter.drawPolyline(QPolygonF(hexa))
+        painter.drawPolygon(QPolygonF(hexa))
 
 
 class QwtSymbol_PrivateData(object):
