@@ -3,7 +3,8 @@
 ## Version 0.5.0
 
 Various optimizations
-Added QwtScaleDraw.setFixedSize/fixedSize methods to set the new fixed size option (see documentation)
+Major API simplification, taking into account the feature that won't be implemented (fitting, rounding, weeding out points, clipping, etc.)
+Added QwtScaleDraw.setLabelAutoSize/labelAutoSize methods to set the new auto size option (see documentation)
 
 ## Version 0.4.0
 
