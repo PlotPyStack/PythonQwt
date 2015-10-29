@@ -21,7 +21,7 @@ External resources:
 
 .. _GitHub: https://github.com/PierreRaybaut/PythonQwt
 """
-__version__ = '0.4.0'
+__version__ = '0.5.0'
 QWT_VERSION_STR = '6.1.2'
 
 import warnings
@@ -35,7 +35,7 @@ from qwt.plot_curve import QwtPlotCurve as QPC  # see deprecated section
 from qwt.plot_curve import QwtPlotItem
 from qwt.scale_map import QwtScaleMap
 from qwt.interval import QwtInterval
-from qwt.legend import QwtLegend
+from qwt.legend import QwtLegend, QwtLegendData, QwtLegendLabel
 from qwt.plot_marker import QwtPlotMarker
 from qwt.plot_grid import QwtPlotGrid as QPG  # see deprecated section
 from qwt.color_map import QwtLinearColorMap
@@ -46,9 +46,9 @@ from qwt.scale_div import QwtScaleDiv
 from qwt.scale_draw import QwtScaleDraw
 from qwt.scale_draw import QwtAbstractScaleDraw
 from qwt.painter import QwtPainter
-from qwt.legend_data import QwtLegendData
 
-from qwt.series_data import QwtPointArrayData
+from qwt.plot_series import (QwtSeriesData, QwtPointArrayData, QwtSeriesStore,
+                             QwtPlotSeriesItem)
 
 from qwt.plot_renderer import QwtPlotRenderer
 

@@ -31,7 +31,7 @@ from qwt.plot_canvas import QwtPlotCanvas
 from qwt.scale_div import QwtScaleDiv
 from qwt.scale_map import QwtScaleMap
 from qwt.graphic import QwtGraphic
-from qwt.legend_data import QwtLegendData
+from qwt.legend import QwtLegendData
 from qwt.interval import QwtInterval
 
 import numpy as np

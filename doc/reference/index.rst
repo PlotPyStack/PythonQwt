@@ -19,11 +19,7 @@ Private API:
     
     graphic
     interval
-    legend_data
-    legend_label
     plot_directpainter
     plot_layout
-    plot_seriesitem
-    series_data
-    series_store
+    plot_series
     transform

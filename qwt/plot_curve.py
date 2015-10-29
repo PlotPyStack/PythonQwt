@@ -18,9 +18,8 @@ from qwt.plot import QwtPlotItem, QwtPlotItem_PrivateData
 from qwt.painter import QwtPainter
 from qwt.math import qwtSqr
 from qwt.graphic import QwtGraphic
-from qwt.series_data import QwtSeriesData, QwtPointArrayData
-from qwt.series_store import QwtSeriesStore
-from qwt.plot_seriesitem import QwtPlotSeriesItem
+from qwt.plot_series import (QwtPlotSeriesItem, QwtSeriesStore,
+                             QwtSeriesData, QwtPointArrayData)
 from qwt.symbol import QwtSymbol
 from qwt.plot_directpainter import QwtPlotDirectPainter
 
@@ -88,8 +87,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     A plot item, that represents a series of points
 
     A curve is the representation of a series of points in the x-y plane.
-    It supports different display styles, interpolation ( f.e. spline )
-    and symbols.
+    It supports different display styles and symbols.
     
     .. seealso::
     
@@ -104,9 +102,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             
       * `QwtPlotCurve.Lines`:
 
-        Connect the points with straight lines. The lines might
-        be interpolated depending on the 'Fitted' attribute. Curve
-        fitting can be configured using setCurveFitter().
+        Connect the points with straight lines.
 
       * `QwtPlotCurve.Sticks`:
         
@@ -138,12 +134,6 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
         For `QwtPlotCurve.Steps` only. 
         Draws a step function from the right to the left.
-    
-      * `QwtPlotCurve.Fitted`:
-
-        .. warning ::
-        
-            This option is *not* supported in `PythonQwt`.
     
     Legend attributes:
     
@@ -862,7 +852,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
         .. seealso::
         
-            :py:class:`qwt.point_data.QwtPointArrayData`,
+            :py:class:`qwt.plot_series.QwtPointArrayData`,
         """
         if len(args) == 1:
             samples, = args

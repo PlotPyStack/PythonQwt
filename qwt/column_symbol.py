@@ -6,7 +6,6 @@
 # (see LICENSE file for more details)
 
 from qwt.interval import QwtInterval
-from qwt.painter import QwtPainter
 
 from qwt.qt.QtGui import QPolygonF, QPalette
 from qwt.qt.QtCore import QRectF, Qt
