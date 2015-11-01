@@ -113,7 +113,11 @@ setup(name=LIBNAME, version=version,
       packages=get_subpackages(PACKAGE_NAME),
       package_data={PACKAGE_NAME:
                     get_package_data(PACKAGE_NAME, ('.png', '.svg', '.mo'))},
-      requires=["PyQt4 (>4.3)",],
+      install_requires=["PyQt4 (>4.3)", "NumPy (>=1.3)"],
+      extras_require = {
+                        'Doc':  ["Sphinx>=1.1"],
+                        'Tests':  ["guidata>=1.7.0"],
+                        },
       scripts=SCRIPTS,
       author = "Pierre Raybaut",
       author_email = 'pierre.raybaut@gmail.com',
