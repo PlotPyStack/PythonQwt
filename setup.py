@@ -27,6 +27,12 @@ from qwt import __version__ as version
 
 DESCRIPTION = 'Qt plotting widgets for Python'
 LONG_DESCRIPTION = """\
+The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical 
+user interfaces for the Python programming language. It is compatible with 
+both ``PyQt4`` and ``PyQt5`` (``PySide`` is currently not supported but it
+could be in the near future as it would "only" requires testing to support 
+it as a stable alternative to PyQt).
+
 The ``PythonQwt`` project was initiated to solve -at least temporarily- the 
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
 no longer maintained. The idea was to translate the original Qwt C++ code to 
@@ -113,7 +119,7 @@ setup(name=LIBNAME, version=version,
       packages=get_subpackages(PACKAGE_NAME),
       package_data={PACKAGE_NAME:
                     get_package_data(PACKAGE_NAME, ('.png', '.svg', '.mo'))},
-      install_requires=["PyQt4 (>4.3)", "NumPy (>=1.3)"],
+      install_requires=["NumPy (>=1.3)"],
       extras_require = {
                         'Doc':  ["Sphinx>=1.1"],
                         'Tests':  ["guidata>=1.7.0"],
