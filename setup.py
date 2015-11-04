@@ -119,7 +119,7 @@ setup(name=LIBNAME, version=version,
       packages=get_subpackages(PACKAGE_NAME),
       package_data={PACKAGE_NAME:
                     get_package_data(PACKAGE_NAME, ('.png', '.svg', '.mo'))},
-      install_requires=["NumPy (>=1.3)"],
+      install_requires=["NumPy>=1.3"],
       extras_require = {
                         'Doc':  ["Sphinx>=1.1"],
                         'Tests':  ["guidata>=1.7.0"],
