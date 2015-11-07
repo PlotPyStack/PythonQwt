@@ -38,8 +38,8 @@ class QwtInterval(object):
     def __init__(self, minValue=0., maxValue=-1., borderFlags=None):
         assert not isinstance(minValue, QwtInterval)
         assert not isinstance(maxValue, QwtInterval)
-        self.__minValue = minValue
-        self.__maxValue = maxValue
+        self.__minValue = float(minValue)  # avoid overflows with NumPy scalars
+        self.__maxValue = float(maxValue)  # avoid overflows with NumPy scalars
         if borderFlags is None:
             self.__borderFlags = self.IncludeBorders
         else:
@@ -53,8 +53,8 @@ class QwtInterval(object):
         :param float maxValue: Maximum value
         :param int borderFlags: Include/Exclude borders
         """
-        self.__minValue = minValue
-        self.__maxValue = maxValue
+        self.__minValue = float(minValue)  # avoid overflows with NumPy scalars
+        self.__maxValue = float(maxValue)  # avoid overflows with NumPy scalars
         self.__borderFlags = borderFlags
         
     def setBorderFlags(self, borderFlags):
@@ -85,7 +85,7 @@ class QwtInterval(object):
                 
         :param float minValue: Minimum value
         """
-        self.__minValue = minValue
+        self.__minValue = float(minValue)  # avoid overflows with NumPy scalars
     
     def setMaxValue(self, maxValue):
         """
@@ -93,7 +93,7 @@ class QwtInterval(object):
                 
         :param float maxValue: Maximum value
         """
-        self.__maxValue = maxValue
+        self.__maxValue = float(maxValue)  # avoid overflows with NumPy scalars
     
     def minValue(self):
         """
