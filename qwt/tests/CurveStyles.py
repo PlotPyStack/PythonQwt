@@ -55,9 +55,11 @@ class BMDemo(cb.BMDemo):
                                    (True, False)*2):
             t0 = time.time()
             symtext = "with%s symbols" % ("" if symbols else "out")
-            title = '%d points, %s' % (points, symtext)
             widget = CSWidget(points, symbols, **kwargs)
-            self.process_iteration(title, widget, t0)
+            title = '%d points' % points
+            description = '%d plots with %d curves of %d points, %s' % (
+                          widget.plot_nb, widget.curve_nb, points, symtext)
+            self.process_iteration(title, description, widget, t0)
 
 
 if __name__ == '__main__':

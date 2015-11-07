@@ -45,7 +45,9 @@ class BMPlot(QwtPlot):
         self.setTitle(title)
         self.setAxisTitle(QwtPlot.xBottom, 'x')
         self.setAxisTitle(QwtPlot.yLeft, 'y')
+        self.curve_nb = 0
         for idx in range(1, 11):
+            self.curve_nb += 1
             curve = QwtPlotCurve()
             curve.setPen(QPen(get_curve_color()))
             curve.setStyle(style)
@@ -62,6 +64,8 @@ class BMPlot(QwtPlot):
 class BMWidget(QWidget):
     def __init__(self, points, *args, **kwargs):
         super(BMWidget, self).__init__()
+        self.plot_nb = 0
+        self.curve_nb = 0
         self.setup(points, *args, **kwargs)
     
     def params(self, *args, **kwargs):
@@ -79,8 +83,11 @@ class BMWidget(QWidget):
         layout = QGridLayout()
         nbcol, col, row = 2, 0, 0
         for style, symbol in self.params(*args, **kwargs):
-           layout.addWidget(BMPlot(style, x, y, getattr(QwtPlotCurve, style),
-                                   symbol=symbol), row, col)
+           plot = BMPlot(style, x, y, getattr(QwtPlotCurve, style),
+                         symbol=symbol)
+           layout.addWidget(plot, row, col)
+           self.plot_nb += 1
+           self.curve_nb += plot.curve_nb
            col += 1
            if col >= nbcol:
                row +=1
@@ -139,7 +146,7 @@ class BMDemo(QMainWindow):
         self.text.append("<br><br><u>Total elapsed time</u>: %d ms" % (dt*1e3))
         self.tabs.setCurrentIndex(0)
         
-    def process_iteration(self, title, widget, t0):
+    def process_iteration(self, title, description, widget, t0):
         self.tabs.addTab(widget, title)
         self.tabs.setCurrentWidget(widget)
 
@@ -148,15 +155,17 @@ class BMDemo(QMainWindow):
 
         time_str = "Elapsed time: %d ms" % ((time.time()-t0)*1000)
         widget.text.setText(time_str)
-        self.text.append("<br><i>%s:</i><br>%s" % (title, time_str))
+        self.text.append("<br><i>%s:</i><br>%s" % (description, time_str))
 
     def run_benchmark(self, max_n, **kwargs):
         for idx in range(4, -1, -1):
             points = max_n/10**idx
-            title = '%d points' % points
             t0 = time.time()
             widget = BMWidget(points, **kwargs)
-            self.process_iteration(title, widget, t0)
+            title = '%d points' % points
+            description = '%d plots with %d curves of %d points' % (
+                          widget.plot_nb, widget.curve_nb, points)
+            self.process_iteration(title, description, widget, t0)
 
 
 if __name__ == '__main__':
