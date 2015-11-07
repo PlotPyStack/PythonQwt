@@ -14,6 +14,7 @@ Qt plotting widgets for Python
 from __future__ import print_function
 
 import os
+import sys
 import os.path as osp
 
 import setuptools  # analysis:ignore
@@ -51,15 +52,6 @@ else:
     CLASSIFIERS += ['Development Status :: 5 - Production/Stable']
 
 
-def _create_script_list(basename):
-    scripts = ['%s-py%d' % (basename, sys.version_info.major)]
-    if os.name == 'nt':
-        scripts.append('%s.bat' % scripts[0])
-    return [osp.join('scripts', name) for name in scripts]
-
-SCRIPTS = _create_script_list('PythonQwt-tests')
-
-
 def get_package_data(name, extlist):
     """Return data files for package *name* with extensions in *extlist*"""
     flist = []
@@ -91,7 +83,9 @@ setup(name=LIBNAME, version=version,
                         'Doc':  ["Sphinx>=1.1"],
                         'Tests':  ["guidata>=1.7.0"],
                         },
-      scripts=SCRIPTS,
+      entry_points={'gui_scripts':
+                    ['PythonQwt-tests-py%d = qwt.tests:run [Tests]'\
+                     % sys.version_info.major,]},
       author = "Pierre Raybaut",
       author_email = 'pierre.raybaut@gmail.com',
       url = 'https://github.com/PierreRaybaut/%s' % LIBNAME,
