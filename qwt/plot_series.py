@@ -45,7 +45,7 @@ from qwt.qt.QtCore import Qt, QRectF, QPointF
 class QwtPlotSeriesItem_PrivateData(QwtPlotItem_PrivateData):
     def __init__(self):
         QwtPlotItem_PrivateData.__init__(self)
-        self.orientation = Qt.Vertical
+        self.orientation = Qt.Horizontal
 
 
 class QwtPlotSeriesItem(QwtPlotItem):
@@ -60,7 +60,7 @@ class QwtPlotSeriesItem(QwtPlotItem):
         
     def setOrientation(self, orientation):
         """
-        Set the orientation of the item.
+        Set the orientation of the item. Default is `Qt.Horizontal`.
 
         The `orientation()` might be used in specific way by a plot item.
         F.e. a QwtPlotCurve uses it to identify how to display the curve
