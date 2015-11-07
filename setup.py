@@ -49,11 +49,15 @@ elif 'alpha' in version or 'a' in version or version.startswith('0.'):
     CLASSIFIERS += ['Development Status :: 3 - Alpha']
 else:
     CLASSIFIERS += ['Development Status :: 5 - Production/Stable']
-if os.name == 'nt':
-    SCRIPTS = ['PythonQwt-tests', 'PythonQwt-tests.bat']
-else:
-    SCRIPTS = ['PythonQwt-tests']
-SCRIPTS = [osp.join('scripts', fname) for fname in SCRIPTS]
+
+
+def _create_script_list(basename):
+    scripts = ['%s-py%d' % (basename, sys.version_info.major)]
+    if os.name == 'nt':
+        scripts.append('%s.bat' % scripts[0])
+    return [osp.join('scripts', name) for name in scripts]
+
+SCRIPTS = _create_script_list('PythonQwt-tests')
 
 
 def get_package_data(name, extlist):
