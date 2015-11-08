@@ -6,8 +6,6 @@
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-#FIXME: scale issue!
-
 SHOW = True # Show test in GUI-based test launcher
 
 import sys

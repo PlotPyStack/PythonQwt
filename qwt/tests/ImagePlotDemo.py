@@ -6,8 +6,6 @@
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-#FIXME: This example is still not working: image scaling issue (see PlotImage.draw)
-
 SHOW = True # Show test in GUI-based test launcher
 
 import sys

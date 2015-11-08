@@ -27,6 +27,21 @@ class QwtScaleMap(object):
     and vice versa.
     
     The scale and paint device intervals are both set to [0,1].
+    
+    .. py:class:: QwtScaleMap([other=None])
+    
+        Constructor (eventually, copy constructor)
+        
+        :param qwt.scale_map.QwtScaleMap other: Other scale map
+    
+    .. py:class:: QwtScaleMap(p1, p2, s1, s2)
+    
+        Constructor (was provided by `PyQwt` but not by `Qwt`)
+        
+        :param int p1: First border of the paint interval
+        :param int p2: Second border of the paint interval
+        :param float s1: First border of the scale interval
+        :param float s2: Second border of the scale interval
     """
     def __init__(self, *args):
         self.__transform = None # QwtTransform
@@ -38,13 +53,13 @@ class QwtScaleMap(object):
         if len(args) == 1:
             other, = args
         elif len(args) == 4:
-            s1, s2, p1, p2 = args
+            p1, p2, s1, s2 = args
             self.__s1 = s1
             self.__s2 = s2
             self.__p1 = p1
             self.__p2 = p2
         elif len(args) != 0:
-            raise TypeError("%s() takes 1, 3, or 4 argument(s) (%s given)"\
+            raise TypeError("%s() takes 0, 1, or 4 argument(s) (%s given)"\
                             % (self.__class__.__name__, len(args)))
         if other is None:
             self.__cnv = 1.
