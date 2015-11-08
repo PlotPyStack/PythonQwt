@@ -520,9 +520,9 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             xi = xMap.transform(sample.x())
             yi = yMap.transform(sample.y())
             if o == Qt.Horizontal:
-                painter.drawLine(x0, yi, xi, yi)
-            else:
                 painter.drawLine(xi, y0, xi, yi)
+            else:
+                painter.drawLine(x0, yi, xi, yi)
         painter.restore()
         
     def drawDots(self, painter, xMap, yMap, canvasRect, from_, to):
