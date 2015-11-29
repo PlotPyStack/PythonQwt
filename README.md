@@ -56,7 +56,7 @@ for more details on API limitations when comparing to Qwt.
 ## Dependencies
 
 ### Requirements ###
-- Python >=2.6 or Python >=3.0
+- Python >=2.6 or Python >=3.2
 - PyQt4 >=4.4 or PyQt5 >= 5.5
 - NumPy >= 1.5
 - guidata >= 1.7 for the GUI-based test launcher

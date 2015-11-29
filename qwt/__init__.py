@@ -20,8 +20,12 @@ implementation of Qwt C++ library with some limitations.
 .. image:: images/panorama.png
 
 External resources:
+    * Python Package Index: `PyPI`_
+    * Project page on GitHub: `GitHubPage`_
     * Bug reports and feature requests: `GitHub`_
 
+.. _PyPI: https://pypi.python.org/pypi/PythonQwt
+.. _GitHubPage: http://pierreraybaut.github.io/PythonQwt
 .. _GitHub: https://github.com/PierreRaybaut/PythonQwt
 """
 __version__ = '0.5.1'
