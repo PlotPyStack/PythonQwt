@@ -1834,7 +1834,7 @@ class QwtPlotItem(object):
         """
         return bool(self.__data.attributes & attribute)
     
-    def setItemInterest(self, interest, on):
+    def setItemInterest(self, interest, on=True):
         """
         Toggle an item interest
         
