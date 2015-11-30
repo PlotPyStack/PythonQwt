@@ -94,7 +94,7 @@ class QwtPlotRenderer(QObject):
         QObject.__init__(self, parent)
         self.__data = QwtPlotRenderer_PrivateData()
     
-    def setDiscardFlag(self, flag, on):
+    def setDiscardFlag(self, flag, on=True):
         """
         Change a flag, indicating what to discard from rendering
 
@@ -147,7 +147,7 @@ class QwtPlotRenderer(QObject):
         """
         return self.__data.discardFlags
     
-    def setLayoutFlag(self, flag, on):
+    def setLayoutFlag(self, flag, on=True):
         """
         Change a layout flag
 
