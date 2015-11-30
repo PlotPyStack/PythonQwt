@@ -646,7 +646,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         if self.axisValid(axisId):
             return self.axisWidget(axisId).setFont(font)
     
-    def setAxisAutoScale(self, axisId, on):
+    def setAxisAutoScale(self, axisId, on=True):
         """
         Enable autoscaling for a specified axis
 
@@ -947,7 +947,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         if self.__data.autoReplot:
             self.replot()
     
-    def setAutoReplot(self, tf):
+    def setAutoReplot(self, tf=True):
         """
         Set or reset the autoReplot option
 
