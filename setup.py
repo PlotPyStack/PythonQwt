@@ -16,6 +16,9 @@ from __future__ import print_function
 import os
 import sys
 import os.path as osp
+import subprocess
+import shutil
+import atexit
 
 import setuptools  # analysis:ignore
 from distutils.core import setup
@@ -63,7 +66,6 @@ def get_package_data(name, extlist):
                 flist.append(osp.join(dirpath, fname)[offset:])
     return flist
 
-
 def get_subpackages(name):
     """Return subpackages of package *name*"""
     splist = []
@@ -72,12 +74,47 @@ def get_subpackages(name):
             splist.append(".".join(dirpath.split(os.sep)))
     return splist
 
+def build_chm_doc(libname):
+    """Return CHM documentation file (on Windows only), which is copied under 
+    {PythonInstallDir}\Doc, hence allowing Spyder to add an entry for opening 
+    package documentation in "Help" menu. This has no effect on a source 
+    distribution."""
+    args = ''.join(sys.argv)
+    if os.name == 'nt' and ('bdist' in args or 'build' in args):
+        try:
+            import sphinx  # analysis:ignore
+        except ImportError:
+            print('Warning: `sphinx` is required to build documentation',
+                  file=sys.stderr)
+            return
+        hhc_base = r'C:\Program Files%s\HTML Help Workshop\hhc.exe'
+        for hhc_exe in (hhc_base % '', hhc_base % ' (x86)'):
+            if osp.isfile(hhc_exe):
+                break
+        else:
+            print('Warning: `HTML Help Workshop` is required to build CHM '\
+                  'documentation file', file=sys.stderr)
+            return
+        doctmp_dir = 'doctmp'
+        subprocess.call('sphinx-build -b htmlhelp doc %s' % doctmp_dir,
+                        shell=True)
+        atexit.register(shutil.rmtree, osp.abspath(doctmp_dir))
+        fname = osp.abspath(osp.join(doctmp_dir, '%s.chm' % libname))
+        subprocess.call('"%s" %s' % (hhc_exe, fname), shell=True)
+        if osp.isfile(fname):
+            return fname
+        else:
+            print('Warning: CHM building process failed', file=sys.stderr)
+
+CHM_DOC = build_chm_doc(LIBNAME)
+
 
 setup(name=LIBNAME, version=version,
       description=DESCRIPTION, long_description=LONG_DESCRIPTION,
       packages=get_subpackages(PACKAGE_NAME),
       package_data={PACKAGE_NAME:
                     get_package_data(PACKAGE_NAME, ('.png', '.svg', '.mo'))},
+      data_files=[(r'Doc', [CHM_DOC])] if CHM_DOC else [],
       install_requires=["NumPy>=1.3"],
       extras_require = {
                         'Doc':  ["Sphinx>=1.1"],
