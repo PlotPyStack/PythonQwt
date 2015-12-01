@@ -1,7 +1,5 @@
-recursive-include qwt *.png *.svg *.pot *.po *.mo *.dcm *.ui
-recursive-include src *.hpp *.cpp *.pyx
-recursive-include doc *.py *.rst *.png *.ico
+recursive-include doc *.py *.rst *.png
 include MANIFEST.in
 include LICENSE
-include README
-include CHANGELOG 
+include README.md
+include CHANGELOG.md
