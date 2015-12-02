@@ -1,5 +1,22 @@
 # History of changes
 
+## Version 0.5.2
+
+Added CHM documentation to wheel package
+Fixed QwtPlotRenderer.setDiscardFlag/setLayoutFlag args
+Fixed QwtPlotItem.setItemInterest args
+Fixed QwtPlot.setAxisAutoScale/setAutoReplot args
+
+## Version 0.5.1
+
+Fixed Issue #22: fixed scale issues in CurveDemo2.py and ImagePlotDemo.py
+QwtPlotCurve: sticks were not drawn correctly depending on orientation
+QwtInterval: avoid overflows with NumPy scalars
+Fixed Issue #28: curve shading was broken since v0.5.0
+setup.py: using setuptools "entry_points" instead of distutils "scripts"
+Showing curves/plots number in benchmarks to avoid any misinterpretation (see Issue #26)
+Added Python2/Python3 scripts for running tests
+
 ## Version 0.5.0
 
 Various optimizations
