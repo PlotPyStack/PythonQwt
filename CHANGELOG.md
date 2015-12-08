@@ -1,5 +1,11 @@
 # History of changes
 
+## Version 0.5.3
+
+Better handling of infinity and NaN values in scales (removed NumPy warnings)
+Now handling infinity and NaN values in series data: removing points that can't be drawn
+Fixed logarithmic scale engine: presence of values <= 0 was slowing down series data plotting
+
 ## Version 0.5.2
 
 Added CHM documentation to wheel package
