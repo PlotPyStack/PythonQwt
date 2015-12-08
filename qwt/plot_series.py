@@ -185,15 +185,16 @@ class QwtPointArrayData(QwtSeriesData):
     """
     Interface for iterating over two array objects
     
-    .. py:class:: QwtCQwtPointArrayDataolorMap(x, y, [size=None])
+    .. py:class:: QwtPointArrayData(x, y, [size=None], [finite=True])
     
         :param x: Array of x values
         :type x: list or tuple or numpy.array
         :param y: Array of y values
         :type y: list or tuple or numpy.array
         :param int size: Size of the x and y arrays
+        :param bool finite: if True, keep only finite array elements (remove all infinity and not a number values), otherwise do not filter array elements
     """
-    def __init__(self, x=None, y=None, size=None):
+    def __init__(self, x=None, y=None, size=None, finite=None):
         QwtSeriesData.__init__(self)
         if x is None and y is not None:
             x = np.arange(len(y))
@@ -210,8 +211,13 @@ class QwtPointArrayData(QwtSeriesData):
         if size is not None:
             x = np.resize(x, (size, ))
             y = np.resize(y, (size, ))
-        self.__x = x
-        self.__y = y
+        if finite if finite is not None else True:
+            indexes = np.logical_and(np.isfinite(x), np.isfinite(y))
+            self.__x = x[indexes]
+            self.__y = y[indexes]
+        else:
+            self.__x = x
+            self.__y = y
         
     def boundingRect(self):
         """
