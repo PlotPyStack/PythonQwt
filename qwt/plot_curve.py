@@ -813,19 +813,50 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
                 self.__data.symbol.drawSymbol(painter, r)
         return graphic    
 
-    def setData(self, *args):
-        """Compatibility with Qwt5"""
-        if len(args) == 1:
+    def setData(self, *args, **kwargs):
+        """
+        Initialize data with a series data object or an array of points.
+        
+        .. py:method:: setData(data):
+        
+            :param data: Series data (e.g. `QwtPointArrayData` instance)
+            :type data: qwt.plot_series.QwtSeriesData
+
+        .. py:method:: setData(xData, yData, [size=None], [finite=True]):
+
+            Initialize data with `x` and `y` arrays.
+            
+            This signature was removed in Qwt6 and is temporarily maintained here to ensure compatibility with Qwt5.
+    
+            Same as `setSamples(x, y, [size=None], [finite=True])`
+        
+            :param x: List/array of x values
+            :param y: List/array of y values
+            :param size: size of xData and yData
+            :type size: int or None
+            :param bool finite: if True, keep only finite array elements (remove all infinity and not a number values), otherwise do not filter array elements
+        
+        .. seealso::
+        
+            :py:meth:`setSamples()`
+        """
+        if len(args) == 1 and not kwargs:
             super(QwtPlotCurve, self).setData(*args)
-        elif len(args) == 2:
-            self.setSamples(*args)
+        elif len(args) in (2, 3, 4):
+            self.setSamples(*args, **kwargs)
         else:
-            raise TypeError("%s().setData() takes 1 or 2 argument(s) (%s given)"\
+            raise TypeError("%s().setData() takes 1, 2, 3 or 4 argument(s) (%s given)"\
                             % (self.__class__.__name__, len(args)))
     
-    def setSamples(self, *args):
+    def setSamples(self, *args, **kwargs):
         """
         Initialize data with an array of points.
+        
+        .. py:method:: setSamples(data):
+        
+            :param data: Series data (e.g. `QwtPointArrayData` instance)
+            :type data: qwt.plot_series.QwtSeriesData
+        
         
         .. py:method:: setSamples(samples):
         
@@ -833,7 +864,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
             :param samples: List/array of points
         
-        .. py:method:: setSamples(xData, yData, [size=None]):
+        .. py:method:: setSamples(xData, yData, [size=None], [finite=True]):
 
             Same as `setData(QwtPointArrayData(xData, yData, [size=None]))`
         
@@ -841,23 +872,40 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :param yData: List/array of y values
             :param size: size of xData and yData
             :type size: int or None
+            :param bool finite: if True, keep only finite array elements (remove all infinity and not a number values), otherwise do not filter array elements
         
         .. seealso::
         
-            :py:class:`qwt.plot_series.QwtPointArrayData`,
+            :py:class:`qwt.plot_series.QwtPointArrayData`
         """
-        if len(args) == 1:
+        if len(args) == 1 and not kwargs:
             samples, = args
             if isinstance(samples, QwtSeriesData):
                 self.setData(samples)
             else:
                 self.setData(QwtPointArrayData(samples))
-        elif len(args) == 3:
-            xData, yData, size = args
-            self.setData(QwtPointArrayData(xData, yData, size))
-        elif len(args) == 2:
-            xData, yData = args
-            self.setData(QwtPointArrayData(xData, yData))
+        elif len(args) >= 2:
+            xData, yData = args[:2]
+            try:
+                size = kwargs.pop('size')
+            except KeyError:
+                size = None
+            try:
+                finite = kwargs.pop('finite')
+            except KeyError:
+                finite = None
+            if kwargs:
+                raise TypeError("%s().setSamples(): unknown %s keyword "\
+                                "argument(s)"\
+                                % (self.__class__.__name__,
+                                   ", ".join(list(kwargs.keys()))))
+            for arg in args[2:]:
+                if isinstance(arg, bool):
+                    finite = arg
+                elif isinstance(arg, int):
+                    size = arg
+            self.setData(QwtPointArrayData(xData, yData,
+                                           size=size, finite=finite))
         else:
             raise TypeError("%s().setSamples() takes 1, 2 or 3 argument(s) "\
                             "(%s given)" % (self.__class__.__name__, len(args)))

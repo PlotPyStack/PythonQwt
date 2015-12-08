@@ -652,6 +652,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
         logBase = self.base()
         interval = QwtInterval(x1/np.power(logBase, self.lowerMargin()),
                                x2*np.power(logBase, self.upperMargin()))
+        interval = interval.limited(LOG_MIN, LOG_MAX)
         if interval.maxValue()/interval.minValue() < logBase:
             linearScaler = QwtLinearScaleEngine()
             linearScaler.setAttributes(self.attributes())
