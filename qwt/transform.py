@@ -166,7 +166,7 @@ class QwtLogTransform(QwtTransform):
         Modify value to be a valid value for the transformation.
         
         :param float value: Value to be bounded
-        :return: Value unmodified
+        :return: Value modified
         """
         return np.clip(value, self.LogMin, self.LogMax)
 
@@ -181,7 +181,7 @@ class QwtLogTransform(QwtTransform):
         
             :py:meth:`invTransform()`
         """
-        return np.log(value)
+        return np.log(self.bounded(value))
     
     def invTransform(self, value):
         """
