@@ -1,5 +1,9 @@
 # History of changes
 
+## Version 0.5.4
+
+Fixed an annoying bug which caused scale widget (axis ticks in particular) to be misaligned with canvas grid: the user was forced to resize the plot widget as a workaround
+
 ## Version 0.5.3
 
 Better handling of infinity and NaN values in scales (removed NumPy warnings)
