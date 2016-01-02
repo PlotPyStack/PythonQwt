@@ -896,9 +896,14 @@ class QwtPlot(QFrame, QwtPlotDict):
             scaleWidget = self.axisWidget(axisId)
             scaleWidget.setScaleDiv(d.scaleDiv)
 
-            #TODO: see when it is *really* necessary to update border dist
-#            startDist, endDist = scaleWidget.getBorderDistHint()
-#            scaleWidget.setBorderDist(startDist, endDist)
+            # It is *really* necessary to update border dist!
+            # Otherwise, when tick labels are large enough, the ticks 
+            # may not be aligned with canvas grid.
+            # See the following issues for more details:
+            # https://github.com/PierreRaybaut/guiqwt/issues/57
+            # https://github.com/PierreRaybaut/PythonQwt/issues/30
+            startDist, endDist = scaleWidget.getBorderDistHint()
+            scaleWidget.setBorderDist(startDist, endDist)
 
         for item in itmList:
             if item.testItemInterest(QwtPlotItem.ScaleInterest):
