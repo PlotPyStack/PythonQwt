@@ -2,8 +2,6 @@
 
 <img src="http://pythonhosted.org/PythonQwt/_images/panorama.png">
 
-## Purpose and Motivation
-
 The `PythonQwt` project was initiated to solve -at least temporarily- the 
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
 no longer maintained. The idea was to translate the original Qwt C++ code to 
@@ -12,6 +10,9 @@ based on NumPy and other libraries.
 
 The `PythonQwt` package consists of a single Python package named `qwt` and 
 of a few other files (examples, doc, ...).
+
+See [documentation](http://pythonhosted.org/PythonQwt/) for more details on 
+the library and [changelog](CHANGELOG.md) for recent history of changes.
 
 ## Copyrights
 
