@@ -561,6 +561,8 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         :return: Calculated ticks
         """
         numTicks = min([round(interval.width()/stepSize)+1, 10000])
+        if np.isnan(numTicks):
+            numTicks = 0
         ticks = [interval.minValue()]
         for i in range(1, int(numTicks-1)):
             ticks += [interval.minValue()+i*stepSize]
