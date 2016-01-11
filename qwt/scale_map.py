@@ -146,7 +146,10 @@ class QwtScaleMap(object):
         
             :py:meth:`transform_scalar()`
         """
-        s = self.__ts1 + ( p - self.__p1 ) / self.__cnv
+        if self.__cnv == 0:
+            s = self.__ts1  # avoid divide by zero
+        else:
+            s = self.__ts1 + ( p - self.__p1 ) / self.__cnv
         if self.__transform:
             s = self.__transform.invTransform(s)
         return s
