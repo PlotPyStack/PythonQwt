@@ -29,6 +29,11 @@ from qwt import __version__ as version
 
 DESCRIPTION = 'Qt plotting widgets for Python'
 LONG_DESCRIPTION = """\
+PythonQwt: Qt plotting widgets for Python
+=========================================
+
+.. image:: http://pythonhosted.org/PythonQwt/_images/panorama.png
+
 The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical 
 user interfaces for the Python programming language. It is compatible with 
 both ``PyQt4`` and ``PyQt5`` (``PySide`` is currently not supported but it
@@ -44,7 +49,14 @@ based on NumPy and other libraries.
 The ``PythonQwt`` package consists of a single Python package named `qwt` 
 which is a pure Python implementation of Qwt C++ library with some 
 limitations: efforts were concentrated on basic plotting features, leaving 
-higher level features to the `guiqwt` library."""
+higher level features to the `guiqwt` library.
+
+See `README`_ and `documentation`_ for more details on the library and `changelog`_ for recent history of changes.
+
+.. _README: https://github.com/PierreRaybaut/PythonQwt/blob/master/README.md
+.. _documentation: http://pythonhosted.org/PythonQwt/
+.. _changelog: https://github.com/PierreRaybaut/PythonQwt/blob/master/CHANGELOG.md
+"""
 KEYWORDS = ''
 CLASSIFIERS = []
 if 'beta' in version or 'b' in version:

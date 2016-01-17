@@ -2,7 +2,9 @@
 qwt-6.1.2
 qwt/tests/demo.png
 PythonQwt.chm
+PythonQwt.chm.zip
 doc.zip
+doctmp/
 
 # Created by https://www.gitignore.io/api/python
 
