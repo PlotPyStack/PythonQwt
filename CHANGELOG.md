@@ -1,6 +1,12 @@
 # PythonQwt Releases #
 
 
+### Version 0.5.5 ###
+
+- `QwtScaleMap.invTransform_scalar`: avoid divide by 0
+- Avoid error when computing ticks: when the axis was so small that no tick could be drawn, an exception used to be raised
+
+
 ### Version 0.5.4 ###
 
 Fixed an annoying bug which caused scale widget (axis ticks in particular) 
