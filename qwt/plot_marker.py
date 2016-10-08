@@ -13,14 +13,14 @@ QwtPlotMarker
    :members:
 """
 
-from qwt.plot import QwtPlotItem
-from qwt.text import QwtText
-from qwt.painter import QwtPainter
-from qwt.graphic import QwtGraphic
-from qwt.symbol import QwtSymbol
+from .plot import QwtPlotItem
+from .text import QwtText
+from .painter import QwtPainter
+from .graphic import QwtGraphic
+from .symbol import QwtSymbol
 
-from qwt.qt.QtGui import QPen, QPainter
-from qwt.qt.QtCore import Qt, QPointF, QRectF, QSizeF, QRect
+from .qt.QtGui import QPen, QPainter
+from .qt.QtCore import Qt, QPointF, QRectF, QSizeF, QRect
 
 
 class QwtPlotMarker_PrivateData(object):
@@ -139,8 +139,8 @@ class QwtPlotMarker(QwtPlotItem):
         Draw the marker
         
         :param QPainter painter: Painter
-        :param qwt.scale_map.QwtScaleMap xMap: x Scale Map
-        :param qwt.scale_map.QwtScaleMap yMap: y Scale Map
+        :param .scale_map.QwtScaleMap xMap: x Scale Map
+        :param .scale_map.QwtScaleMap yMap: y Scale Map
         :param QRectF canvasRect: Contents rectangle of the canvas in painter coordinates
         """
         pos = QPointF(xMap.transform(self.__data.xValue),
@@ -166,7 +166,7 @@ class QwtPlotMarker(QwtPlotItem):
         .. seealso::
         
             :py:meth:`drawLabel()`, 
-            :py:meth:`qwt.symbol.QwtSymbol.drawSymbol()`
+            :py:meth:`.symbol.QwtSymbol.drawSymbol()`
         """
         if self.__data.style == self.NoLine:
             return
@@ -189,7 +189,7 @@ class QwtPlotMarker(QwtPlotItem):
         .. seealso::
         
             :py:meth:`drawLabel()`, 
-            :py:meth:`qwt.symbol.QwtSymbol.drawSymbol()`
+            :py:meth:`.symbol.QwtSymbol.drawSymbol()`
         """
         if self.__data.label.isEmpty():
             return
@@ -302,7 +302,7 @@ class QwtPlotMarker(QwtPlotItem):
         """
         Assign a symbol
         
-        :param qwt.symbol.QwtSymbol symbol: New symbol
+        :param .symbol.QwtSymbol symbol: New symbol
         
         .. seealso::
         
@@ -330,7 +330,7 @@ class QwtPlotMarker(QwtPlotItem):
         Set the label
         
         :param label: Label text
-        :type label: qwt.text.QwtText or str
+        :type label: .text.QwtText or str
         
         .. seealso::
         
@@ -505,8 +505,8 @@ class QwtPlotMarker(QwtPlotItem):
         
         .. seealso::
         
-            :py:meth:`qwt.plot.QwtPlotItem.setLegendIconSize()`,
-            :py:meth:`qwt.plot.QwtPlotItem.legendData()`
+            :py:meth:`.plot.QwtPlotItem.setLegendIconSize()`,
+            :py:meth:`.plot.QwtPlotItem.legendData()`
         """
         if size.isEmpty():
             return QwtGraphic()

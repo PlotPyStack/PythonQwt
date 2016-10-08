@@ -13,14 +13,14 @@ QwtPlotCanvas
    :members:
 """
 
-from qwt.null_paintdevice import QwtNullPaintDevice
-from qwt.painter import QwtPainter
+from .null_paintdevice import QwtNullPaintDevice
+from .painter import QwtPainter
 
-from qwt.qt import PYQT5
-from qwt.qt.QtGui import (QFrame, QPaintEngine, QPen, QBrush, QRegion, QImage,
+from .qt import PYQT5
+from .qt.QtGui import (QFrame, QPaintEngine, QPen, QBrush, QRegion, QImage,
                           QPainterPath, QPixmap, QGradient, QPainter, qAlpha,
                           QPolygonF, QStyleOption, QStyle, QStyleOptionFrame)
-from qwt.qt.QtCore import Qt, QSizeF, QT_VERSION, QEvent, QPointF, QRectF
+from .qt.QtCore import Qt, QSizeF, QT_VERSION, QEvent, QPointF, QRectF
 
 
 class Border(object):
@@ -322,7 +322,7 @@ class QwtPlotCanvas(QFrame):
     
     .. seealso::
     
-        :py:meth:`qwt.plot.QwtPlot.setCanvas()`
+        :py:meth:`.plot.QwtPlot.setCanvas()`
         
     Paint attributes:
     
@@ -335,7 +335,7 @@ class QwtPlotCanvas(QFrame):
             when working with widget overlays (like rubber bands).
             Disabling the cache might improve the performance for
             incremental paints 
-            (using :py:class:`qwt.plot_directpainter.QwtPlotDirectPainter`).
+            (using :py:class:`.plot_directpainter.QwtPlotDirectPainter`).
         
         * `QwtPlotCanvas.Opaque`:
         
@@ -401,11 +401,11 @@ class QwtPlotCanvas(QFrame):
     
         Constructor
         
-        :param qwt.plot.QwtPlot plot: Parent plot widget
+        :param .plot.QwtPlot plot: Parent plot widget
 
         .. seealso::
         
-            :py:meth:`qwt.plot.QwtPlot.setCanvas()`
+            :py:meth:`.plot.QwtPlot.setCanvas()`
     """
     
     # enum PaintAttribute
@@ -698,9 +698,9 @@ class QwtPlotCanvas(QFrame):
         else:
             if QT_VERSION >= 0x040500:
                 if PYQT5:
-                    from qwt.qt.QtGui import QStyleOptionFrame
+                    from .qt.QtGui import QStyleOptionFrame
                 else:
-                    from qwt.qt.QtGui import QStyleOptionFrameV3 as\
+                    from .qt.QtGui import QStyleOptionFrameV3 as\
                                              QStyleOptionFrame
                 opt = QStyleOptionFrame()
                 opt.initFrom(self)

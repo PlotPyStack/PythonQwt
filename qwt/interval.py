@@ -235,7 +235,7 @@ class QwtInterval(object):
         """
         Unite two intervals
         
-        :param qwt.interval.QwtInterval other: other interval to united with
+        :param .interval.QwtInterval other: other interval to united with
         :return: united interval
         """
         if not self.isValid():
@@ -280,7 +280,7 @@ class QwtInterval(object):
         """
         Intersect two intervals
         
-        :param qwt.interval.QwtInterval other: other interval to intersect with
+        :param .interval.QwtInterval other: other interval to intersect with
         :return: intersected interval
         """
         if not other.isValid() or not self.isValid():
@@ -326,7 +326,7 @@ class QwtInterval(object):
         """
         Test if two intervals overlap
         
-        :param qwt.interval.QwtInterval other: other interval
+        :param .interval.QwtInterval other: other interval
         :return: True, when the intervals are intersecting
         """
         if not other.isValid() or not self.isValid():

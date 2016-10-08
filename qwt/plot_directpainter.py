@@ -13,11 +13,11 @@ QwtPlotDirectPainter
    :members:
 """
 
-from qwt.qt.QtGui import QPainter, QRegion
-from qwt.qt.QtCore import QObject, QT_VERSION, Qt, QEvent
+from .qt.QtGui import QPainter, QRegion
+from .qt.QtCore import QObject, QT_VERSION, Qt, QEvent
 
-from qwt.plot import QwtPlotItem
-from qwt.plot_canvas import QwtPlotCanvas
+from .plot import QwtPlotItem
+from .plot_canvas import QwtPlotCanvas
 
 
 def qwtRenderItem(painter, canvasRect, seriesItem, from_, to):
@@ -197,7 +197,7 @@ class QwtPlotDirectPainter(QObject):
         will result in faster painting, if the paint engine of the canvas widget
         supports this feature.
         
-        :param qwt.plot_series.QwtPlotSeriesItem seriesItem: Item to be painted
+        :param .plot_series.QwtPlotSeriesItem seriesItem: Item to be painted
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the series will be painted to its last point.
         """

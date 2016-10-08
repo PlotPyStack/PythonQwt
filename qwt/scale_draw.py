@@ -19,13 +19,13 @@ QwtScaleDraw
    :members:
 """
 
-from qwt.scale_div import QwtScaleDiv
-from qwt.scale_map import QwtScaleMap
-from qwt.text import QwtText
-from qwt.math import qwtRadians
+from .scale_div import QwtScaleDiv
+from .scale_map import QwtScaleMap
+from .text import QwtText
+from .math import qwtRadians
 
-from qwt.qt.QtGui import QPalette, QFontMetrics, QTransform
-from qwt.qt.QtCore import (Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect,
+from .qt.QtGui import QPalette, QFontMetrics, QTransform
+from .qt.QtCore import (Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect,
                            QPoint)
 
 import numpy as np
@@ -169,7 +169,7 @@ class QwtAbstractScaleDraw(object):
         """
         Change the scale division
         
-        :param qwt.scale_div.QwtScaleDiv scaleDiv: New scale division
+        :param .scale_div.QwtScaleDiv scaleDiv: New scale division
         """
         self.__data.scaleDiv = scaleDiv
         self.__data.map.setScaleInterval(scaleDiv.lowerBound(),
@@ -180,7 +180,7 @@ class QwtAbstractScaleDraw(object):
         """
         Change the transformation of the scale
 
-        :param qwt.transform.QwtTransform transformation: New scale transformation
+        :param .transform.QwtTransform transformation: New scale transformation
         """
         self.__data.map.setTransformation(transformation)
     

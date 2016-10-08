@@ -13,9 +13,9 @@ QwtScaleMap
    :members:
 """
 
-from qwt.math import qwtFuzzyCompare
+from .math import qwtFuzzyCompare
 
-from qwt.qt.QtCore import QRectF, QPointF
+from .qt.QtCore import QRectF, QPointF
 
 
 class QwtScaleMap(object):
@@ -32,7 +32,7 @@ class QwtScaleMap(object):
     
         Constructor (eventually, copy constructor)
         
-        :param qwt.scale_map.QwtScaleMap other: Other scale map
+        :param .scale_map.QwtScaleMap other: Other scale map
     
     .. py:class:: QwtScaleMap(p1, p2, s1, s2)
     
@@ -164,7 +164,7 @@ class QwtScaleMap(object):
         """
         Initialize the map with a transformation
         
-        :param qwt.transform.QwtTransform transform: Transformation
+        :param .transform.QwtTransform transform: Transformation
         """
         if self.__transform != transform:
             self.__transform = transform
@@ -227,16 +227,16 @@ class QwtScaleMap(object):
         
             Transform a rectangle from scale to paint coordinates
         
-            :param qwt.scale_map.QwtScaleMap xMap: X map
-            :param qwt.scale_map.QwtScaleMap yMap: Y map
+            :param .scale_map.QwtScaleMap xMap: X map
+            :param .scale_map.QwtScaleMap yMap: Y map
             :param QRectF rect: Rectangle in paint coordinates
         
         .. py:method:: transform(xMap, yMap, pos)
         
             Transform a point from scale to paint coordinates
         
-            :param qwt.scale_map.QwtScaleMap xMap: X map
-            :param qwt.scale_map.QwtScaleMap yMap: Y map
+            :param .scale_map.QwtScaleMap xMap: X map
+            :param .scale_map.QwtScaleMap yMap: Y map
             :param QPointF pos: Position in scale coordinates
             
         Scalar: scalemap.transform(scalar)

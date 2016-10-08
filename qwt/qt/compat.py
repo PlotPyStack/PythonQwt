@@ -23,8 +23,8 @@ import os
 import sys
 import collections
 
-from qwt.qt.QtGui import QFileDialog
-from qwt.py3compat import is_text_string, to_text_string, TEXT_TYPES
+from .QtGui import QFileDialog
+from ..py3compat import is_text_string, to_text_string, TEXT_TYPES
 
 #==============================================================================
 # QVariant conversion utilities

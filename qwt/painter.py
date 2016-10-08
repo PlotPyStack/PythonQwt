@@ -13,13 +13,13 @@ QwtPainterClass
    :members:
 """
 
-from qwt.color_map import QwtColorMap
-from qwt.scale_map import QwtScaleMap
+from .color_map import QwtColorMap
+from .scale_map import QwtScaleMap
 
-from qwt.qt.QtGui import (QPaintEngine, QFrame, QPixmap, QPainter, QPalette, 
+from .qt.QtGui import (QPaintEngine, QFrame, QPixmap, QPainter, QPalette, 
                           QStyle, QPen, QStyleOptionFocusRect, QBrush, 
                           QLinearGradient, QPainterPath, QColor, QStyleOption)
-from qwt.qt.QtCore import Qt, QRect, QPoint, QT_VERSION
+from .qt.QtCore import Qt, QRect, QPoint, QT_VERSION
 
 QWIDGETSIZE_MAX = (1<<24)-1
 
@@ -321,9 +321,9 @@ class QwtPainterClass(object):
         Draw a color bar into a rectangle
         
         :param QPainter painter: Painter
-        :param qwt.color_map.QwtColorMap colorMap: Color map
-        :param qwt.interval.QwtInterval interval: Value range
-        :param qwt.scalemap.QwtScaleMap scaleMap: Scale map
+        :param .color_map.QwtColorMap colorMap: Color map
+        :param .interval.QwtInterval interval: Value range
+        :param .scalemap.QwtScaleMap scaleMap: Scale map
         :param Qt.Orientation orientation: Orientation
         :param QRectF rect: Target rectangle
         """
@@ -428,7 +428,7 @@ class QwtPainterClass(object):
             if widget and widget.windowHandle():
                 pixelRatio = widget.windowHandle().devicePixelRatio()
             else:
-                from qwt.qt.QtGui import qApp
+                from .qt.QtGui import qApp
                 if qApp is not None:
                     try:
                         pixelRatio = qApp.devicePixelRatio()

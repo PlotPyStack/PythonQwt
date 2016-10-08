@@ -13,13 +13,13 @@ QwtPlotLayout
    :members:
 """
 
-from qwt.text import QwtText
-from qwt.scale_widget import QwtScaleWidget
-from qwt.plot import QwtPlot
-from qwt.scale_draw import QwtAbstractScaleDraw
+from .text import QwtText
+from .scale_widget import QwtScaleWidget
+from .plot import QwtPlot
+from .scale_draw import QwtAbstractScaleDraw
 
-from qwt.qt.QtGui import QFont, QRegion
-from qwt.qt.QtCore import QSize, Qt, QRectF
+from .qt.QtGui import QFont, QRegion
+from .qt.QtCore import QSize, Qt, QRectF
 
 import numpy as np
 
@@ -152,7 +152,7 @@ class QwtPlotLayout(object):
 
     .. seealso::
     
-        :py:meth:`qwt.plot.QwtPlot.setPlotLayout()`
+        :py:meth:`.plot.QwtPlot.setPlotLayout()`
     
     Valid options:
     
@@ -535,12 +535,12 @@ class QwtPlotLayout(object):
     
     def minimumSizeHint(self, plot):
         """
-        :param qwt.plot.QwtPlot plot: Plot widget
+        :param .plot.QwtPlot plot: Plot widget
         :return: Minimum size hint
         
         .. seealso::
         
-            :py:meth:`qwt.plot.QwtPlot.minimumSizeHint()`
+            :py:meth:`.plot.QwtPlot.minimumSizeHint()`
         """
         class _ScaleData(object):
             def __init__(self):
@@ -922,7 +922,7 @@ class QwtPlotLayout(object):
         """
         Recalculate the geometry of all components.
         
-        :param qwt.plot.QwtPlot plot: Plot to be layout
+        :param .plot.QwtPlot plot: Plot to be layout
         :param QRectF plotRect: Rectangle where to place the components
         :param options: Layout options
         """

@@ -10,7 +10,7 @@ NumPy array to QImage
 .. autofunction:: array_to_qimage
 """
 
-from qwt.qt.QtGui import QImage
+from .qt.QtGui import QImage
 
 import numpy as np
 

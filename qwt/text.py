@@ -46,13 +46,13 @@ QwtRichTextEngine
 import numpy as np
 import struct
 
-from qwt.qt.QtGui import (QPainter, QFrame, QSizePolicy, QPalette, QFont,
+from .qt.QtGui import (QPainter, QFrame, QSizePolicy, QPalette, QFont,
                           QFontMetrics, QApplication, QColor, QWidget,
                           QTextDocument, QTextOption, QFontMetricsF, QPixmap,
                           QFontInfo, QTransform, QAbstractTextDocumentLayout)
-from qwt.qt.QtCore import Qt, QSizeF, QSize, QRectF
+from .qt.QtCore import Qt, QSizeF, QSize, QRectF
 
-from qwt.painter import QwtPainter
+from .painter import QwtPainter
 
 QWIDGETSIZE_MAX = (1<<24)-1
 
@@ -111,7 +111,7 @@ class QwtTextEngine(object):
  
     .. seealso::
     
-        :py:meth:`qwt.text.QwtText.setTextEngine()`
+        :py:meth:`.text.QwtText.setTextEngine()`
     """
     def __init__(self):
         pass
@@ -490,8 +490,8 @@ class QwtText(object):
         
     ..seealso::
     
-        :py:meth:`qwt.text.QwtTextEngine`, 
-        :py:meth:`qwt.text.QwtTextLabel`
+        :py:meth:`.text.QwtTextEngine`, 
+        :py:meth:`.text.QwtTextLabel`
         
     Text formats:
     
@@ -549,7 +549,7 @@ class QwtText(object):
     
         :param str text: Text content
         :param int textFormat: Text format
-        :param qwt.text.QwtText other: Object to copy (text and textFormat arguments are ignored)
+        :param .text.QwtText other: Object to copy (text and textFormat arguments are ignored)
     """
 
     # enum TextFormat
@@ -654,7 +654,7 @@ class QwtText(object):
         .. seealso::
         
             :py:meth:`renderFlags()`, 
-            :py:meth:`qwt.text.QwtTextEngine.draw()`
+            :py:meth:`.text.QwtTextEngine.draw()`
         """
         renderFlags = Qt.AlignmentFlag(renderFlags)
         if renderFlags != self.__data.renderFlags:
@@ -1019,7 +1019,7 @@ class QwtText(object):
         For `QwtText.PlainText` it is not allowed to assign a engine to None.
 
         :param int format_: Text format
-        :param qwt.text.QwtTextEngine engine: Text engine
+        :param .text.QwtTextEngine engine: Text engine
 
         .. seealso::
         
@@ -1110,7 +1110,7 @@ class QwtTextLabel(QFrame):
         Change the label's text, keeping all other QwtText attributes
         
         :param text: New text
-        :type text: qwt.text.QwtText or str
+        :type text: .text.QwtText or str
         :param int textFormat: Format of text
         
         .. seealso::

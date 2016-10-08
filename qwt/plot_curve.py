@@ -13,18 +13,18 @@ QwtPlotCurve
    :members:
 """
 
-from qwt.text import QwtText
-from qwt.plot import QwtPlotItem, QwtPlotItem_PrivateData
-from qwt.painter import QwtPainter
-from qwt.math import qwtSqr
-from qwt.graphic import QwtGraphic
-from qwt.plot_series import (QwtPlotSeriesItem, QwtSeriesStore,
+from .text import QwtText
+from .plot import QwtPlotItem, QwtPlotItem_PrivateData
+from .painter import QwtPainter
+from .math import qwtSqr
+from .graphic import QwtGraphic
+from .plot_series import (QwtPlotSeriesItem, QwtSeriesStore,
                              QwtSeriesData, QwtPointArrayData)
-from qwt.symbol import QwtSymbol
-from qwt.plot_directpainter import QwtPlotDirectPainter
+from .symbol import QwtSymbol
+from .plot_directpainter import QwtPlotDirectPainter
 
-from qwt.qt.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
-from qwt.qt.QtCore import QSize, Qt, QRectF, QPointF
+from .qt.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
+from .qt.QtCore import QSize, Qt, QRectF, QPointF
 
 import numpy as np
 
@@ -86,8 +86,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     
     .. seealso::
     
-        :py:class:`qwt.symbol.QwtSymbol()`, 
-        :py:class:`qwt.scale_map.QwtScaleMap()`
+        :py:class:`.symbol.QwtSymbol()`, 
+        :py:class:`.scale_map.QwtScaleMap()`
         
     Curve styles:
     
@@ -157,7 +157,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         Constructor
         
         :param title: Curve title
-        :type title: qwt.text.QwtText or str or None
+        :type title: .text.QwtText or str or None
     """
     
     # enum CurveStyle
@@ -275,7 +275,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         set symbol will be delete by setting a new one. If symbol is None no 
         symbol will be drawn.
         
-        :param qwt.symbol.QwtSymbol symbol: Symbol
+        :param .symbol.QwtSymbol symbol: Symbol
         
         .. seealso::
         
@@ -414,8 +414,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         Draw an interval of the curve
         
         :param QPainter painter: Painter
-        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
@@ -448,8 +448,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
         :param QPainter painter: Painter
         :param int style: curve style, see `QwtPlotCurve.CurveStyle`
-        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
@@ -473,8 +473,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         Draw lines
         
         :param QPainter painter: Painter
-        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
@@ -498,8 +498,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         Draw sticks
         
         :param QPainter painter: Painter
-        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
@@ -530,8 +530,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         Draw dots
         
         :param QPainter painter: Painter
-        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
@@ -553,8 +553,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         Draw steps
         
         :param QPainter painter: Painter
-        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
@@ -625,8 +625,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         the curve brush
 
         :param QPainter painter: Painter
-        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         :param QPolygonF polygon: Polygon - will be modified !
         
@@ -655,8 +655,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         area between the original polygon and the baseline.
 
         :param QPainter painter: Painter
-        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QPolygonF polygon: Polygon to be completed
         """
         if polygon.size() < 2:
@@ -680,9 +680,9 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         Draw symbols
         
         :param QPainter painter: Painter
-        :param qwt.symbol.QwtSymbol symbol: Curve symbol
-        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param .symbol.QwtSymbol symbol: Curve symbol
+        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
@@ -777,8 +777,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
         .. seealso::
         
-            :py:meth:`qwt.plot.QwtPlotItem.setLegendIconSize()`,
-            :py:meth:`qwt.plot.QwtPlotItem.legendData()`
+            :py:meth:`.plot.QwtPlotItem.setLegendIconSize()`,
+            :py:meth:`.plot.QwtPlotItem.legendData()`
         """
         if size.isEmpty():
             return QwtGraphic()
@@ -820,7 +820,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         .. py:method:: setData(data):
         
             :param data: Series data (e.g. `QwtPointArrayData` instance)
-            :type data: qwt.plot_series.QwtSeriesData
+            :type data: .plot_series.QwtSeriesData
 
         .. py:method:: setData(xData, yData, [size=None], [finite=True]):
 
@@ -855,7 +855,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         .. py:method:: setSamples(data):
         
             :param data: Series data (e.g. `QwtPointArrayData` instance)
-            :type data: qwt.plot_series.QwtSeriesData
+            :type data: .plot_series.QwtSeriesData
         
         
         .. py:method:: setSamples(samples):
@@ -876,7 +876,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         
         .. seealso::
         
-            :py:class:`qwt.plot_series.QwtPointArrayData`
+            :py:class:`.plot_series.QwtPointArrayData`
         """
         if len(args) == 1 and not kwargs:
             samples, = args

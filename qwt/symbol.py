@@ -13,13 +13,13 @@ QwtSymbol
    :members:
 """
 
-from qwt.graphic import QwtGraphic
-from qwt.painter import QwtPainter
+from .graphic import QwtGraphic
+from .painter import QwtPainter
 
-from qwt.qt.QtGui import (QPainter, QTransform, QPixmap, QPen, QPolygonF,
+from .qt.QtGui import (QPainter, QTransform, QPixmap, QPen, QPolygonF,
                           QPainterPath, QBrush)
-from qwt.qt.QtCore import QSize, QRect, QPointF, QRectF, QSizeF, Qt, QPoint
-from qwt.qt.QtSvg import QSvgRenderer
+from .qt.QtCore import QSize, QRect, QPointF, QRectF, QSizeF, Qt, QPoint
+from .qt.QtSvg import QSvgRenderer
 
 import numpy as np
 
@@ -528,8 +528,8 @@ class QwtSymbol(object):
         
         The following code defines a symbol drawing an arrow::
         
-            from qwt.qt.QtGui import QApplication, QPen, QPainterPath, QTransform
-            from qwt.qt.QtCore import Qt, QPointF
+            from .qt.QtGui import QApplication, QPen, QPainterPath, QTransform
+            from .qt.QtCore import Qt, QPointF
             from qwt import QwtPlot, QwtPlotCurve, QwtSymbol
             import numpy as np
             
@@ -634,7 +634,7 @@ class QwtSymbol(object):
         """
         Set a graphic as symbol
 
-        :param qwt.graphic.QwtGraphic graphic: Graphic
+        :param .graphic.QwtGraphic graphic: Graphic
         
         .. seealso::
         

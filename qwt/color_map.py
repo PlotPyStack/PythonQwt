@@ -28,8 +28,8 @@ QwtAlphaColorMap
    :members:
 """
 
-from qwt.qt.QtGui import QColor, qRed, qGreen, qBlue, qRgb, qRgba, qAlpha
-from qwt.qt.QtCore import Qt, qIsNaN
+from .qt.QtGui import QColor, qRed, qGreen, qBlue, qRgb, qRgba, qAlpha
+from .qt.QtCore import Qt, qIsNaN
 
 
 class ColorStop(object):
@@ -153,7 +153,7 @@ class QwtColorMap(object):
 
     .. seealso ::
         
-        :py:data:`qwt.QwtScaleWidget`
+        :py:data:`.QwtScaleWidget`
     """
     
     # enum Format
@@ -168,7 +168,7 @@ class QwtColorMap(object):
         """
         Map a value into a color
         
-        :param qwt.interval.QwtInterval interval: valid interval for value
+        :param .interval.QwtInterval interval: valid interval for value
         :param float value: value
         :return: the color corresponding to value
         
@@ -191,7 +191,7 @@ class QwtColorMap(object):
         """
         Build and return a color map of 256 colors
         
-        :param qwt.interval.QwtInterval interval: range for the values
+        :param .interval.QwtInterval interval: range for the values
         :return: a color table, that can be used for a `QImage`
 
         The color table is needed for rendering indexed images in combination

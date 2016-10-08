@@ -6,7 +6,7 @@
 # (see LICENSE file for more details)
 
 """
-qwt.dyngrid_layout
+.dyngrid_layout
 ------------------
 
 The `dyngrid_layout` module provides the `QwtDynGridLayout` class.
@@ -15,8 +15,8 @@ The `dyngrid_layout` module provides the `QwtDynGridLayout` class.
    :members:
 """
 
-from qwt.qt.QtGui import QLayout
-from qwt.qt.QtCore import Qt, QRect, QSize
+from .qt.QtGui import QLayout
+from .qt.QtCore import Qt, QRect, QSize
 
 
 class QwtDynGridLayout_PrivateData(object):

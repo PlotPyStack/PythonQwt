@@ -27,13 +27,13 @@ QwtLogScaleEngine
 
 from __future__ import division
 
-from qwt.interval import QwtInterval
-from qwt.scale_div import QwtScaleDiv
-from qwt.transform import QwtLogTransform
-from qwt.math import qwtFuzzyCompare
-from qwt.transform import QwtTransform
+from .interval import QwtInterval
+from .scale_div import QwtScaleDiv
+from .transform import QwtLogTransform
+from .math import qwtFuzzyCompare
+from .transform import QwtTransform
 
-from qwt.qt.QtCore import qFuzzyCompare
+from .qt.QtCore import qFuzzyCompare
 
 import numpy as np
 
@@ -78,7 +78,7 @@ def ceilEps(value, intervalSize):
     
     .. seealso::
     
-        :py:func:`qwt.scale_engine.floorEps()`
+        :py:func:`.scale_engine.floorEps()`
     """
     eps = EPS*intervalSize
     value = (value-eps)/intervalSize
@@ -94,7 +94,7 @@ def floorEps(value, intervalSize):
     
     .. seealso::
     
-        :py:func:`qwt.scale_engine.ceilEps()`
+        :py:func:`.scale_engine.ceilEps()`
     """
     eps = EPS*intervalSize
     value = (value+eps)/intervalSize
@@ -218,7 +218,7 @@ class QwtScaleEngine(object):
         """
         Assign a transformation
 
-        :param qwt.transform.QwtTransform transform: Transformation
+        :param .transform.QwtTransform transform: Transformation
 
         The transformation object is used as factory for clones
         that are returned by `transformation()`
@@ -326,7 +326,7 @@ class QwtScaleEngine(object):
         Remove ticks from a list, that are not inside an interval
         
         :param list ticks: Tick list
-        :param qwt.interval.QwtInterval interval: Interval
+        :param .interval.QwtInterval interval: Interval
         :return: Stripped tick list
         """
         if not interval.isValid() or not ticks:
@@ -534,7 +534,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         """
         Calculate ticks for an interval
         
-        :param qwt.interval.QwtInterval interval: Interval
+        :param .interval.QwtInterval interval: Interval
         :param float stepSize: Step size
         :param int maxMinorSteps: Maximum number of minor steps
         :return: Calculated ticks
@@ -556,7 +556,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         """
         Calculate major ticks for an interval
         
-        :param qwt.interval.QwtInterval interval: Interval
+        :param .interval.QwtInterval interval: Interval
         :param float stepSize: Step size
         :return: Calculated ticks
         """
@@ -602,7 +602,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         The limits of an interval are aligned that both are integer
         multiples of the step size.
         
-        :param qwt.interval.QwtInterval interval: Interval
+        :param .interval.QwtInterval interval: Interval
         :param float stepSize: Step size
         :return: Aligned interval
         """
@@ -765,7 +765,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
         """
         Calculate ticks for an interval
         
-        :param qwt.interval.QwtInterval interval: Interval
+        :param .interval.QwtInterval interval: Interval
         :param float stepSize: Step size
         :param int maxMinorSteps: Maximum number of minor steps
         :return: Calculated ticks
@@ -784,7 +784,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
         """
         Calculate major ticks for an interval
         
-        :param qwt.interval.QwtInterval interval: Interval
+        :param .interval.QwtInterval interval: Interval
         :param float stepSize: Step size
         :return: Calculated ticks
         """
@@ -874,7 +874,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
         The limits of an interval are aligned that both are integer
         multiples of the step size.
         
-        :param qwt.interval.QwtInterval interval: Interval
+        :param .interval.QwtInterval interval: Interval
         :param float stepSize: Step size
         :return: Aligned interval
         """
