@@ -15,8 +15,8 @@ The `dyngrid_layout` module provides the `QwtDynGridLayout` class.
    :members:
 """
 
-from .qt.QtGui import QLayout
-from .qt.QtCore import Qt, QRect, QSize
+from qtpy.QtCore import Qt, QRect, QSize
+from qtpy.QtWidgets import QLayout
 
 
 class QwtDynGridLayout_PrivateData(object):
@@ -28,11 +28,11 @@ class QwtDynGridLayout_PrivateData(object):
         self.expanding = Qt.Orientations()
         self.itemSizeHints = []
         self.itemList = []
-    
+
     def updateLayoutCache(self):
         self.itemSizeHints = [it.sizeHint() for it in self.itemList]
         self.isDirty = False
-    
+
 class QwtDynGridLayout(QLayout):
     """
     The `QwtDynGridLayout` class lays out widgets in a grid,
@@ -40,23 +40,23 @@ class QwtDynGridLayout(QLayout):
 
 	`QwtDynGridLayout` takes the space it gets, divides it up into rows and
 	columns, and puts each of the widgets it manages into the correct cell(s).
-	It lays out as many number of columns as possible (limited by 
+	It lays out as many number of columns as possible (limited by
     :py:meth:`maxColumns()`).
 
     .. py:class:: QwtDynGridLayout(parent, margin, [spacing=-1])
-    
+
         :param QWidget parent: parent widget
 		:param int margin: margin
 		:param int spacing: spacing
 
     .. py:class:: QwtDynGridLayout(spacing)
-    
+
 		:param int spacing: spacing
 
     .. py:class:: QwtDynGridLayout()
-    
+
 		Initialize the layout with default values.
-	
+
 		:param int spacing: spacing
     """
 
@@ -81,71 +81,71 @@ class QwtDynGridLayout(QLayout):
         self.__data = QwtDynGridLayout_PrivateData()
         self.setSpacing(spacing)
         self.setContentsMargins(margin, margin, margin, margin)
-        
+
     def invalidate(self):
         """Invalidate all internal caches"""
         self.__data.isDirty = True
         QLayout.invalidate(self)
-    
+
     def setMaxColumns(self, maxColumns):
         """Limit the number of columns"""
         self.__data.maxColumns = maxColumns
-    
+
     def maxColumns(self):
         """Return the upper limit for the number of columns"""
         return self.__data.maxColumns
-    
+
     def addItem(self, item):
         """Add an item to the next free position"""
         self.__data.itemList.append(item)
         self.invalidate()
-    
+
     def isEmpty(self):
         """Return true if this layout is empty"""
         return self.count() == 0
-    
+
     def itemCount(self):
         """Return number of layout items"""
         return self.count()
-    
+
     def itemAt(self, index):
         """Find the item at a specific index"""
         if index < 0 or index >= len(self.__data.itemList):
             return
         return self.__data.itemList[index]
-    
+
     def takeAt(self, index):
         """Find the item at a specific index and remove it from the layout"""
         if index < 0 or index >= len(self.__data.itemList):
             return
         self.__data.isDirty = True
         return self.__data.itemList.pop(index)
-    
+
     def count(self):
         """Return Number of items in the layout"""
         return len(self.__data.itemList)
-    
+
     def setExpandingDirections(self, expanding):
         """
         Set whether this layout can make use of more space than sizeHint().
-        A value of Qt.Vertical or Qt.Horizontal means that it wants to grow in 
-        only one dimension, while Qt.Vertical | Qt.Horizontal means that it 
+        A value of Qt.Vertical or Qt.Horizontal means that it wants to grow in
+        only one dimension, while Qt.Vertical | Qt.Horizontal means that it
         wants to grow in both dimensions. The default value is 0.
         """
         self.__data.expanding = expanding
-    
+
     def expandingDirections(self):
         """
         Returns whether this layout can make use of more space than sizeHint().
-        A value of Qt.Vertical or Qt.Horizontal means that it wants to grow in 
-        only one dimension, while Qt.Vertical | Qt.Horizontal means that it 
+        A value of Qt.Vertical or Qt.Horizontal means that it wants to grow in
+        only one dimension, while Qt.Vertical | Qt.Horizontal means that it
         wants to grow in both dimensions.
         """
         return self.__data.expanding
-    
+
     def setGeometry(self, rect):
         """
-        Reorganizes columns and rows and resizes managed items within a 
+        Reorganizes columns and rows and resizes managed items within a
         rectangle.
         """
         QLayout.setGeometry(self, rect)
@@ -158,12 +158,12 @@ class QwtDynGridLayout(QLayout):
         itemGeometries = self.layoutItems(rect, self.__data.numColumns)
         for it, geo in zip(self.__data.itemList, itemGeometries):
             it.setGeometry(geo)
-    
+
     def columnsForWidth(self, width):
         """
-        Calculate the number of columns for a given width. 
+        Calculate the number of columns for a given width.
 
-        The calculation tries to use as many columns as possible 
+        The calculation tries to use as many columns as possible
         ( limited by maxColumns() )
         """
         if self.isEmpty():
@@ -178,7 +178,7 @@ class QwtDynGridLayout(QLayout):
             if rowWidth > width:
                 return numColumns-1
         return 1
-    
+
     def maxRowWidth(self, numColumns):
         """Calculate the width of a layout for a given number of columns."""
         colWidth = [0] * numColumns
@@ -190,7 +190,7 @@ class QwtDynGridLayout(QLayout):
         margins = self.contentsMargins()
         margin_w = margins.left() + margins.right()
         return margin_w+(numColumns-1)*self.spacing()+sum(colWidth)
-    
+
     def maxItemWidth(self):
         """Return the maximum width of all layout items"""
         if self.isEmpty():
@@ -198,7 +198,7 @@ class QwtDynGridLayout(QLayout):
         if self.__data.isDirty:
             self.__data.updateLayoutCache()
         return max([hint.width() for hint in self.__data.itemSizeHints])
-    
+
     def layoutItems(self, rect, numColumns):
         """
         Calculate the geometries of the layout items for a layout
@@ -243,7 +243,7 @@ class QwtDynGridLayout(QLayout):
                                  colWidth[col], rowHeight[row])
             itemGeometries.append(itemGeometry)
         return itemGeometries
-        
+
     def layoutGrid(self, numColumns, rowHeight, colWidth):
         """
         Calculate the dimensions for the columns and rows for a grid
@@ -265,11 +265,11 @@ class QwtDynGridLayout(QLayout):
                 colWidth[col] = size.width()
             else:
                 colWidth[col] = max([colWidth[col], size.width()])
-    
+
     def hasHeightForWidth(self):
         """Return true: QwtDynGridLayout implements heightForWidth()."""
         return True
-    
+
     def heightForWidth(self, width):
         """Return The preferred height for this layout, given a width."""
         if self.isEmpty():
@@ -284,7 +284,7 @@ class QwtDynGridLayout(QLayout):
         margins = self.contentsMargins()
         margin_h = margins.top() + margins.bottom()
         return margin_h+(numRows-1)*self.spacing()+sum(rowHeight)
-    
+
     def stretchGrid(self, rect, numColumns, rowHeight, colWidth):
         """
         Stretch columns in case of expanding() & QSizePolicy::Horizontal and
@@ -316,7 +316,7 @@ class QwtDynGridLayout(QLayout):
                     space = yDelta/(numRows-row)
                     rowHeight[row] += space
                     yDelta -= space
-        
+
     def sizeHint(self):
         """
         Return the size hint. If maxColumns() > 0 it is the size for
@@ -340,11 +340,11 @@ class QwtDynGridLayout(QLayout):
         h = margin_h+(numRows-1)*self.spacing()+sum(rowHeight)
         w = margin_w+(numColumns-1)*self.spacing()+sum(colWidth)
         return QSize(w, h)
-    
+
     def numRows(self):
         """Return Number of rows of the current layout."""
         return self.__data.numRows
-    
+
     def numColumns(self):
         """Return Number of columns of the current layout."""
         return self.__data.numColumns

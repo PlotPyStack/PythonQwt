@@ -2,59 +2,66 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
-import sys
+import qtpy
 import numpy as np
+import sys
 
-from qwt.qt.QtGui import (QApplication, QPen, QBrush, QColor, QWidget,
-                          QMainWindow, QPainter, QPixmap, QToolBar, QWhatsThis)
-from qwt.qt.QtCore import QSize, QEvent, Signal, QRect, QObject, Qt, QPoint
-from qwt.qt import PYQT5
+from qtpy.QtCore import QSize, QEvent, Signal, QRect, QObject, Qt, QPoint
+from qtpy.QtGui import QPen, QBrush, QColor, QPainter, QPixmap
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QMainWindow
+from qtpy.QtWidgets import QToolBar
+from qtpy.QtWidgets import QWhatsThis
+from qtpy.QtWidgets import QWidget
 from qwt import (QwtPlot, QwtScaleDraw, QwtSymbol, QwtPlotGrid, QwtPlotCurve,
                  QwtPlotCanvas, QwtScaleDiv)
 
 
+PYQT5 = qtpy.API_NAME is "PyQt5"
+
+
 class ColorBar(QWidget):
     colorSelected = Signal(QColor)
-    
+
     def __init__(self, orientation, *args):
         QWidget.__init__(self, *args)
         self.__orientation = orientation
         self.__light = QColor(Qt.white)
         self.__dark = QColor(Qt.black)
         self.setCursor(Qt.PointingHandCursor)
-    
+
     def setOrientation(self, orientation):
         self.__orientation = orientation
         self.update()
-    
+
     def orientation(self):
         return self.__orientation
-    
+
     def setRange(self, light, dark):
         self.__light = light
         self.__dark = dark
         self.update()
-    
+
     def setLight(self, color):
         self.__light = color
         self.update()
-    
+
     def setDark(self, color):
         self.__dark = color
         self.update()
-    
+
     def light(self):
         return self.__light
-    
+
     def dark(self):
         return self.__dark
-    
+
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             if PYQT5:
@@ -94,7 +101,7 @@ class ColorBar(QWidget):
             color = QColor()
             color.setHsv(h1 + int(ratio*(h2-h1) + 0.5),
                          s1 + int(ratio*(s2-s1) + 0.5),
-                         v1 + int(ratio*(v2-v1) + 0.5))            
+                         v1 + int(ratio*(v2-v1) + 0.5))
             painter.fillRect(section, color)
         painter.restore()
 
@@ -104,13 +111,13 @@ class Plot(QwtPlot):
         QwtPlot.__init__(self, *args)
 
         self.setTitle("Interactive Plot")
-        
+
         self.setCanvasColor(Qt.darkCyan)
 
         grid = QwtPlotGrid()
         grid.attach(self)
         grid.setMajorPen(QPen(Qt.white, 0, Qt.DotLine))
-        
+
         self.setAxisScale(QwtPlot.xBottom, 0.0, 100.0)
         self.setAxisScale(QwtPlot.yLeft, 0.0, 100.0)
 
@@ -126,7 +133,7 @@ class Plot(QwtPlot):
         self.__insertCurve(Qt.Vertical, Qt.magenta, 70.0)
         self.__insertCurve(Qt.Horizontal, Qt.yellow, 30.0)
         self.__insertCurve(Qt.Horizontal, Qt.white, 70.0)
-        
+
         self.replot()
 
         scaleWidget = self.axisWidget(QwtPlot.yLeft)
@@ -137,7 +144,7 @@ class Plot(QwtPlot):
             QColor(Qt.red), QColor(Qt.darkBlue))
         self.__colorBar.setFocusPolicy(Qt.TabFocus)
         self.__colorBar.colorSelected.connect(self.setCanvasColor)
-        
+
         # we need the resize events, to lay out the color bar
         scaleWidget.installEventFilter(self)
 
@@ -150,7 +157,7 @@ class Plot(QwtPlot):
             'Selecting a color will change the background of the plot.')
         self.axisWidget(QwtPlot.xBottom).setWhatsThis(
             'Selecting a value at the scale will insert a new curve.')
-    
+
     def setCanvasColor(self, color):
         self.setCanvasBackground(color)
         self.replot()
@@ -203,13 +210,13 @@ class CanvasPicker(QObject):
         self.__selectedPoint = -1
         self.__plot = plot
         canvas = plot.canvas()
-        canvas.installEventFilter(self)        
+        canvas.installEventFilter(self)
         # We want the focus, but no focus rect.
         # The selected point will be highlighted instead.
         canvas.setFocusPolicy(Qt.StrongFocus)
         canvas.setCursor(Qt.PointingHandCursor)
         canvas.setFocusIndicator(QwtPlotCanvas.ItemFocusIndicator)
-        canvas.setFocus()        
+        canvas.setFocus()
         canvas.setWhatsThis(
             'All points can be moved using the left mouse button '
             'or with these keys:\n\n'
@@ -226,7 +233,7 @@ class CanvasPicker(QObject):
             self.__showCursor(True)
             return True
         return QObject.event(self, event)
-    
+
     def eventFilter(self, object, event):
         if event.type() == QEvent.FocusIn:
             self.__showCursor(True)
@@ -320,7 +327,7 @@ class CanvasPicker(QObject):
             else:
                 s = curve.sample(i)
                 xData[i] = s.x()
-                yData[i] = s.y()            
+                yData[i] = s.y()
         curve.setData(xData, yData)
         self.__showCursor(True)
         self.__plot.replot()
@@ -336,7 +343,7 @@ class CanvasPicker(QObject):
         curve.directPaint(self.__selectedPoint, self.__selectedPoint)
         if showIt:
             symbol.setBrush(brush)
-    
+
     def __shiftCurveCursor(self, up):
         curves = [curve for curve in self.__plot.itemList()
                   if isinstance(curve, QwtPlotCurve)]
@@ -377,7 +384,7 @@ class CanvasPicker(QObject):
 
 class ScalePicker(QObject):
     clicked = Signal(int, float)
-    
+
     def __init__(self, plot):
         QObject.__init__(self, plot)
         for i in range(QwtPlot.axisCnt):
@@ -413,7 +420,7 @@ class ScalePicker(QObject):
             value = sd.scaleMap().invTransform(pos.x())
             axis = QwtPlot.xBottom
         self.clicked.emit(axis, value)
- 
+
     def __scaleRect(self, scale):
         bld = scale.margin()
         mjt = scale.scaleDraw().tickLength(QwtScaleDiv.MajorTick)
@@ -422,7 +429,7 @@ class ScalePicker(QObject):
         if scale.alignment() == QwtScaleDraw.LeftScale:
             return QRect(scale.width() - bld - mjt, sbd,
                                 mjt, scale.height() - sbd - ebd)
-        elif scale.alignment() == QwtScaleDraw.RightScale: 
+        elif scale.alignment() == QwtScaleDraw.RightScale:
             return QRect(bld, sbd,mjt, scale.height() - sbd - ebd)
         elif scale.alignment() == QwtScaleDraw.BottomScale:
             return QRect(sbd, bld, scale.width() - sbd - ebd, mjt)

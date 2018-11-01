@@ -101,7 +101,7 @@ class QwtSymbol(QSbl):
         warnings.warn("`draw` has been removed in Qwt6: "\
                       "please rely on `drawSymbol` and `drawSymbols` instead",
                       RuntimeWarning)
-        from .qt.QtCore import QPointF
+        from qtpy.QtCore import QPointF
         if len(args) == 2:
             self.drawSymbols(painter, [QPointF(*args)])
         else:

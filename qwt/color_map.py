@@ -28,8 +28,8 @@ QwtAlphaColorMap
    :members:
 """
 
-from .qt.QtGui import QColor, qRed, qGreen, qBlue, qRgb, qRgba, qAlpha
-from .qt.QtCore import Qt, qIsNaN
+from qtpy.QtGui import QColor, qRed, qGreen, qBlue, qRgb, qRgba, qAlpha
+from qtpy.QtCore import Qt, qIsNaN
 
 
 class ColorStop(object):

@@ -12,15 +12,27 @@ QwtPlotCanvas
 .. autoclass:: QwtPlotCanvas
    :members:
 """
+import qtpy
 
 from .null_paintdevice import QwtNullPaintDevice
 from .painter import QwtPainter
 
-from .qt import PYQT5
-from .qt.QtGui import (QFrame, QPaintEngine, QPen, QBrush, QRegion, QImage,
-                          QPainterPath, QPixmap, QGradient, QPainter, qAlpha,
-                          QPolygonF, QStyleOption, QStyle, QStyleOptionFrame)
-from .qt.QtCore import Qt, QSizeF, QT_VERSION, QEvent, QPointF, QRectF
+from qtpy.QtCore import Qt, QSizeF, QEvent, QPointF, QRectF
+from qtpy.QtGui import (QPaintEngine, QPen, QBrush, QRegion, QImage,
+                        QPainterPath, QPixmap, QGradient, QPainter, qAlpha,
+                        QPolygonF)
+from qtpy.QtWidgets import QFrame
+from qtpy.QtWidgets import QStyle
+from qtpy.QtWidgets import QStyleOption
+from qtpy.QtWidgets import QStyleOptionFrame
+
+PYQT5 = qtpy.API_NAME is "PyQt5"
+PYSIDE2 = qtpy.API_NAME is "PySide2"
+
+try:
+    from qtpy.QtCore import QT_VERSION
+except BaseException:
+    QT_VERSION = 0x060000  # @todo: may need better fix
 
 
 class Border(object):
@@ -47,7 +59,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
         self.clipRects = []
         self.border = Border()
         self.background = Background()
-        
+
     def updateState(self, state):
         if state.state() & QPaintEngine.DirtyPen:
             self.__pen = state.pen()
@@ -55,11 +67,11 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
             self.__brush = state.brush()
         if state.state() & QPaintEngine.DirtyBrushOrigin:
             self.__origin = state.brushOrigin()
-    
+
     def drawRects(self, rects, count):
         for i in range(count):
             self.border.rectList += rects[i]
-    
+
     def drawPath(self, path):
         rect = QRectF(QPointF(0., 0.), self.__size)
         if path.controlPointRect().contains(rect.center()):
@@ -70,7 +82,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
             self.background.origin = self.__origin
         else:
             self.border.pathlist += [path]
-    
+
     def setCornerRects(self, path):
         pos = QPointF(0., 0.)
         for i in range(path.elementCount()):
@@ -92,10 +104,10 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
                                 max([r.right(), el.x]),
                                 max([r.bottom(), el.y]))
                     self.clipRects[-1] = r.normalized()
-    
+
     def sizeMetrics(self):
         return self.__size
-    
+
     def alignCornerRects(self, rect):
         for r in self.clipRects:
             if r.center().x() < rect.center().x():
@@ -109,7 +121,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
 
 
 def _rects_conv_PyQt5(rects):
-    # PyQt5 compatibility: the conversion from QRect to QRectF should not 
+    # PyQt5 compatibility: the conversion from QRect to QRectF should not
     # be necessary but it seems to be anyway... PyQt5 bug?
     if PYQT5:
         return [QRectF(rect) for rect in rects]
@@ -172,7 +184,7 @@ def qwtRevertPath(path):
 def qwtCombinePathList(rect, pathList):
     if not pathList:
         return QPainterPath()
-    
+
     ordered = [None] * 8
     for subPath in pathList:
         index = -1
@@ -272,7 +284,7 @@ def qwtFillBackground(*args):
 
     elif len(args) == 3:
         painter, widget, fillRects = args
-        
+
         if not fillRects:
             return
         if painter.hasClipping():
@@ -286,7 +298,7 @@ def qwtFillBackground(*args):
                 pm = QPixmap(rect.size())
                 QwtPainter.fillPixmap(bgWidget, pm, widget.mapTo(bgWidget, rect.topLeft()))
                 painter.drawPixmap(rect, pm)
-        
+
     else:
         raise TypeError("%s() takes 2 or 3 argument(s) (%s given)"\
                         % ("qwtFillBackground", len(args)))
@@ -303,7 +315,7 @@ class StyleSheet(object):
         self.borderPath = QPainterPath()
         self.cornerRects = []
         self.background = StyleSheetBackground()
-        
+
 class QwtPlotCanvas_PrivateData(object):
     def __init__(self):
         self.focusIndicator = QwtPlotCanvas.NoFocusIndicator
@@ -317,45 +329,45 @@ class QwtPlotCanvas_PrivateData(object):
 class QwtPlotCanvas(QFrame):
     """
     Canvas of a QwtPlot.
-  
+
     Canvas is the widget where all plot items are displayed
-    
+
     .. seealso::
-    
+
         :py:meth:`.plot.QwtPlot.setCanvas()`
-        
+
     Paint attributes:
-    
+
         * `QwtPlotCanvas.BackingStore`:
-        
-            Paint double buffered reusing the content of the pixmap buffer 
+
+            Paint double buffered reusing the content of the pixmap buffer
             when possible.
-            
-            Using a backing store might improve the performance significantly, 
+
+            Using a backing store might improve the performance significantly,
             when working with widget overlays (like rubber bands).
             Disabling the cache might improve the performance for
-            incremental paints 
+            incremental paints
             (using :py:class:`.plot_directpainter.QwtPlotDirectPainter`).
-        
+
         * `QwtPlotCanvas.Opaque`:
-        
+
             Try to fill the complete contents rectangle of the plot canvas
 
-            When using styled backgrounds Qt assumes, that the canvas doesn't 
-            fill its area completely (f.e because of rounded borders) and 
-            fills the area below the canvas. When this is done with gradients 
-            it might result in a serious performance bottleneck - depending on 
+            When using styled backgrounds Qt assumes, that the canvas doesn't
+            fill its area completely (f.e because of rounded borders) and
+            fills the area below the canvas. When this is done with gradients
+            it might result in a serious performance bottleneck - depending on
             the size.
 
             When the Opaque attribute is enabled the canvas tries to
             identify the gaps with some heuristics and to fill those only.
-            
+
             .. warning::
-            
-                Will not work for semitransparent backgrounds 
-        
+
+                Will not work for semitransparent backgrounds
+
         * `QwtPlotCanvas.HackStyledBackground`:
-        
+
             Try to improve painting of styled backgrounds
 
             `QwtPlotCanvas` supports the box model attributes for
@@ -369,54 +381,54 @@ class QwtPlotCanvas(QFrame):
             the border after the plot items. In this order the border
             gets perfectly antialiased and you can avoid some pixel
             artifacts in the corners.
-        
+
         * `QwtPlotCanvas.ImmediatePaint`:
-        
+
             When ImmediatePaint is set replot() calls repaint()
             instead of update().
-    
+
             .. seealso::
-            
-                :py:meth:`replot()`, :py:meth:`QWidget.repaint()`, 
+
+                :py:meth:`replot()`, :py:meth:`QWidget.repaint()`,
                 :py:meth:`QWidget.update()`
-                
+
     Focus indicators:
-    
+
         * `QwtPlotCanvas.NoFocusIndicator`:
-        
+
             Don't paint a focus indicator
 
         * `QwtPlotCanvas.CanvasFocusIndicator`:
-        
+
             The focus is related to the complete canvas.
             Paint the focus indicator using paintFocus()
 
         * `QwtPlotCanvas.ItemFocusIndicator`:
-        
+
             The focus is related to an item (curve, point, ...) on
             the canvas. It is up to the application to display a
             focus indication using f.e. highlighting.
-            
+
     .. py:class:: QwtPlotCanvas([plot=None])
-    
+
         Constructor
-        
+
         :param .plot.QwtPlot plot: Parent plot widget
 
         .. seealso::
-        
+
             :py:meth:`.plot.QwtPlot.setCanvas()`
     """
-    
+
     # enum PaintAttribute
     BackingStore = 1
     Opaque = 2
     HackStyledBackground = 4
     ImmediatePaint = 8
-    
+
     # enum FocusIndicator
     NoFocusIndicator, CanvasFocusIndicator, ItemFocusIndicator = list(range(3))
-    
+
     def __init__(self, plot=None):
         super(QwtPlotCanvas, self).__init__(plot)
         self.__plot = plot
@@ -428,29 +440,29 @@ class QwtPlotCanvas(QFrame):
         self.setPaintAttribute(QwtPlotCanvas.BackingStore, False)
         self.setPaintAttribute(QwtPlotCanvas.Opaque, True)
         self.setPaintAttribute(QwtPlotCanvas.HackStyledBackground, True)
-    
+
     def plot(self):
         """
         :return: Parent plot widget
         """
         return self.__plot
-    
+
     def setPaintAttribute(self, attribute, on=True):
         """
         Changing the paint attributes
 
         Paint attributes:
-        
+
             * `QwtPlotCanvas.BackingStore`
             * `QwtPlotCanvas.Opaque`
             * `QwtPlotCanvas.HackStyledBackground`
             * `QwtPlotCanvas.ImmediatePaint`
-        
+
         :param int attribute: Paint attribute
         :param bool on: On/Off
-        
+
         .. seealso::
-        
+
             :py:meth:`testPaintAttribute()`, :py:meth:`backingStore()`
         """
         if bool(self.__data.paintAttributes & attribute) == on:
@@ -479,81 +491,81 @@ class QwtPlotCanvas(QFrame):
                 self.setAttribute(Qt.WA_OpaquePaintEvent, True)
         elif attribute in (self.HackStyledBackground, self.ImmediatePaint):
             pass
-        
+
     def testPaintAttribute(self, attribute):
         """
         Test whether a paint attribute is enabled
-        
+
         :param int attribute: Paint attribute
         :return: True, when attribute is enabled
-        
+
         .. seealso::
-        
+
             :py:meth:`setPaintAttribute()`
         """
         return self.__data.paintAttributes & attribute
-        
+
     def backingStore(self):
         """
         :return: Backing store, might be None
         """
         return self.__data.backingStore
-    
+
     def invalidateBackingStore(self):
         """Invalidate the internal backing store"""
         if self.__data.backingStore:
             self.__data.backingStore = QPixmap()
-    
+
     def setFocusIndicator(self, focusIndicator):
         """
         Set the focus indicator
 
         Focus indicators:
-        
+
             * `QwtPlotCanvas.NoFocusIndicator`
             * `QwtPlotCanvas.CanvasFocusIndicator`
             * `QwtPlotCanvas.ItemFocusIndicator`
-        
+
         :param int focusIndicator: Focus indicator
-        
+
         .. seealso::
-        
+
             :py:meth:`focusIndicator()`
         """
         self.__data.focusIndicator = focusIndicator
-    
+
     def focusIndicator(self):
         """
         :return: Focus indicator
-        
+
         .. seealso::
-        
+
             :py:meth:`setFocusIndicator()`
         """
         return self.__data.focusIndicator
-    
+
     def setBorderRadius(self, radius):
         """
         Set the radius for the corners of the border frame
-        
+
         :param float radius: Radius of a rounded corner
-        
+
         .. seealso::
-        
+
             :py:meth:`borderRadius()`
         """
         self.__data.borderRadius = max([0., radius])
-        
+
     def borderRadius(self):
         """
         :return: Radius for the corners of the border frame
-        
+
         .. seealso::
-        
+
             :py:meth:`setBorderRadius()`
         """
         return self.__data.borderRadius
-        
+
     def event(self, event):
         if event.type() == QEvent.PolishRequest:
             if self.testPaintAttribute(self.Opaque):
@@ -561,7 +573,7 @@ class QwtPlotCanvas(QFrame):
         if event.type() in (QEvent.PolishRequest, QEvent.StyleChange):
             self.updateStyleSheetInfo()
         return QFrame.event(self, event)
-    
+
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setClipRegion(event.region())
@@ -616,13 +628,13 @@ class QwtPlotCanvas(QFrame):
                     self.drawBorder(painter)
         if self.hasFocus() and self.focusIndicator() == self.CanvasFocusIndicator:
             self.drawFocusIndicator(painter)
-    
+
     def drawCanvas(self, painter, withBackground):
         hackStyledBackground = False
         if withBackground and self.testAttribute(Qt.WA_StyledBackground) and\
            self.testPaintAttribute(self.HackStyledBackground):
             #  Antialiasing rounded borders is done by
-            #  inserting pixels with colors between the 
+            #  inserting pixels with colors between the
             #  border color and the color on the canvas,
             #  When the border is painted before the plot items
             #  these colors are interpolated for the canvas
@@ -679,15 +691,15 @@ class QwtPlotCanvas(QFrame):
             opt = QStyleOptionFrame()
             opt.initFrom(self)
             self.style().drawPrimitive(QStyle.PE_Frame, opt, painter, self)
-    
+
     def drawBorder(self, painter):
         """
         Draw the border of the plot canvas
-        
+
         :param QPainter painter: Painter
-        
+
         .. seealso::
-        
+
             :py:meth:`setBorderRadius()`
         """
         if self.__data.borderRadius > 0:
@@ -697,10 +709,10 @@ class QwtPlotCanvas(QFrame):
                         self.palette(), self.frameWidth(), self.frameStyle())
         else:
             if QT_VERSION >= 0x040500:
-                if PYQT5:
-                    from .qt.QtGui import QStyleOptionFrame
+                if PYQT5 or PYSIDE2:
+                    from qtpy.QtWidgets import QStyleOptionFrame
                 else:
-                    from .qt.QtGui import QStyleOptionFrameV3 as\
+                    from qtpy.QtWidgets import QStyleOptionFrameV3 as\
                                              QStyleOptionFrame
                 opt = QStyleOptionFrame()
                 opt.initFrom(self)
@@ -720,15 +732,15 @@ class QwtPlotCanvas(QFrame):
                 self.style().drawControl(QStyle.CE_ShapedFrame, opt, painter, self)
             else:
                 self.drawFrame(painter)
-    
+
     def resizeEvent(self, event):
         QFrame.resizeEvent(self, event)
         self.updateStyleSheetInfo()
-    
+
     def drawFocusIndicator(self, painter):
         """
         Draw the focus indication
-        
+
         :param QPainter painter: Painter
         """
         margin = 1
@@ -736,7 +748,7 @@ class QwtPlotCanvas(QFrame):
         focusRect.setRect(focusRect.x()+margin, focusRect.y()+margin,
                           focusRect.width()-2*margin, focusRect.height()-2*margin)
         QwtPainter.drawFocusRect(painter, self, focusRect)
-    
+
     def replot(self):
         """
         Invalidate the paint cache and repaint the canvas
@@ -746,7 +758,7 @@ class QwtPlotCanvas(QFrame):
             self.repaint(self.contentsRect())
         else:
             self.update(self.contentsRect())
-    
+
     def invalidatePaintCache(self):
         import warnings
         warnings.warn("`invalidatePaintCache` has been removed: "\
@@ -775,7 +787,7 @@ class QwtPlotCanvas(QFrame):
             self.__data.styleSheet.borderPath = recorder.background.path
             self.__data.styleSheet.background.brush = recorder.background.brush
             self.__data.styleSheet.background.origin = recorder.background.origin
-    
+
     def borderPath(self, rect):
         """
         Calculate the painter path for a styled or rounded border

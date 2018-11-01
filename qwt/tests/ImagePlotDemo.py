@@ -2,20 +2,22 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, qRgb
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPen, qRgb
+from qtpy.QtWidgets import QApplication
 from qwt import (QwtPlot, QwtPlotMarker, QwtLegend, QwtPlotGrid, QwtPlotCurve,
                  QwtPlotItem, QwtText, QwtLegendData, QwtLinearColorMap,
                  QwtInterval, QwtScaleMap, toQImage)
+
 
 def bytescale(data, cmin=None, cmax=None, high=255, low=0):
     if ((hasattr(data, 'dtype') and data.dtype.char == np.uint8)
@@ -41,7 +43,7 @@ def square(n, min, max):
     t = np.arange(min, max, float(max-min)/(n-1))
     #return outer(cos(t), sin(t))
     return np.cos(t)*np.sin(t)[:,np.newaxis]
-    
+
 
 class PlotImage(QwtPlotItem):
     def __init__(self, title = QwtText()):
@@ -49,7 +51,7 @@ class PlotImage(QwtPlotItem):
         self.setTitle(title)
         self.setItemAttribute(QwtPlotItem.Legend);
         self.xyzs = None
-    
+
     def setData(self, xyzs, xRange = None, yRange = None):
         self.xyzs = xyzs
         shape = xyzs.shape
@@ -62,7 +64,7 @@ class PlotImage(QwtPlotItem):
         self.plot().setAxisScale(QwtPlot.xBottom, *xRange)
         self.yMap = QwtScaleMap(0, xyzs.shape[1], *yRange)
         self.plot().setAxisScale(QwtPlot.yLeft, *yRange)
-        
+
         self.image = toQImage(bytescale(self.xyzs)).mirrored(False, True)
         for i in range(0, 256):
             self.image.setColor(i, qRgb(i, 0, 255-i))
@@ -78,7 +80,7 @@ class PlotImage(QwtPlotItem):
         and copy the visible region to scale it to the canvas.
         """
         assert(isinstance(self.plot(), QwtPlot))
-        
+
         # calculate y1, y2
         # the scanline order (index y) is inverted with respect to the y-axis
         y1 = y2 = self.image.height()
@@ -102,7 +104,7 @@ class PlotImage(QwtPlotItem):
         image = image.scaled(xMap.p2()-xMap.p1()+1, yMap.p1()-yMap.p2()+1)
         # draw
         painter.drawImage(xMap.p1(), yMap.p2(), image)
-    
+
 
 class ImagePlot(QwtPlot):
     def __init__(self, *args):
@@ -166,7 +168,7 @@ class ImagePlot(QwtPlot):
                           (-2*np.pi, 2*np.pi), (-2*np.pi, 2*np.pi))
 
         legend.clicked.connect(self.toggleVisibility)
-        
+
         # replot
         self.replot()
 

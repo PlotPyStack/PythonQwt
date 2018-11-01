@@ -2,20 +2,23 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import os
 import sys
 import numpy as np
 
-from qwt.qt.QtGui import (QApplication, QColor, QBrush, QWidget, QVBoxLayout,
-                          QLabel)
-from qwt.qt.QtCore import QRect, QTime
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import QRect, QTime
+from qtpy.QtCore import Qt
+from qtpy.QtGui import (QColor, QBrush)
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QLabel
+from qtpy.QtWidgets import QVBoxLayout
+from qtpy.QtWidgets import QWidget
 from qwt import (QwtPlot, QwtPlotMarker, QwtScaleDraw, QwtLegend, QwtPlotCurve,
                  QwtPlotItem, QwtLegendData, QwtText)
 
@@ -170,7 +173,7 @@ class CpuStat:
         ( 109367, 0, 24017, 827392 ),
         ( 109371, 0, 24019, 827486 ),
         )
-    
+
     def __init__(self):
         self.procValues = self.__lookup()
 
@@ -210,7 +213,7 @@ class CpuPieMarker(QwtPlotMarker):
         QwtPlotMarker.__init__(self, *args)
         self.setZ(1000.0)
         self.setRenderHint(QwtPlotItem.RenderAntialiased, True)
-        
+
     def rtti(self):
         return QwtPlotItem.Rtti_PlotUserItem
 
@@ -239,7 +242,7 @@ class TimeScaleDraw(QwtScaleDraw):
     def __init__(self, baseTime, *args):
         QwtScaleDraw.__init__(self, *args)
         self.baseTime = baseTime
- 
+
     def label(self, value):
         upTime = self.baseTime.addSecs(int(value))
         return QwtText(upTime.toString())
@@ -276,7 +279,7 @@ class CpuCurve(QwtPlotCurve):
         self.setPen(c)
         self.setBrush(c)
 
-    
+
 HISTORY = 60
 
 class CpuPlot(QwtPlot):
@@ -291,11 +294,11 @@ class CpuPlot(QwtPlot):
         self.setAutoReplot(False)
 
         self.plotLayout().setAlignCanvasToScales(True)
-        
+
         legend = QwtLegend()
         legend.setDefaultItemMode(QwtLegendData.Checkable)
         self.insertLegend(legend, QwtPlot.RightLegend)
-        
+
         self.setAxisTitle(QwtPlot.xBottom, "System Uptime [h:m:s]")
         self.setAxisScaleDraw(
             QwtPlot.xBottom, TimeScaleDraw(self.cpuStat.upTime()))
@@ -312,7 +315,7 @@ class CpuPlot(QwtPlot):
 
         pie = CpuPieMarker()
         pie.attach(self)
-        
+
         curve = CpuCurve('System')
         curve.setColor(Qt.red)
         curve.attach(self)
@@ -378,10 +381,10 @@ class CpuPlot(QwtPlot):
 def make():
     demo = QWidget()
     demo.setWindowTitle('Cpu Plot')
-    
+
     plot = CpuPlot(demo)
     plot.setTitle("History")
-    
+
     label = QLabel("Press the legend to en/disable a curve", demo)
 
     layout = QVBoxLayout(demo)

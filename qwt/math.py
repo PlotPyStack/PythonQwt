@@ -5,7 +5,7 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
-from .qt.QtCore import qFuzzyCompare
+from qtpy.QtCore import qFuzzyCompare
 
 import numpy as np
 

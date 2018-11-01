@@ -7,8 +7,8 @@
 
 from .interval import QwtInterval
 
-from .qt.QtGui import QPolygonF, QPalette
-from .qt.QtCore import QRectF, Qt
+from qtpy.QtGui import QPolygonF, QPalette
+from qtpy.QtCore import QRectF, Qt
 
 
 def qwtDrawBox(p, rect, pal, lw):

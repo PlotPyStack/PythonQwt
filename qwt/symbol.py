@@ -16,10 +16,10 @@ QwtSymbol
 from .graphic import QwtGraphic
 from .painter import QwtPainter
 
-from .qt.QtGui import (QPainter, QTransform, QPixmap, QPen, QPolygonF,
+from qtpy.QtGui import (QPainter, QTransform, QPixmap, QPen, QPolygonF,
                           QPainterPath, QBrush)
-from .qt.QtCore import QSize, QRect, QPointF, QRectF, QSizeF, Qt, QPoint
-from .qt.QtSvg import QSvgRenderer
+from qtpy.QtCore import QSize, QRect, QPointF, QRectF, QSizeF, Qt, QPoint
+from qtpy.QtSvg import QSvgRenderer
 
 import numpy as np
 
@@ -528,8 +528,8 @@ class QwtSymbol(object):
         
         The following code defines a symbol drawing an arrow::
         
-            from .qt.QtGui import QApplication, QPen, QPainterPath, QTransform
-            from .qt.QtCore import Qt, QPointF
+            from qtpy.QtGui import QApplication, QPen, QPainterPath, QTransform
+            from qtpy.QtCore import Qt, QPointF
             from qwt import QwtPlot, QwtPlotCurve, QwtSymbol
             import numpy as np
             

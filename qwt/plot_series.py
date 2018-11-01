@@ -39,7 +39,7 @@ import numpy as np
 from .plot import QwtPlotItem, QwtPlotItem_PrivateData
 from .text import QwtText
 
-from .qt.QtCore import Qt, QRectF, QPointF
+from qtpy.QtCore import Qt, QRectF, QPointF
 
 
 class QwtPlotSeriesItem_PrivateData(QwtPlotItem_PrivateData):

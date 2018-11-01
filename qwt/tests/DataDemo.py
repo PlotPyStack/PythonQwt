@@ -2,19 +2,21 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import random
 import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, QBrush, QFrame
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import QSize
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPen, QBrush
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QFrame
 from qwt import (QwtPlot, QwtPlotMarker, QwtSymbol, QwtLegend, QwtPlotCurve,
                  QwtAbstractScaleDraw)
 
@@ -33,7 +35,7 @@ class DataPlot(QwtPlot):
         self.z = np.zeros(len(self.x), np.float)
 
         self.setTitle("A Moving QwtPlot Demonstration")
-        self.insertLegend(QwtLegend(), QwtPlot.BottomLegend);
+        self.insertLegend(QwtLegend(), QwtPlot.BottomLegend)
 
         self.curveR = QwtPlotCurve("Data Moving Right")
         self.curveR.attach(self)
@@ -56,7 +58,7 @@ class DataPlot(QwtPlot):
 
         self.setAxisTitle(QwtPlot.xBottom, "Time (seconds)")
         self.setAxisTitle(QwtPlot.yLeft, "Values")
-    
+
         self.startTimer(50)
         self.phase = 0.0
 
@@ -70,7 +72,7 @@ class DataPlot(QwtPlot):
             scaleDraw = self.axisScaleDraw(i)
             if scaleDraw:
                 scaleDraw.enableComponent(QwtAbstractScaleDraw.Backbone, False)
-    
+
     def timerEvent(self, e):
         if self.phase > np.pi - 0.0001:
             self.phase = 0.0
@@ -79,7 +81,7 @@ class DataPlot(QwtPlot):
         # shift y array right and assign new value y[0]
         self.y = np.concatenate((self.y[:1], self.y[:-1]), 1)
         self.y[0] = np.sin(self.phase) * (-1.0 + 2.0*random.random())
-		
+
         # z moves from right to left:
         # Shift z array left and assign new value to z[n-1].
         self.z = np.concatenate((self.z[1:], self.z[:1]), 1)

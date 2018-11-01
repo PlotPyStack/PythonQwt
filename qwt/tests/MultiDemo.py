@@ -2,17 +2,20 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, QGridLayout, QWidget
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPen
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QGridLayout
+from qtpy.QtWidgets import QWidget
 from qwt import QwtPlot, QwtPlotCurve
 
 
@@ -23,7 +26,8 @@ def drange(start, stop, step):
     for i in range(size):
         result[i] += i*step
     return result
-        
+
+
 def lorentzian(x):
     return 1.0/(1.0+(x-5.0)**2)
 
@@ -31,7 +35,7 @@ def lorentzian(x):
 class MultiDemo(QWidget):
     def __init__(self, *args):
         QWidget.__init__(self, *args)
-        layout = QGridLayout(self)        
+        layout = QGridLayout(self)
         # try to create a plot for SciPy arrays
 
         # make a curve and copy the data

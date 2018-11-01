@@ -2,22 +2,23 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPen
+from qtpy.QtWidgets import QApplication
 from qwt import QwtPlot, QwtScaleDraw, QwtPlotGrid, QwtPlotCurve, QwtPlotItem
 
 
 class CartesianAxis(QwtPlotItem):
-    """Supports a coordinate system similar to 
+    """Supports a coordinate system similar to
     http://en.wikipedia.org/wiki/Image:Cartesian-coordinate-system.svg"""
     def __init__(self, masterAxis, slaveAxis):
         """Valid input values for masterAxis and slaveAxis are QwtPlot.yLeft,
@@ -50,7 +51,7 @@ class CartesianAxis(QwtPlotItem):
 
 
 class CartesianPlot(QwtPlot):
-    """Creates a coordinate system similar system 
+    """Creates a coordinate system similar system
     http://en.wikipedia.org/wiki/Image:Cartesian-coordinate-system.svg"""
     def __init__(self, *args):
         QwtPlot.__init__(self, *args)

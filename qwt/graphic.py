@@ -16,9 +16,9 @@ QwtGraphic
 from .null_paintdevice import QwtNullPaintDevice
 from .painter_command import QwtPainterCommand
 
-from .qt.QtGui import (QPainter, QPainterPathStroker, QPaintEngine, QPixmap,
+from qtpy.QtGui import (QPainter, QPainterPathStroker, QPaintEngine, QPixmap,
                           QTransform, QImage)
-from .qt.QtCore import Qt, QRectF, QSizeF, QSize, QPointF, QRect
+from qtpy.QtCore import Qt, QRectF, QSizeF, QSize, QPointF, QRect
 
 import numpy as np
 

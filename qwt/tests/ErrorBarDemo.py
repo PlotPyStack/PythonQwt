@@ -2,18 +2,19 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, QBrush
-from qwt.qt.QtCore import QSize, QRectF, QLineF
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import QSize, QRectF, QLineF
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPen, QBrush
+from qtpy.QtWidgets import QApplication
 from qwt import QwtPlot, QwtSymbol, QwtPlotGrid, QwtPlotCurve, QwtText
 
 
@@ -34,22 +35,22 @@ class ErrorBarPlotCurve(QwtPlotCurve):
           (x-dx[0], x+dx[1]) or (y-dy[0], y+dy[1]).
 
         curvePen is the pen used to plot the curve
-        
+
         curveStyle is the style used to plot the curve
-        
+
         curveSymbol is the symbol used to plot the symbols
-        
+
         errorPen is the pen used to plot the error bars
-        
+
         errorCap is the size of the error bar caps
-        
+
         errorOnTop is a boolean:
         - if True, plot the error bars on top of the curve,
         - if False, plot the curve on top of the error bars.
         """
 
         QwtPlotCurve.__init__(self)
-        
+
         if curvePen is None:
             curvePen = QPen(Qt.NoPen)
         if curveStyle is None:
@@ -58,7 +59,7 @@ class ErrorBarPlotCurve(QwtPlotCurve):
             curveSymbol = QwtSymbol()
         if errorPen is None:
             errorPen = QPen(Qt.NoPen)
-        
+
         self.setData(x, y, dx, dy)
         self.setPen(curvePen)
         self.setStyle(curveStyle)
@@ -83,7 +84,7 @@ class ErrorBarPlotCurve(QwtPlotCurve):
         if len(args) == 1:
             QwtPlotCurve.setData(self, *args)
             return
-            
+
         dx = None
         dy = None
         x, y = args[:2]
@@ -91,7 +92,7 @@ class ErrorBarPlotCurve(QwtPlotCurve):
             dx = args[2]
             if len(args) > 3:
                 dy = args[3]
-        
+
         self.__x = np.asarray(x, np.float)
         if len(self.__x.shape) != 1:
             raise RuntimeError('len(asarray(x).shape) != 1')
@@ -108,16 +109,16 @@ class ErrorBarPlotCurve(QwtPlotCurve):
             self.__dx = np.asarray(dx, np.float)
         if len(self.__dx.shape) not in [0, 1, 2]:
             raise RuntimeError('len(asarray(dx).shape) not in [0, 1, 2]')
-            
+
         if dy is None:
             self.__dy = dy
         else:
             self.__dy = np.asarray(dy, np.float)
         if len(self.__dy.shape) not in [0, 1, 2]:
             raise RuntimeError('len(asarray(dy).shape) not in [0, 1, 2]')
-        
+
         QwtPlotCurve.setData(self, self.__x, self.__y)
-        
+
     def boundingRect(self):
         """Return the bounding rectangle of the data, error bars included.
         """
@@ -151,7 +152,7 @@ class ErrorBarPlotCurve(QwtPlotCurve):
         xMap is the QwtDiMap used to map x-values to pixels
 
         yMap is the QwtDiMap used to map y-values to pixels
-        
+
         first is the index of the first data point to draw
 
         last is the index of the last data point to draw. If last < 0, last
@@ -254,7 +255,7 @@ def make():
     grid = QwtPlotGrid()
     grid.attach(demo)
     grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
-    
+
     # calculate data and errors for a curve with error bars
     x = np.arange(0, 10.1, 0.5, np.float)
     y = np.sin(x)

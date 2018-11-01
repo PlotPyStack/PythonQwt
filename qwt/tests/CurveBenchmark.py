@@ -6,16 +6,22 @@
 
 """Curve benchmark example"""
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import time
 import numpy as np
 import sys
 
-from qwt.qt.QtGui import (QApplication, QPen, QMainWindow, QGridLayout,
-                          QTabWidget, QWidget, QTextEdit, QLineEdit, QFont,
-                          QFontDatabase)
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import Qt
+from qtpy.QtGui import (QPen, QFont, QFontDatabase)
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QGridLayout
+from qtpy.QtWidgets import QLineEdit
+from qtpy.QtWidgets import QMainWindow
+from qtpy.QtWidgets import QTabWidget
+from qtpy.QtWidgets import QTextEdit
+from qtpy.QtWidgets import QWidget
+
 
 import os
 if os.environ.get('USE_PYQWT5', False):
@@ -67,7 +73,7 @@ class BMWidget(QWidget):
         self.plot_nb = 0
         self.curve_nb = 0
         self.setup(points, *args, **kwargs)
-    
+
     def params(self, *args, **kwargs):
         if kwargs.get('only_lines', False):
             return (('Lines', None),)
@@ -76,7 +82,7 @@ class BMWidget(QWidget):
                     ('Lines', None),
                     ('Dots', None),
                     )
-    
+
     def setup(self, points, *args, **kwargs):
         x = np.linspace(.001, 20., points)
         y = (np.sin(x)/x)*np.cos(20*x)
@@ -97,7 +103,7 @@ class BMWidget(QWidget):
         self.text.setAlignment(Qt.AlignCenter)
         self.text.setText("Rendering plot...")
         layout.addWidget(self.text, row+1, 0, 1, 2)
-        self.setLayout(layout)           
+        self.setLayout(layout)
 
 
 class BMText(QTextEdit):
@@ -114,7 +120,7 @@ class BMText(QTextEdit):
         self.setText("""\
 <b>%s:</b><br>
 (base plotting library: %s)<br><br>
-Click on each tab to test if plotting performance is acceptable in terms of 
+Click on each tab to test if plotting performance is acceptable in terms of
 GUI response time (switch between tabs, resize main windows, ...).<br>
 <br><br>
 <b>Benchmarks results:</b>
@@ -139,13 +145,13 @@ class BMDemo(QMainWindow):
         # Force window to show up and refresh (for test purpose only)
         self.show()
         QApplication.processEvents()
-        
+
         t0g = time.time()
         self.run_benchmark(max_n, **kwargs)
         dt = time.time()-t0g
         self.text.append("<br><br><u>Total elapsed time</u>: %d ms" % (dt*1e3))
         self.tabs.setCurrentIndex(0)
-        
+
     def process_iteration(self, title, description, widget, t0):
         self.tabs.addTab(widget, title)
         self.tabs.setCurrentWidget(widget)

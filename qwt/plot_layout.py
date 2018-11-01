@@ -18,8 +18,8 @@ from .scale_widget import QwtScaleWidget
 from .plot import QwtPlot
 from .scale_draw import QwtAbstractScaleDraw
 
-from .qt.QtGui import QFont, QRegion
-from .qt.QtCore import QSize, Qt, QRectF
+from qtpy.QtGui import QFont, QRegion
+from qtpy.QtCore import QSize, Qt, QRectF
 
 import numpy as np
 

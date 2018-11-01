@@ -16,10 +16,19 @@ QwtPainterClass
 from .color_map import QwtColorMap
 from .scale_map import QwtScaleMap
 
-from .qt.QtGui import (QPaintEngine, QFrame, QPixmap, QPainter, QPalette, 
-                          QStyle, QPen, QStyleOptionFocusRect, QBrush, 
-                          QLinearGradient, QPainterPath, QColor, QStyleOption)
-from .qt.QtCore import Qt, QRect, QPoint, QT_VERSION
+from qtpy.QtCore import Qt, QRect, QPoint
+from qtpy.QtGui import (QPaintEngine, QPixmap, QPainter, QPalette,
+                        QPen, QBrush, QLinearGradient, QPainterPath, QColor)
+from qtpy.QtWidgets import QFrame
+from qtpy.QtWidgets import QStyle
+from qtpy.QtWidgets import QStyleOption
+from qtpy.QtWidgets import QStyleOptionFocusRect
+
+try:
+    from qtpy.QtCore import QT_VERSION
+except BaseException:
+    QT_VERSION = 0x060000  # @todo: may need better fix
+
 
 QWIDGETSIZE_MAX = (1<<24)-1
 
@@ -48,7 +57,7 @@ def qwtFillRect(widget, painter, rect, brush):
 
 class QwtPainterClass(object):
     """A collection of `QPainter` workarounds"""
-    
+
     def drawImage(self, painter, rect, image):
         alignedRect = rect.toAlignedRect()
         if alignedRect != rect:
@@ -59,7 +68,7 @@ class QwtPainterClass(object):
             painter.restore()
         else:
             painter.drawImage(alignedRect, image)
-    
+
     def drawPixmap(self, painter, rect, pixmap):
         alignedRect = rect.toAlignedRect()
         if alignedRect != rect:
@@ -70,7 +79,7 @@ class QwtPainterClass(object):
             painter.restore()
         else:
             painter.drawPixmap(alignedRect, pixmap)
-    
+
     def drawFocusRect(self, *args):
         if len(args) == 2:
             painter, widget = args
@@ -86,11 +95,11 @@ class QwtPainterClass(object):
         else:
             raise TypeError("QwtPainter.drawFocusRect() takes 2 or 3 argument"\
                             "(s) (%s given)" % len(args))
-    
+
     def drawRoundFrame(self, painter, rect, palette, lineWidth, frameStyle):
         """
         Draw a round frame
-        
+
         :param QPainter painter: Painter
         :param QRectF rect: Target rectangle
         :param QPalette palette: `QPalette.WindowText` is used for plain borders, `QPalette.Dark` and `QPalette.Light` for raised or sunken borders
@@ -120,12 +129,12 @@ class QwtPainterClass(object):
         painter.setPen(QPen(brush, lineWidth))
         painter.drawEllipse(r)
         painter.restore()
-    
+
     def drawFrame(self, painter, rect, palette, foregroundRole,
                   frameWidth, midLineWidth, frameStyle):
         """
         Draw a rectangular frame
-        
+
         :param QPainter painter: Painter
         :param QRectF rect: Frame rectangle
         :param QPalette palette: Palette
@@ -230,12 +239,12 @@ class QwtPainterClass(object):
                 painter.setBrush(brush2)
                 painter.drawPath(path2)
         painter.restore()
-        
+
     def drawRoundedFrame(self, painter, rect, xRadius, yRadius,
                          palette, lineWidth, frameStyle):
         """
         Draw a rectangular frame with rounded borders
-        
+
         :param QPainter painter: Painter
         :param QRectF rect: Frame rectangle
         :param float xRadius: x-radius of the ellipses defining the corners
@@ -314,12 +323,12 @@ class QwtPainterClass(object):
             painter.setPen(pen)
             painter.drawPath(path)
         painter.restore()
-        
+
     def drawColorBar(self, painter, colorMap, interval, scaleMap,
                      orientation, rect):
         """
         Draw a color bar into a rectangle
-        
+
         :param QPainter painter: Painter
         :param .color_map.QwtColorMap colorMap: Color map
         :param .interval.QwtInterval interval: Value range
@@ -360,21 +369,21 @@ class QwtPainterClass(object):
                 pmPainter.drawLine(devRect.left(), y, devRect.right(), y)
         pmPainter.end()
         self.drawPixmap(painter, rect, pixmap)
-    
+
     def fillPixmap(self, widget, pixmap, offset=None):
         """
         Fill a pixmap with the content of a widget
 
         In Qt >= 5.0 `QPixmap.fill()` is a nop, in Qt 4.x it is buggy
-        for backgrounds with gradients. Thus `fillPixmap()` offers 
+        for backgrounds with gradients. Thus `fillPixmap()` offers
         an alternative implementation.
-        
+
         :param QWidget widget: Widget
         :param QPixmap pixmap: Pixmap to be filled
         :param QPoint offset: Offset
-        
+
         .. seealso::
-        
+
             :py:meth:`QPixmap.fill()`
         """
         if offset is None:
@@ -394,17 +403,17 @@ class QwtPainterClass(object):
             opt.initFrom(widget)
             widget.style().drawPrimitive(QStyle.PE_Widget, opt,
                                          painter, widget)
-    
+
     def drawBackground(self, painter, rect, widget):
         """
         Fill rect with the background of a widget
-        
+
         :param QPainter painter: Painter
         :param QRectF rect: Rectangle to be filled
         :param QWidget widget: Widget
-        
+
         .. seealso::
-        
+
             :py:data:`QStyle.PE_Widget`, :py:meth:`QWidget.backgroundRole()`
         """
         if widget.testAttribute(Qt.WA_StyledBackground):
@@ -416,7 +425,7 @@ class QwtPainterClass(object):
         else:
             brush = widget.palette().brush(widget.backgroundRole())
             painter.fillRect(rect, brush)
-        
+
     def backingStore(self, widget, size):
         """
         :param QWidget widget: Widget, for which the backinstore is intended
@@ -428,7 +437,7 @@ class QwtPainterClass(object):
             if widget and widget.windowHandle():
                 pixelRatio = widget.windowHandle().devicePixelRatio()
             else:
-                from .qt.QtGui import qApp
+                from qtpy.QtGui import qApp
                 if qApp is not None:
                     try:
                         pixelRatio = qApp.devicePixelRatio()

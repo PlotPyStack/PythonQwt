@@ -2,19 +2,20 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import sys
 import numpy as np
 
-from qwt.qt.QtGui import (QApplication, QPen, QBrush, QFrame, QFont, QPainter,
-                          QPaintEngine)
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import QSize
+from qtpy.QtCore import Qt
+from qtpy.QtGui import (QPen, QBrush, QFont, QPainter, QPaintEngine)
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QFrame
 from qwt import QwtSymbol, QwtPlotCurve, QwtPlotItem, QwtScaleMap
 
 
@@ -35,7 +36,7 @@ class CurveDemo(QFrame):
         # calculate values
         self.x = np.arange(0, 10.0, 10.0/27)
         self.y = np.sin(self.x)*np.cos(2*self.x)
-        
+
         # make curves with different styles
         self.curves = []
         self.titles = []
@@ -67,7 +68,7 @@ class CurveDemo(QFrame):
         curve = QwtPlotCurve()
         curve.setPen(QPen(Qt.darkCyan))
         curve.setStyle(QwtPlotCurve.Steps)
-        self.curves.append(curve)        
+        self.curves.append(curve)
         # curve 5
         self.titles.append('Style: NoCurve, Symbol: XCross')
         curve = QwtPlotCurve()

@@ -6,14 +6,15 @@
 
 """Curve styles"""
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import time
 import sys
 
-from qwt.qt.QtGui import QApplication, QPen, QBrush, QFont, QFontDatabase
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import QSize
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPen, QBrush, QFont, QFontDatabase
+from qtpy.QtWidgets import QApplication
 
 from qwt.tests import CurveBenchmark as cb
 

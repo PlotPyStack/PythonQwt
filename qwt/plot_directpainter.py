@@ -13,11 +13,16 @@ QwtPlotDirectPainter
    :members:
 """
 
-from .qt.QtGui import QPainter, QRegion
-from .qt.QtCore import QObject, QT_VERSION, Qt, QEvent
+from qtpy.QtGui import QPainter, QRegion
+from qtpy.QtCore import QObject, Qt, QEvent
 
 from .plot import QwtPlotItem
 from .plot_canvas import QwtPlotCanvas
+
+try:
+    from qtpy.QtCore import QT_VERSION
+except BaseException:
+    QT_VERSION = 0x060000  # @todo: may need better fix
 
 
 def qwtRenderItem(painter, canvasRect, seriesItem, from_, to):
@@ -60,52 +65,52 @@ class QwtPlotDirectPainter(QObject):
 
     On certain environments it might be important to calculate a proper
     clip region before painting. F.e. for Qt Embedded only the clipped part
-    of the backing store will be copied to a (maybe unaccelerated) 
+    of the backing store will be copied to a (maybe unaccelerated)
     frame buffer.
 
     .. warning::
-    
+
         Incremental painting will only help when no replot is triggered
         by another operation (like changing scales) and nothing needs
         to be erased.
-        
+
     Paint attributes:
-    
+
       * `QwtPlotDirectPainter.AtomicPainter`:
-      
+
         Initializing a `QPainter` is an expensive operation.
         When `AtomicPainter` is set each call of `drawSeries()` opens/closes
         a temporary `QPainter`. Otherwise `QwtPlotDirectPainter` tries to
         use the same `QPainter` as long as possible.
 
       * `QwtPlotDirectPainter.FullRepaint`:
-      
+
         When `FullRepaint` is set the plot canvas is explicitly repainted
         after the samples have been rendered.
 
       * `QwtPlotDirectPainter.CopyBackingStore`:
-      
+
         When `QwtPlotCanvas.BackingStore` is enabled the painter
-        has to paint to the backing store and the widget. In certain 
-        situations/environments it might be faster to paint to 
+        has to paint to the backing store and the widget. In certain
+        situations/environments it might be faster to paint to
         the backing store only and then copy the backing store to the canvas.
         This flag can also be useful for settings, where Qt fills the
         the clip region with the widget background.
     """
-    
+
     # enum Attribute
     AtomicPainter = 0x01
     FullRepaint = 0x02
     CopyBackingStore = 0x04
-    
+
     def __init__(self, parent=None):
         QObject.__init__(self, parent)
         self.__data = QwtPlotDirectPainter_PrivateData()
-    
+
     def setAttribute(self, attribute, on=True):
         """
         Change an attribute
-        
+
         :param int attribute: Attribute to change
         :param bool on: On/Off
 
@@ -119,7 +124,7 @@ class QwtPlotDirectPainter(QObject):
             self.__data.attributes &= ~attribute
         if attribute == self.AtomicPainter and on:
             self.reset()
-    
+
     def testAttribute(self, attribute):
         """
         :param int attribute: Attribute to be tested
@@ -130,73 +135,73 @@ class QwtPlotDirectPainter(QObject):
             :py:meth:`setAttribute()`
         """
         return self.__data.attributes & attribute
-    
+
     def setClipping(self, enable):
         """
         En/Disables clipping
-            
+
         :param bool enable: Enables clipping is true, disable it otherwise
-        
+
         .. seealso::
-        
-            :py:meth:`hasClipping()`, :py:meth:`clipRegion()`, 
+
+            :py:meth:`hasClipping()`, :py:meth:`clipRegion()`,
             :py:meth:`setClipRegion()`
         """
         self.__data.hasClipping = enable
-    
+
     def hasClipping(self):
         """
         :return: Return true, when clipping is enabled
-        
+
         .. seealso::
-        
-            :py:meth:`setClipping()`, :py:meth:`clipRegion()`, 
+
+            :py:meth:`setClipping()`, :py:meth:`clipRegion()`,
             :py:meth:`setClipRegion()`
         """
         return self.__data.hasClipping
-    
+
     def setClipRegion(self, region):
         """
         Assign a clip region and enable clipping
 
-        Depending on the environment setting a proper clip region might 
-        improve the performance heavily. F.e. on Qt embedded only the clipped 
-        part of the backing store will be copied to a (maybe unaccelerated) 
+        Depending on the environment setting a proper clip region might
+        improve the performance heavily. F.e. on Qt embedded only the clipped
+        part of the backing store will be copied to a (maybe unaccelerated)
         frame buffer device.
-        
+
         :param QRegion region: Clip region
-        
+
         .. seealso::
-        
-            :py:meth:`hasClipping()`, :py:meth:`setClipping()`, 
+
+            :py:meth:`hasClipping()`, :py:meth:`setClipping()`,
             :py:meth:`clipRegion()`
         """
         self.__data.clipRegion = region
         self.__data.hasClipping = True
-    
+
     def clipRegion(self):
         """
         :return: Return Currently set clip region.
-        
+
         .. seealso::
-        
-            :py:meth:`hasClipping()`, :py:meth:`setClipping()`, 
+
+            :py:meth:`hasClipping()`, :py:meth:`setClipping()`,
             :py:meth:`setClipRegion()`
         """
         return self.__data.clipRegion
-    
+
     def drawSeries(self, seriesItem, from_, to):
         """
         Draw a set of points of a seriesItem.
-        
-        When observing a measurement while it is running, new points have 
-        to be added to an existing seriesItem. drawSeries() can be used to 
+
+        When observing a measurement while it is running, new points have
+        to be added to an existing seriesItem. drawSeries() can be used to
         display them avoiding a complete redraw of the canvas.
 
         Setting `plot().canvas().setAttribute(Qt.WA_PaintOutsidePaintEvent, True)`
         will result in faster painting, if the paint engine of the canvas widget
         supports this feature.
-        
+
         :param .plot_series.QwtPlotSeriesItem seriesItem: Item to be painted
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the series will be painted to its last point.
@@ -247,7 +252,7 @@ class QwtPlotDirectPainter(QObject):
             canvas.repaint(clipRegion)
             canvas.removeEventFilter(self)
             self.__data.seriesItem = None
-    
+
     def reset(self):
         """Close the internal QPainter"""
         if self.__data.painter.isActive():
@@ -255,7 +260,7 @@ class QwtPlotDirectPainter(QObject):
             if w:
                 w.removeEventFilter(self)
             self.__data.painter.end()
-    
+
     def eventFilter(self, obj_, event):
         if event.type() == QEvent.Paint:
             self.reset()

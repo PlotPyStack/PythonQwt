@@ -6,12 +6,13 @@
 
 """Simple plot without margins"""
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QFont, QPen, QPalette, QColor
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QFont, QPen, QPalette, QColor
+from qtpy.QtWidgets import QApplication
 
 import os
 if os.environ.get('USE_PYQWT5', True):
@@ -53,8 +54,8 @@ class TestPlot(QwtPlot):
                 self.axisWidget(axis_id).setPalette(palette)
                 ticks_font = self.axisFont(axis_id)
                 self.setAxisFont(axis_id, ticks_font)
-        
-        self.canvas().setFrameStyle(0)#QFrame.Panel|QFrame.Sunken)
+
+        self.canvas().setFrameStyle(0)  # QFrame.Panel|QFrame.Sunken)
         self.plotLayout().setCanvasMargin(0)
         self.axisWidget(QwtPlot.yLeft).setMargin(0)
         self.axisWidget(QwtPlot.xTop).setMargin(0)
@@ -64,11 +65,11 @@ class TestPlot(QwtPlot):
         self.marker = QwtPlotMarker()
         self.marker.setValue(0, 5)
         self.marker.attach(self)
-        
+
     def resizeEvent(self, event):
         super(TestPlot, self).resizeEvent(event)
         self.show_layout_details()
-    
+
     def show_layout_details(self):
         text = QwtText(
           "plotLayout().canvasRect():\n%r\n\n"
@@ -96,6 +97,7 @@ class TestPlot(QwtPlot):
         text.setFont(QFont('Courier New'))
         text.setColor(Qt.blue)
         self.marker.setLabel(text)
+
 
 if __name__ == '__main__':
     app = QApplication([])

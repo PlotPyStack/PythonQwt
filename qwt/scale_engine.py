@@ -33,7 +33,7 @@ from .transform import QwtLogTransform
 from .math import qwtFuzzyCompare
 from .transform import QwtTransform
 
-from .qt.QtCore import qFuzzyCompare
+from qtpy.QtCore import qFuzzyCompare
 
 import numpy as np
 

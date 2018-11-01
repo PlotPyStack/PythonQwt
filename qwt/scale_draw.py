@@ -24,8 +24,8 @@ from .scale_map import QwtScaleMap
 from .text import QwtText
 from .math import qwtRadians
 
-from .qt.QtGui import QPalette, QFontMetrics, QTransform
-from .qt.QtCore import (Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect,
+from qtpy.QtGui import QPalette, QFontMetrics, QTransform
+from qtpy.QtCore import (Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect,
                            QPoint)
 
 import numpy as np

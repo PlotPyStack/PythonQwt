@@ -18,10 +18,14 @@ QwtPlotItem
 .. autoclass:: QwtPlotItem
    :members:
 """
+import qtpy
 
-from .qt.QtGui import (QWidget, QFont, QSizePolicy, QFrame, QApplication,
-                          QRegion, QPainter, QPalette)
-from .qt.QtCore import Qt, Signal, QEvent, QSize, QRectF
+from qtpy.QtCore import Qt, Signal, QEvent, QSize, QRectF
+from qtpy.QtGui import (QFont, QRegion, QPainter, QPalette)
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QFrame
+from qtpy.QtWidgets import QSizePolicy
+from qtpy.QtWidgets import QWidget
 
 from .text import QwtText, QwtTextLabel
 from .scale_widget import QwtScaleWidget
@@ -36,12 +40,15 @@ from .interval import QwtInterval
 
 import numpy as np
 
+PYQT5 = qtpy.API_NAME is "PyQt5"
+
 
 def qwtEnableLegendItems(plot, on):
     if on:
         plot.legendDataChanged.connect(plot.updateLegendItems)
     else:
         plot.legendDataChanged.disconnect(plot.updateLegendItems)
+
 
 def qwtSetTabOrder(first, second, with_children):
     tab_chain = [first, second]
@@ -74,7 +81,7 @@ class ItemList(list):
     def insertItem(self, obj):
         self.append(obj)
         self.sortItems()
-        
+
     def removeItem(self, obj):
         self.remove(obj)
         self.sortItems()
@@ -89,66 +96,66 @@ class QwtPlotDict_PrivateData(object):
 class QwtPlotDict(object):
     """
     A dictionary for plot items
-    
+
     `QwtPlotDict` organizes plot items in increasing z-order.
     If `autoDelete()` is enabled, all attached items will be deleted
     in the destructor of the dictionary.
-    `QwtPlotDict` can be used to get access to all `QwtPlotItem` items - or 
+    `QwtPlotDict` can be used to get access to all `QwtPlotItem` items - or
     all items of a specific type -  that are currently on the plot.
-    
+
     .. seealso::
-    
-        :py:meth:`QwtPlotItem.attach()`, :py:meth:`QwtPlotItem.detach()`, 
+
+        :py:meth:`QwtPlotItem.attach()`, :py:meth:`QwtPlotItem.detach()`,
         :py:meth:`QwtPlotItem.z()`
     """
     def __init__(self):
         self.__data = QwtPlotDict_PrivateData()
-    
+
     def setAutoDelete(self, autoDelete):
         """
         En/Disable Auto deletion
 
         If Auto deletion is on all attached plot items will be deleted
         in the destructor of `QwtPlotDict`. The default value is on.
-        
+
         :param bool autoDelete: enable/disable
 
         .. seealso::
-        
+
             :py:meth:`autoDelete()`, :py:meth:`insertItem()`
         """
         self.__data.autoDelete = autoDelete
-    
+
     def autoDelete(self):
         """
         :return: true if auto deletion is enabled
 
         .. seealso::
-        
+
             :py:meth:`setAutoDelete()`, :py:meth:`insertItem()`
         """
         return self.__data.autoDelete
-    
+
     def insertItem(self, item):
         """
         Insert a plot item
-        
+
         :param .plot.QwtPlotItem item: PlotItem
 
         .. seealso::
-        
+
             :py:meth:`removeItem()`
         """
         self.__data.itemList.insertItem(item)
-    
+
     def removeItem(self, item):
         """
         Remove a plot item
-        
+
         :param .plot.QwtPlotItem item: PlotItem
 
         .. seealso::
-        
+
             :py:meth:`insertItem()`
         """
         self.__data.itemList.removeItem(item)
@@ -156,7 +163,7 @@ class QwtPlotDict(object):
     def detachItems(self, rtti, autoDelete):
         """
         Detach items from the dictionary
-        
+
         :param int rtti: In case of `QwtPlotItem.Rtti_PlotItem` detach all items otherwise only those items of the type rtti.
         :param bool autoDelete: If true, delete all detached items
         """
@@ -170,11 +177,11 @@ class QwtPlotDict(object):
         """
         A list of attached plot items.
 
-        Use caution when iterating these lists, as removing/detaching an 
-        item will invalidate the iterator. Instead you can place pointers 
-        to objects to be removed in a removal list, and traverse that list 
+        Use caution when iterating these lists, as removing/detaching an
+        item will invalidate the iterator. Instead you can place pointers
+        to objects to be removed in a removal list, and traverse that list
         later.
-        
+
         :param int rtti: In case of `QwtPlotItem.Rtti_PlotItem` detach all items otherwise only those items of the type rtti.
         :return: List of all attached plot items of a specific type. If rtti is None, return a list of all attached plot items.
         """
@@ -204,9 +211,9 @@ class AxisData(object):
         self.maxMajor = None
         self.maxMinor = None
         self.isValid = None
-        self.scaleDiv = None # QwtScaleDiv
-        self.scaleEngine = None # QwtScaleEngine
-        self.scaleWidget = None # QwtScaleWidget
+        self.scaleDiv = None  # QwtScaleDiv
+        self.scaleEngine = None  # QwtScaleEngine
+        self.scaleWidget = None  # QwtScaleWidget
 
 
 class QwtPlot(QFrame, QwtPlotDict):
@@ -214,21 +221,21 @@ class QwtPlot(QFrame, QwtPlotDict):
     A 2-D plotting widget
 
     QwtPlot is a widget for plotting two-dimensional graphs.
-    An unlimited number of plot items can be displayed on its canvas. 
-    Plot items might be curves (:py:class:`.plot_curve.QwtPlotCurve`), 
-    markers (:py:class:`.plot_marker.QwtPlotMarker`), 
-    the grid (:py:class:`.plot_grid.QwtPlotGrid`), or anything else 
+    An unlimited number of plot items can be displayed on its canvas.
+    Plot items might be curves (:py:class:`.plot_curve.QwtPlotCurve`),
+    markers (:py:class:`.plot_marker.QwtPlotMarker`),
+    the grid (:py:class:`.plot_grid.QwtPlotGrid`), or anything else
     derived from :py:class:`QwtPlotItem`.
-    
+
     A plot can have up to four axes, with each plot item attached to an x- and
     a y axis. The scales at the axes can be explicitly set (`QwtScaleDiv`), or
-    are calculated from the plot items, using algorithms (`QwtScaleEngine`) 
+    are calculated from the plot items, using algorithms (`QwtScaleEngine`)
     which can be configured separately for each axis.
-    
-    The following example is a good starting point to see how to set up a 
+
+    The following example is a good starting point to see how to set up a
     plot widget::
-    
-        from .qt.QtGui import QApplication
+
+        from qtpy.QtGui import QApplication
         from qwt import QwtPlot, QwtPlotCurve
         import numpy as np
 
@@ -248,41 +255,44 @@ class QwtPlot(QFrame, QwtPlotDict):
         my_plot.show()
 
         app.exec_()
-        
+
     .. image:: /images/QwtPlot_example.png
-        
+
     .. py:class:: QwtPlot([title=""], [parent=None])
-    
+
         :param str title: Title text
         :param QWidget parent: Parent widget
-        
+
     .. py:data:: itemAttached
-    
+
         A signal indicating, that an item has been attached/detached
-        
+
         :param plotItem: Plot item
         :param on: Attached/Detached
 
     .. py:data:: legendDataChanged
-    
-        A signal with the attributes how to update 
+
+        A signal with the attributes how to update
         the legend entries for a plot item.
 
         :param itemInfo: Info about a plot item, build from itemToInfo()
         :param data: Attributes of the entries (usually <= 1) for the plot item.
-
     """
-    
-    itemAttached = Signal("PyQt_PyObject", bool)
-    legendDataChanged = Signal("PyQt_PyObject", "PyQt_PyObject")
+    if PYQT5:
+        ObjectStr = "PyQt_PyObject"
+    else:
+        ObjectStr = str  # @todo: how to find PySide2 equivalent?
+
+    itemAttached = Signal(ObjectStr, bool)
+    legendDataChanged = Signal(ObjectStr, ObjectStr)
 
     # enum Axis
     validAxes = yLeft, yRight, xBottom, xTop = list(range(4))
     axisCnt = len(validAxes)
-    
+
     # enum LegendPosition
     LeftLegend, RightLegend, BottomLegend, TopLegend = list(range(4))
-    
+
     def __init__(self, *args):
         if len(args) == 0:
             title, parent = "", None
@@ -300,72 +310,72 @@ class QwtPlot(QFrame, QwtPlotDict):
                             % (self.__class__.__name__, len(args)))
         QwtPlotDict.__init__(self)
         QFrame.__init__(self, parent)
-        
+
         self.__layout_state = None
-        
+
         self.__data = QwtPlot_PrivateData()
         from .plot_layout import QwtPlotLayout
         self.__data.layout = QwtPlotLayout()
         self.__data.autoReplot = False
-                
+
         self.setAutoReplot(True)
 #        self.setPlotLayout(self.__data.layout)
-        
+
         # title
         self.__data.titleLabel = QwtTextLabel(self)
         self.__data.titleLabel.setObjectName("QwtPlotTitle")
         self.__data.titleLabel.setFont(QFont(self.fontInfo().family(), 14,
                                              QFont.Bold))
         text = QwtText(title)
-        text.setRenderFlags(Qt.AlignCenter|Qt.TextWordWrap)
+        text.setRenderFlags(Qt.AlignCenter | Qt.TextWordWrap)
         self.__data.titleLabel.setText(text)
-        
+
         # footer
         self.__data.footerLabel = QwtTextLabel(self)
         self.__data.footerLabel.setObjectName("QwtPlotFooter")
         footer = QwtText()
-        footer.setRenderFlags(Qt.AlignCenter|Qt.TextWordWrap)
+        footer.setRenderFlags(Qt.AlignCenter | Qt.TextWordWrap)
         self.__data.footerLabel.setText(footer)
-        
+
         # legend
         self.__data.legend = None
-        
+
         # axis
         self.__axisData = []
         self.initAxesData()
-        
+
         # canvas
         self.__data.canvas = QwtPlotCanvas(self)
         self.__data.canvas.setObjectName("QwtPlotCanvas")
         self.__data.canvas.installEventFilter(self)
-        
+
         self.setSizePolicy(QSizePolicy.MinimumExpanding,
                            QSizePolicy.MinimumExpanding)
-        
+
         self.resize(200, 200)
-        
+
         focusChain = [self, self.__data.titleLabel, self.axisWidget(self.xTop),
                       self.axisWidget(self.yLeft), self.__data.canvas,
                       self.axisWidget(self.yRight),
                       self.axisWidget(self.xBottom), self.__data.footerLabel]
-        
+
         for idx in range(len(focusChain)-1):
             qwtSetTabOrder(focusChain[idx], focusChain[idx+1], False)
-        
+
         qwtEnableLegendItems(self, True)
 
     def __del__(self):
-        #XXX Is is really necessary in Python? (pure transcription of C++)
+        # XXX Is is really necessary in Python? (pure transcription of C++)
         self.setAutoReplot(False)
         self.detachItems(QwtPlotItem.Rtti_PlotItem, self.autoDelete())
         self.__data.layout = None
         self.deleteAxesData()
         self.__data = None
-        
+
     def initAxesData(self):
         """Initialize axes"""
         self.__axisData = [AxisData() for axisId in self.validAxes]
-        
+
         self.__axisData[self.yLeft].scaleWidget = \
             QwtScaleWidget(QwtScaleDraw.LeftScale, self)
         self.__axisData[self.yRight].scaleWidget = \
@@ -386,7 +396,7 @@ class QwtPlot(QFrame, QwtPlotDict):
 
         fscl = QFont(self.fontInfo().family(), 10)
         fttl = QFont(self.fontInfo().family(), 12, QFont.Bold)
-        
+
         for axisId in self.validAxes:
             d = self.__axisData[axisId]
 
@@ -399,22 +409,22 @@ class QwtPlot(QFrame, QwtPlotDict):
             text = d.scaleWidget.title()
             text.setFont(fttl)
             d.scaleWidget.setTitle(text)
-            
+
             d.doAutoScale = True
             d.minValue = 0.0
             d.maxValue = 1000.0
-            d.stepSize = 0.0            
+            d.stepSize = 0.0
             d.maxMinor = 5
             d.maxMajor = 8
             d.isValid = False
-            
+
         self.__axisData[self.yLeft].isEnabled = True
         self.__axisData[self.yRight].isEnabled = False
         self.__axisData[self.xBottom].isEnabled = True
         self.__axisData[self.xTop].isEnabled = False
 
     def deleteAxesData(self):
-        #XXX Is is really necessary in Python? (pure transcription of C++)
+        # XXX Is is really necessary in Python? (pure transcription of C++)
         for axisId in self.validAxes:
             self.__axisData[axisId].scaleEngine = None
             self.__axisData[axisId] = None
@@ -426,16 +436,16 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         if self.axisValid(axisId):
             return self.__axisData[axisId].scaleWidget
-    
+
     def setAxisScaleEngine(self, axisId, scaleEngine):
         """
         Change the scale engine for an axis
-        
+
         :param int axisId: Axis index
         :param .scale_engine.QwtScaleEngine scaleEngine: Scale engine
 
         .. seealso::
-        
+
             :py:meth:`axisScaleEngine()`
         """
         if self.axisValid(axisId) and scaleEngine is not None:
@@ -445,14 +455,14 @@ class QwtPlot(QFrame, QwtPlotDict):
                                                 scaleEngine.transformation())
             d.isValid = False
             self.autoRefresh()
-    
+
     def axisScaleEngine(self, axisId):
         """
         :param int axisId: Axis index
         :return: Scale engine for a specific axis
 
         .. seealso::
-        
+
             :py:meth:`setAxisScaleEngine()`
         """
         if self.axisValid(axisId):
@@ -465,7 +475,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         if self.axisValid(axisId):
             return self.__axisData[axisId].doAutoScale
-    
+
     def axisEnabled(self, axisId):
         """
         :param int axisId: Axis index
@@ -473,7 +483,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         if self.axisValid(axisId):
             return self.__axisData[axisId].isEnabled
-    
+
     def axisFont(self, axisId):
         """
         :param int axisId: Axis index
@@ -483,15 +493,15 @@ class QwtPlot(QFrame, QwtPlotDict):
             return self.axisWidget(axisId).font()
         else:
             return QFont()
-    
+
     def axisMaxMajor(self, axisId):
         """
         :param int axisId: Axis index
         :return: The maximum number of major ticks for a specified axis
 
         .. seealso::
-        
-            :py:meth:`setAxisMaxMajor()`, 
+
+            :py:meth:`setAxisMaxMajor()`,
             :py:meth:`.scale_engine.QwtScaleEngine.divideScale()`
         """
         if self.axisValid(axisId):
@@ -505,15 +515,15 @@ class QwtPlot(QFrame, QwtPlotDict):
         :return: The maximum number of minor ticks for a specified axis
 
         .. seealso::
-        
-            :py:meth:`setAxisMaxMinor()`, 
+
+            :py:meth:`setAxisMaxMinor()`,
             :py:meth:`.scale_engine.QwtScaleEngine.divideScale()`
         """
         if self.axisValid(axisId):
             return self.axisWidget(axisId).maxMinor
         else:
             return 0
-    
+
     def axisScaleDiv(self, axisId):
         """
         :param int axisId: Axis index
@@ -523,13 +533,13 @@ class QwtPlot(QFrame, QwtPlotDict):
         are the current limits of the axis scale.
 
         .. seealso::
-        
-            :py:class:`.scale_div.QwtScaleDiv`, 
-            :py:meth:`setAxisScaleDiv()`, 
+
+            :py:class:`.scale_div.QwtScaleDiv`,
+            :py:meth:`setAxisScaleDiv()`,
             :py:meth:`.scale_engine.QwtScaleEngine.divideScale()`
         """
         return self.__axisData[axisId].scaleDiv
-    
+
     def axisScaleDraw(self, axisId):
         """
         :param int axisId: Axis index
@@ -542,19 +552,19 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         :param int axisId: Axis index
         :return: step size parameter value
-        
+
         This doesn't need to be the step size of the current scale.
 
         .. seealso::
-        
-            :py:meth:`setAxisScale()`, 
+
+            :py:meth:`setAxisScale()`,
             :py:meth:`.scale_engine.QwtScaleEngine.divideScale()`
         """
         if self.axisValid(axisId):
             return self.axisWidget(axisId).stepSize
         else:
             return 0
-    
+
     def axisInterval(self, axisId):
         """
         :param int axisId: Axis index
@@ -563,8 +573,8 @@ class QwtPlot(QFrame, QwtPlotDict):
         This is only a convenience function for axisScaleDiv(axisId).interval()
 
         .. seealso::
-        
-            :py:class:`.scale_div.QwtScaleDiv`, 
+
+            :py:class:`.scale_div.QwtScaleDiv`,
             :py:meth:`axisScaleDiv()`
         """
         if self.axisValid(axisId):
@@ -581,7 +591,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             return self.axisWidget(axisId).title()
         else:
             return QwtText()
-    
+
     def enableAxis(self, axisId, tf=True):
         """
         Enable or disable a specified axis
@@ -590,26 +600,26 @@ class QwtPlot(QFrame, QwtPlotDict):
         visible on the screen. Curves, markers and can be attached
         to disabled axes, and transformation of screen coordinates
         into values works as normal.
-        
+
         Only xBottom and yLeft are enabled by default.
-  
+
         :param int axisId: Axis index
         :param bool tf: True (enabled) or False (disabled)
         """
         if self.axisValid(axisId) and tf != self.__axisData[axisId].isEnabled:
             self.__axisData[axisId].isEnabled = tf
             self.updateLayout()
-            
+
     def invTransform(self, axisId, pos):
         """
         Transform the x or y coordinate of a position in the
         drawing region into a value.
-  
+
         :param int axisId: Axis index
         :param int pos: position
-        
+
         .. warning::
-        
+
             The position can be an x or a y coordinate,
             depending on the specified axis.
         """
@@ -617,11 +627,11 @@ class QwtPlot(QFrame, QwtPlotDict):
             return self.canvasMap(axisId).invTransform(pos)
         else:
             return 0.
-            
+
     def transform(self, axisId, value):
         """
         Transform a value into a coordinate in the plotting region
-  
+
         :param int axisId: Axis index
         :param fload value: Value
         :return: X or Y coordinate in the plotting region corresponding to the value.
@@ -634,59 +644,59 @@ class QwtPlot(QFrame, QwtPlotDict):
     def setAxisFont(self, axisId, font):
         """
         Change the font of an axis
-  
+
         :param int axisId: Axis index
         :param QFont font: Font
-        
+
         .. warning::
-        
+
             This function changes the font of the tick labels,
             not of the axis title.
         """
         if self.axisValid(axisId):
             return self.axisWidget(axisId).setFont(font)
-    
+
     def setAxisAutoScale(self, axisId, on=True):
         """
         Enable autoscaling for a specified axis
 
         This member function is used to switch back to autoscaling mode
         after a fixed scale has been set. Autoscaling is enabled by default.
-  
+
         :param int axisId: Axis index
         :param bool on: On/Off
 
         .. seealso::
-        
-            :py:meth:`setAxisScale()`, :py:meth:`setAxisScaleDiv()`, 
+
+            :py:meth:`setAxisScale()`, :py:meth:`setAxisScaleDiv()`,
             :py:meth:`updateAxes()`
-        
+
         .. note::
-        
+
             The autoscaling flag has no effect until updateAxes() is executed
             ( called by replot() ).
         """
         if self.axisValid(axisId) and self.__axisData[axisId].doAutoScale != on:
             self.__axisData[axisId].doAutoScale = on
             self.autoRefresh()
-    
+
     def setAxisScale(self, axisId, min_, max_, stepSize=0):
         """
         Disable autoscaling and specify a fixed scale for a selected axis.
 
-        In updateAxes() the scale engine calculates a scale division from the 
-        specified parameters, that will be assigned to the scale widget. So 
+        In updateAxes() the scale engine calculates a scale division from the
+        specified parameters, that will be assigned to the scale widget. So
         updates of the scale widget usually happen delayed with the next replot.
-  
+
         :param int axisId: Axis index
         :param float min_: Minimum of the scale
         :param float max_: Maximum of the scale
         :param float stepSize: Major step size. If <code>step == 0</code>, the step size is calculated automatically using the maxMajor setting.
 
         .. seealso::
-        
-            :py:meth:`setAxisMaxMajor()`, :py:meth:`setAxisAutoScale()`, 
-            :py:meth:`axisStepSize()`, 
+
+            :py:meth:`setAxisMaxMajor()`, :py:meth:`setAxisAutoScale()`,
+            :py:meth:`axisStepSize()`,
             :py:meth:`.scale_engine.QwtScaleEngine.divideScale()`
         """
         if self.axisValid(axisId):
@@ -697,20 +707,20 @@ class QwtPlot(QFrame, QwtPlotDict):
             d.maxValue = max_
             d.stepSize = stepSize
             self.autoRefresh()
-    
+
     def setAxisScaleDiv(self, axisId, scaleDiv):
         """
         Disable autoscaling and specify a fixed scale for a selected axis.
 
         The scale division will be stored locally only until the next call
-        of updateAxes(). So updates of the scale widget usually happen delayed with 
+        of updateAxes(). So updates of the scale widget usually happen delayed with
         the next replot.
-  
+
         :param int axisId: Axis index
         :param .scale_div.QwtScaleDiv scaleDiv: Scale division
 
         .. seealso::
-        
+
             :py:meth:`setAxisScale()`, :py:meth:`setAxisAutoScale()`
         """
         if self.axisValid(axisId):
@@ -719,11 +729,11 @@ class QwtPlot(QFrame, QwtPlotDict):
             d.scaleDiv = scaleDiv
             d.isValid = True
             self.autoRefresh()
-        
+
     def setAxisScaleDraw(self, axisId, scaleDraw):
         """
         Set a scale draw
-  
+
         :param int axisId: Axis index
         :param .scale_draw.QwtScaleDraw scaleDraw: Object responsible for drawing scales.
 
@@ -731,72 +741,72 @@ class QwtPlot(QFrame, QwtPlotDict):
         functionality and let it take place in QwtPlot. Please note
         that scaleDraw has to be created with new and will be deleted
         by the corresponding QwtScale member ( like a child object ).
-  
+
         .. seealso::
-        
-            :py:class:`.scale_draw.QwtScaleDraw`, 
+
+            :py:class:`.scale_draw.QwtScaleDraw`,
             :py:class:`.scale_widget.QwtScaleWigdet`
-        
+
         .. warning::
-        
+
             The attributes of scaleDraw will be overwritten by those of the
             previous QwtScaleDraw.
         """
         if self.axisValid(axisId):
             self.axisWidget(axisId).setScaleDraw(scaleDraw)
             self.autoRefresh()
-    
+
     def setAxisLabelAlignment(self, axisId, alignment):
         """
         Change the alignment of the tick labels
-  
+
         :param int axisId: Axis index
         :param Qt.Alignment alignment: Or'd Qt.AlignmentFlags
-  
+
         .. seealso::
-        
+
             :py:meth:`.scale_draw.QwtScaleDraw.setLabelAlignment()`
         """
         if self.axisValid(axisId):
             self.axisWidget(axisId).setLabelAlignment(alignment)
-            
+
     def setAxisLabelRotation(self, axisId, rotation):
         """
         Rotate all tick labels
-  
+
         :param int axisId: Axis index
         :param float rotation: Angle in degrees. When changing the label rotation, the label alignment might be adjusted too.
-  
+
         .. seealso::
-        
+
             :py:meth:`setLabelRotation()`, :py:meth:`setAxisLabelAlignment()`
         """
         if self.axisValid(axisId):
             self.axisWidget(axisId).setLabelRotation(rotation)
-            
+
     def setAxisLabelAutoSize(self, axisId, state):
         """
         Set tick labels automatic size option (default: on)
-  
+
         :param int axisId: Axis index
-        :param bool state: On/off 
-        
+        :param bool state: On/off
+
         .. seealso::
-        
+
             :py:meth:`.scale_draw.QwtScaleDraw.setLabelAutoSize()`
         """
         if self.axisValid(axisId):
             self.axisWidget(axisId).setLabelAutoSize(state)
-            
+
     def setAxisMaxMinor(self, axisId, maxMinor):
         """
         Set the maximum number of minor scale intervals for a specified axis
-  
+
         :param int axisId: Axis index
         :param int maxMinor: Maximum number of minor steps
-  
+
         .. seealso::
-        
+
             :py:meth:`axisMaxMinor()`
         """
         if self.axisValid(axisId):
@@ -810,12 +820,12 @@ class QwtPlot(QFrame, QwtPlotDict):
     def setAxisMaxMajor(self, axisId, maxMajor):
         """
         Set the maximum number of major scale intervals for a specified axis
-  
+
         :param int axisId: Axis index
         :param int maxMajor: Maximum number of major steps
-  
+
         .. seealso::
-        
+
             :py:meth:`axisMaxMajor()`
         """
         if self.axisValid(axisId):
@@ -829,7 +839,7 @@ class QwtPlot(QFrame, QwtPlotDict):
     def setAxisTitle(self, axisId, title):
         """
         Change the title of a specified axis
-  
+
         :param int axisId: Axis index
         :param title: axis title
         :type title: .text.QwtText or str
@@ -842,26 +852,26 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         Rebuild the axes scales
 
-        In case of autoscaling the boundaries of a scale are calculated 
-        from the bounding rectangles of all plot items, having the 
-        `QwtPlotItem.AutoScale` flag enabled (`QwtScaleEngine.autoScale()`). 
-        Then a scale division is calculated (`QwtScaleEngine.didvideScale()`) 
+        In case of autoscaling the boundaries of a scale are calculated
+        from the bounding rectangles of all plot items, having the
+        `QwtPlotItem.AutoScale` flag enabled (`QwtScaleEngine.autoScale()`).
+        Then a scale division is calculated (`QwtScaleEngine.didvideScale()`)
         and assigned to scale widget.
-        
-        When the scale boundaries have been assigned with `setAxisScale()` a 
+
+        When the scale boundaries have been assigned with `setAxisScale()` a
         scale division is calculated (`QwtScaleEngine.didvideScale()`)
         for this interval and assigned to the scale widget.
-        
-        When the scale has been set explicitly by `setAxisScaleDiv()` the 
+
+        When the scale has been set explicitly by `setAxisScaleDiv()` the
         locally stored scale division gets assigned to the scale widget.
-        
-        The scale widget indicates modifications by emitting a 
+
+        The scale widget indicates modifications by emitting a
         `QwtScaleWidget.scaleDivChanged()` signal.
-        
-        `updateAxes()` is usually called by `replot()`. 
-  
+
+        `updateAxes()` is usually called by `replot()`.
+
         .. seealso::
-        
+
             :py:meth:`setAxisAutoScale()`, :py:meth:`setAxisScale()`,
             :py:meth:`setAxisScaleDiv()`, :py:meth:`replot()`,
             :py:meth:`QwtPlotItem.boundingRect()`
@@ -897,7 +907,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             scaleWidget.setScaleDiv(d.scaleDiv)
 
             # It is *really* necessary to update border dist!
-            # Otherwise, when tick labels are large enough, the ticks 
+            # Otherwise, when tick labels are large enough, the ticks
             # may not be aligned with canvas grid.
             # See the following issues for more details:
             # https://github.com/PierreRaybaut/guiqwt/issues/57
@@ -909,17 +919,17 @@ class QwtPlot(QFrame, QwtPlotDict):
             if item.testItemInterest(QwtPlotItem.ScaleInterest):
                 item.updateScaleDiv(self.axisScaleDiv(item.xAxis()),
                                     self.axisScaleDiv(item.yAxis()))
-    
+
     def setCanvas(self, canvas):
         """
         Set the drawing canvas of the plot widget.
-        
+
         The default canvas is a `QwtPlotCanvas`.
-        
+
         :param QWidget canvas: Canvas Widget
 
         .. seealso::
-        
+
             :py:meth:`canvas()`
         """
         if canvas == self.__data.canvas:
@@ -930,7 +940,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             canvas.installEventFilter(self)
             if self.isVisible():
                 canvas.show()
-    
+
     def event(self, event):
         ok = QFrame.event(self, event)
         if event.type() == QEvent.LayoutRequest:
@@ -946,12 +956,12 @@ class QwtPlot(QFrame, QwtPlotDict):
             elif event.type() == 178:#QEvent.ContentsRectChange:
                 self.updateLayout()
         return QFrame.eventFilter(self, obj, event)
-    
+
     def autoRefresh(self):
         """Replots the plot if :py:meth:`autoReplot()` is True."""
         if self.__data.autoReplot:
             self.replot()
-    
+
     def setAutoReplot(self, tf=True):
         """
         Set or reset the autoReplot option
@@ -961,38 +971,38 @@ class QwtPlot(QFrame, QwtPlotDict):
         Since this may be time-consuming, it is recommended
         to leave this option switched off and call :py:meth:`replot()`
         explicitly if necessary.
-        
+
         The autoReplot option is set to false by default, which
-        means that the user has to call :py:meth:`replot()` in order 
+        means that the user has to call :py:meth:`replot()` in order
         to make changes visible.
-        
+
         :param bool tf: True or False. Defaults to True.
 
         .. seealso::
-        
+
             :py:meth:`canvas()`
         """
         self.__data.autoReplot = tf
-    
+
     def autoReplot(self):
         """
         :return: True if the autoReplot option is set.
 
         .. seealso::
-        
+
             :py:meth:`setAutoReplot()`
         """
         return self.__data.autoReplot
-    
+
     def setTitle(self, title):
         """
         Change the plot's title
-        
+
         :param title: New title
         :type title: str or .text.QwtText
 
         .. seealso::
-        
+
             :py:meth:`title()`
         """
         current_title = self.__data.titleLabel.text()
@@ -1002,32 +1012,32 @@ class QwtPlot(QFrame, QwtPlotDict):
             return
         self.__data.titleLabel.setText(title)
         self.updateLayout()
-    
+
     def title(self):
         """
         :return: Title of the plot
 
         .. seealso::
-        
+
             :py:meth:`setTitle()`
         """
         return self.__data.titleLabel.text()
-    
+
     def titleLabel(self):
         """
         :return: Title label widget.
         """
         return self.__data.titleLabel
-    
+
     def setFooter(self, text):
         """
         Change the text the footer
-        
+
         :param text: New text of the footer
         :type text: str or .text.QwtText
 
         .. seealso::
-        
+
             :py:meth:`footer()`
         """
         current_footer = self.__data.footerLabel.text()
@@ -1037,17 +1047,17 @@ class QwtPlot(QFrame, QwtPlotDict):
             return
         self.__data.footerLabel.setText(text)
         self.updateLayout()
-    
+
     def footer(self):
         """
         :return: Text of the footer
 
         .. seealso::
-        
+
             :py:meth:`setFooter()`
         """
         return self.__data.footerLabel.text()
-    
+
     def footerLabel(self):
         """
         :return: Footer label widget.
@@ -1057,50 +1067,50 @@ class QwtPlot(QFrame, QwtPlotDict):
     def setPlotLayout(self, layout):
         """
         Assign a new plot layout
-        
+
         :param layout: Layout
         :type layout: .plot_layout.QwtPlotLayout
 
         .. seealso::
-        
+
             :py:meth:`plotLayout()`
         """
         if layout != self.__data.layout:
             self.__data.layout = layout
             self.updateLayout()
-    
+
     def plotLayout(self):
         """
         :return: the plot's layout
 
         .. seealso::
-        
+
             :py:meth:`setPlotLayout()`
         """
         return self.__data.layout
-    
+
     def legend(self):
         """
         :return: the plot's legend
 
         .. seealso::
-        
+
             :py:meth:`insertLegend()`
         """
         return self.__data.legend
-    
+
     def canvas(self):
         """
         :return: the plot's canvas
         """
         return self.__data.canvas
-    
+
     def sizeHint(self):
         """
         :return: Size hint for the plot widget
 
         .. seealso::
-        
+
             :py:meth:`minimumSizeHint()`
         """
         dw = dh = 0
@@ -1119,7 +1129,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                     if wDiff > dw:
                         dw = wDiff
         return self.minimumSizeHint() + QSize(dw, dh)
-    
+
     def minimumSizeHint(self):
         """
         :return: Return a minimum size hint
@@ -1127,11 +1137,11 @@ class QwtPlot(QFrame, QwtPlotDict):
         hint = self.__data.layout.minimumSizeHint(self)
         hint += QSize(2*self.frameWidth(), 2*self.frameWidth())
         return hint
-    
+
     def resizeEvent(self, e):
         QFrame.resizeEvent(self, e)
         self.updateLayout()
-    
+
     def replot(self):
         """
         Redraw the plot
@@ -1141,24 +1151,24 @@ class QwtPlot(QFrame, QwtPlotDict):
         be refreshed explicitly in order to make changes visible.
 
         .. seealso::
-        
+
             :py:meth:`updateAxes()`, :py:meth:`setAutoReplot()`
         """
         doAutoReplot = self.autoReplot()
         self.setAutoReplot(False)
         self.updateAxes()
-        
+
         #  Maybe the layout needs to be updated, because of changed
         #  axes labels. We need to process them here before painting
         #  to avoid that scales and canvas get out of sync.
         QApplication.sendPostedEvents(self, QEvent.LayoutRequest)
-        
+
         if self.__data.canvas:
             try:
                 self.__data.canvas.replot()
             except (AttributeError, TypeError):
                 self.__data.canvas.update(self.__data.canvas.contentsRect())
-        
+
         self.setAutoReplot(doAutoReplot)
 
     def get_layout_state(self):
@@ -1167,13 +1177,13 @@ class QwtPlot(QFrame, QwtPlotDict):
                 [(self.axisEnabled(axisId), self.axisTitle(axisId).text())
                  for axisId in self.validAxes],
                 self.__data.legend)
-    
+
     def updateLayout(self):
         """
         Adjust plot content to its current size.
 
         .. seealso::
-        
+
             :py:meth:`resizeEvent()`
         """
 #        state = self.get_layout_state()
@@ -1183,14 +1193,14 @@ class QwtPlot(QFrame, QwtPlotDict):
 #        self.__layout_state = state
 
         self.__data.layout.activate(self, self.contentsRect())
-        
+
         titleRect = self.__data.layout.titleRect().toRect()
         footerRect = self.__data.layout.footerRect().toRect()
         scaleRect = [self.__data.layout.scaleRect(axisId).toRect()
                      for axisId in self.validAxes]
         legendRect = self.__data.layout.legendRect().toRect()
         canvasRect = self.__data.layout.canvasRect().toRect()
-        
+
         if self.__data.titleLabel.text():
             self.__data.titleLabel.setGeometry(titleRect)
             if not self.__data.titleLabel.isVisibleTo(self):
@@ -1204,11 +1214,11 @@ class QwtPlot(QFrame, QwtPlotDict):
                 self.__data.footerLabel.show()
         else:
             self.__data.footerLabel.hide()
-        
+
         for axisId in self.validAxes:
             if self.axisEnabled(axisId):
                 self.axisWidget(axisId).setGeometry(scaleRect[axisId])
-                
+
                 if axisId in (self.xBottom, self.xTop):
                     r = QRegion(scaleRect[axisId])
                     if self.axisEnabled(self.yLeft):
@@ -1216,28 +1226,28 @@ class QwtPlot(QFrame, QwtPlotDict):
                     if self.axisEnabled(self.yRight):
                         r = r.subtracted(QRegion(scaleRect[self.yRight]))
                     r.translate(-scaleRect[axisId].x(), -scaleRect[axisId].y())
-                    
+
                     self.axisWidget(axisId).setMask(r)
-                    
+
                 if not self.axisWidget(axisId).isVisibleTo(self):
                     self.axisWidget(axisId).show()
-                
+
             else:
                 self.axisWidget(axisId).hide()
-            
+
         if self.__data.legend:
             if self.__data.legend.isEmpty():
                 self.__data.legend.hide()
             else:
                 self.__data.legend.setGeometry(legendRect)
                 self.__data.legend.show()
-        
+
         self.__data.canvas.setGeometry(canvasRect)
-    
+
     def getCanvasMarginsHint(self, maps, canvasRect):
         """
         Calculate the canvas margins
-        
+
         :param list maps: `QwtPlot.axisCnt` maps, mapping between plot and paint device coordinates
         :param QRectF canvasRect: Bounding rectangle where to paint
 
@@ -1245,7 +1255,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         at the borders of the canvas by the `QwtPlotItem.Margins` flag.
 
         .. seealso::
-        
+
             :py:meth:`updateCanvasMargins()`, :py:meth:`getCanvasMarginHint()`
         """
         left = top = right = bottom = -1.
@@ -1260,7 +1270,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                 bottom = max([bottom, m[self.xBottom]])
 
         return left, top, right, bottom
-    
+
     def updateCanvasMargins(self):
         """
         Update the canvas margins
@@ -1269,57 +1279,57 @@ class QwtPlot(QFrame, QwtPlotDict):
         at the borders of the canvas by the `QwtPlotItem.Margins` flag.
 
         .. seealso::
-        
-            :py:meth:`getCanvasMarginsHint()`, 
+
+            :py:meth:`getCanvasMarginsHint()`,
             :py:meth:`QwtPlotItem.getCanvasMarginHint()`
         """
         maps = [self.canvasMap(axisId) for axisId in self.validAxes]
         margins = self.getCanvasMarginsHint(maps, self.canvas().contentsRect())
-        
+
         doUpdate = False
-        
+
         for axisId in self.validAxes:
             if margins[axisId] >= 0.:
                 m = np.ceil(margins[axisId])
                 self.plotLayout().setCanvasMargin(m, axisId)
                 doUpdate = True
-        
+
         if doUpdate:
             self.updateLayout()
-    
+
     def drawCanvas(self, painter):
         """
         Redraw the canvas.
-        
+
         :param QPainter painter: Painter used for drawing
 
         .. warning::
-        
+
             drawCanvas calls drawItems what is also used
             for printing. Applications that like to add individual
             plot items better overload drawItems()
 
         .. seealso::
-        
-            :py:meth:`getCanvasMarginsHint()`, 
+
+            :py:meth:`getCanvasMarginsHint()`,
             :py:meth:`QwtPlotItem.getCanvasMarginHint()`
         """
         maps = [self.canvasMap(axisId) for axisId in self.validAxes]
         self.drawItems(painter, self.__data.canvas.contentsRect(), maps)
-    
+
     def drawItems(self, painter, canvasRect, maps):
         """
         Redraw the canvas.
-        
+
         :param QPainter painter: Painter used for drawing
         :param QRectF canvasRect: Bounding rectangle where to paint
         :param list maps: `QwtPlot.axisCnt` maps, mapping between plot and paint device coordinates
 
         .. note::
-        
+
             Usually canvasRect is `contentsRect()` of the plot canvas.
-            Due to a bug in Qt this rectangle might be wrong for certain 
-            frame styles ( f.e `QFrame.Box` ) and it might be necessary to 
+            Due to a bug in Qt this rectangle might be wrong for certain
+            frame styles ( f.e `QFrame.Box` ) and it might be necessary to
             fix the margins manually using `QWidget.setContentsMargins()`
         """
         for item in self.itemList():
@@ -1339,18 +1349,18 @@ class QwtPlot(QFrame, QwtPlotDict):
         :return: Map for the axis on the canvas. With this map pixel coordinates can translated to plot coordinates and vice versa.
 
         .. seealso::
-        
-            :py:class:`.scale_map.QwtScaleMap`, 
+
+            :py:class:`.scale_map.QwtScaleMap`,
             :py:meth:`transform()`, :py:meth:`invTransform()`
         """
         map_ = QwtScaleMap()
         if not self.__data.canvas:
             return map_
-        
+
         map_.setTransformation(self.axisScaleEngine(axisId).transformation())
         sd = self.axisScaleDiv(axisId)
         map_.setScaleInterval(sd.lowerBound(), sd.upperBound())
-        
+
         if self.axisEnabled(axisId):
             s = self.axisWidget(axisId)
             if axisId in (self.yLeft, self.yRight):
@@ -1382,7 +1392,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                 map_.setPaintInterval(canvasRect.left()+left,
                                       canvasRect.right()-right)
         return map_
-    
+
     def setCanvasBackground(self, brush):
         """
         Change the background of the plotting area
@@ -1394,30 +1404,30 @@ class QwtPlot(QFrame, QwtPlotDict):
         :param QBrush brush: New background brush
 
         .. seealso::
-        
+
             :py:meth:`canvasBackground()`
         """
         pal = self.__data.canvas.palette()
         pal.setBrush(QPalette.Window, brush)
         self.canvas().setPalette(pal)
-    
+
     def canvasBackground(self):
         """
         :return: Background brush of the plotting area.
 
         .. seealso::
-        
+
             :py:meth:`setCanvasBackground()`
         """
         return self.canvas().palette().brush(QPalette.Normal, QPalette.Window)
-    
+
     def axisValid(self, axisId):
         """
         :param int axisId: Axis
         :return: True if the specified axis exists, otherwise False
         """
         return axisId in QwtPlot.validAxes
-    
+
     def insertLegend(self, legend, pos=None, ratio=-1):
         """
         Insert a legend
@@ -1426,11 +1436,11 @@ class QwtPlot(QFrame, QwtPlotDict):
         the legend will be organized in one column from top to down.
         Otherwise the legend items will be placed in a table
         with a best fit number of columns from left to right.
-        
+
         insertLegend() will set the plot widget as parent for the legend.
-        The legend will be deleted in the destructor of the plot or when 
+        The legend will be deleted in the destructor of the plot or when
         another legend is inserted.
-        
+
         Legends, that are not inserted into the layout of the plot widget
         need to connect to the legendDataChanged() signal. Calling updateLegend()
         initiates this signal for an initial update. When the application code
@@ -1438,24 +1448,24 @@ class QwtPlot(QFrame, QwtPlotDict):
         rendering plots to a document ( see QwtPlotRenderer ).
 
         :param .legend.QwtAbstractLegend legend: Legend
-        :param QwtPlot.LegendPosition pos: The legend's position. 
+        :param QwtPlot.LegendPosition pos: The legend's position.
         :param float ratio: Ratio between legend and the bounding rectangle of title, canvas and axes
 
         .. note::
 
-            For top/left position the number of columns will be limited to 1, 
+            For top/left position the number of columns will be limited to 1,
             otherwise it will be set to unlimited.
 
         .. note::
 
-            The legend will be shrunk if it would need more space than the 
-            given ratio. The ratio is limited to ]0.0 .. 1.0]. 
-            In case of <= 0.0 it will be reset to the default ratio. 
+            The legend will be shrunk if it would need more space than the
+            given ratio. The ratio is limited to ]0.0 .. 1.0].
+            In case of <= 0.0 it will be reset to the default ratio.
             The default vertical/horizontal ratio is 0.33/0.5.
 
         .. seealso::
-        
-            :py:meth:`legend()`, 
+
+            :py:meth:`legend()`,
             :py:meth:`.plot_layout.QwtPlotLayout.legendPosition()`,
             :py:meth:`.plot_layout.QwtPlotLayout.setLegendPosition()`
         """
@@ -1470,11 +1480,11 @@ class QwtPlot(QFrame, QwtPlotDict):
                 self.legendDataChanged.connect(self.__data.legend.updateLegend)
                 if self.__data.legend.parent() is not self:
                     self.__data.legend.setParent(self)
-                
+
                 qwtEnableLegendItems(self, False)
                 self.updateLegend()
                 qwtEnableLegendItems(self, True)
-                
+
                 lpos = self.__data.layout.legendPosition()
 
                 if legend is not None:
@@ -1483,7 +1493,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                             legend.setMaxColumns(1)
                     elif lpos in (self.TopLegend, self.BottomLegend):
                         legend.setMaxColumns(0)
-                
+
                 previousInChain = None
                 if lpos == self.LeftLegend:
                     previousInChain = self.axisWidget(QwtPlot.xTop)
@@ -1493,21 +1503,21 @@ class QwtPlot(QFrame, QwtPlotDict):
                     previousInChain = self.axisWidget(QwtPlot.yRight)
                 elif lpos == self.BottomLegend:
                     previousInChain = self.footerLabel()
-                
+
             if previousInChain:
                 qwtSetTabOrder(previousInChain, legend, True)
-        
+
         self.updateLayout()
-    
+
     def updateLegend(self, plotItem=None):
         """
-        If plotItem is None, emit QwtPlot.legendDataChanged for all 
+        If plotItem is None, emit QwtPlot.legendDataChanged for all
         plot item. Otherwise, emit the signal for passed plot item.
-    
+
         :param .plot.QwtPlotItem plotItem: Plot item
 
         .. seealso::
-        
+
             :py:meth:`QwtPlotItem.legendData()`, :py:data:`QwtPlot.legendDataChanged`
         """
         if plotItem is None:
@@ -1526,26 +1536,26 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         Update all plot items interested in legend attributes
 
-        Call `QwtPlotItem.updateLegend()`, when the 
+        Call `QwtPlotItem.updateLegend()`, when the
         `QwtPlotItem.LegendInterest` flag is set.
-    
+
         :param .plot.QwtPlotItem plotItem: Plot item
         :param list legendData: Entries to be displayed for the plot item ( usually 1 )
 
         .. seealso::
-        
-            :py:meth:`QwtPlotItem.LegendInterest()`, 
+
+            :py:meth:`QwtPlotItem.LegendInterest()`,
             :py:meth:`QwtPlotItem.updateLegend`
         """
         if plotItem is not None:
             for item in self.itemList():
                 if item.testItemInterest(QwtPlotItem.LegendInterest):
                     item.updateLegend(plotItem, legendData)
-    
+
     def attachItem(self, plotItem, on):
         """
         Attach/Detach a plot item
-    
+
         :param .plot.QwtPlotItem plotItem: Plot item
         :param bool on: When true attach the item, otherwise detach it
         """
@@ -1555,38 +1565,38 @@ class QwtPlot(QFrame, QwtPlotDict):
                 if on and item.testItemAttribute(QwtPlotItem.Legend):
                     legendData = item.legendData()
                     plotItem.updateLegend(item, legendData)
-    
+
         if on:
             self.insertItem(plotItem)
         else:
             self.removeItem(plotItem)
-        
+
         self.itemAttached.emit(plotItem, on)
-        
+
         if plotItem.testItemAttribute(QwtPlotItem.Legend):
             if on:
                 self.updateLegend(plotItem)
             else:
                 self.legendDataChanged.emit(plotItem, [])
-        
+
         self.autoRefresh()
-    
+
     def print_(self, printer):
         """
         Print plot to printer
-    
+
         :param printer: Printer
         :type printer: QPaintDevice or QPrinter or QSvgGenerator
         """
         from .plot_renderer import QwtPlotRenderer
         renderer = QwtPlotRenderer(self)
         renderer.renderTo(self, printer)
-    
+
     def exportTo(self, filename, size=(800, 600), size_mm=None,
                  resolution=72., format_=None):
         """
         Export plot to PDF or image file (SVG, PNG, ...)
-    
+
         :param str filename: Filename
         :param tuple size: (width, height) size in pixels
         :param tuple size_mm: (width, height) size in millimeters
@@ -1617,31 +1627,31 @@ class QwtPlotItem_PrivateData(object):
 class QwtPlotItem(object):
     """
     Base class for items on the plot canvas
-    
+
     A plot item is "something", that can be painted on the plot canvas,
     or only affects the scales of the plot widget. They can be categorized as:
-    
+
     - Representator
 
       A "Representator" is an item that represents some sort of data
       on the plot canvas. The different representator classes are organized
       according to the characteristics of the data:
 
-          - :py:class:`.plot_marker.QwtPlotMarker`: Represents a point or a 
+          - :py:class:`.plot_marker.QwtPlotMarker`: Represents a point or a
             horizontal/vertical coordinate
-          - :py:class:`.plot_curve.QwtPlotCurve`: Represents a series of 
+          - :py:class:`.plot_curve.QwtPlotCurve`: Represents a series of
             points
-    
+
     - Decorators
 
       A "Decorator" is an item, that displays additional information, that
       is not related to any data:
 
           - :py:class:`.plot_grid.QwtPlotGrid`
-    
+
     Depending on the `QwtPlotItem.ItemAttribute` flags, an item is included
     into autoscaling or has an entry on the legend.
-    
+
     Before misusing the existing item classes it might be better to
     implement a new type of plot item
     ( don't implement a watermark as spectrogram ).
@@ -1653,13 +1663,13 @@ class QwtPlotItem(object):
         The cpuplot example shows the implementation of additional plot items.
 
     .. py:class:: QwtPlotItem([title=None])
-    
+
         Constructor
-        
+
         :param title: Title of the item
         :type title: .text.QwtText or str
     """
-    
+
     # enum RttiValues
     (Rtti_PlotItem, Rtti_PlotGrid, Rtti_PlotScale, Rtti_PlotLegend,
      Rtti_PlotMarker, Rtti_PlotCurve, Rtti_PlotSpectroCurve,
@@ -1668,19 +1678,19 @@ class QwtPlotItem(object):
      Rtti_PlotMultiBarChart, Rtti_PlotShape, Rtti_PlotTextLabel,
      Rtti_PlotZone) = list(range(17))
     Rtti_PlotUserItem = 1000
-    
+
     # enum ItemAttribute
     Legend = 0x01
     AutoScale = 0x02
     Margins = 0x04
-    
+
     # enum ItemInterest
     ScaleInterest = 0x01
     LegendInterest = 0x02
-    
+
     # enum RenderHint
     RenderAntialiased = 0x1
-    
+
     def __init__(self, title=None):
         """title: QwtText"""
         if title is None:
@@ -1695,80 +1705,80 @@ class QwtPlotItem(object):
         """
         Attach the item to a plot.
 
-        This method will attach a `QwtPlotItem` to the `QwtPlot` argument. 
-        It will first detach the `QwtPlotItem` from any plot from a previous 
-        call to attach (if necessary). If a None argument is passed, it will 
+        This method will attach a `QwtPlotItem` to the `QwtPlot` argument.
+        It will first detach the `QwtPlotItem` from any plot from a previous
+        call to attach (if necessary). If a None argument is passed, it will
         detach from any `QwtPlot` it was attached to.
-        
+
         :param .plot.QwtPlot plot: Plot widget
 
         .. seealso::
-        
+
             :py:meth:`detach()`
         """
         if plot is self.__data.plot:
             return
-        
+
         if self.__data.plot:
             self.__data.plot.attachItem(self, False)
-        
+
         self.__data.plot = plot
-        
+
         if self.__data.plot:
             self.__data.plot.attachItem(self, True)
-    
+
     def detach(self):
         """
         Detach the item from a plot.
 
-        This method detaches a `QwtPlotItem` from any `QwtPlot` it has been 
+        This method detaches a `QwtPlotItem` from any `QwtPlot` it has been
         associated with.
 
         .. seealso::
-        
+
             :py:meth:`attach()`
         """
         self.attach(None)
-    
+
     def rtti(self):
         """
-        Return rtti for the specific class represented. `QwtPlotItem` is 
-        simply a virtual interface class, and base classes will implement 
-        this method with specific rtti values so a user can differentiate 
+        Return rtti for the specific class represented. `QwtPlotItem` is
+        simply a virtual interface class, and base classes will implement
+        this method with specific rtti values so a user can differentiate
         them.
-        
+
         :return: rtti value
         """
         return self.Rtti_PlotItem
-    
+
     def plot(self):
         """
         :return: attached plot
         """
         return self.__data.plot
-        
+
     def z(self):
         """
         Plot items are painted in increasing z-order.
-        
+
         :return: item z order
 
         .. seealso::
-        
+
             :py:meth:`setZ()`, :py:meth:`QwtPlotDict.itemList()`
         """
         return self.__data.z
-        
+
     def setZ(self, z):
         """
         Set the z value
-        
+
         Plot items are painted in increasing z-order.
-        
+
         :param float z: Z-value
 
         .. seealso::
-        
+
             :py:meth:`z()`, :py:meth:`QwtPlotDict.itemList()`
         """
         if self.__data.z != z:
@@ -1778,16 +1788,16 @@ class QwtPlotItem(object):
             if self.__data.plot:
                 self.__data.plot.attachItem(self, True)
             self.itemChanged()
-    
+
     def setTitle(self, title):
         """
         Set a new title
-        
+
         :param title: Title
         :type title: .text.QwtText or str
 
         .. seealso::
-        
+
             :py:meth:`title()`
         """
         if not isinstance(title, QwtText):
@@ -1795,26 +1805,26 @@ class QwtPlotItem(object):
         if self.__data.title != title:
             self.__data.title = title
         self.legendChanged()
-    
+
     def title(self):
         """
         :return: Title of the item
 
         .. seealso::
-        
+
             :py:meth:`setTitle()`
         """
         return self.__data.title
-    
+
     def setItemAttribute(self, attribute, on=True):
         """
         Toggle an item attribute
-        
+
         :param int attribute: Attribute type
         :param bool on: True/False
 
         .. seealso::
-        
+
             :py:meth:`testItemAttribute()`
         """
         if bool(self.__data.attributes & attribute) != on:
@@ -1825,29 +1835,29 @@ class QwtPlotItem(object):
             if attribute == QwtPlotItem.Legend:
                 self.legendChanged()
             self.itemChanged()
-    
+
     def testItemAttribute(self, attribute):
         """
         Test an item attribute
-        
+
         :param int attribute: Attribute type
         :return: True/False
 
         .. seealso::
-        
+
             :py:meth:`setItemAttribute()`
         """
         return bool(self.__data.attributes & attribute)
-    
+
     def setItemInterest(self, interest, on=True):
         """
         Toggle an item interest
-        
+
         :param int attribute: Interest type
         :param bool on: True/False
 
         .. seealso::
-        
+
             :py:meth:`testItemInterest()`
         """
         if bool(self.__data.interests & interest) != on:
@@ -1856,29 +1866,29 @@ class QwtPlotItem(object):
             else:
                 self.__data.interests &= ~interest
             self.itemChanged()
-    
+
     def testItemInterest(self, interest):
         """
         Test an item interest
-        
+
         :param int attribute: Interest type
         :return: True/False
 
         .. seealso::
-        
+
             :py:meth:`setItemInterest()`
         """
         return bool(self.__data.interests & interest)
-    
+
     def setRenderHint(self, hint, on=True):
         """
         Toggle a render hint
-        
+
         :param int hint: Render hint
         :param bool on: True/False
 
         .. seealso::
-        
+
             :py:meth:`testRenderHint()`
         """
         if bool(self.__data.renderHints & hint) != on:
@@ -1887,67 +1897,67 @@ class QwtPlotItem(object):
             else:
                 self.__data.renderHints &= ~hint
             self.itemChanged()
-    
+
     def testRenderHint(self, hint):
         """
         Test a render hint
-        
+
         :param int attribute: Render hint
         :return: True/False
 
         .. seealso::
-        
+
             :py:meth:`setRenderHint()`
         """
         return bool(self.__data.renderHints & hint)
-    
+
     def setLegendIconSize(self, size):
         """
         Set the size of the legend icon
 
         The default setting is 8x8 pixels
-        
+
         :param QSize size: Size
 
         .. seealso::
-        
+
             :py:meth:`legendIconSize()`, :py:meth:`legendIcon()`
         """
         if self.__data.legendIconSize != size:
             self.__data.legendIconSize = size
             self.legendChanged()
-    
+
     def legendIconSize(self):
         """
         :return: Legend icon size
 
         .. seealso::
-        
+
             :py:meth:`setLegendIconSize()`, :py:meth:`legendIcon()`
         """
         return self.__data.legendIconSize
-    
+
     def legendIcon(self, index, size):
         """
         :param int index: Index of the legend entry (usually there is only one)
         :param QSizeF size: Icon size
         :return: Icon representing the item on the legend
-        
+
         The default implementation returns an invalid icon
 
         .. seealso::
-        
+
             :py:meth:`setLegendIconSize()`, :py:meth:`legendData()`
         """
         return QwtGraphic()
-    
+
     def defaultIcon(self, brush, size):
         """
         Return a default icon from a brush
 
         The default icon is a filled rectangle used
         in several derived classes as legendIcon().
-   
+
         :param QBrush brush: Fill brush
         :param QSizeF size: Icon size
         :return: A filled rectangle
@@ -1959,73 +1969,73 @@ class QwtPlotItem(object):
             painter = QPainter(icon)
             painter.fillRect(r, brush)
         return icon
-    
+
     def show(self):
         """Show the item"""
         self.setVisible(True)
-    
+
     def hide(self):
         """Hide the item"""
         self.setVisible(False)
-    
+
     def setVisible(self, on):
         """
         Show/Hide the item
-        
+
         :param bool on: Show if True, otherwise hide
 
         .. seealso::
-        
+
             :py:meth:`isVisible()`, :py:meth:`show()`, :py:meth:`hide()`
         """
         if on != self.__data.isVisible:
             self.__data.isVisible = on
             self.itemChanged()
-    
+
     def isVisible(self):
         """
         :return: True if visible
 
         .. seealso::
-        
+
             :py:meth:`setVisible()`, :py:meth:`show()`, :py:meth:`hide()`
         """
         return self.__data.isVisible
-    
+
     def itemChanged(self):
         """
         Update the legend and call `QwtPlot.autoRefresh()` for the
         parent plot.
 
         .. seealso::
-        
+
             :py:meth:`QwtPlot.legendChanged()`, :py:meth:`QwtPlot.autoRefresh()`
         """
         if self.__data.plot:
             self.__data.plot.autoRefresh()
-    
+
     def legendChanged(self):
         """
         Update the legend of the parent plot.
-        
+
         .. seealso::
-        
+
             :py:meth:`QwtPlot.updateLegend()`, :py:meth:`itemChanged()`
         """
         if self.testItemAttribute(QwtPlotItem.Legend) and self.__data.plot:
             self.__data.plot.updateLegend(self)
-    
+
     def setAxes(self, xAxis, yAxis):
         """
         Set X and Y axis
 
         The item will painted according to the coordinates of its Axes.
-        
+
         :param int xAxis: X Axis (`QwtPlot.xBottom` or `QwtPlot.xTop`)
         :param int yAxis: Y Axis (`QwtPlot.yLeft` or `QwtPlot.yRight`)
-        
+
         .. seealso::
-        
+
             :py:meth:`setXAxis()`, :py:meth:`setYAxis()`,
             :py:meth:`xAxis()`, :py:meth:`yAxis()`
         """
@@ -2040,42 +2050,42 @@ class QwtPlotItem(object):
         Set X and Y axis
 
         .. warning::
-        
-            `setAxis` has been removed in Qwt6: please use 
+
+            `setAxis` has been removed in Qwt6: please use
             :py:meth:`setAxes()` instead
         """
         import warnings
         warnings.warn("`setAxis` has been removed in Qwt6: "\
                       "please use `setAxes` instead", RuntimeWarning)
         self.setAxes(xAxis, yAxis)
-    
+
     def setXAxis(self, axis):
         """
         Set the X axis
 
         The item will painted according to the coordinates its Axes.
-        
+
         :param int axis: X Axis (`QwtPlot.xBottom` or `QwtPlot.xTop`)
-        
+
         .. seealso::
-        
+
             :py:meth:`setAxes()`, :py:meth:`setYAxis()`,
             :py:meth:`xAxis()`, :py:meth:`yAxis()`
         """
         if axis in (QwtPlot.xBottom, QwtPlot.xTop):
             self.__data.xAxis = axis
             self.itemChanged()
-    
+
     def setYAxis(self, axis):
         """
         Set the Y axis
 
         The item will painted according to the coordinates its Axes.
-        
+
         :param int axis: Y Axis (`QwtPlot.yLeft` or `QwtPlot.yRight`)
-        
+
         .. seealso::
-        
+
             :py:meth:`setAxes()`, :py:meth:`setXAxis()`,
             :py:meth:`xAxis()`, :py:meth:`yAxis()`
         """
@@ -2088,23 +2098,23 @@ class QwtPlotItem(object):
         :return: xAxis
         """
         return self.__data.xAxis
-    
+
     def yAxis(self):
         """
         :return: yAxis
         """
         return self.__data.yAxis
-    
+
     def boundingRect(self):
         """
         :return: An invalid bounding rect: QRectF(1.0, 1.0, -2.0, -2.0)
-        
+
         .. note::
-        
+
             A width or height < 0.0 is ignored by the autoscaler
         """
         return QRectF(1.0, 1.0, -2.0, -2.0)
-    
+
     def getCanvasMarginHint(self, xMap, yMap, canvasRect):
         """
         Calculate a hint for the canvas margin
@@ -2113,39 +2123,39 @@ class QwtPlotItem(object):
         indicates, that it needs some margins at the borders of the canvas.
         This is f.e. used by bar charts to reserve space for displaying
         the bars.
-        
+
         The margins are in target device coordinates ( pixels on screen )
-        
+
         :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
         :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas in painter coordinates
-        
+
         .. seealso::
-        
-            :py:meth:`QwtPlot.getCanvasMarginsHint()`, 
+
+            :py:meth:`QwtPlot.getCanvasMarginsHint()`,
             :py:meth:`QwtPlot.updateCanvasMargins()`,
         """
         left = top = right = bottom = 0.
         return left, top, right, bottom
-    
+
     def legendData(self):
         """
         Return all information, that is needed to represent
         the item on the legend
-        
+
         `QwtLegendData` is basically a list of QVariants that makes it
-        possible to overload and reimplement legendData() to 
+        possible to overload and reimplement legendData() to
         return almost any type of information, that is understood
         by the receiver that acts as the legend.
-        
-        The default implementation returns one entry with 
+
+        The default implementation returns one entry with
         the title() of the item and the legendIcon().
-        
+
         :return: Data, that is needed to represent the item on the legend
-        
+
         .. seealso::
-        
-            :py:meth:`title()`, :py:meth:`legendIcon()`, 
+
+            :py:meth:`title()`, :py:meth:`legendIcon()`,
             :py:class:`.legend.QwtLegend`
         """
         data = QwtLegendData()
@@ -2156,22 +2166,22 @@ class QwtPlotItem(object):
         if not graphic.isNull():
             data.setValue(QwtLegendData.IconRole, graphic)
         return [data]
-    
+
     def updateLegend(self, item, data):
         """
         Update the item to changes of the legend info
 
         Plot items that want to display a legend ( not those, that want to
         be displayed on a legend ! ) will have to implement updateLegend().
-        
+
         updateLegend() is only called when the LegendInterest interest
         is enabled. The default implementation does nothing.
-        
+
         :param .plot.QwtPlotItem item: Plot item to be displayed on a legend
         :param list data: Attributes how to display item on the legend
-        
+
         .. note::
-        
+
             Plot items, that want to be displayed on a legend
             need to enable the `QwtPlotItem.Legend` flag and to implement
             legendData() and legendIcon()
@@ -2181,17 +2191,17 @@ class QwtPlotItem(object):
     def scaleRect(self, xMap, yMap):
         """
         Calculate the bounding scale rectangle of 2 maps
-        
+
         :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
         :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :return: Bounding scale rect of the scale maps, not normalized
         """
         return QRectF(xMap.s1(), yMap.s1(), xMap.sDist(), yMap.sDist())
-    
+
     def paintRect(self, xMap, yMap):
         """
         Calculate the bounding paint rectangle of 2 maps
-        
+
         :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
         :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :return: Bounding paint rectangle of the scale maps, not normalized

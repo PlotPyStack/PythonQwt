@@ -2,19 +2,20 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import sys
 import numpy as np
 
-from qwt.qt.QtGui import (QApplication, QPen, QBrush, QFrame, QColor, QPainter,
-                          QPalette)
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import QSize
+from qtpy.QtCore import Qt
+from qtpy.QtGui import (QPen, QBrush, QColor, QPainter, QPalette)
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QFrame
 from qwt import QwtScaleMap, QwtSymbol, QwtPlotCurve
 
 Size = 15
@@ -99,14 +100,14 @@ class CurveDemo(QFrame):
     def timerEvent(self, event):
         self.newValues()
         self.repaint()
-        
+
     def newValues(self):
         phase = self.phase
-        
+
         self.xval = np.arange(0, 2.01*np.pi, 2*np.pi/(Size-1))
         self.yval = np.sin(self.xval - phase)
         self.zval = np.cos(3*(self.xval + phase))
-    
+
         s = 0.25 * np.sin(phase)
         c = np.sqrt(1.0 - s*s)
         u = self.uval
@@ -117,7 +118,7 @@ class CurveDemo(QFrame):
         self.tuples[1][0].setData(self.xval, self.zval)
         self.tuples[2][0].setData(self.yval, self.zval)
         self.tuples[3][0].setData(self.uval, self.vval)
-        
+
         self.phase += 2*np.pi/100
         if self.phase>2*np.pi:
             self.phase = 0.0

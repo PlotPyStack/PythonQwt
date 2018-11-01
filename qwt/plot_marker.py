@@ -19,8 +19,8 @@ from .painter import QwtPainter
 from .graphic import QwtGraphic
 from .symbol import QwtSymbol
 
-from .qt.QtGui import QPen, QPainter
-from .qt.QtCore import Qt, QPointF, QRectF, QSizeF, QRect
+from qtpy.QtGui import QPen, QPainter
+from qtpy.QtCore import Qt, QPointF, QRectF, QSizeF, QRect
 
 
 class QwtPlotMarker_PrivateData(object):

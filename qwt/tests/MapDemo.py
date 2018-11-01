@@ -2,20 +2,23 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import random
 import sys
 import time
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, QBrush, QMainWindow, QToolBar
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import QSize
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QPen, QBrush
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QMainWindow
+from qtpy.QtWidgets import QToolBar
 from qwt import QwtPlot, QwtSymbol, QwtPlotCurve
 
 
@@ -25,10 +28,10 @@ def standard_map(x, y, kappa):
     y_new = y-kappa*np.sin(2.0*np.pi*x)
     x_new = x+y_new
     # bring back to [0,1.0]^2
-    if( (x_new>1.0) or (x_new<0.0) ):
-         x_new = x_new - np.floor(x_new)
-    if( (y_new>1.0) or (y_new<0.0) ):
-         y_new = y_new - np.floor(y_new)
+    if (x_new > 1.0) or (x_new < 0.0):
+        x_new = x_new - np.floor(x_new)
+    if (y_new > 1.0) or (y_new < 0.0):
+        y_new = y_new - np.floor(y_new)
     return x_new, y_new
 
 
@@ -39,7 +42,7 @@ class MapDemo(QMainWindow):
         self.plot.setTitle("A Simple Map Demonstration")
         self.plot.setCanvasBackground(Qt.white)
         self.plot.setAxisTitle(QwtPlot.xBottom, "x")
-        self.plot.setAxisTitle(QwtPlot.yLeft, "y")    
+        self.plot.setAxisTitle(QwtPlot.yLeft, "y")
         self.plot.setAxisScale(QwtPlot.xBottom, 0.0, 1.0)
         self.plot.setAxisScale(QwtPlot.yLeft, 0.0, 1.0)
         self.setCentralWidget(self.plot)
@@ -62,7 +65,7 @@ class MapDemo(QMainWindow):
         self.tid = self.startTimer(self.ticks)
         self.timer_tic = None
         self.user_tic = None
-        self.system_tic = None    
+        self.system_tic = None
         self.plot.replot()
 
     def setTicks(self, ticks):
@@ -70,7 +73,7 @@ class MapDemo(QMainWindow):
         self.ticks = int(ticks)
         self.killTimer(self.tid)
         self.tid = self.startTimer(ticks)
-        
+
     def resizeEvent(self, event):
         self.plot.resize(event.size())
         self.plot.move(0, 0)
@@ -94,7 +97,7 @@ class MapDemo(QMainWindow):
             self.xs[self.i] = self.x
             self.ys[self.i] = self.y
             self.i += 1
-        
+
     def timerEvent(self, e):
         self.moreData()
         self.curve.setData(self.xs[:self.i], self.ys[:self.i])

@@ -19,8 +19,8 @@ from .text import QwtText
 from .painter import QwtPainter
 from .math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
 
-from .qt.QtGui import QPen
-from .qt.QtCore import Qt
+from qtpy.QtGui import QPen
+from qtpy.QtCore import Qt
 
 
 class QwtPlotGrid_PrivateData(object):

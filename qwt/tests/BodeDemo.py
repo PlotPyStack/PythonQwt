@@ -2,23 +2,30 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
 from __future__ import unicode_literals
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # noqa Show test in GUI-based test launcher
 
 import sys
 import numpy as np
 
-from qwt.qt.QtGui import (QApplication, QPen, QBrush, QFrame, QFont, QWidget,
-                          QMainWindow, QToolButton, QIcon, QPixmap, QToolBar,
-                          QHBoxLayout, QLabel, QPrinter, QPrintDialog,
-                          QFontDatabase)
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import QSize
+from qtpy.QtCore import Qt
+from qtpy.QtGui import (QPen, QBrush, QFont, QIcon, QPixmap, QFontDatabase)
+from qtpy.QtPrintSupport import QPrintDialog
+from qtpy.QtPrintSupport import QPrinter
+from qtpy.QtWidgets import QApplication
+from qtpy.QtWidgets import QFrame
+from qtpy.QtWidgets import QHBoxLayout
+from qtpy.QtWidgets import QLabel
+from qtpy.QtWidgets import QMainWindow
+from qtpy.QtWidgets import QToolBar
+from qtpy.QtWidgets import QToolButton
+from qtpy.QtWidgets import QWidget
 from qwt import (QwtPlot, QwtPlotMarker, QwtSymbol, QwtLegend, QwtPlotGrid,
                  QwtPlotCurve, QwtPlotItem, QwtLogScaleEngine, QwtText,
                  QwtPlotRenderer)
@@ -105,7 +112,7 @@ class BodePlot(QwtPlot):
         self.curve1.setPen(QPen(Qt.yellow))
         self.curve1.setYAxis(QwtPlot.yLeft)
         self.curve1.attach(self)
-        
+
         self.curve2 = QwtPlotCurve('Phase')
         self.curve2.setRenderHint(QwtPlotItem.RenderAntialiased);
         self.curve2.setPen(QPen(Qt.cyan))
@@ -136,7 +143,7 @@ class BodePlot(QwtPlot):
         text.setColor(Qt.red)
         text.setBackgroundBrush(QBrush(self.canvasBackground()))
         text.setFont(QFont(fn, 12, QFont.Bold))
-        
+
         m.setLabel(text)
         m.setSymbol(QwtSymbol(QwtSymbol.Diamond,
                               QBrush(Qt.yellow),
@@ -206,7 +213,7 @@ class BodeDemo(QMainWindow):
         self.plot.setContentsMargins(5, 5, 5, 0)
 
         self.setContextMenuPolicy(Qt.NoContextMenu)
-        
+
         self.setCentralWidget(self.plot)
 
         toolBar = QToolBar(self)
@@ -225,7 +232,7 @@ class BodeDemo(QMainWindow):
         btnExport.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         toolBar.addWidget(btnExport)
         btnExport.clicked.connect(self.exportDocument)
-            
+
         toolBar.addSeparator()
 
         dampBox = QWidget(toolBar)
@@ -238,7 +245,7 @@ class BodeDemo(QMainWindow):
         toolBar.addWidget(dampBox)
 
         self.statusBar()
-        
+
         self.showInfo()
 
     def print_(self):
@@ -266,10 +273,10 @@ class BodeDemo(QMainWindow):
     def exportDocument(self):
         renderer = QwtPlotRenderer(self.plot)
         renderer.exportTo(self.plot, "bode")
-    
+
     def showInfo(self, text=""):
         self.statusBar().showMessage(text)
-                
+
     def moved(self, point):
         info = "Freq=%g, Ampl=%g, Phase=%g" % (
             self.plot.invTransform(QwtPlot.xBottom, point.x()),
