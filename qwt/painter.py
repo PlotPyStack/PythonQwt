@@ -17,8 +17,8 @@ from .color_map import QwtColorMap
 from .scale_map import QwtScaleMap
 
 from .qt.QtGui import (QPaintEngine, QFrame, QPixmap, QPainter, QPalette, 
-                          QStyle, QPen, QStyleOptionFocusRect, QBrush, 
-                          QLinearGradient, QPainterPath, QColor, QStyleOption)
+                       QStyle, QPen, QStyleOptionFocusRect, QBrush, QRegion,
+                       QLinearGradient, QPainterPath, QColor, QStyleOption)
 from .qt.QtCore import Qt, QRect, QPoint, QT_VERSION
 
 QWIDGETSIZE_MAX = (1<<24)-1
@@ -389,7 +389,7 @@ class QwtPainterClass(object):
         if widget.autoFillBackground():
             qwtFillRect(widget, painter, rect, autoFillBrush)
         if widget.testAttribute(Qt.WA_StyledBackground):
-            painter.setClipRegion(rect)
+            painter.setClipRegion(QRegion(rect))
             opt = QStyleOption()
             opt.initFrom(widget)
             widget.style().drawPrimitive(QStyle.PE_Widget, opt,
