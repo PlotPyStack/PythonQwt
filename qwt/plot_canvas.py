@@ -281,7 +281,7 @@ def qwtFillBackground(*args):
             clipRegion = widget.contentsRect()
         bgWidget = qwtBackgroundWidget(widget.parentWidget())
         for fillRect in fillRects:
-            rect = fillRect.toAlignedRect()
+            rect = QRectF(fillRect).toAlignedRect()
             if clipRegion.intersects(rect):
                 pm = QPixmap(rect.size())
                 QwtPainter.fillPixmap(bgWidget, pm, widget.mapTo(bgWidget, rect.topLeft()))
