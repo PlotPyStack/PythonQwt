@@ -53,12 +53,12 @@ class QwtPainterCommand(object):
     `QwtPainterCommand` represents the attributes of a paint operation
     how it is used between `QPainter` and `QPaintDevice`
     
-    It is used by :py:class:`.graphic.QwtGraphic` to record and replay 
+    It is used by :py:class:`qwt.graphic.QwtGraphic` to record and replay 
     paint operations
     
     .. seealso::
     
-        :py:meth:`.graphic.QwtGraphic.commands()`
+        :py:meth:`qwt.graphic.QwtGraphic.commands()`
 
         
     .. py:class:: QwtPainterCommand()

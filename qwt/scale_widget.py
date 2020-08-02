@@ -168,7 +168,7 @@ class QwtScaleWidget(QWidget):
         Give title new text contents
         
         :param title: New title
-        :type title: .text.QwtText or str
+        :type title: qwt.text.QwtText or str
         
         .. seealso::
         
@@ -191,7 +191,7 @@ class QwtScaleWidget(QWidget):
         
         :param int alignment: New alignment
         
-        Valid alignment values: see :py:class:`.scale_draw.QwtScaleDraw`
+        Valid alignment values: see :py:class:`qwt.scale_draw.QwtScaleDraw`
         
         .. seealso::
         
@@ -276,7 +276,7 @@ class QwtScaleWidget(QWidget):
         
         .. seealso::
         
-            :py:meth:`.scale_draw.QwtScaleDraw.setLabelAlignment()`, 
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setLabelAlignment()`, 
             :py:meth:`setLabelRotation()`
         """
         self.__data.scaleDraw.setLabelAlignment(alignment)
@@ -290,7 +290,7 @@ class QwtScaleWidget(QWidget):
         
         .. seealso::
         
-            :py:meth:`.scale_draw.QwtScaleDraw.setLabelRotation()`, 
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setLabelRotation()`, 
             :py:meth:`setLabelFlags()`
         """
         self.__data.scaleDraw.setLabelRotation(rotation)
@@ -304,7 +304,7 @@ class QwtScaleWidget(QWidget):
         
         .. seealso::
         
-            :py:meth:`.scale_draw.QwtScaleDraw.setLabelAutoSize()`
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setLabelAutoSize()`
         """
         self.__data.scaleDraw.setLabelAutoSize(state)
         self.layoutScale()
@@ -318,7 +318,7 @@ class QwtScaleWidget(QWidget):
         scaleDraw will be initialized with the attributes of
         the previous scaleDraw object.
         
-        :param .scale_draw.QwtScaleDraw scaleDraw: ScaleDraw object
+        :param qwt.scale_draw.QwtScaleDraw scaleDraw: ScaleDraw object
         
         .. seealso::
         
@@ -343,7 +343,7 @@ class QwtScaleWidget(QWidget):
                 
         .. seealso::
         
-            :py:meth:`.scale_draw.QwtScaleDraw.setScaleDraw()`
+            :py:meth:`qwt.scale_draw.QwtScaleDraw.setScaleDraw()`
         """
         return self.__data.scaleDraw
     
@@ -696,12 +696,12 @@ class QwtScaleWidget(QWidget):
 
         The scale division determines where to set the tick marks.
 
-        :param .scale_div.QwtScaleDiv scaleDiv: Scale Division
+        :param qwt.scale_div.QwtScaleDiv scaleDiv: Scale Division
         
         .. seealso::
         
             For more information about scale divisions, 
-            see :py:class:`.scale_div.QwtScaleDiv`.
+            see :py:class:`qwt.scale_div.QwtScaleDiv`.
         """
         sd = self.__data.scaleDraw
         if sd.scaleDiv() != scaleDiv:
@@ -713,12 +713,12 @@ class QwtScaleWidget(QWidget):
         """
         Set the transformation
 
-        :param .transform.Transform transformation: Transformation
+        :param qwt.transform.Transform transformation: Transformation
         
         .. seealso::
         
-            :py:meth:`.scale_draw.QwtAbstractScaleDraw.scaleDraw()`, 
-            :py:class:`.scale_map.QwtScaleMap`
+            :py:meth:`qwt.scale_draw.QwtAbstractScaleDraw.scaleDraw()`, 
+            :py:class:`qwt.scale_map.QwtScaleMap`
         """
         self.__data.scaleDraw.setTransformation(transformation)
         self.layoutScale()
@@ -787,8 +787,8 @@ class QwtScaleWidget(QWidget):
         Set the color map and value interval, that are used for displaying
         the color bar.
         
-        :param .interval.QwtInterval interval: Value interval
-        :param .color_map.QwtColorMap colorMap: Color map
+        :param qwt.interval.QwtInterval interval: Value interval
+        :param qwt.color_map.QwtColorMap colorMap: Color map
 
         .. seealso::
         

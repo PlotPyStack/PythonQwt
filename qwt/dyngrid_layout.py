@@ -6,7 +6,7 @@
 # (see LICENSE file for more details)
 
 """
-.dyngrid_layout
+qwt.dyngrid_layout
 ------------------
 
 The `dyngrid_layout` module provides the `QwtDynGridLayout` class.

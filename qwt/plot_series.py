@@ -90,8 +90,8 @@ class QwtPlotSeriesItem(QwtPlotItem):
         Draw the complete series
 
         :param QPainter painter: Painter
-        :param .scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
-        :param .scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         """
         self.drawSeries(painter, xMap, yMap, canvasRect, 0, -1)
@@ -185,7 +185,7 @@ class QwtPointArrayData(QwtSeriesData):
     """
     Interface for iterating over two array objects
     
-    .. py:class:: QwtPointArrayData(x, y, [size=None], [finite=True])
+    .. py:class:: QwtCQwtPointArrayDataolorMap(x, y, [size=None])
     
         :param x: Array of x values
         :type x: list or tuple or numpy.array
@@ -275,7 +275,7 @@ class QwtSeriesStore(object):
         """
         Assign a series of samples
 
-        :param .plot_series.QwtSeriesData series: Data
+        :param qwt.plot_series.QwtSeriesData series: Data
 
         .. warning::
         
@@ -309,7 +309,7 @@ class QwtSeriesStore(object):
         .. seealso::
         
             :py:meth:`setData()`, 
-            :py:meth:`.plot_series.QwtSeriesData.size()`
+            :py:meth:`qwt.plot_series.QwtSeriesData.size()`
         """
         if self.__series is None:
             return 0
@@ -321,7 +321,7 @@ class QwtSeriesStore(object):
         
         .. seealso::
         
-            :py:meth:`.plot_series.QwtSeriesData.boundingRect()`
+            :py:meth:`qwt.plot_series.QwtSeriesData.boundingRect()`
         """
         if self.__series is None or self.dataSize() == 0:
             return QRectF(1.0, 1.0, -2.0, -2.0)
@@ -335,7 +335,7 @@ class QwtSeriesStore(object):
         
         .. seealso::
         
-            :py:meth:`.plot_series.QwtSeriesData.setRectOfInterest()`
+            :py:meth:`qwt.plot_series.QwtSeriesData.setRectOfInterest()`
         """
         if self.__series:
             self.__series.setRectOfInterest(rect)
@@ -344,7 +344,7 @@ class QwtSeriesStore(object):
         """
         Replace a series without deleting the previous one
         
-        :param .plot_series.QwtSeriesData series: New series
+        :param qwt.plot_series.QwtSeriesData series: New series
         :return: Previously assigned series
         """
         swappedSeries = self.__series

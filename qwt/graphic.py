@@ -250,7 +250,7 @@ class QwtGraphic(QwtNullPaintDevice):
     
         Copy constructor
         
-        :param .graphic.QwtGraphic other: Source
+        :param qwt.graphic.QwtGraphic other: Source
     """
     
     # enum RenderHint

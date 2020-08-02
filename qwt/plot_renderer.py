@@ -207,7 +207,7 @@ class QwtPlotRenderer(QObject):
         The format of the document will be auto-detected from the
         suffix of the file name.
   
-        :param .plot.QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
         :param str fileName: Path of the file, where the document will be stored
         :param QSizeF sizeMM: Size for the document in millimeters
         :param int resolution: Resolution in dots per Inch (dpi)
@@ -280,7 +280,7 @@ class QwtPlotRenderer(QObject):
         Scalable vector graphic formats like PDF or SVG are superior to
         raster graphics formats.
 
-        :param .plot.QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
         :param str fileName: Path of the file, where the document will be stored
         :param str format: Format for the document
         :param QSizeF sizeMM: Size for the document in millimeters.
@@ -289,7 +289,7 @@ class QwtPlotRenderer(QObject):
         .. seealso::
         
             :py:meth:`renderTo()`, :py:meth:`render()`, 
-            :py:meth:`.painter.QwtPainter.setRoundingAlignment()`
+            :py:meth:`qwt.painter.QwtPainter.setRoundingAlignment()`
         """
         if isinstance(dest, QPaintDevice):
             w = dest.width()
@@ -315,7 +315,7 @@ class QwtPlotRenderer(QObject):
         """
         Paint the contents of a QwtPlot instance into a given rectangle.
 
-        :param .plot.QwtPlot plot: Plot to be rendered
+        :param qwt.plot.QwtPlot plot: Plot to be rendered
         :param QPainter painter: Painter
         :param str format: Format for the document
         :param QRectF plotRect: Bounding rectangle
@@ -323,7 +323,7 @@ class QwtPlotRenderer(QObject):
         .. seealso::
         
             :py:meth:`renderDocument()`, :py:meth:`renderTo()`, 
-            :py:meth:`.painter.QwtPainter.setRoundingAlignment()`
+            :py:meth:`qwt.painter.QwtPainter.setRoundingAlignment()`
         """
         if painter == 0 or not painter.isActive() or not plotRect.isValid()\
            or plot.size().isNull():
@@ -433,7 +433,7 @@ class QwtPlotRenderer(QObject):
         """
         Render the title into a given rectangle.
 
-        :param .plot.QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
         :param QPainter painter: Painter
         :param QRectF rect: Bounding rectangle
         """
@@ -446,7 +446,7 @@ class QwtPlotRenderer(QObject):
         """
         Render the footer into a given rectangle.
 
-        :param .plot.QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
         :param QPainter painter: Painter
         :param QRectF rect: Bounding rectangle
         """
@@ -459,7 +459,7 @@ class QwtPlotRenderer(QObject):
         """
         Render the legend into a given rectangle.
 
-        :param .plot.QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
         :param QPainter painter: Painter
         :param QRectF rect: Bounding rectangle
         """
@@ -473,7 +473,7 @@ class QwtPlotRenderer(QObject):
         Paint a scale into a given rectangle.
         Paint the scale into a given rectangle.
 
-        :param .plot.QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
         :param QPainter painter: Painter
         :param int axisId: Axis
         :param int startDist: Start border distance
@@ -527,9 +527,9 @@ class QwtPlotRenderer(QObject):
         """
         Render the canvas into a given rectangle.
 
-        :param .plot.QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
         :param QPainter painter: Painter
-        :param .scale_map.QwtScaleMap maps: mapping between plot and paint device coordinates
+        :param qwt.scale_map.QwtScaleMap maps: mapping between plot and paint device coordinates
         :param QRectF rect: Bounding rectangle
         """
         canvas = plot.canvas()
@@ -598,7 +598,7 @@ class QwtPlotRenderer(QObject):
         """
         Calculated the scale maps for rendering the canvas
 
-        :param .plot.QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
         :param QRectF canvasRect: Target rectangle
         :return: Calculated scale maps
         """
@@ -646,7 +646,7 @@ class QwtPlotRenderer(QObject):
         """
         Execute a file dialog and render the plot to the selected file
 
-        :param .plot.QwtPlot plot: Plot widget
+        :param qwt.plot.QwtPlot plot: Plot widget
         :param str documentName: Default document name
         :param QSizeF sizeMM: Size for the document in millimeters
         :param int resolution: Resolution in dots per Inch (dpi)

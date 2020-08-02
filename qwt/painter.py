@@ -321,9 +321,9 @@ class QwtPainterClass(object):
         Draw a color bar into a rectangle
         
         :param QPainter painter: Painter
-        :param .color_map.QwtColorMap colorMap: Color map
-        :param .interval.QwtInterval interval: Value range
-        :param .scalemap.QwtScaleMap scaleMap: Scale map
+        :param qwt.color_map.QwtColorMap colorMap: Color map
+        :param qwt.interval.QwtInterval interval: Value range
+        :param qwt.scalemap.QwtScaleMap scaleMap: Scale map
         :param Qt.Orientation orientation: Orientation
         :param QRectF rect: Target rectangle
         """

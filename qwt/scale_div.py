@@ -32,8 +32,8 @@ class QwtScaleDiv(object):
     
     .. seealso::
     
-        :py:meth:`.scale_engine.QwtScaleEngine.divideScale()`,
-        :py:meth:`.plot.QwtPlot.setAxisScaleDiv()`
+        :py:meth:`qwt.scale_engine.QwtScaleEngine.divideScale()`,
+        :py:meth:`qwt.plot.QwtPlot.setAxisScaleDiv()`
         
     Scale tick types:
     
@@ -49,7 +49,7 @@ class QwtScaleDiv(object):
 
     .. py:class:: QwtScaleDiv(interval, ticks)
     
-        :param .interval.QwtInterval interval: Interval
+        :param qwt.interval.QwtInterval interval: Interval
         :param list ticks: list of major, medium and minor ticks
 
     .. py:class:: QwtScaleDiv(lowerBound, upperBound)
@@ -115,7 +115,7 @@ class QwtScaleDiv(object):
 
         .. py:method:: setInterval(interval)
     
-            :param .interval.QwtInterval interval: Interval
+            :param qwt.interval.QwtInterval interval: Interval
 
         .. note::
         

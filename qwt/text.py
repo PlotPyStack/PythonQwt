@@ -111,7 +111,7 @@ class QwtTextEngine(object):
  
     .. seealso::
     
-        :py:meth:`.text.QwtText.setTextEngine()`
+        :py:meth:`qwt.text.QwtText.setTextEngine()`
     """
     def __init__(self):
         pass
@@ -490,8 +490,8 @@ class QwtText(object):
         
     ..seealso::
     
-        :py:meth:`.text.QwtTextEngine`, 
-        :py:meth:`.text.QwtTextLabel`
+        :py:meth:`qwt.text.QwtTextEngine`, 
+        :py:meth:`qwt.text.QwtTextLabel`
         
     Text formats:
     
@@ -549,7 +549,7 @@ class QwtText(object):
     
         :param str text: Text content
         :param int textFormat: Text format
-        :param .text.QwtText other: Object to copy (text and textFormat arguments are ignored)
+        :param qwt.text.QwtText other: Object to copy (text and textFormat arguments are ignored)
     """
 
     # enum TextFormat
@@ -654,7 +654,7 @@ class QwtText(object):
         .. seealso::
         
             :py:meth:`renderFlags()`, 
-            :py:meth:`.text.QwtTextEngine.draw()`
+            :py:meth:`qwt.text.QwtTextEngine.draw()`
         """
         renderFlags = Qt.AlignmentFlag(renderFlags)
         if renderFlags != self.__data.renderFlags:
@@ -1019,7 +1019,7 @@ class QwtText(object):
         For `QwtText.PlainText` it is not allowed to assign a engine to None.
 
         :param int format_: Text format
-        :param .text.QwtTextEngine engine: Text engine
+        :param qwt.text.QwtTextEngine engine: Text engine
 
         .. seealso::
         
@@ -1110,7 +1110,7 @@ class QwtTextLabel(QFrame):
         Change the label's text, keeping all other QwtText attributes
         
         :param text: New text
-        :type text: .text.QwtText or str
+        :type text: qwt.text.QwtText or str
         :param int textFormat: Format of text
         
         .. seealso::

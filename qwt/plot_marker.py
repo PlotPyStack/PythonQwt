@@ -139,8 +139,8 @@ class QwtPlotMarker(QwtPlotItem):
         Draw the marker
         
         :param QPainter painter: Painter
-        :param .scale_map.QwtScaleMap xMap: x Scale Map
-        :param .scale_map.QwtScaleMap yMap: y Scale Map
+        :param qwt.scale_map.QwtScaleMap xMap: x Scale Map
+        :param qwt.scale_map.QwtScaleMap yMap: y Scale Map
         :param QRectF canvasRect: Contents rectangle of the canvas in painter coordinates
         """
         pos = QPointF(xMap.transform(self.__data.xValue),
@@ -166,7 +166,7 @@ class QwtPlotMarker(QwtPlotItem):
         .. seealso::
         
             :py:meth:`drawLabel()`, 
-            :py:meth:`.symbol.QwtSymbol.drawSymbol()`
+            :py:meth:`qwt.symbol.QwtSymbol.drawSymbol()`
         """
         if self.__data.style == self.NoLine:
             return
@@ -189,7 +189,7 @@ class QwtPlotMarker(QwtPlotItem):
         .. seealso::
         
             :py:meth:`drawLabel()`, 
-            :py:meth:`.symbol.QwtSymbol.drawSymbol()`
+            :py:meth:`qwt.symbol.QwtSymbol.drawSymbol()`
         """
         if self.__data.label.isEmpty():
             return
@@ -302,7 +302,7 @@ class QwtPlotMarker(QwtPlotItem):
         """
         Assign a symbol
         
-        :param .symbol.QwtSymbol symbol: New symbol
+        :param qwt.symbol.QwtSymbol symbol: New symbol
         
         .. seealso::
         
@@ -330,7 +330,7 @@ class QwtPlotMarker(QwtPlotItem):
         Set the label
         
         :param label: Label text
-        :type label: .text.QwtText or str
+        :type label: qwt.text.QwtText or str
         
         .. seealso::
         
@@ -505,8 +505,8 @@ class QwtPlotMarker(QwtPlotItem):
         
         .. seealso::
         
-            :py:meth:`.plot.QwtPlotItem.setLegendIconSize()`,
-            :py:meth:`.plot.QwtPlotItem.legendData()`
+            :py:meth:`qwt.plot.QwtPlotItem.setLegendIconSize()`,
+            :py:meth:`qwt.plot.QwtPlotItem.legendData()`
         """
         if size.isEmpty():
             return QwtGraphic()

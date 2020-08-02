@@ -169,7 +169,7 @@ class QwtAbstractScaleDraw(object):
         """
         Change the scale division
         
-        :param .scale_div.QwtScaleDiv scaleDiv: New scale division
+        :param qwt.scale_div.QwtScaleDiv scaleDiv: New scale division
         """
         self.__data.scaleDiv = scaleDiv
         self.__data.map.setScaleInterval(scaleDiv.lowerBound(),
@@ -180,7 +180,7 @@ class QwtAbstractScaleDraw(object):
         """
         Change the transformation of the scale
 
-        :param .transform.QwtTransform transformation: New scale transformation
+        :param qwt.transform.QwtTransform transformation: New scale transformation
         """
         self.__data.map.setTransformation(transformation)
     

@@ -634,7 +634,7 @@ class QwtSymbol(object):
         """
         Set a graphic as symbol
 
-        :param .graphic.QwtGraphic graphic: Graphic
+        :param qwt.graphic.QwtGraphic graphic: Graphic
         
         .. seealso::
         

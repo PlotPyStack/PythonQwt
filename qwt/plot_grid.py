@@ -124,7 +124,7 @@ class QwtPlotGrid(QwtPlotItem):
         """
         Assign an x axis scale division
         
-        :param .scale_div.QwtScaleDiv scaleDiv: Scale division
+        :param qwt.scale_div.QwtScaleDiv scaleDiv: Scale division
         """
         if self.__data.xScaleDiv != scaleDiv:
             self.__data.xScaleDiv = scaleDiv
@@ -134,7 +134,7 @@ class QwtPlotGrid(QwtPlotItem):
         """
         Assign an y axis scale division
         
-        :param .scale_div.QwtScaleDiv scaleDiv: Scale division
+        :param qwt.scale_div.QwtScaleDiv scaleDiv: Scale division
         """
         if self.__data.yScaleDiv != scaleDiv:
             self.__data.yScaleDiv = scaleDiv
@@ -270,8 +270,8 @@ class QwtPlotGrid(QwtPlotItem):
         screen.
 
         :param QPainter painter: Painter
-        :param .scale_map.QwtScaleMap xMap: X axis map
-        :param .scale_map.QwtScaleMap yMap: Y axis
+        :param qwt.scale_map.QwtScaleMap xMap: X axis map
+        :param qwt.scale_map.QwtScaleMap yMap: Y axis
         :param QRectF canvasRect: Contents rectangle of the plot canvas
         """
         minorPen = QPen(self.__data.minorPen)
@@ -391,8 +391,8 @@ class QwtPlotGrid(QwtPlotItem):
         """
         Update the grid to changes of the axes scale division
         
-        :param .scale_map.QwtScaleMap xMap: Scale division of the x-axis
-        :param .scale_map.QwtScaleMap yMap: Scale division of the y-axis
+        :param qwt.scale_map.QwtScaleMap xMap: Scale division of the x-axis
+        :param qwt.scale_map.QwtScaleMap yMap: Scale division of the y-axis
         
         .. seealso::
         

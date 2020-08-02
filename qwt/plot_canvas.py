@@ -322,7 +322,7 @@ class QwtPlotCanvas(QFrame):
     
     .. seealso::
     
-        :py:meth:`.plot.QwtPlot.setCanvas()`
+        :py:meth:`qwt.plot.QwtPlot.setCanvas()`
         
     Paint attributes:
     
@@ -335,7 +335,7 @@ class QwtPlotCanvas(QFrame):
             when working with widget overlays (like rubber bands).
             Disabling the cache might improve the performance for
             incremental paints 
-            (using :py:class:`.plot_directpainter.QwtPlotDirectPainter`).
+            (using :py:class:`qwt.plot_directpainter.QwtPlotDirectPainter`).
         
         * `QwtPlotCanvas.Opaque`:
         
@@ -401,11 +401,11 @@ class QwtPlotCanvas(QFrame):
     
         Constructor
         
-        :param .plot.QwtPlot plot: Parent plot widget
+        :param qwt.plot.QwtPlot plot: Parent plot widget
 
         .. seealso::
         
-            :py:meth:`.plot.QwtPlot.setCanvas()`
+            :py:meth:`qwt.plot.QwtPlot.setCanvas()`
     """
     
     # enum PaintAttribute

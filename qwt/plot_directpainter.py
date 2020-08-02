@@ -197,7 +197,7 @@ class QwtPlotDirectPainter(QObject):
         will result in faster painting, if the paint engine of the canvas widget
         supports this feature.
         
-        :param .plot_series.QwtPlotSeriesItem seriesItem: Item to be painted
+        :param qwt.plot_series.QwtPlotSeriesItem seriesItem: Item to be painted
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the series will be painted to its last point.
         """

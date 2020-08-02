@@ -45,7 +45,7 @@ class QwtLegendData(object):
     
     .. seealso::
     
-        :py:class:`.legend.QwtLegend`
+        :py:class:`qwt.legend.QwtLegend`
     
     .. note::
     
@@ -214,7 +214,7 @@ class QwtLegendLabel(QwtTextLabel):
 
         .. seealso::
         
-            :py:meth:`setData()`, :py:meth:`.plot.QwtPlotItem.legendData()`
+            :py:meth:`setData()`, :py:meth:`qwt.plot.QwtPlotItem.legendData()`
         """
         return self.__data.legendData
     
@@ -222,7 +222,7 @@ class QwtLegendLabel(QwtTextLabel):
         """
         Set the text to the legend item
         
-        :param .text.QwtText text: Text label
+        :param qwt.text.QwtText text: Text label
 
         .. seealso::
         
@@ -270,7 +270,7 @@ class QwtLegendLabel(QwtTextLabel):
 
         .. seealso::
         
-            :py:meth:`icon()`, :py:meth:`.plot.QwtPlotItem.legendIcon()`
+            :py:meth:`icon()`, :py:meth:`qwt.plot.QwtPlotItem.legendIcon()`
         """
         self.__data.icon = icon
         indent = self.margin()+self.__data.spacing
@@ -296,7 +296,7 @@ class QwtLegendLabel(QwtTextLabel):
 
         .. seealso::
         
-            :py:meth:`spacing()`, :py:meth:`.text.QwtTextLabel.margin()`
+            :py:meth:`spacing()`, :py:meth:`qwt.text.QwtTextLabel.margin()`
         """
         spacing = max([spacing, 0])
         if spacing != self.__data.spacing:
@@ -596,9 +596,9 @@ class QwtLegend(QwtAbstractLegend):
 
     .. seealso ::
     
-        :py:class`.legend.QwtLegendLabel`, 
-        :py:class`.plot.QwtPlotItem`, 
-        :py:class`.plot.QwtPlot`
+        :py:class`qwt.legend.QwtLegendLabel`, 
+        :py:class`qwt.plot.QwtPlotItem`, 
+        :py:class`qwt.plot.QwtPlot`
         
     .. py:class:: QwtLegend([parent=None])
     
