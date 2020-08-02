@@ -58,7 +58,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
     
     def drawRects(self, rects, count):
         for i in range(count):
-            self.border.rectList += rects[i]
+            self.border.rectList += [rects[i]]
     
     def drawPath(self, path):
         rect = QRectF(QPointF(0., 0.), self.__size)
@@ -765,10 +765,10 @@ class QwtPlotCanvas(QFrame):
         opt.initFrom(self)
         self.style().drawPrimitive(QStyle.PE_Widget, opt, painter, self)
         painter.end()
-        self.__data.styleSheet.hasBorder = not recorder.border.rectList.isEmpty()
+        self.__data.styleSheet.hasBorder = len(recorder.border.rectList) > 0
         self.__data.styleSheet.cornerRects = recorder.clipRects
         if recorder.background.path.isEmpty():
-            if not recorder.border.rectList.isEmpty():
+            if self.__data.styleSheet.hasBorder:
                 self.__data.styleSheet.borderPath =\
                     qwtCombinePathList(self.rect(), recorder.border.pathlist)
         else:
@@ -796,7 +796,7 @@ class QwtPlotCanvas(QFrame):
             painter.end()
             if not recorder.background.path.isEmpty():
                 return recorder.background.path
-            if not recorder.border.rectList.isEmpty():
+            if len(recorder.border.rectList) > 0:
                 return qwtCombinePathList(rect, recorder.border.pathlist)
         elif self.__data.borderRadius > 0.:
             fw2 = self.frameWidth()*.5
