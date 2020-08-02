@@ -77,12 +77,12 @@ class DataPlot(QwtPlot):
 
         # y moves from left to right:
         # shift y array right and assign new value y[0]
-        self.y = np.concatenate((self.y[:1], self.y[:-1]), 1)
+        self.y = np.concatenate((self.y[:1], self.y[:-1]))
         self.y[0] = np.sin(self.phase) * (-1.0 + 2.0*random.random())
 		
         # z moves from right to left:
         # Shift z array left and assign new value to z[n-1].
-        self.z = np.concatenate((self.z[1:], self.z[:1]), 1)
+        self.z = np.concatenate((self.z[1:], self.z[:1]))
         self.z[-1] = 0.8 - (2.0 * self.phase/np.pi) + 0.4*random.random()
 
         self.curveR.setData(self.x, self.y)
