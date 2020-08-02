@@ -19,7 +19,7 @@ from .scale_map import QwtScaleMap
 from .qt.QtGui import (QPaintEngine, QFrame, QPixmap, QPainter, QPalette, 
                        QStyle, QPen, QStyleOptionFocusRect, QBrush, QRegion,
                        QLinearGradient, QPainterPath, QColor, QStyleOption)
-from .qt.QtCore import Qt, QRect, QPoint, QT_VERSION
+from .qt.QtCore import Qt, QRect, QPoint, QT_VERSION, QRectF
 
 QWIDGETSIZE_MAX = (1<<24)-1
 
@@ -410,7 +410,7 @@ class QwtPainterClass(object):
         if widget.testAttribute(Qt.WA_StyledBackground):
             opt = QStyleOption()
             opt.initFrom(widget)
-            opt.rect = rect.toAlignedRect()
+            opt.rect = QRectF(rect).toAlignedRect()
             widget.style().drawPrimitive(QStyle.PE_Widget, opt,
                                          painter, widget)
         else:
