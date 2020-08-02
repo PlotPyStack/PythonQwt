@@ -14,7 +14,7 @@ from qwt.qt.QtGui import QApplication, QFont, QPen, QPalette, QColor
 from qwt.qt.QtCore import Qt
 
 import os
-if os.environ.get('USE_PYQWT5', True):
+if os.environ.get('USE_PYQWT5', False):
     USE_PYQWT5 = True
     from PyQt4.Qwt5 import QwtPlot, QwtPlotCurve, QwtPlotMarker, QwtText
 else:
