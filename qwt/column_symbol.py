@@ -129,7 +129,8 @@ class QwtColumnSymbol(object):
         elif self.__data.frameStyle == QwtColumnSymbol.Plain:
             qwtDrawBox(painter, r, self.__data.palette, self.__data.lineWidth)
         else:
-            painter.fillRect(r, self.__data.palette.window())
+            painter.fillRect(r.adjusted(0, 0, 1, 1),
+                             self.__data.palette.window())
 
 
 class QwtColumnRect(object):

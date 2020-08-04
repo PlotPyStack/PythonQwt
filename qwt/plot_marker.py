@@ -495,7 +495,12 @@ class QwtPlotMarker(QwtPlotItem):
         return self.__data.pen
 
     def boundingRect(self):
-        return QRectF(self.__data.xValue, self.__data.yValue, 0., 0.)
+        if self.__data.style == QwtPlotMarker.HLine:
+            return QRectF(self.__data.xValue, self.__data.yValue, -1., 0.)
+        elif self.__data.style == QwtPlotMarker.VLine:
+            return QRectF(self.__data.xValue, self.__data.yValue, 0., -1.)
+        else:
+            return QRectF(self.__data.xValue, self.__data.yValue, 0., 0.)
     
     def legendIcon(self, index, size):
         """

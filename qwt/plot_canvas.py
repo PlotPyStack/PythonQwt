@@ -568,7 +568,11 @@ class QwtPlotCanvas(QFrame):
         if self.testPaintAttribute(self.BackingStore) and\
            self.__data.backingStore is not None:
             bs = self.__data.backingStore
-            if bs.size() != self.size():
+            if QT_VERSION >= 0x050000:
+                pixelRatio = bs.devicePixelRatio()
+            else:
+                pixelRatio = 1.
+            if bs.size() != self.size()*pixelRatio:
                 bs = QwtPainter.backingStore(self, self.size())
                 if self.testAttribute(Qt.WA_StyledBackground):
                     p = QPainter(bs)

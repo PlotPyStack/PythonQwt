@@ -69,17 +69,16 @@ class QwtPlotLayout_LayoutData(object):
     def init(self, plot, rect):
         """Extract all layout relevant data from the plot components"""
         # legend
-        if plot.legend():
-            self.legend.frameWidth = plot.legend().frameWidth()
-            self.legend.hScrollExtent = plot.legend().scrollExtent(Qt.Horizontal)
-            self.legend.vScrollExtent = plot.legend().scrollExtent(Qt.Vertical)
-            hint = plot.legend().sizeHint()
+        legend = plot.legend()
+        if legend:
+            self.legend.frameWidth = legend.frameWidth()
+            self.legend.hScrollExtent = legend.scrollExtent(Qt.Horizontal)
+            self.legend.vScrollExtent = legend.scrollExtent(Qt.Vertical)
+            hint = legend.sizeHint()
             w = min([hint.width(), np.floor(rect.width())])
-            h = plot.legend().heightForWidth(w)
+            h = legend.heightForWidth(w)
             if h <= 0:
                 h = hint.height()
-            if h > rect.height():
-                w += self.legend.hScrollExtent
             self.legend.hint = QSize(w, h)
         # title
         self.title.frameWidth = 0
@@ -698,16 +697,16 @@ class QwtPlotLayout(object):
         
         :param options: Options how to layout the legend
         :param QRectF rect: Bounding rectangle for title, footer, axes and canvas.
-        :return: tuple `(dimTitle, dimFooter, dimAxis)`
+        :return: tuple `(dimTitle, dimFooter, dimAxes)`
         
         Returns:
         
             * `dimTitle`: Expanded height of the title widget
             * `dimFooter`: Expanded height of the footer widget
-            * `dimAxis`: Expanded heights of the axis in axis orientation.
+            * `dimAxes`: Expanded heights of the axis in axis orientation.
         """
         dimTitle = dimFooter = 0
-        dimAxis = [0 for axis in QwtPlot.validAxes]
+        dimAxes = [0 for axis in QwtPlot.validAxes]
         backboneOffset = [0 for _i in QwtPlot.validAxes]
         for axis in QwtPlot.validAxes:
             if not (options & self.IgnoreFrames):
@@ -729,7 +728,7 @@ class QwtPlotLayout(object):
                 w = rect.width()
                 if self.__data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
                    self.__data.layoutData.scale[QwtPlot.yRight].isEnabled:
-                    w -= dimAxis[QwtPlot.yLeft]+dimAxis[QwtPlot.yRight]
+                    w -= dimAxes[QwtPlot.yLeft]+dimAxes[QwtPlot.yRight]
                 d = np.ceil(self.__data.layoutData.title.text.heightForWidth(w))
                 if not (options & self.IgnoreFrames):
                     d += 2*self.__data.layoutData.title.frameWidth
@@ -741,7 +740,7 @@ class QwtPlotLayout(object):
                 w = rect.width()
                 if self.__data.layoutData.scale[QwtPlot.yLeft].isEnabled !=\
                    self.__data.layoutData.scale[QwtPlot.yRight].isEnabled:
-                    w -= dimAxis[QwtPlot.yLeft]+dimAxis[QwtPlot.yRight]
+                    w -= dimAxes[QwtPlot.yLeft]+dimAxes[QwtPlot.yRight]
                 d = np.ceil(self.__data.layoutData.footer.text.heightForWidth(w))
                 if not (options & self.IgnoreFrames):
                     d += 2*self.__data.layoutData.footer.frameWidth
@@ -752,26 +751,26 @@ class QwtPlotLayout(object):
                 scaleData = self.__data.layoutData.scale[axis]
                 if scaleData.isEnabled:
                     if axis in (QwtPlot.xTop, QwtPlot.xBottom):
-                        length = rect.width()-dimAxis[QwtPlot.yLeft]-dimAxis[QwtPlot.yRight]
+                        length = rect.width()-dimAxes[QwtPlot.yLeft]-dimAxes[QwtPlot.yRight]
                         length -= scaleData.start + scaleData.end
-                        if dimAxis[QwtPlot.yRight] > 0:
+                        if dimAxes[QwtPlot.yRight] > 0:
                             length -= 1
-                        length += min([dimAxis[QwtPlot.yLeft],
+                        length += min([dimAxes[QwtPlot.yLeft],
                                scaleData.start-backboneOffset[QwtPlot.yLeft]])
-                        length += min([dimAxis[QwtPlot.yRight],
+                        length += min([dimAxes[QwtPlot.yRight],
                                scaleData.end-backboneOffset[QwtPlot.yRight]])
                     else:
-                        length = rect.height()-dimAxis[QwtPlot.xTop]-dimAxis[QwtPlot.xBottom]
+                        length = rect.height()-dimAxes[QwtPlot.xTop]-dimAxes[QwtPlot.xBottom]
                         length -= scaleData.start + scaleData.end
                         length -= 1
-                        if dimAxis[QwtPlot.xBottom] <= 0:
+                        if dimAxes[QwtPlot.xBottom] <= 0:
                             length -= 1
-                        if dimAxis[QwtPlot.xTop] <= 0:
+                        if dimAxes[QwtPlot.xTop] <= 0:
                             length -= 1
-                        if dimAxis[QwtPlot.xBottom] > 0:
+                        if dimAxes[QwtPlot.xBottom] > 0:
                             length += min([self.__data.layoutData.scale[QwtPlot.xBottom].tickOffset,
                                            float(scaleData.start-backboneOffset[QwtPlot.xBottom])])
-                        if dimAxis[QwtPlot.xTop] > 0:
+                        if dimAxes[QwtPlot.xTop] > 0:
                             length += min([self.__data.layoutData.scale[QwtPlot.xTop].tickOffset,
                                            float(scaleData.end-backboneOffset[QwtPlot.xTop])])
                         if dimTitle > 0:
@@ -779,10 +778,10 @@ class QwtPlotLayout(object):
                     d = scaleData.dimWithoutTitle
                     if not scaleData.scaleWidget.title().isEmpty():
                         d += scaleData.scaleWidget.titleHeightForWidth(np.floor(length))
-                    if d > dimAxis[axis]:
-                        dimAxis[axis] = d
+                    if d > dimAxes[axis]:
+                        dimAxes[axis] = d
                         done = False
-        return dimTitle, dimFooter, dimAxis
+        return dimTitle, dimFooter, dimAxes
                         
     def alignScales(self, options, canvasRect, scaleRect):
         """

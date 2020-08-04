@@ -608,13 +608,14 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         """
         x1 = interval.minValue()
         x2 = interval.maxValue()
+        eps = .000000000001
         if -DBL_MAX+stepSize <= x1:
             x = floorEps(x1, stepSize)
-            if qwtFuzzyCompare(x1, x, stepSize) != 0:
+            if abs(x) <= eps or not qFuzzyCompare(x1, x):
                 x1 = x
         if DBL_MAX-stepSize >= x2:
             x = ceilEps(x2, stepSize)
-            if qwtFuzzyCompare(x2, x, stepSize) != 0:
+            if abs(x) <= eps or not qFuzzyCompare(x2, x):
                 x2 = x
         return QwtInterval(x1, x2)
 
@@ -732,13 +733,6 @@ class QwtLogScaleEngine(QwtScaleEngine):
             linearScaler.setAttributes(self.attributes())
             linearScaler.setReference(self.reference())
             linearScaler.setMargins(self.lowerMargin(), self.upperMargin())
-            
-            if stepSize != 0.:
-                if stepSize < 0.:
-                    stepSize = -np.power(logBase, -stepSize)
-                else:
-                    stepSize = np.power(logBase, stepSize)
-            
             return linearScaler.divideScale(x1, x2, maxMajorSteps,
                                             maxMinorSteps, stepSize)
         

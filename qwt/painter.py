@@ -81,6 +81,8 @@ class QwtPainterClass(object):
             opt.initFrom(widget)
             opt.rect = rect
             opt.state |= QStyle.State_HasFocus
+            palette = widget.palette()
+            opt.backgroundColor = palette.color(widget.backgroundRole())
             widget.style().drawPrimitive(QStyle.PE_FrameFocusRect,
                                          opt, painter, widget)
         else:

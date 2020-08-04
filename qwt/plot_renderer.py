@@ -356,7 +356,6 @@ class QwtPlotRenderer(QObject):
                     baseLineDists[axisId] = scaleWidget.margin()
                     scaleWidget.setMargin(0)
                 if not plot.axisEnabled(axisId):
-                    left, right, top, bottom = 0, 0, 0, 0
                     #  When we have a scale the frame is painted on
                     #  the position of the backbone - otherwise we
                     #  need to introduce a margin around the canvas
@@ -368,8 +367,7 @@ class QwtPlotRenderer(QObject):
                         layoutRect.adjust(0, 1, 0, 0)
                     elif axisId == QwtPlot.xBottom:
                         layoutRect.adjust(0, 0, 0, -1)
-                    layoutRect.adjust(left, top, right, bottom)
-        
+
         #  Calculate the layout for the document.
         layoutOptions = QwtPlotLayout.IgnoreScrollbars
         
@@ -581,10 +579,10 @@ class QwtPlotRenderer(QObject):
             if frameWidth > 0:
                 painter.save()
                 frameStyle = canvas.frameShadow() | canvas.frameShape()
-                frameWidth = canvas.frameWidth()
-                borderRadius = canvas.borderRadius()
-                if borderRadius > 0.:
-                    QwtPainter.drawRoundedFrame(painter, canvasRect, r, r,
+                radius = canvas.borderRadius()
+                if radius > 0.:
+                    QwtPainter.drawRoundedFrame(painter, canvasRect,
+                                                radius, radius,
                                                 canvas.palette(), frameWidth,
                                                 frameStyle)
                 else:

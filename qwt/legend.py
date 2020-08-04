@@ -667,6 +667,7 @@ class QwtLegend(QwtAbstractLegend):
         tl = self.__data.view.gridLayout
         if tl is not None:
             tl.setMaxColumns(numColumns)
+        self.updateGeometry()
     
     def maxColumns(self):
         """

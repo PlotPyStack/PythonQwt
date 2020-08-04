@@ -57,6 +57,7 @@ class QwtPlotSeriesItem(QwtPlotItem):
             title = QwtText(title)
         QwtPlotItem.__init__(self, title)
         self.__data = QwtPlotSeriesItem_PrivateData()
+        self.setItemInterest(QwtPlotItem.ScaleInterest, True)
         
     def setOrientation(self, orientation):
         """

@@ -20,7 +20,7 @@ QwtPlotItem
 """
 
 from .qt.QtGui import (QWidget, QFont, QSizePolicy, QFrame, QApplication,
-                          QRegion, QPainter, QPalette)
+                       QRegion, QPainter, QPalette)
 from .qt.QtCore import Qt, Signal, QEvent, QSize, QRectF
 
 from .text import QwtText, QwtTextLabel
@@ -1206,9 +1206,12 @@ class QwtPlot(QFrame, QwtPlotDict):
             self.__data.footerLabel.hide()
         
         for axisId in self.validAxes:
+            scaleWidget = self.axisWidget(axisId)
             if self.axisEnabled(axisId):
-                self.axisWidget(axisId).setGeometry(scaleRect[axisId])
-                
+                if scaleRect[axisId] != scaleWidget.geometry():
+                    scaleWidget.setGeometry(scaleRect[axisId])
+                    startDist, endDist = scaleWidget.getBorderDistHint()
+                    scaleWidget.setBorderDist(startDist, endDist)
                 if axisId in (self.xBottom, self.xTop):
                     r = QRegion(scaleRect[axisId])
                     if self.axisEnabled(self.yLeft):
@@ -1217,13 +1220,13 @@ class QwtPlot(QFrame, QwtPlotDict):
                         r = r.subtracted(QRegion(scaleRect[self.yRight]))
                     r.translate(-scaleRect[axisId].x(), -scaleRect[axisId].y())
                     
-                    self.axisWidget(axisId).setMask(r)
+                    scaleWidget.setMask(r)
                     
-                if not self.axisWidget(axisId).isVisibleTo(self):
-                    self.axisWidget(axisId).show()
+                if not scaleWidget.isVisibleTo(self):
+                    scaleWidget.show()
                 
             else:
-                self.axisWidget(axisId).hide()
+                scaleWidget.hide()
             
         if self.__data.legend:
             if self.__data.legend.isEmpty():

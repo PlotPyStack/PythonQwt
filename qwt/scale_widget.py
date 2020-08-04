@@ -22,8 +22,8 @@ from .interval import QwtInterval
 from .color_map import QwtColorMap
 
 from .qt.QtGui import (QWidget, QSizePolicy, QPainter, QStyleOption, QStyle,
-                          QPalette)
-from .qt.QtCore import Qt, QRectF, QSize, Signal
+                       QPalette, QApplication)
+from .qt.QtCore import Qt, QRectF, QSize, Signal, QEvent
 
 import numpy as np
 
@@ -149,6 +149,7 @@ class QwtScaleWidget(QWidget):
                 self.__data.layoutFlags |= flag
             else:
                 self.__data.layoutFlags &= ~flag
+        self.update()
     
     def testLayoutFlag(self, flag):
         """
@@ -503,6 +504,13 @@ class QwtScaleWidget(QWidget):
         
         if update_geometry:
             self.updateGeometry()
+            #  for some reason updateGeometry does not send a LayoutRequest 
+            #  event when the parent is not visible and has no layout
+            widget = self.parentWidget()
+            if widget and not widget.isVisible() and widget.layout() is None:
+                if widget.testAttribute(Qt.WA_WState_Polished):
+                    QApplication.postEvent(self.parentWidget(),
+                                           QEvent(QEvent.LayoutRequest))
             self.update()
     
     def drawColorBar(self, painter, rect):

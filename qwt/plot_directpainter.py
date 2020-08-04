@@ -211,6 +211,7 @@ class QwtPlotDirectPainter(QObject):
             if self.__data.hasClipping:
                 painter.setClipRegion(self.__data.clipRegion)
             qwtRenderItem(painter, canvasRect, seriesItem, from_, to)
+            painter.end()
             if self.testAttribute(self.FullRepaint):
                 plotCanvas.repaint()
                 return
@@ -270,7 +271,7 @@ class QwtPlotDirectPainter(QObject):
                     if plotCanvas:
                         doCopyCache = qwtHasBackingStore(plotCanvas)
                         if doCopyCache:
-                            painter.drawPixmap(plotCanvas.contentsRect().topLeft(),
+                            painter.drawPixmap(plotCanvas.rect().topLeft(),
                                                plotCanvas.backingStore())
                 if not doCopyCache:
                     qwtRenderItem(painter, canvas.contentsRect(),
