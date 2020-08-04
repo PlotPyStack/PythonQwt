@@ -5,8 +5,8 @@
 # (see LICENSE file for details)
 
 """
-guidata.py3compat (exact copy of spyderlib.py3compat)
------------------------------------------------------
+qwt.py3compat (exact copy of spyderlib.py3compat)
+-------------------------------------------------
 
 Transitional module providing compatibility functions intended to help 
 migrating from Python 2 to Python 3.

@@ -127,7 +127,7 @@ setup(name=LIBNAME, version=version,
       package_data={PACKAGE_NAME:
                     get_package_data(PACKAGE_NAME, ('.png', '.svg', '.mo'))},
       data_files=[(r'Doc', [CHM_DOC])] if CHM_DOC else [],
-      install_requires=["NumPy>=1.3"],
+      install_requires=["NumPy>=1.5"],
       extras_require = {
                         'Doc':  ["Sphinx>=1.1"],
                         'Tests':  ["guidata>=1.7.0"],

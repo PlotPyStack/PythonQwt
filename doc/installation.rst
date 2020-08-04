@@ -7,8 +7,9 @@ Dependencies
 Requirements:
     * Python 2.x (x>=6) or 3.x (x>=2)
     * PyQt4 4.x (x>=3 ; recommended x>=4) or PyQt5 5.x (x>=5)
-    * spyderlib >=v2.0.10 for the test launcher
     * NumPy 1.x (x>=5)
+    * guidata >=v1.7 for the test launcher
+    * Sphinx 1.x (x>=1) for documentation generation
 
 Installation
 ------------

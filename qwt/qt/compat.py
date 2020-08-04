@@ -5,8 +5,8 @@
 # (see LICENSE file for details)
 
 """
-spyderlib.qt.compat
--------------------
+qwt.qt.compat (exact copy of spyderlib.qt.compat)
+-------------------------------------------------
 
 Transitional module providing compatibility functions intended to help 
 migrating from PyQt to PySide.
@@ -112,7 +112,7 @@ def _qfiledialog_wrapper(attr, parent=None, caption='', basedir='',
         options = QFileDialog.Options(0)
     try:
         # PyQt <v4.6 (API #1)
-        from spyderlib.qt.QtCore import QString
+        from qwt.qt.QtCore import QString
     except ImportError:
         # PySide or PyQt >=v4.6
         QString = None  # analysis:ignore
@@ -200,8 +200,8 @@ def getsavefilename(parent=None, caption='', basedir='', filters='',
                                 options=options)
 
 if __name__ == '__main__':
-    from spyderlib.utils.qthelpers import qapplication
-    _app = qapplication()
+    from qwt.qt.QtGui import QApplication
+    _app = QApplication([])
     print(repr(getexistingdirectory()))
     print(repr(getopenfilename(filters='*.py;;*.txt')))
     print(repr(getopenfilenames(filters='*.py;;*.txt')))
