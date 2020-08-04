@@ -1,6 +1,17 @@
 # PythonQwt Releases #
 
 
+### Version 0.6.0 ###
+- Ported changes from Qwt 6.1.2 to Qwt 6.1.5
+- `QwtPlotCanvas.setPaintAttribute`: fixed PyQt4 compatibility issue for BackingStore paint attribute
+- Fixed DataDemo.py test script (was crashing ; this closes #41)
+- `QwtPainterClass.drawBackground`: fixed obvious bug in untested code (this closes #51)
+- `qwtFillBackground`: fixed obvious bug in untested code (this closes #50)
+- `QwtPainterClass.fillPixmap`: fixed obvious bug in untested code (this closes #49)
+- `QwtStyleSheetRecorder`: fixed obvious bug in untested code (this closes #47, closes #48 and closes #52)
+- Added "plot without margins" test for Issue #35
+
+
 ### Version 0.5.5 ###
 
 - `QwtScaleMap.invTransform_scalar`: avoid divide by 0
