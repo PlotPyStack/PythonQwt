@@ -467,11 +467,8 @@ class QwtPlotCanvas(QFrame):
                     if QT_VERSION >= 0x050000:
                         self.__data.backingStore = self.grab(self.rect())
                     else:
-                        if PYQT5:
-                            pm = QPixmap.grabWidget(self, self.rect())
-                        else:
-                            pm = self.grab(self.rect())
-                        self.__data.backingStore = pm
+                        self.__data.backingStore = QPixmap.grabWidget(self,
+                                                                self.rect())
             else:
                 self.__data.backingStore = None
         elif attribute == self.Opaque:
