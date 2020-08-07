@@ -1212,19 +1212,24 @@ class QwtPlot(QFrame, QwtPlotDict):
                     scaleWidget.setGeometry(scaleRect[axisId])
                     startDist, endDist = scaleWidget.getBorderDistHint()
                     scaleWidget.setBorderDist(startDist, endDist)
-                if axisId in (self.xBottom, self.xTop):
-                    r = QRegion(scaleRect[axisId])
-                    if self.axisEnabled(self.yLeft):
-                        r = r.subtracted(QRegion(scaleRect[self.yLeft]))
-                    if self.axisEnabled(self.yRight):
-                        r = r.subtracted(QRegion(scaleRect[self.yRight]))
-                    r.translate(-scaleRect[axisId].x(), -scaleRect[axisId].y())
-                    
-                    scaleWidget.setMask(r)
-                    
+ 
+                #-------------------------------------------------------------
+                #XXX: The following was commented to fix issue #35
+                # Note: the same code part in Qwt's original source code is 
+                # annotated with the mention "do we need this code any 
+                # longer ???"... I guess not :)
+                # if axisId in (self.xBottom, self.xTop):
+                #     r = QRegion(scaleRect[axisId])
+                #     if self.axisEnabled(self.yLeft):
+                #         r = r.subtracted(QRegion(scaleRect[self.yLeft]))
+                #     if self.axisEnabled(self.yRight):
+                #         r = r.subtracted(QRegion(scaleRect[self.yRight]))
+                #     r.translate(-scaleRect[axisId].x(), -scaleRect[axisId].y())
+                #     scaleWidget.setMask(r)                    
+                #-------------------------------------------------------------
+
                 if not scaleWidget.isVisibleTo(self):
                     scaleWidget.show()
-                
             else:
                 scaleWidget.hide()
             
