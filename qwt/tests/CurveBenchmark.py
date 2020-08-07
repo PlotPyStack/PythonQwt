@@ -159,7 +159,7 @@ class BMDemo(QMainWindow):
 
     def run_benchmark(self, max_n, **kwargs):
         for idx in range(4, -1, -1):
-            points = max_n/10**idx
+            points = int(max_n/10**idx)
             t0 = time.time()
             widget = BMWidget(points, **kwargs)
             title = '%d points' % points
