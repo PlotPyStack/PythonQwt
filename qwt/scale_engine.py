@@ -130,11 +130,10 @@ def divideInterval(intervalSize, numSteps, base):
 
     lx = math.log(abs(v), base)
     p = math.floor(lx)
-    print("p:", p)
     fraction = math.pow(base, lx-p)
     n = base
-    while n > 1 and fraction <= n/2:
-        n /= 2
+    while n > 1 and fraction <= n//2:
+        n //= 2
     
     stepSize = n*math.pow(base, p)
     if v < 0:
