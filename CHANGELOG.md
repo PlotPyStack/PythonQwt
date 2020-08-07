@@ -1,7 +1,16 @@
 # PythonQwt Releases #
 
 
+### Version 0.6.1 ###
+
+- Fixed rounding issue with PythonQwt scale engine (0...1000 is now divided 
+  in 200-size steps, as in both Qwt and PyQwt)
+- Removed unnecessary mask on scaleWidget (this closes #35)
+- CurveBenchmark.py: fixed TypeError with numpy.linspace (NumPy=1.18)
+
+
 ### Version 0.6.0 ###
+
 - Ported changes from Qwt 6.1.2 to Qwt 6.1.5
 - `QwtPlotCanvas.setPaintAttribute`: fixed PyQt4 compatibility issue for BackingStore paint attribute
 - Fixed DataDemo.py test script (was crashing ; this closes #41)
