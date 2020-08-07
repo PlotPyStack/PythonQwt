@@ -16,8 +16,7 @@ QwtPlotGrid
 from .scale_div import QwtScaleDiv
 from .plot import QwtPlotItem
 from .text import QwtText
-from .painter import QwtPainter
-from .math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
+from ._math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
 
 from .qt.QtGui import QPen
 from .qt.QtCore import Qt

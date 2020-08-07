@@ -22,7 +22,7 @@ QwtScaleDraw
 from .scale_div import QwtScaleDiv
 from .scale_map import QwtScaleMap
 from .text import QwtText
-from .math import qwtRadians
+from ._math import qwtRadians
 
 from .qt.QtGui import QPalette, QFontMetrics, QTransform
 from .qt.QtCore import (Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect,

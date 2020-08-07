@@ -100,6 +100,6 @@ class TestPlot(QwtPlot):
 if __name__ == '__main__':
     app = QApplication([])
     plot = TestPlot()
-    plot.resize(300, 1000)
+    plot.resize(300, 650)
     plot.show()
     app.exec_()

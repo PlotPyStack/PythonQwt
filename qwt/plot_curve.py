@@ -15,7 +15,7 @@ QwtPlotCurve
 
 from .text import QwtText
 from .plot import QwtPlotItem, QwtPlotItem_PrivateData
-from .math import qwtSqr
+from ._math import qwtSqr
 from .graphic import QwtGraphic
 from .plot_series import (QwtPlotSeriesItem, QwtSeriesStore, QwtSeriesData,
                           QwtPointArrayData)

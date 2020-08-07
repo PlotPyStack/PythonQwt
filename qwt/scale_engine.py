@@ -30,35 +30,34 @@ from __future__ import division
 from .interval import QwtInterval
 from .scale_div import QwtScaleDiv
 from .transform import QwtLogTransform
-from .math import qwtFuzzyCompare
+from ._math import qwtFuzzyCompare
 from .transform import QwtTransform
 
 from .qt.QtCore import qFuzzyCompare
 
+import sys
+import math
 import numpy as np
 
-DBL_MAX = np.finfo(float).max
+DBL_MAX = sys.float_info.max
 LOG_MIN = 1.0e-100
 LOG_MAX = 1.0e100
 
 
-def qwtLog(base, value):
-    return np.log(value)/np.log(base)
-
 def qwtLogInterval(base, interval):
-    return QwtInterval(qwtLog(base, interval.minValue()),
-                       qwtLog(base, interval.maxValue()))
+    return QwtInterval(math.log(interval.minValue(), base),
+                       math.log(interval.maxValue(), base))
 
 def qwtPowInterval(base, interval):
-    return QwtInterval(np.power(base, interval.minValue()),
-                       np.power(base, interval.maxValue()))
+    return QwtInterval(math.pow(base, interval.minValue()),
+                       math.pow(base, interval.maxValue()))
 
 def qwtStepSize(intervalSize, maxSteps, base):
     """this version often doesn't find the best ticks: f.e for 15: 5, 10"""
     minStep = divideInterval(intervalSize, maxSteps, base)
     if minStep != 0.:
         #  # ticks per interval
-        numTicks = np.ceil(abs(intervalSize/minStep))-1
+        numTicks = math.ceil(abs(intervalSize/minStep))-1
         #  Do the minor steps fit into the interval?
         if qwtFuzzyCompare((numTicks+1)*abs(minStep),
                            abs(intervalSize), intervalSize) > 0:
@@ -82,7 +81,7 @@ def ceilEps(value, intervalSize):
     """
     eps = EPS*intervalSize
     value = (value-eps)/intervalSize
-    return np.ceil(value)*intervalSize
+    return math.ceil(value)*intervalSize
 
 def floorEps(value, intervalSize):
     """
@@ -98,7 +97,7 @@ def floorEps(value, intervalSize):
     """
     eps = EPS*intervalSize
     value = (value+eps)/intervalSize
-    return np.floor(value)*intervalSize
+    return math.floor(value)*intervalSize
 
 def divideEps(intervalSize, numSteps):
     """
@@ -129,14 +128,15 @@ def divideInterval(intervalSize, numSteps, base):
     if v == 0.:
         return 0.
 
-    lx = qwtLog(base, abs(v))
-    p = np.floor(lx)
-    fraction = np.power(base, lx-p)
+    lx = math.log(abs(v), base)
+    p = math.floor(lx)
+    print("p:", p)
+    fraction = math.pow(base, lx-p)
     n = base
     while n > 1 and fraction <= n/2:
         n /= 2
     
-    stepSize = n*np.power(base, p)
+    stepSize = n*math.pow(base, p)
     if v < 0:
         stepSize = -stepSize
     
@@ -580,7 +580,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         minStep = qwtStepSize(stepSize, maxMinorSteps, self.base())
         if minStep == 0.:
             return
-        numTicks = int(np.ceil(abs(stepSize/minStep))-1)
+        numTicks = int(math.ceil(abs(stepSize/minStep))-1)
         medIndex = -1
         if numTicks % 2:
             medIndex = numTicks/2
@@ -653,8 +653,8 @@ class QwtLogScaleEngine(QwtScaleEngine):
         if x1 > x2:
             x1, x2 = x2, x1
         logBase = self.base()
-        interval = QwtInterval(x1/np.power(logBase, self.lowerMargin()),
-                               x2*np.power(logBase, self.upperMargin()))
+        interval = QwtInterval(x1/math.pow(logBase, self.lowerMargin()),
+                               x2*math.pow(logBase, self.upperMargin()))
         interval = interval.limited(LOG_MIN, LOG_MAX)
         if interval.maxValue()/interval.minValue() < logBase:
             linearScaler = QwtLinearScaleEngine()
@@ -670,9 +670,9 @@ class QwtLogScaleEngine(QwtScaleEngine):
             
             if linearInterval.maxValue()/linearInterval.minValue() < logBase:
                 if stepSize < 0.:
-                    stepSize = -qwtLog(logBase, abs(stepSize))
+                    stepSize = -math.log(abs(stepSize), logBase)
                 else:
-                    stepSize = qwtLog(logBase, stepSize)
+                    stepSize = math.log(stepSize, logBase)
                 return x1, x2, stepSize
             
         logRef = 1.
@@ -785,13 +785,13 @@ class QwtLogScaleEngine(QwtScaleEngine):
         width = qwtLogInterval(self.base(), interval).width()
         numTicks = min([int(round(width/stepSize))+1, 10000])
 
-        lxmin = np.log(interval.minValue())
-        lxmax = np.log(interval.maxValue())
+        lxmin = math.log(interval.minValue())
+        lxmax = math.log(interval.maxValue())
         lstep = (lxmax-lxmin)/float(numTicks-1)
 
         ticks = [interval.minValue()]
         for i in range(1, numTicks-1):
-            ticks += [np.exp(lxmin+float(i)*lstep)]
+            ticks += [math.exp(lxmin+float(i)*lstep)]
         ticks += [interval.maxValue()]
         return ticks
 
@@ -851,7 +851,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
             if numTicks > 2 and numTicks % 2:
                 mediumTickIndex = numTicks/2
             
-            minFactor = max([np.power(logBase, minStep), float(logBase)])
+            minFactor = max([math.pow(logBase, minStep), float(logBase)])
             
             for tick in ticks[QwtScaleDiv.MajorTick]:
                 for j in range(numTicks):

@@ -13,7 +13,7 @@ QwtScaleMap
    :members:
 """
 
-from .math import qwtFuzzyCompare
+from ._math import qwtFuzzyCompare
 
 from .qt.QtCore import QRectF, QPointF
 
