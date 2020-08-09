@@ -10,7 +10,7 @@ SHOW = True # Show test in GUI-based test launcher
 
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QFont, QPen, QPalette, QColor
+from qwt.qt.QtGui import QFont, QPen, QPalette, QColor
 from qwt.qt.QtCore import Qt
 
 import os
@@ -97,9 +97,7 @@ class TestPlot(QwtPlot):
         text.setColor(Qt.blue)
         self.marker.setLabel(text)
 
+
 if __name__ == '__main__':
-    app = QApplication([])
-    plot = TestPlot()
-    plot.resize(300, 650)
-    plot.show()
-    app.exec_()
+    from qwt.tests import test_widget
+    app = test_widget(TestPlot, size=(300, 650))

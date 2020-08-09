@@ -8,10 +8,9 @@
 
 SHOW = True # Show test in GUI-based test launcher
 
-import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, qRgb
+from qwt.qt.QtGui import QPen, qRgb
 from qwt.qt.QtCore import Qt
 from qwt import (QwtPlot, QwtPlotMarker, QwtLegend, QwtPlotGrid, QwtPlotCurve,
                  QwtPlotItem, QwtText, QwtLegendData, QwtLinearColorMap,
@@ -177,14 +176,6 @@ class ImagePlot(QwtPlot):
         self.replot()
 
 
-def make():
-    demo = ImagePlot()
-    demo.resize(600, 400)
-    demo.show()
-    return demo
-
-
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    app = test_widget(ImagePlot, size=(600, 400))

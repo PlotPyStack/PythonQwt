@@ -8,10 +8,9 @@
 
 SHOW = True # Show test in GUI-based test launcher
 
-import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen
+from qwt.qt.QtGui import QPen
 from qwt.qt.QtCore import Qt
 from qwt import QwtPlot, QwtScaleDraw, QwtPlotGrid, QwtPlotCurve, QwtPlotItem
 
@@ -89,14 +88,6 @@ class CartesianPlot(QwtPlot):
         self.replot()
 
 
-def make():
-    demo = CartesianPlot()
-    demo.resize(400, 300)
-    demo.show()
-    return demo
-
-
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    test_widget(CartesianPlot, (400, 300))

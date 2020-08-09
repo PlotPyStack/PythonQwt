@@ -8,10 +8,9 @@
 
 SHOW = True # Show test in GUI-based test launcher
 
-import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, QGridLayout, QWidget
+from qwt.qt.QtGui import QPen, QGridLayout, QWidget
 from qwt.qt.QtCore import Qt
 from qwt import QwtPlot, QwtPlotCurve
 
@@ -68,14 +67,6 @@ class MultiDemo(QWidget):
         list_plot.replot()
 
 
-def make():
-    demo = MultiDemo()
-    demo.resize(400, 300)
-    demo.show()
-    return demo
-
-
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    app = test_widget(MultiDemo, size=(400, 300))

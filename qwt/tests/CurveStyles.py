@@ -9,11 +9,9 @@
 SHOW = True # Show test in GUI-based test launcher
 
 import time
-import sys
 
-from qwt.qt.QtGui import QApplication, QPen, QBrush, QFont, QFontDatabase
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qwt.qt.QtGui import QPen, QBrush
+from qwt.qt.QtCore import QSize, Qt
 
 from qwt.tests import CurveBenchmark as cb
 
@@ -46,9 +44,11 @@ class CSWidget(cb.BMWidget):
                         ('Dots', None),)
 
 
-class BMDemo(cb.BMDemo):
+class BMDemo2(cb.BMDemo1):
     TITLE = 'Curve styles'
     SIZE = (1000, 800)
+    def __init__(self, max_n=1000, parent=None, **kwargs):
+        super(BMDemo2, self).__init__(max_n=max_n, parent=parent, **kwargs)
 
     def run_benchmark(self, max_n, **kwargs):
         for points, symbols in zip((max_n/10, max_n/10, max_n, max_n),
@@ -63,13 +63,5 @@ class BMDemo(cb.BMDemo):
 
 
 if __name__ == '__main__':
-    app = QApplication([])
-    for name in ('Calibri', 'Verdana', 'Arial'):
-        if name in QFontDatabase().families():
-            app.setFont(QFont(name))
-            break
-    kwargs = {}
-    for arg in sys.argv[1:]:
-        kwargs[arg] = True
-    demo = BMDemo(1000, **kwargs)
-    app.exec_()
+    from qwt.tests import test_widget
+    app = test_widget(BMDemo2)

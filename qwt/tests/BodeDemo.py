@@ -10,15 +10,12 @@ from __future__ import unicode_literals
 
 SHOW = True # Show test in GUI-based test launcher
 
-import sys
 import numpy as np
 
-from qwt.qt.QtGui import (QApplication, QPen, QBrush, QFrame, QFont, QWidget,
-                          QMainWindow, QToolButton, QIcon, QPixmap, QToolBar,
-                          QHBoxLayout, QLabel, QPrinter, QPrintDialog,
-                          QFontDatabase)
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qwt.qt.QtGui import (QPen, QBrush, QFrame, QFont, QWidget, QMainWindow,
+                          QToolButton, QIcon, QPixmap, QToolBar, QHBoxLayout,
+                          QLabel, QPrinter, QPrintDialog)
+from qwt.qt.QtCore import QSize, Qt
 from qwt import (QwtPlot, QwtPlotMarker, QwtSymbol, QwtLegend, QwtPlotGrid,
                  QwtPlotCurve, QwtPlotItem, QwtLogScaleEngine, QwtText,
                  QwtPlotRenderer)
@@ -281,19 +278,6 @@ class BodeDemo(QMainWindow):
         self.showInfo()
 
 
-def make():
-    demo = BodeDemo()
-    demo.resize(540, 400)
-    demo.show()
-    return demo
-
-
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    fonts = QFontDatabase()
-    for name in ('Verdana', 'STIXGeneral'):
-        if name in fonts.families():
-            app.setFont(QFont(name))
-            break
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    app = test_widget(BodeDemo, (540, 400))

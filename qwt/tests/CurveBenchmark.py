@@ -10,11 +10,9 @@ SHOW = True # Show test in GUI-based test launcher
 
 import time
 import numpy as np
-import sys
 
 from qwt.qt.QtGui import (QApplication, QPen, QMainWindow, QGridLayout,
-                          QTabWidget, QWidget, QTextEdit, QLineEdit, QFont,
-                          QFontDatabase)
+                          QTabWidget, QWidget, QTextEdit, QLineEdit)
 from qwt.qt.QtCore import Qt
 
 import os
@@ -78,7 +76,7 @@ class BMWidget(QWidget):
                     )
     
     def setup(self, points, *args, **kwargs):
-        x = np.linspace(.001, 20., points)
+        x = np.linspace(.001, 20., int(points))
         y = (np.sin(x)/x)*np.cos(20*x)
         layout = QGridLayout()
         nbcol, col, row = 2, 0, 0
@@ -121,11 +119,11 @@ GUI response time (switch between tabs, resize main windows, ...).<br>
 """ % (title, library))
 
 
-class BMDemo(QMainWindow):
+class BMDemo1(QMainWindow):
     TITLE = 'Curve benchmark'
     SIZE = (1000, 800)
-    def __init__(self, max_n, parent=None, **kwargs):
-        super(BMDemo, self).__init__(parent=parent)
+    def __init__(self, max_n=1000000, parent=None, **kwargs):
+        super(BMDemo1, self).__init__(parent=parent)
         title = self.TITLE
         if kwargs.get('only_lines', False):
             title = '%s (%s)' % (title, 'only lines')
@@ -169,13 +167,5 @@ class BMDemo(QMainWindow):
 
 
 if __name__ == '__main__':
-    app = QApplication([])
-    for name in ('Calibri', 'Verdana', 'Arial'):
-        if name in QFontDatabase().families():
-            app.setFont(QFont(name))
-            break
-    kwargs = {}
-    for arg in sys.argv[1:]:
-        kwargs[arg] = True
-    demo = BMDemo(1000000, **kwargs)
-    app.exec_()
+    from qwt.tests import test_widget
+    app = test_widget(BMDemo1)

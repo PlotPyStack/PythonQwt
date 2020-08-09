@@ -12,32 +12,29 @@ import numpy as np
 
 np.seterr(all='raise')
 
-from qwt.qt.QtGui import QApplication, QPen
+from qwt.qt.QtGui import QPen
 from qwt.qt.QtCore import Qt
 from qwt import QwtPlot, QwtPlotCurve, QwtLogScaleEngine
 
 
-def create_log_plot():
-    plot = QwtPlot('LogCurveDemo.py (or how to handle -inf values)')
-    plot.enableAxis(QwtPlot.xBottom)
-    plot.setAxisScaleEngine(QwtPlot.yLeft, QwtLogScaleEngine())
-    curve = QwtPlotCurve()
-    curve.setRenderHint(QwtPlotCurve.RenderAntialiased)
-    pen = QPen(Qt.magenta)
-    pen.setWidth(1.5)
-    curve.setPen(pen)
-    curve.attach(plot)
-    x = np.arange(0.0, 10.0, 0.1)
-    y = 10*np.cos(x)**2-.1
-    print("y<=0:", y<=0)
-    curve.setData(x, y)
-    plot.replot()
-    return plot
+class LogPlot(QwtPlot):
+    def __init__(self):
+        super(LogPlot, self).__init__(
+            'LogCurveDemo.py (or how to handle -inf values)')
+        self.enableAxis(QwtPlot.xBottom)
+        self.setAxisScaleEngine(QwtPlot.yLeft, QwtLogScaleEngine())
+        curve = QwtPlotCurve()
+        curve.setRenderHint(QwtPlotCurve.RenderAntialiased)
+        pen = QPen(Qt.magenta)
+        pen.setWidth(1)
+        curve.setPen(pen)
+        curve.attach(self)
+        x = np.arange(0.0, 10.0, 0.1)
+        y = 10*np.cos(x)**2-.1
+        curve.setData(x, y)
+        self.replot()
 
 
 if __name__ == '__main__':
-    app = QApplication([])
-    plot = create_log_plot()
-    plot.resize(800, 500)
-    plot.show()
-    app.exec_()
+    from qwt.tests import test_widget
+    app = test_widget(LogPlot, size=(800, 500))

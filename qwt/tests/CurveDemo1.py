@@ -8,17 +8,15 @@
 
 SHOW = True # Show test in GUI-based test launcher
 
-import sys
 import numpy as np
 
-from qwt.qt.QtGui import (QApplication, QPen, QBrush, QFrame, QFont, QPainter,
-                          QPaintEngine)
+from qwt.qt.QtGui import QPen, QBrush, QFrame, QFont, QPainter, QPaintEngine
 from qwt.qt.QtCore import QSize
 from qwt.qt.QtCore import Qt
 from qwt import QwtSymbol, QwtPlotCurve, QwtPlotItem, QwtScaleMap
 
 
-class CurveDemo(QFrame):
+class CurveDemo1(QFrame):
     def __init__(self, *args):
         QFrame.__init__(self, *args)
 
@@ -118,14 +116,6 @@ class CurveDemo(QFrame):
             self.shiftDown(r, dy)
 
 
-def make():
-    demo = CurveDemo()
-    demo.resize(300, 600)
-    demo.show()
-    return demo
-
-
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    app = test_widget(CurveDemo1, size=(300, 600))

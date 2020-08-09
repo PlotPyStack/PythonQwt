@@ -9,13 +9,10 @@
 SHOW = True # Show test in GUI-based test launcher
 
 import os
-import sys
 import numpy as np
 
-from qwt.qt.QtGui import (QApplication, QColor, QBrush, QWidget, QVBoxLayout,
-                          QLabel)
-from qwt.qt.QtCore import QRect, QTime
-from qwt.qt.QtCore import Qt
+from qwt.qt.QtGui import QColor, QBrush, QWidget, QVBoxLayout, QLabel
+from qwt.qt.QtCore import QRect, QTime, Qt
 from qwt import (QwtPlot, QwtPlotMarker, QwtScaleDraw, QwtLegend, QwtPlotCurve,
                  QwtPlotItem, QwtLegendData, QwtText)
 
@@ -176,20 +173,20 @@ class CpuStat:
 
     def statistic(self):
         values = self.__lookup()
-        userDelta = 0.0
+        userDelta = 0.
         for i in [CpuStat.User, CpuStat.Nice]:
             userDelta += (values[i] - self.procValues[i])
         systemDelta = values[CpuStat.System] - self.procValues[CpuStat.System]
-        totalDelta = 0.0
+        totalDelta = 0.
         for i in range(len(self.procValues)):
             totalDelta += (values[i] - self.procValues[i])
         self.procValues = values
-        return 100.0*userDelta/totalDelta, 100.0*systemDelta/totalDelta
+        return 100.*userDelta/totalDelta, 100.*systemDelta/totalDelta
 
     def upTime(self):
         result = QTime()
         for item in self.procValues:
-            result = result.addSecs(item/100)
+            result = result.addSecs(int(.01*item))
         return result
 
     def __lookup(self):
@@ -208,7 +205,7 @@ class CpuStat:
 class CpuPieMarker(QwtPlotMarker):
     def __init__(self, *args):
         QwtPlotMarker.__init__(self, *args)
-        self.setZ(1000.0)
+        self.setZ(1000.)
         self.setRenderHint(QwtPlotItem.RenderAntialiased, True)
         
     def rtti(self):
@@ -219,18 +216,18 @@ class CpuPieMarker(QwtPlotMarker):
         pieRect = QRect()
         pieRect.setX(rect.x() + margin)
         pieRect.setY(rect.y() + margin)
-        pieRect.setHeight(yMap.transform(80.0))
+        pieRect.setHeight(int(yMap.transform(80.)))
         pieRect.setWidth(pieRect.height())
 
         angle = 3*5760/4
         for key in ["User", "System", "Idle"]:
             curve = self.plot().cpuPlotCurve(key)
             if curve.dataSize():
-                value = int(5760*curve.sample(0).y()/100.0)
+                value = int(5760*curve.sample(0).y()/100.)
                 painter.save()
                 painter.setBrush(QBrush(curve.pen().color(),
                                               Qt.SolidPattern))
-                painter.drawPie(pieRect, -angle, -value)
+                painter.drawPie(pieRect, int(-angle), int(-value))
                 painter.restore()
                 angle += value
 
@@ -248,7 +245,7 @@ class TimeScaleDraw(QwtScaleDraw):
 class Background(QwtPlotItem):
     def __init__(self):
         QwtPlotItem.__init__(self)
-        self.setZ(0.0)
+        self.setZ(0.)
 
     def rtti(self):
         return QwtPlotItem.Rtti_PlotUserItem
@@ -258,8 +255,8 @@ class Background(QwtPlotItem):
         r = QRect(rect)
 
         for i in range(100, 0, -10):
-            r.setBottom(yMap.transform(i - 10))
-            r.setTop(yMap.transform(i))
+            r.setBottom(int(yMap.transform(i - 10)))
+            r.setTop(int(yMap.transform(i)))
             painter.fillRect(r, c)
             c = c.darker(110)
 
@@ -285,7 +282,7 @@ class CpuPlot(QwtPlot):
 
         self.curves = {}
         self.data = {}
-        self.timeData = 1.0 * np.arange(HISTORY-1, -1, -1)
+        self.timeData = 1. * np.arange(HISTORY-1, -1, -1)
         self.cpuStat = CpuStat()
 
         self.setAutoReplot(False)
@@ -300,7 +297,7 @@ class CpuPlot(QwtPlot):
         self.setAxisScaleDraw(
             QwtPlot.xBottom, TimeScaleDraw(self.cpuStat.upTime()))
         self.setAxisScale(QwtPlot.xBottom, 0, HISTORY)
-        self.setAxisLabelRotation(QwtPlot.xBottom, -50.0)
+        self.setAxisLabelRotation(QwtPlot.xBottom, -50.)
         self.setAxisLabelAlignment(
             QwtPlot.xBottom, Qt.AlignLeft | Qt.AlignBottom)
 
@@ -321,21 +318,21 @@ class CpuPlot(QwtPlot):
 
         curve = CpuCurve('User')
         curve.setColor(Qt.blue)
-        curve.setZ(curve.z() - 1.0)
+        curve.setZ(curve.z() - 1.)
         curve.attach(self)
         self.curves['User'] = curve
         self.data['User'] = np.zeros(HISTORY, np.float)
 
         curve = CpuCurve('Total')
         curve.setColor(Qt.black)
-        curve.setZ(curve.z() - 2.0)
+        curve.setZ(curve.z() - 2.)
         curve.attach(self)
         self.curves['Total'] = curve
         self.data['Total'] = np.zeros(HISTORY, np.float)
 
         curve = CpuCurve('Idle')
         curve.setColor(Qt.darkCyan)
-        curve.setZ(curve.z() - 3.0)
+        curve.setZ(curve.z() - 3.)
         curve.attach(self)
         self.curves['Idle'] = curve
         self.data['Idle'] = np.zeros(HISTORY, np.float)
@@ -355,9 +352,9 @@ class CpuPlot(QwtPlot):
             data[1:] = data[0:-1]
         self.data["User"][0], self.data["System"][0] = self.cpuStat.statistic()
         self.data["Total"][0] = self.data["User"][0] + self.data["System"][0]
-        self.data["Idle"][0] = 100.0 - self.data["Total"][0]
+        self.data["Idle"][0] = 100. - self.data["Total"][0]
 
-        self.timeData += 1.0
+        self.timeData += 1.
 
         self.setAxisScale(
             QwtPlot.xBottom, self.timeData[-1], self.timeData[0])
@@ -375,25 +372,18 @@ class CpuPlot(QwtPlot):
         return self.curves[key]
 
 
-def make():
-    demo = QWidget()
-    demo.setWindowTitle('Cpu Plot')
-    
-    plot = CpuPlot(demo)
-    plot.setTitle("History")
-    
-    label = QLabel("Press the legend to en/disable a curve", demo)
-
-    layout = QVBoxLayout(demo)
-    layout.addWidget(plot)
-    layout.addWidget(label)
-
-    demo.resize(600, 400)
-    demo.show()
-    return demo
-
+class CpuWidget(QWidget):
+    def __init__(self, parent=None):
+        super(CpuWidget, self).__init__(parent)
+        layout = QVBoxLayout()
+        self.setLayout(layout)
+        plot = CpuPlot()
+        plot.setTitle("History")
+        layout.addWidget(plot)
+        label = QLabel("Press the legend to en/disable a curve")
+        layout.addWidget(label)
+        
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    app = test_widget(CpuWidget, (600, 400))

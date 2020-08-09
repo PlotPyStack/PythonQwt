@@ -8,12 +8,10 @@
 
 SHOW = True # Show test in GUI-based test launcher
 
-import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, QBrush
-from qwt.qt.QtCore import QSize, QRectF, QLineF
-from qwt.qt.QtCore import Qt
+from qwt.qt.QtGui import QPen, QBrush
+from qwt.qt.QtCore import QSize, QRectF, QLineF, Qt
 from qwt import QwtPlot, QwtSymbol, QwtPlotGrid, QwtPlotCurve, QwtText
 
 
@@ -245,45 +243,33 @@ class ErrorBarPlotCurve(QwtPlotCurve):
                                         canvasRect, first, last)
 
 
-def make():
-    # create a plot with a white canvas
-    demo = QwtPlot(QwtText("Errorbar Demonstation"))
-    demo.setCanvasBackground(Qt.white)
-    demo.plotLayout().setAlignCanvasToScales(True)
-
-    grid = QwtPlotGrid()
-    grid.attach(demo)
-    grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
-    
-    # calculate data and errors for a curve with error bars
-    x = np.arange(0, 10.1, 0.5, np.float)
-    y = np.sin(x)
-    dy = 0.2 * abs(y)
-    # dy = (0.15 * abs(y), 0.25 * abs(y)) # uncomment for asymmetric error bars
-    dx = 0.2 # all error bars the same size
-    errorOnTop = False # uncomment to draw the curve on top of the error bars
-    # errorOnTop = True # uncomment to draw the error bars on top of the curve
-    curve = ErrorBarPlotCurve(
-        x = x,
-        y = y,
-        dx = dx,
-        dy = dy,
-        curvePen = QPen(Qt.black, 2),
-        curveSymbol = QwtSymbol(QwtSymbol.Ellipse,
-                                    QBrush(Qt.red),
-                                    QPen(Qt.black, 2),
-                                    QSize(9, 9)),
-        errorPen = QPen(Qt.blue, 2),
-        errorCap = 10,
-        errorOnTop = errorOnTop,
-        )
-    curve.attach(demo)
-    demo.resize(640, 480)
-    demo.show()
-    return demo
+class ErrorBarPlot(QwtPlot):
+    def __init__(self, parent=None, title=None):
+        super(ErrorBarPlot, self).__init__(QwtText("Errorbar Demonstation"))
+        self.setCanvasBackground(Qt.white)
+        self.plotLayout().setAlignCanvasToScales(True)
+        grid = QwtPlotGrid()
+        grid.attach(self)
+        grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
+        
+        # calculate data and errors for a curve with error bars
+        x = np.arange(0, 10.1, 0.5, np.float)
+        y = np.sin(x)
+        dy = 0.2 * abs(y)
+        # dy = (0.15 * abs(y), 0.25 * abs(y)) # uncomment for asymmetric error bars
+        dx = 0.2 # all error bars the same size
+        errorOnTop = False # uncomment to draw the curve on top of the error bars
+        # errorOnTop = True # uncomment to draw the error bars on top of the curve
+        symbol = QwtSymbol(QwtSymbol.Ellipse, QBrush(Qt.red),
+                           QPen(Qt.black, 2), QSize(9, 9))
+        curve = ErrorBarPlotCurve(x=x, y=y, dx=dx, dy=dy,
+                                  curvePen=QPen(Qt.black, 2),
+                                  curveSymbol=symbol,
+                                  errorPen=QPen(Qt.blue, 2),
+                                  errorCap=10, errorOnTop=errorOnTop)
+        curve.attach(self)
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    app = test_widget(ErrorBarPlot, size=(640, 480))

@@ -8,7 +8,6 @@
 
 SHOW = True # Show test in GUI-based test launcher
 
-import sys
 import numpy as np
 
 from qwt.qt.QtGui import (QApplication, QPen, QBrush, QColor, QWidget,
@@ -166,9 +165,9 @@ class Plot(QwtPlot):
                 margin = 2
                 x = size.width() - object.margin() + margin
                 w = object.margin() - 2 * margin
-                y = object.startBorderDist()
-                h = (size.height()
-                     - object.startBorderDist() - object.endBorderDist())
+                y = int(object.startBorderDist())
+                h = int(size.height()
+                        - object.startBorderDist() - object.endBorderDist())
                 self.__colorBar.setGeometry(x, y, w, h)
         return QwtPlot.eventFilter(self, object, event)
 
@@ -277,7 +276,7 @@ class CanvasPicker(QObject):
                 self.__moveBy(0, -delta)
             elif key == Qt.Key_9:
                 self.__moveBy(delta, -delta)
-        return QwtPlot.eventFilter(self.__plot, object, event)
+        return False
 
     def __select(self, pos):
         found, distance, point = None, 1e100, -1
@@ -433,27 +432,24 @@ class ScalePicker(QObject):
             return QRect()
 
 
-def make():
-    demo = QMainWindow()
-    toolBar = QToolBar(demo)
-    toolBar.addAction(QWhatsThis.createAction(toolBar))
-    demo.addToolBar(toolBar)
-    plot = Plot(demo)
-    demo.setCentralWidget(plot)
-    plot.setWhatsThis(
-        'An useless plot to demonstrate how to use event filtering.\n\n'
-        'You can click on the color bar, the scales or move the slider.\n'
-        'All points can be moved using the mouse or the keyboard.'
-        )
-    CanvasPicker(plot)
-    scalePicker = ScalePicker(plot)
-    scalePicker.clicked.connect(plot.insertCurve)
-    demo.resize(540, 400)
-    demo.show()
-    return demo
+class EventFilterWindow(QMainWindow):
+    def __init__(self, parent=None):
+        super(EventFilterWindow, self).__init__(parent=parent)
+        toolBar = QToolBar(self)
+        toolBar.addAction(QWhatsThis.createAction(toolBar))
+        self.addToolBar(toolBar)
+        plot = Plot()
+        self.setCentralWidget(plot)
+        plot.setWhatsThis(
+            'An useless plot to demonstrate how to use event filtering.\n\n'
+            'You can click on the color bar, the scales or move the slider.\n'
+            'All points can be moved using the mouse or the keyboard.'
+            )
+        CanvasPicker(plot)
+        scalePicker = ScalePicker(plot)
+        scalePicker.clicked.connect(plot.insertCurve)
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    app = test_widget(EventFilterWindow, size=(540, 400))

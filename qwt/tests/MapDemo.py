@@ -9,13 +9,11 @@
 SHOW = True # Show test in GUI-based test launcher
 
 import random
-import sys
 import time
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, QBrush, QMainWindow, QToolBar
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qwt.qt.QtGui import QPen, QBrush, QMainWindow, QToolBar
+from qwt.qt.QtCore import QSize, Qt
 from qwt import QwtPlot, QwtSymbol, QwtPlotCurve
 
 
@@ -101,14 +99,6 @@ class MapDemo(QMainWindow):
         self.plot.replot()
 
 
-def make():
-    demo = MapDemo()
-    demo.resize(600, 600)
-    demo.show()
-    return demo
-
-
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    app = test_widget(MapDemo, size=(600, 600))

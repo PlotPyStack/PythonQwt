@@ -9,18 +9,15 @@
 SHOW = True # Show test in GUI-based test launcher
 
 import random
-import sys
 import numpy as np
 
-from qwt.qt.QtGui import QApplication, QPen, QBrush, QFrame
-from qwt.qt.QtCore import QSize
-from qwt.qt.QtCore import Qt
+from qwt.qt.QtGui import QPen, QBrush, QFrame
+from qwt.qt.QtCore import QSize, Qt
 from qwt import (QwtPlot, QwtPlotMarker, QwtSymbol, QwtLegend, QwtPlotCurve,
                  QwtAbstractScaleDraw)
 
 
 class DataPlot(QwtPlot):
-
     def __init__(self, *args):
         QwtPlot.__init__(self, *args)
 
@@ -92,14 +89,6 @@ class DataPlot(QwtPlot):
         self.phase += np.pi*0.02
 
 
-def make():
-    demo = DataPlot()
-    demo.resize(500, 300)
-    demo.show()
-    return demo
-
-
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    demo = make()
-    sys.exit(app.exec_())
+    from qwt.tests import test_widget
+    app = test_widget(DataPlot, size=(500, 300))
