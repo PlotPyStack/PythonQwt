@@ -1,6 +1,23 @@
 # PythonQwt Releases #
 
 
+### Version 0.6.2 ###
+
+- Fixed Python crash occuring at exit when deleting objects (Python 3 only)
+- Moved documentation to https://docs.readthedocs.io/
+- Added unattended tests with multiple versions of WinPython:
+    
+    - WinPython-32bit-2.7.6.4
+    - WinPython-64bit-2.7.6.4
+    - WinPython-64bit-3.4.4.3
+    - WinPython-64bit-3.4.4.3Qt5
+    - WPy64-3680
+    - WPy64-3771
+    - WPy64-3830
+
+- Added PyQt4/PyQt5/PySide automatic switch depending on installed libraries
+
+
 ### Version 0.6.1 ###
 
 - Fixed rounding issue with PythonQwt scale engine (0...1000 is now divided 

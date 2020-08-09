@@ -1,4 +1,5 @@
 .spyderproject
+.spyproject
 qwt-6.*
 qwt/tests/demo.png
 PythonQwt.chm
