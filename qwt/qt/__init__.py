@@ -9,10 +9,18 @@
 
 import os
 
-os.environ.setdefault('QT_API', 'pyqt')
-assert os.environ['QT_API'] in ('pyqt5', 'pyqt', 'pyside')
-
-API = os.environ['QT_API']
+API = os.environ.get('QT_API')
+if API is None:
+    try:
+        import PyQt5  # analysis:ignore
+        API = 'pyqt5'
+    except ImportError:
+        try:
+            import PyQt4  # analysis:ignore
+            API = 'pyqt'
+        except ImportError:
+            API = 'pyside'
+os.environ['QT_API'] = API
 API_NAME = {'pyqt5': 'PyQt5', 'pyqt': 'PyQt4', 'pyside': 'PySide'}[API]
 
 if API == 'pyqt':
