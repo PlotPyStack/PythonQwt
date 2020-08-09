@@ -1,6 +1,6 @@
 # PythonQwt: Qt plotting widgets for Python
 
-<img src="https://github.com/PierreRaybaut/PythonQwt/blob/master/doc/images/panorama.png?raw=true">
+<img src="http://pythonhosted.org/PythonQwt/_images/panorama.png">
 
 The `PythonQwt` project was initiated to solve -at least temporarily- the 
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
@@ -11,7 +11,7 @@ based on NumPy and other libraries.
 The `PythonQwt` package consists of a single Python package named `qwt` and 
 of a few other files (examples, doc, ...).
 
-See [documentation](https://pythonqwt.readthedocs.io/en/latest/) for more details on 
+See [documentation](http://pythonhosted.org/PythonQwt/) for more details on 
 the library and [changelog](CHANGELOG.md) for recent history of changes.
 
 ## Copyrights
@@ -54,7 +54,7 @@ Only the following plot items are currently implemented in `qwt` (the only
 plot items needed by `guiqwt`): `QwtPlotItem` (base class), `QwtPlotItem`, 
 `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
 
-See "Overview" section in [documentation](https://pythonqwt.readthedocs.io/en/latest/) 
+See "Overview" section in [documentation](http://pythonhosted.org/PythonQwt/) 
 for more details on API limitations when comparing to Qwt.
 
 ## Dependencies
