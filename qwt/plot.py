@@ -20,7 +20,7 @@ QwtPlotItem
 """
 
 from .qt.QtGui import (QWidget, QFont, QSizePolicy, QFrame, QApplication,
-                       QRegion, QPainter, QPalette)
+                       QPainter, QPalette)
 from .qt.QtCore import Qt, Signal, QEvent, QSize, QRectF
 
 from .text import QwtText, QwtTextLabel
@@ -355,12 +355,14 @@ class QwtPlot(QFrame, QwtPlotDict):
         qwtEnableLegendItems(self, True)
 
     def __del__(self):
-        #XXX Is is really necessary in Python? (pure transcription of C++)
         self.setAutoReplot(False)
-        self.detachItems(QwtPlotItem.Rtti_PlotItem, self.autoDelete())
-        self.__data.layout = None
-        self.deleteAxesData()
-        self.__data = None
+        #XXX Is is really necessary in Python? (pure transcription of C++)
+        # The following line have been commented to avoid crashing Python 
+        # when exiting interpreter (Python 3 only)
+#        self.detachItems(QwtPlotItem.Rtti_PlotItem, self.autoDelete())
+#        self.__data.layout = None
+#        self.deleteAxesData()
+#        self.__data = None
         
     def initAxesData(self):
         """Initialize axes"""
