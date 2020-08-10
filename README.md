@@ -5,8 +5,9 @@
 [![PyPI status](https://img.shields.io/pypi/status/PythonQwt.svg)](https://github.com/PierreRaybaut/PythonQwt)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/PythonQwt.svg)](https://pypi.python.org/pypi/PythonQwt/)
 [![download count](https://img.shields.io/conda/dn/conda-forge/PythonQwt.svg)](https://www.anaconda.com/download/)
+[![Documentation Status](https://readthedocs.org/projects/pythonqwt/badge/?version=latest)](https://pythonqwt.readthedocs.io/en/latest/?badge=latest)
 
-<img src="http://pythonhosted.org/PythonQwt/_images/panorama.png">
+<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/panorama.png">
 
 The `PythonQwt` project was initiated to solve -at least temporarily- the 
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
@@ -17,7 +18,7 @@ based on NumPy and other libraries.
 The `PythonQwt` package consists of a single Python package named `qwt` and 
 of a few other files (examples, doc, ...).
 
-See [documentation](http://pythonhosted.org/PythonQwt/) for more details on 
+See documentation [online](https://pythonqwt.readthedocs.io/en/latest/) or [PDF](https://pythonqwt.readthedocs.io/_/downloads/en/latest/pdf/) for more details on 
 the library and [changelog](CHANGELOG.md) for recent history of changes.
 
 ## Copyrights
@@ -60,7 +61,7 @@ Only the following plot items are currently implemented in `qwt` (the only
 plot items needed by `guiqwt`): `QwtPlotItem` (base class), `QwtPlotItem`, 
 `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
 
-See "Overview" section in [documentation](http://pythonhosted.org/PythonQwt/) 
+See "Overview" section in [documentation](https://pythonqwt.readthedocs.io/en/latest/) 
 for more details on API limitations when comparing to Qwt.
 
 ## Dependencies
