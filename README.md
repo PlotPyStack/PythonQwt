@@ -1,7 +1,9 @@
 # PythonQwt: Qt plotting widgets for Python
 
+[![license](https://img.shields.io/pypi/l/PythonQwt.svg)](./LICENSE)
 [![pypi version](https://img.shields.io/pypi/v/PythonQwt.svg)](https://pypi.org/project/PythonQwt/)
 [![PyPI status](https://img.shields.io/pypi/status/PythonQwt.svg)](https://github.com/PierreRaybaut/PythonQwt)
+[![PyPI pyversions](https://img.shields.io/pypi/pyversions/PythonQwt.svg)](https://pypi.python.org/pypi/PythonQwt/)
 [![download count](https://img.shields.io/conda/dn/conda-forge/PythonQwt.svg)](https://www.anaconda.com/download/)
 
 <img src="http://pythonhosted.org/PythonQwt/_images/panorama.png">
