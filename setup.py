@@ -32,7 +32,7 @@ LONG_DESCRIPTION = """\
 PythonQwt: Qt plotting widgets for Python
 =========================================
 
-.. image:: http://pythonhosted.org/PythonQwt/_images/panorama.png
+.. image:: https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/panorama.png
 
 The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical 
 user interfaces for the Python programming language. It is compatible with 
@@ -51,17 +51,18 @@ which is a pure Python implementation of Qwt C++ library with some
 limitations: efforts were concentrated on basic plotting features, leaving 
 higher level features to the `guiqwt` library.
 
-See `README`_ and `documentation`_ for more details on the library and `changelog`_ for recent history of changes.
+See `README`_ and documentation (`online`_ or `PDF`_) for more details on the library and `changelog`_ for recent history of changes.
 
 .. _README: https://github.com/PierreRaybaut/PythonQwt/blob/master/README.md
-.. _documentation: http://pythonhosted.org/PythonQwt/
+.. _online: https://pythonqwt.readthedocs.io/en/latest/
+.. _PDF: https://pythonqwt.readthedocs.io/_/downloads/en/latest/pdf/
 .. _changelog: https://github.com/PierreRaybaut/PythonQwt/blob/master/CHANGELOG.md
 """
 KEYWORDS = ''
 CLASSIFIERS = []
 if 'beta' in version or 'b' in version:
     CLASSIFIERS += ['Development Status :: 4 - Beta']
-elif 'alpha' in version or 'a' in version or version.startswith('0.'):
+elif 'alpha' in version or 'a' in version:
     CLASSIFIERS += ['Development Status :: 3 - Alpha']
 else:
     CLASSIFIERS += ['Development Status :: 5 - Production/Stable']
