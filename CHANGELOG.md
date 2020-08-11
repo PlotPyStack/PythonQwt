@@ -1,6 +1,11 @@
 # PythonQwt Releases #
 
 
+### Version 0.6.3 ###
+
+- Fixed obvious errors (+ poor implementations) in untested code parts
+
+
 ### Version 0.6.2 ###
 
 - Fixed Python crash occuring at exit when deleting objects (Python 3 only)
