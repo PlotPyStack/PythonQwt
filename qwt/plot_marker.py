@@ -475,7 +475,8 @@ class QwtPlotMarker(QwtPlotItem):
                 width = args[1]
                 if len(args) > 2:
                     style = args[2]
-            self.setLinePen(QPen(color, width, style))
+            pen = QPen(color, width, style)
+            self.setLinePen(pen)
         else:
             raise TypeError("%s().setLinePen() takes 1, 2 or 3 argument(s) "\
                             "(%s given)" % (self.__class__.__name__, len(args)))

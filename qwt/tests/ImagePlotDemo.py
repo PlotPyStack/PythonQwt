@@ -98,9 +98,10 @@ class PlotImage(QwtPlotItem):
         # copy
         image = self.image.copy(x1, y1, x2-x1, y2-y1)
         # zoom
-        image = image.scaled(xMap.p2()-xMap.p1()+1, yMap.p1()-yMap.p2()+1)
+        image = image.scaled(int(xMap.p2()-xMap.p1()+1),
+                             int(yMap.p1()-yMap.p2()+1))
         # draw
-        painter.drawImage(xMap.p1(), yMap.p2(), image)
+        painter.drawImage(int(xMap.p1()), int(yMap.p2()), image)
     
 
 class ImagePlot(QwtPlot):

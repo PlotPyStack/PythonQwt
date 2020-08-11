@@ -324,6 +324,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         """
         if len(args) == 3:
             color, width, style = args
+            pen = QPen(color, width, style)
         elif len(args) == 1:
             pen, = args
         else:

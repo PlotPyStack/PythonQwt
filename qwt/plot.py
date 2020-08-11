@@ -1504,8 +1504,8 @@ class QwtPlot(QFrame, QwtPlotDict):
                 elif lpos == self.BottomLegend:
                     previousInChain = self.footerLabel()
                 
-            if previousInChain:
-                qwtSetTabOrder(previousInChain, legend, True)
+                if previousInChain is not None:
+                    qwtSetTabOrder(previousInChain, legend, True)
         
         self.updateLayout()
     

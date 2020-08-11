@@ -196,6 +196,8 @@ def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
             triangle = [QPointF(x1, y2), QPointF(x, y1), QPointF(x2, y2)]
         elif type == QwtTriangle.Down:
             triangle = [QPointF(x1, y1), QPointF(x, y2), QPointF(x2, y1)]
+        else:
+            raise TypeError("Unknown triangle type %s" % type)
         painter.drawPolygon(QPolygonF(triangle))
 
 

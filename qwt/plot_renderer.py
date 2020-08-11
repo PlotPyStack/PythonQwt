@@ -281,14 +281,11 @@ class QwtPlotRenderer(QObject):
         raster graphics formats.
 
         :param qwt.plot.QwtPlot plot: Plot widget
-        :param str fileName: Path of the file, where the document will be stored
-        :param str format: Format for the document
-        :param QSizeF sizeMM: Size for the document in millimeters.
-        :param int resolution: Resolution in dots per Inch (dpi)
+        :param dest: QPaintDevice, QPrinter or QSvgGenerator instance
         
         .. seealso::
         
-            :py:meth:`renderTo()`, :py:meth:`render()`, 
+            :py:meth:`render()`, 
             :py:meth:`qwt.painter.QwtPainter.setRoundingAlignment()`
         """
         if isinstance(dest, QPaintDevice):
@@ -308,6 +305,8 @@ class QwtPlotRenderer(QObject):
                 rect.setRect(0, 0, dest.width(), dest.height())
             if rect.isEmpty():
                 rect.setRect(0, 0, 800, 600)
+        else:
+            raise TypeError("Unsupported destination type %s" % type(dest))
         p = QPainter(dest)
         self.render(plot, p, rect)
     
@@ -501,7 +500,7 @@ class QwtPlotRenderer(QObject):
             y = rect.bottom() - 1.0 - baseDist
             w = rect.width() - startDist - endDist
             align = QwtScaleDraw.TopScale
-        elif axisId == QwtPlot.xBottom:
+        else:  # QwtPlot.xBottom
             x = rect.left() + startDist
             y = rect.top() + baseDist
             w = rect.width() - startDist - endDist

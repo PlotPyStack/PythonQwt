@@ -92,16 +92,14 @@ class CurveDemo1(QFrame):
     def drawContents(self, painter):
         # draw curves
         r = self.contentsRect()
-        dy = r.height()/len(self.curves)
+        dy = int(r.height()/len(self.curves))
         r.setHeight(dy)
         for curve in self.curves:
             self.xMap.setPaintInterval(r.left(), r.right())
             self.yMap.setPaintInterval(r.top(), r.bottom())
-            engine = painter.device().paintEngine()
-            if engine is not None and engine.hasFeature(QPaintEngine.Antialiasing):
-                painter.setRenderHint(
-                    QPainter.Antialiasing,
-                    curve.testRenderHint(QwtPlotItem.RenderAntialiased))
+            painter.setRenderHint(
+                QPainter.Antialiasing,
+                curve.testRenderHint(QwtPlotItem.RenderAntialiased))
             curve.draw(painter, self.xMap, self.yMap, r)
             self.shiftDown(r, dy)
         # draw titles

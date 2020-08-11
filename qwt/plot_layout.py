@@ -253,7 +253,7 @@ class QwtPlotLayout(object):
                 self.__data.alignCanvasToScales[axis] = on
         elif len(args) == 2:
             axisId, on = args
-            if axis in QwtPlot.validAxes:
+            if axisId in QwtPlot.validAxes:
                 self.__data.alignCanvasToScales[axisId] = on
         else:
             raise TypeError("%s().setAlignCanvasToScales() takes 1 or 2 "\

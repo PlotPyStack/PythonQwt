@@ -130,7 +130,7 @@ class QwtLegendData(object):
         if isinstance(titleValue, QwtText):
             text = titleValue
         else:
-            text.setText(titleValue)
+            text = QwtText(titleValue)
         return text
     
     def icon(self):
