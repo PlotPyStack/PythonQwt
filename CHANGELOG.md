@@ -1,8 +1,11 @@
 # PythonQwt Releases #
 
 
-### Version 0.6.3 ###
+### Version 0.7.0 ###
 
+- QwtPlot: added "flatStyle" option, a PythonQwt-exclusive feature improving 
+  default plot style (without margin, more compact and flat look) -- option is 
+  enabled by default
 - Fixed obvious errors (+ poor implementations) in untested code parts
 
 

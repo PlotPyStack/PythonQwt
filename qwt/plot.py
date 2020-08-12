@@ -20,7 +20,7 @@ QwtPlotItem
 """
 
 from .qt.QtGui import (QWidget, QFont, QSizePolicy, QFrame, QApplication,
-                       QPainter, QPalette)
+                       QPainter, QPalette, QColor)
 from .qt.QtCore import Qt, Signal, QEvent, QSize, QRectF
 
 from .text import QwtText, QwtTextLabel
@@ -192,6 +192,7 @@ class QwtPlot_PrivateData(QwtPlotDict_PrivateData):
         self.legend = None
         self.layout = None
         self.autoReplot = None
+        self.flatStyle = None
 
 
 class AxisData(object):
@@ -309,7 +310,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         self.__data.autoReplot = False
                 
         self.setAutoReplot(True)
-#        self.setPlotLayout(self.__data.layout)
+        self.setPlotLayout(self.__data.layout)
         
         # title
         self.__data.titleLabel = QwtTextLabel(self)
@@ -338,6 +339,8 @@ class QwtPlot(QFrame, QwtPlotDict):
         self.__data.canvas = QwtPlotCanvas(self)
         self.__data.canvas.setObjectName("QwtPlotCanvas")
         self.__data.canvas.installEventFilter(self)
+
+        self.setFlatStyle(True)
         
         self.setSizePolicy(QSizePolicy.MinimumExpanding,
                            QSizePolicy.MinimumExpanding)
@@ -972,7 +975,7 @@ class QwtPlot(QFrame, QwtPlotDict):
 
         .. seealso::
         
-            :py:meth:`canvas()`
+            :py:meth:`autoReplot()`
         """
         self.__data.autoReplot = tf
     
@@ -986,6 +989,58 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         return self.__data.autoReplot
     
+    def setFlatStyle(self, state):
+        """
+        Set or reset the flatStyle option
+
+        If the flatStyle option is set, the plot will be 
+        rendered without any margin (scales, canvas, layout).
+
+        Enabling this option makes the plot look flat and compact.
+        
+        The flatStyle option is set to True by default.
+        
+        :param bool state: True or False.
+
+        .. seealso::
+        
+            :py:meth:`flatStyle()`
+        """
+        if state:
+            self.canvas().setFrameStyle(QFrame.NoFrame)
+            self.plotLayout().setCanvasMargin(0)
+            self.plotLayout().setSpacing(0)
+            palette = self.palette()
+            palette.setColor(QPalette.WindowText, QColor(Qt.darkGray))
+            palette.setColor(QPalette.Text, QColor("#444444"))
+            self.setPalette(palette)
+            for axis_id in self.validAxes:
+                self.axisWidget(axis_id).setMargin(0)
+                self.axisWidget(axis_id).setSpacing(0)
+                # self.axisWidget(axis_id).setBorderDist(0, 0)
+        else:
+            self.canvas().setFrameStyle(QFrame.Panel|QFrame.Sunken)
+            self.plotLayout().setCanvasMargin(4)
+            self.plotLayout().setSpacing(5)
+            palette = self.palette()
+            palette.setColor(QPalette.WindowText, QColor(Qt.black))
+            palette.setColor(QPalette.Text, QColor(Qt.black))
+            self.setPalette(palette)
+            for axis_id in self.validAxes:
+                self.axisWidget(axis_id).setMargin(2)
+                self.axisWidget(axis_id).setSpacing(2)
+        self.__data.flatStyle = state
+    
+    def flatStyle(self):
+        """
+        :return: True if the flatStyle option is set.
+
+        .. seealso::
+        
+            :py:meth:`setFlatStyle()`
+        """
+        return self.__data.flatStyle
+
     def setTitle(self, title):
         """
         Change the plot's title

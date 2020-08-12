@@ -62,7 +62,8 @@ class CartesianPlot(QwtPlot):
         # attach a grid
         grid = QwtPlotGrid()
         grid.attach(self)
-        grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
+        grid.setPen(QPen(Qt.lightGray, 0, Qt.DotLine))
+        grid.setZ(-1)
         # attach a x-axis
         xaxis = CartesianAxis(QwtPlot.xBottom, QwtPlot.yLeft)
         xaxis.attach(self)
@@ -83,11 +84,11 @@ class CartesianPlot(QwtPlot):
         # attach another curve
         curve = QwtPlotCurve('y = 4*pi*sin(x)*cos(x)**2')
         curve.attach(self)
-        curve.setPen(QPen(Qt.black, 2))
+        curve.setPen(QPen(Qt.blue, 2))
         curve.setData(x, z)
         self.replot()
 
 
 if __name__ == '__main__':
     from qwt.tests import test_widget
-    test_widget(CartesianPlot, (400, 300))
+    test_widget(CartesianPlot, (800, 480))

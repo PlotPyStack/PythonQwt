@@ -54,7 +54,7 @@ class TestPlot(QwtPlot):
                 ticks_font = self.axisFont(axis_id)
                 self.setAxisFont(axis_id, ticks_font)
         
-        self.canvas().setFrameStyle(0)#QFrame.Panel|QFrame.Sunken)
+        self.canvas().setFrameStyle(0)
         self.plotLayout().setCanvasMargin(0)
         self.axisWidget(QwtPlot.yLeft).setMargin(0)
         self.axisWidget(QwtPlot.xTop).setMargin(0)
