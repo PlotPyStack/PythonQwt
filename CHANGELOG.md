@@ -6,6 +6,9 @@
 - QwtPlot: added "flatStyle" option, a PythonQwt-exclusive feature improving 
   default plot style (without margin, more compact and flat look) -- option is 
   enabled by default
+- QwtAbstractScaleDraw: added option to set the tick color lighter factor for 
+  each tick type (minor, medium, major) -- this feature is used with the new 
+  flatStyle option
 - Fixed obvious errors (+ poor implementations) in untested code parts
 
 

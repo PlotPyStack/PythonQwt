@@ -23,6 +23,7 @@ class SimplePlot(QwtPlot):
         self.setAxisTitle(QwtPlot.xBottom, 'x -->')
         self.setAxisTitle(QwtPlot.yLeft, 'y -->')
         self.enableAxis(self.xBottom)
+        self.setFlatStyle(False)
 
         # insert a few curves
         cSin = QwtPlotCurve('y = sin(x)')

@@ -40,10 +40,12 @@ class QwtAbstractScaleDraw_PrivateData(object):
         self.components = QwtAbstractScaleDraw.Backbone|\
                           QwtAbstractScaleDraw.Ticks|\
                           QwtAbstractScaleDraw.Labels
-        self.tickLength = [None] * 3
-        self.tickLength[QwtScaleDiv.MinorTick] = 4.0
-        self.tickLength[QwtScaleDiv.MediumTick] = 6.0
-        self.tickLength[QwtScaleDiv.MajorTick] = 8.0
+        self.tick_length = {QwtScaleDiv.MinorTick: 4.,
+                            QwtScaleDiv.MediumTick: 6.,
+                            QwtScaleDiv.MajorTick: 8.}
+        self.tick_lighter_factor = {QwtScaleDiv.MinorTick: 100,
+                                    QwtScaleDiv.MediumTick: 100,
+                                    QwtScaleDiv.MajorTick: 100}
         
         self.map = QwtScaleMap()
         self.scaleDiv = QwtScaleDiv()
@@ -247,13 +249,15 @@ class QwtAbstractScaleDraw(object):
         if self.hasComponent(QwtAbstractScaleDraw.Ticks):
             painter.save()
             pen = painter.pen()
-            pen.setColor(palette.color(QPalette.WindowText))
             pen.setCapStyle(Qt.FlatCap)
-            painter.setPen(pen)
+            default_color = palette.color(QPalette.WindowText)
             for tickType in range(QwtScaleDiv.NTickTypes):
-                tickLen = self.__data.tickLength[tickType]
+                tickLen = self.__data.tick_length[tickType]
                 if tickLen <= 0.:
                     continue
+                factor = self.__data.tick_lighter_factor[tickType]
+                pen.setColor(default_color.lighter(factor))
+                painter.setPen(pen)
                 ticks = self.__data.scaleDiv.ticks(tickType)
                 for v in ticks:
                     if self.__data.scaleDiv.contains(v):
@@ -335,39 +339,33 @@ class QwtAbstractScaleDraw(object):
         """
         return self.__data.minExtent
         
-    def setTickLength(self, tickType, length):
+    def setTickLength(self, tick_type, length):
         """
         Set the length of the ticks
         
-        :param int tickType: Tick type
+        :param int tick_type: Tick type
         :param float length: New length
         
         .. warning::
         
             the length is limited to [0..1000]
         """
-        if tickType < QwtScaleDiv.MinorTick or\
-           tickType > QwtScaleDiv.MajorTick:
-            return
-        if length < 0.:
-            length = 0.
-        maxTickLen = 1000.
-        if length > maxTickLen:
-            length = maxTickLen
-        self.__data.tickLength[tickType] = length
+        if tick_type not in self.__data.tick_length:
+            raise ValueError("Invalid tick type: %r" % tick_type)
+        self.__data.tick_length[tick_type] = min([1000., max([0., length])])
     
-    def tickLength(self, tickType):
+    def tickLength(self, tick_type):
         """
+        :param int tick_type: Tick type
         :return: Length of the ticks
         
         .. seealso::
         
             :py:meth:`setTickLength()`, :py:meth:`maxTickLength()`
         """
-        if tickType < QwtScaleDiv.MinorTick or\
-           tickType > QwtScaleDiv.MajorTick:
-            return 0
-        return self.__data.tickLength[tickType]
+        if tick_type not in self.__data.tick_length:
+            raise ValueError("Invalid tick type: %r" % tick_type)
+        return self.__data.tick_length[tick_type]
     
     def maxTickLength(self):
         """
@@ -379,10 +377,31 @@ class QwtAbstractScaleDraw(object):
         
             :py:meth:`tickLength()`, :py:meth:`setTickLength()`
         """
-        length = 0.
-        for tickType in range(QwtScaleDiv.NTickTypes):
-            length = max([length, self.__data.tickLength[tickType]])
-        return length
+        return max([0.] + list(self.__data.tick_length.values()))
+        
+    def setTickLighterFactor(self, tick_type, factor):
+        """
+        Set the color lighter factor of the ticks
+        
+        :param int tick_type: Tick type
+        :param int factor: New factor
+        """
+        if tick_type not in self.__data.tick_length:
+            raise ValueError("Invalid tick type: %r" % tick_type)
+        self.__data.tick_lighter_factor[tick_type] = min([0, factor])
+    
+    def tickLighterFactor(self, tick_type):
+        """
+        :param int tick_type: Tick type
+        :return: Color lighter factor of the ticks
+        
+        .. seealso::
+        
+            :py:meth:`setTickLighterFactor()`
+        """
+        if tick_type not in self.__data.tick_length:
+            raise ValueError("Invalid tick type: %r" % tick_type)
+        return self.__data.tick_lighter_factor[tick_type]
     
     def label(self, value):
         """

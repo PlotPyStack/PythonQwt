@@ -1017,6 +1017,11 @@ class QwtPlot(QFrame, QwtPlotDict):
             for axis_id in self.validAxes:
                 self.axisWidget(axis_id).setMargin(0)
                 self.axisWidget(axis_id).setSpacing(0)
+                for tick_type, factor in ((QwtScaleDiv.MajorTick, 100),
+                                          (QwtScaleDiv.MediumTick, 125),
+                                          (QwtScaleDiv.MinorTick, 150)):
+                    self.axisScaleDraw(axis_id).setTickLighterFactor(tick_type,
+                                                                     factor)
                 # self.axisWidget(axis_id).setBorderDist(0, 0)
         else:
             self.canvas().setFrameStyle(QFrame.Panel|QFrame.Sunken)
@@ -1029,6 +1034,10 @@ class QwtPlot(QFrame, QwtPlotDict):
             for axis_id in self.validAxes:
                 self.axisWidget(axis_id).setMargin(2)
                 self.axisWidget(axis_id).setSpacing(2)
+                for tick_type in (QwtScaleDiv.MajorTick, QwtScaleDiv.MediumTick,
+                                  QwtScaleDiv.MinorTick):
+                    self.axisScaleDraw(axis_id).setTickLighterFactor(tick_type,
+                                                                     100)
         self.__data.flatStyle = state
     
     def flatStyle(self):
