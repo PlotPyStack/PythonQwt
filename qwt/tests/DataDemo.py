@@ -60,11 +60,11 @@ class DataPlot(QwtPlot):
     def alignScales(self):
         self.canvas().setFrameStyle(QFrame.Box | QFrame.Plain)
         self.canvas().setLineWidth(1)
-        for i in range(QwtPlot.axisCnt):
-            scaleWidget = self.axisWidget(i)
+        for axis_id in QwtPlot.AXES:
+            scaleWidget = self.axisWidget(axis_id)
             if scaleWidget:
                 scaleWidget.setMargin(0)
-            scaleDraw = self.axisScaleDraw(i)
+            scaleDraw = self.axisScaleDraw(axis_id)
             if scaleDraw:
                 scaleDraw.enableComponent(QwtAbstractScaleDraw.Backbone, False)
     

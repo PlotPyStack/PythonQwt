@@ -53,7 +53,7 @@ class BMPlot(QwtPlot):
             if symbol is not None:
                 curve.setSymbol(symbol)
             curve.attach(self)
-            curve.setData(xdata, ydata*idx, finite=False)
+            curve.setData(xdata, ydata*idx)#, finite=False)
 #        self.setAxisScale(self.yLeft, -1.5, 1.5)
 #        self.setAxisScale(self.xBottom, 9.9, 10.)
         self.replot()

@@ -278,8 +278,8 @@ class QwtPlot(QFrame, QwtPlotDict):
     legendDataChanged = Signal("PyQt_PyObject", "PyQt_PyObject")
 
     # enum Axis
-    validAxes = yLeft, yRight, xBottom, xTop = list(range(4))
-    axisCnt = len(validAxes)
+    AXES = yLeft, yRight, xBottom, xTop = list(range(4))
+    axisCnt = len(AXES)  # Not necessary but ensure compatibility with PyQwt
     
     # enum LegendPosition
     LeftLegend, RightLegend, BottomLegend, TopLegend = list(range(4))
@@ -315,8 +315,6 @@ class QwtPlot(QFrame, QwtPlotDict):
         # title
         self.__data.titleLabel = QwtTextLabel(self)
         self.__data.titleLabel.setObjectName("QwtPlotTitle")
-        self.__data.titleLabel.setFont(QFont(self.fontInfo().family(), 14,
-                                             QFont.Bold))
         text = QwtText(title)
         text.setRenderFlags(Qt.AlignCenter|Qt.TextWordWrap)
         self.__data.titleLabel.setText(text)
@@ -340,6 +338,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         self.__data.canvas.setObjectName("QwtPlotCanvas")
         self.__data.canvas.installEventFilter(self)
 
+        # plot style
         self.setFlatStyle(True)
         
         self.setSizePolicy(QSizePolicy.MinimumExpanding,
@@ -366,10 +365,90 @@ class QwtPlot(QFrame, QwtPlotDict):
 #        self.__data.layout = None
 #        self.deleteAxesData()
 #        self.__data = None
+
+    def setFlatStyle(self, state):
+        """
+        Set or reset the flatStyle option
+
+        If the flatStyle option is set, the plot will be 
+        rendered without any margin (scales, canvas, layout).
+
+        Enabling this option makes the plot look flat and compact.
         
+        The flatStyle option is set to True by default.
+        
+        :param bool state: True or False.
+
+        .. seealso::
+        
+            :py:meth:`flatStyle()`
+        """
+        def make_font(family=None, size=None, delta_size=None, weight=None):
+            finfo = self.fontInfo()
+            family = finfo.family() if family is None else family
+            weight = -1 if weight is None else weight
+            size = size if delta_size is None else finfo.pointSize()+delta_size
+            return QFont(family, size, weight)
+        if state:
+            # New PythonQwt-exclusive flat style
+            plot_title_font = make_font(family="Helvetica", delta_size=4,
+                                        weight=QFont.Bold)
+            axis_title_font = make_font(family="Helvetica", delta_size=2,
+                                        weight=QFont.Bold)
+            axis_label_font = make_font(family="Helvetica", delta_size=0)
+            tick_lighter_factors = (150, 125, 100)
+            scale_margin = scale_spacing = 0
+            canvas_frame_style = QFrame.NoFrame
+            plot_layout_canvas_margin = plot_layout_spacing = 0
+            ticks_color = Qt.darkGray
+            labels_color = "#444444"
+        else:
+            # Old PyQwt / Qwt style
+            plot_title_font = make_font(size=14, weight=QFont.Bold)
+            axis_title_font = make_font(size=12, weight=QFont.Bold)
+            axis_label_font = make_font(size=10)
+            tick_lighter_factors = (100, 100, 100)
+            scale_margin = scale_spacing = 2
+            canvas_frame_style = QFrame.Panel|QFrame.Sunken
+            plot_layout_canvas_margin = 4
+            plot_layout_spacing = 5
+            ticks_color = labels_color = Qt.black
+        self.canvas().setFrameStyle(canvas_frame_style)
+        self.plotLayout().setCanvasMargin(plot_layout_canvas_margin)
+        self.plotLayout().setSpacing(plot_layout_spacing)
+        palette = self.palette()
+        palette.setColor(QPalette.WindowText, QColor(ticks_color))
+        palette.setColor(QPalette.Text, QColor(labels_color))
+        self.setPalette(palette)
+        for axis_id in self.AXES:
+            scale_widget = self.axisWidget(axis_id)
+            scale_draw = self.axisScaleDraw(axis_id)
+            scale_widget.setFont(axis_label_font)
+            scale_widget.setMargin(scale_margin)
+            scale_widget.setSpacing(scale_spacing)
+            scale_title = scale_widget.title()
+            scale_title.setFont(axis_title_font)
+            scale_widget.setTitle(scale_title)
+            for tick_type, factor in enumerate(tick_lighter_factors):
+                scale_draw.setTickLighterFactor(tick_type, factor)
+        plot_title = self.title()
+        plot_title.setFont(plot_title_font)
+        self.setTitle(plot_title)
+        self.__data.flatStyle = state
+    
+    def flatStyle(self):
+        """
+        :return: True if the flatStyle option is set.
+
+        .. seealso::
+        
+            :py:meth:`setFlatStyle()`
+        """
+        return self.__data.flatStyle
+
     def initAxesData(self):
         """Initialize axes"""
-        self.__axisData = [AxisData() for axisId in self.validAxes]
+        self.__axisData = [AxisData() for axisId in self.AXES]
         
         self.__axisData[self.yLeft].scaleWidget = \
             QwtScaleWidget(QwtScaleDraw.LeftScale, self)
@@ -388,21 +467,16 @@ class QwtPlot(QFrame, QwtPlotDict):
                         ].scaleWidget.setObjectName("QwtPlotAxisXTop")
         self.__axisData[self.xBottom
                         ].scaleWidget.setObjectName("QwtPlotAxisXBottom")
-
-        fscl = QFont(self.fontInfo().family(), 10)
-        fttl = QFont(self.fontInfo().family(), 12, QFont.Bold)
         
-        for axisId in self.validAxes:
+        for axisId in self.AXES:
             d = self.__axisData[axisId]
 
             d.scaleEngine = QwtLinearScaleEngine()
 
             d.scaleWidget.setTransformation(d.scaleEngine.transformation())
-            d.scaleWidget.setFont(fscl)
             d.scaleWidget.setMargin(2)
 
             text = d.scaleWidget.title()
-            text.setFont(fttl)
             d.scaleWidget.setTitle(text)
             
             d.doAutoScale = True
@@ -420,7 +494,7 @@ class QwtPlot(QFrame, QwtPlotDict):
 
     def deleteAxesData(self):
         #XXX Is is really necessary in Python? (pure transcription of C++)
-        for axisId in self.validAxes:
+        for axisId in self.AXES:
             self.__axisData[axisId].scaleEngine = None
             self.__axisData[axisId] = None
 
@@ -871,7 +945,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`setAxisScaleDiv()`, :py:meth:`replot()`,
             :py:meth:`QwtPlotItem.boundingRect()`
         """
-        intv = [QwtInterval() for _i in self.validAxes]
+        intv = [QwtInterval() for _i in self.AXES]
         itmList = self.itemList()
         for item in itmList:
             if not item.testItemAttribute(QwtPlotItem.AutoScale):
@@ -884,7 +958,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                     intv[item.xAxis()] |= QwtInterval(rect.left(), rect.right())
                 if rect.height() >= 0.:
                     intv[item.yAxis()] |= QwtInterval(rect.top(), rect.bottom())
-        for axisId in self.validAxes:
+        for axisId in self.AXES:
             d = self.__axisData[axisId]
             minValue = d.minValue
             maxValue = d.maxValue
@@ -989,67 +1063,6 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         return self.__data.autoReplot
     
-    def setFlatStyle(self, state):
-        """
-        Set or reset the flatStyle option
-
-        If the flatStyle option is set, the plot will be 
-        rendered without any margin (scales, canvas, layout).
-
-        Enabling this option makes the plot look flat and compact.
-        
-        The flatStyle option is set to True by default.
-        
-        :param bool state: True or False.
-
-        .. seealso::
-        
-            :py:meth:`flatStyle()`
-        """
-        if state:
-            self.canvas().setFrameStyle(QFrame.NoFrame)
-            self.plotLayout().setCanvasMargin(0)
-            self.plotLayout().setSpacing(0)
-            palette = self.palette()
-            palette.setColor(QPalette.WindowText, QColor(Qt.darkGray))
-            palette.setColor(QPalette.Text, QColor("#444444"))
-            self.setPalette(palette)
-            for axis_id in self.validAxes:
-                self.axisWidget(axis_id).setMargin(0)
-                self.axisWidget(axis_id).setSpacing(0)
-                for tick_type, factor in ((QwtScaleDiv.MajorTick, 100),
-                                          (QwtScaleDiv.MediumTick, 125),
-                                          (QwtScaleDiv.MinorTick, 150)):
-                    self.axisScaleDraw(axis_id).setTickLighterFactor(tick_type,
-                                                                     factor)
-                # self.axisWidget(axis_id).setBorderDist(0, 0)
-        else:
-            self.canvas().setFrameStyle(QFrame.Panel|QFrame.Sunken)
-            self.plotLayout().setCanvasMargin(4)
-            self.plotLayout().setSpacing(5)
-            palette = self.palette()
-            palette.setColor(QPalette.WindowText, QColor(Qt.black))
-            palette.setColor(QPalette.Text, QColor(Qt.black))
-            self.setPalette(palette)
-            for axis_id in self.validAxes:
-                self.axisWidget(axis_id).setMargin(2)
-                self.axisWidget(axis_id).setSpacing(2)
-                for tick_type in (QwtScaleDiv.MajorTick, QwtScaleDiv.MediumTick,
-                                  QwtScaleDiv.MinorTick):
-                    self.axisScaleDraw(axis_id).setTickLighterFactor(tick_type,
-                                                                     100)
-        self.__data.flatStyle = state
-    
-    def flatStyle(self):
-        """
-        :return: True if the flatStyle option is set.
-
-        .. seealso::
-        
-            :py:meth:`setFlatStyle()`
-        """
-        return self.__data.flatStyle
-
     def setTitle(self, title):
         """
         Change the plot's title
@@ -1170,7 +1183,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`minimumSizeHint()`
         """
         dw = dh = 0
-        for axisId in self.validAxes:
+        for axisId in self.AXES:
             if self.axisEnabled(axisId):
                 niceDist = 40
                 scaleWidget = self.axisWidget(axisId)
@@ -1231,7 +1244,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         return (self.contentsRect(),
                 self.__data.titleLabel.text(), self.__data.footerLabel.text(),
                 [(self.axisEnabled(axisId), self.axisTitle(axisId).text())
-                 for axisId in self.validAxes],
+                 for axisId in self.AXES],
                 self.__data.legend)
     
     def updateLayout(self):
@@ -1253,7 +1266,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         titleRect = self.__data.layout.titleRect().toRect()
         footerRect = self.__data.layout.footerRect().toRect()
         scaleRect = [self.__data.layout.scaleRect(axisId).toRect()
-                     for axisId in self.validAxes]
+                     for axisId in self.AXES]
         legendRect = self.__data.layout.legendRect().toRect()
         canvasRect = self.__data.layout.canvasRect().toRect()
         
@@ -1271,7 +1284,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         else:
             self.__data.footerLabel.hide()
         
-        for axisId in self.validAxes:
+        for axisId in self.AXES:
             scaleWidget = self.axisWidget(axisId)
             if self.axisEnabled(axisId):
                 if scaleRect[axisId] != scaleWidget.geometry():
@@ -1347,12 +1360,12 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`getCanvasMarginsHint()`, 
             :py:meth:`QwtPlotItem.getCanvasMarginHint()`
         """
-        maps = [self.canvasMap(axisId) for axisId in self.validAxes]
+        maps = [self.canvasMap(axisId) for axisId in self.AXES]
         margins = self.getCanvasMarginsHint(maps, self.canvas().contentsRect())
         
         doUpdate = False
         
-        for axisId in self.validAxes:
+        for axisId in self.AXES:
             if margins[axisId] >= 0.:
                 m = np.ceil(margins[axisId])
                 self.plotLayout().setCanvasMargin(m, axisId)
@@ -1378,7 +1391,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`getCanvasMarginsHint()`, 
             :py:meth:`QwtPlotItem.getCanvasMarginHint()`
         """
-        maps = [self.canvasMap(axisId) for axisId in self.validAxes]
+        maps = [self.canvasMap(axisId) for axisId in self.AXES]
         self.drawItems(painter, self.__data.canvas.contentsRect(), maps)
     
     def drawItems(self, painter, canvasRect, maps):
@@ -1485,12 +1498,12 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         return self.canvas().palette().brush(QPalette.Normal, QPalette.Window)
     
-    def axisValid(self, axisId):
+    def axisValid(self, axis_id):
         """
-        :param int axisId: Axis
+        :param int axis_id: Axis
         :return: True if the specified axis exists, otherwise False
         """
-        return axisId in QwtPlot.validAxes
+        return axis_id in QwtPlot.AXES
     
     def insertLegend(self, legend, pos=None, ratio=-1):
         """

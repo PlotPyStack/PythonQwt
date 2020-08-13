@@ -379,8 +379,8 @@ class ScalePicker(QObject):
     
     def __init__(self, plot):
         QObject.__init__(self, plot)
-        for i in range(QwtPlot.axisCnt):
-            scaleWidget = plot.axisWidget(i)
+        for axis_id in QwtPlot.AXES:
+            scaleWidget = plot.axisWidget(axis_id)
             if scaleWidget:
                 scaleWidget.installEventFilter(self)
 
