@@ -85,6 +85,7 @@ class BodePlot(QwtPlot):
         self.grid = QwtPlotGrid()
         self.grid.enableXMin(True)
         self.grid.attach(self)
+        self.grid.setPen(QPen(Qt.darkGray, 1, Qt.DotLine))
 
         # axes
         self.enableAxis(QwtPlot.yRight)
@@ -110,7 +111,7 @@ class BodePlot(QwtPlot):
         self.curve2.attach(self)
 
         # alias
-        fn = self.fontInfo().family()
+        fn = "Helvetica"
 
         # marker
         self.dB3Marker = m = QwtPlotMarker()
@@ -119,9 +120,9 @@ class BodePlot(QwtPlot):
         m.setLabelAlignment(Qt.AlignRight | Qt.AlignBottom)
         m.setLinePen(QPen(Qt.green, 2, Qt.DashDotLine))
         text = QwtText('')
-        text.setColor(Qt.green)
+        text.setColor(Qt.white)
         text.setBackgroundBrush(Qt.red)
-        text.setFont(QFont(fn, 12, QFont.Bold))
+        text.setFont(QFont(fn, 10, QFont.Light))
         m.setLabel(text)
         m.attach(self)
 
@@ -132,7 +133,7 @@ class BodePlot(QwtPlot):
         text = QwtText('')
         text.setColor(Qt.red)
         text.setBackgroundBrush(QBrush(self.canvasBackground()))
-        text.setFont(QFont(fn, 12, QFont.Bold))
+        text.setFont(QFont(fn, 10, QFont.Bold))
         
         m.setLabel(text)
         m.setSymbol(QwtSymbol(QwtSymbol.Diamond,
@@ -149,10 +150,11 @@ class BodePlot(QwtPlot):
             '[1-(\u03c9/\u03c9<sub>0</sub>)<sup>2</sup>+2j\u03c9/Q]'
             '<sup>-1</sup>'
             )
-        text.setFont(QFont(fn, 12, QFont.Bold))
-        text.setColor(Qt.blue)
-        text.setBackgroundBrush(QBrush(Qt.yellow))
-        text.setBorderPen(QPen(Qt.red, 2))
+        text.setFont(QFont(fn, 10, QFont.Bold))
+        text.setColor(Qt.white)
+        text.setBackgroundBrush(QBrush(Qt.lightGray))
+        text.setBorderPen(QPen(Qt.lightGray, 5))
+        text.setBorderRadius(2)
         m.setLabel(text)
         m.attach(self)
 
@@ -280,4 +282,4 @@ class BodeDemo(QMainWindow):
 
 if __name__ == '__main__':
     from qwt.tests import test_widget
-    app = test_widget(BodeDemo, (540, 400))
+    app = test_widget(BodeDemo, (640, 480))

@@ -168,4 +168,4 @@ class BMDemo1(QMainWindow):
 
 if __name__ == '__main__':
     from qwt.tests import test_widget
-    app = test_widget(BMDemo1)
+    app = test_widget(BMDemo1, options=False)

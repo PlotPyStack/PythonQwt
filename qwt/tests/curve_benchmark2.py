@@ -13,7 +13,7 @@ import time
 from qwt.qt.QtGui import QPen, QBrush
 from qwt.qt.QtCore import QSize, Qt
 
-from qwt.tests import CurveBenchmark as cb
+from qwt.tests import curve_benchmark1 as cb
 
 if cb.USE_PYQWT5:
     from PyQt4.Qwt5 import QwtSymbol
@@ -64,4 +64,4 @@ class BMDemo2(cb.BMDemo1):
 
 if __name__ == '__main__':
     from qwt.tests import test_widget
-    app = test_widget(BMDemo2)
+    app = test_widget(BMDemo2, options=False)

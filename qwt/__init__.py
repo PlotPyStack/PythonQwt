@@ -17,7 +17,7 @@ it as a stable alternative to PyQt).
 It consists of a single Python package named `qwt` which is a pure Python 
 implementation of Qwt C++ library with some limitations.
 
-.. image:: images/panorama.png
+.. image:: images/test_launcher.png
 
 External resources:
     * Python Package Index: `PyPI`_

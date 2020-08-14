@@ -116,4 +116,4 @@ class CurveDemo1(QFrame):
 
 if __name__ == '__main__':
     from qwt.tests import test_widget
-    app = test_widget(CurveDemo1, size=(300, 600))
+    app = test_widget(CurveDemo1, size=(300, 600), options=False)

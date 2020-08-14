@@ -7,7 +7,7 @@
 [![download count](https://img.shields.io/conda/dn/conda-forge/PythonQwt.svg)](https://www.anaconda.com/download/)
 [![Documentation Status](https://readthedocs.org/projects/pythonqwt/badge/?version=latest)](https://pythonqwt.readthedocs.io/en/latest/?badge=latest)
 
-<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/panorama.png">
+<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/test_launcher.png">
 
 The `PythonQwt` project was initiated to solve -at least temporarily- the 
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 

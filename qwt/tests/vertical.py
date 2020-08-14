@@ -22,9 +22,9 @@ else:
     from qwt import QwtPlot, QwtPlotCurve, QwtPlotMarker, QwtText  # analysis:ignore
 
 
-class TestPlot(QwtPlot):
+class VerticalPlot(QwtPlot):
     def __init__(self, parent=None):
-        super(TestPlot, self).__init__(parent)
+        super(VerticalPlot, self).__init__(parent)
         self.setWindowTitle("PyQwt" if USE_PYQWT5 else "PythonQwt")
         self.enableAxis(self.xTop, True)
         self.enableAxis(self.yRight, True)
@@ -34,7 +34,14 @@ class TestPlot(QwtPlot):
         curve2 = QwtPlotCurve('Test Curve 2')
         curve2.setData(y**3, y)
         if USE_PYQWT5:
+            # PyQwt
             curve2.setAxis(self.xTop, self.yRight)
+            self.canvas().setFrameStyle(0)
+            self.plotLayout().setCanvasMargin(0)
+            self.axisWidget(QwtPlot.yLeft).setMargin(0)
+            self.axisWidget(QwtPlot.xTop).setMargin(0)
+            self.axisWidget(QwtPlot.yRight).setMargin(0)
+            self.axisWidget(QwtPlot.xBottom).setMargin(0)
         else:
             # PythonQwt
             curve2.setAxes(self.xTop, self.yRight)
@@ -54,19 +61,12 @@ class TestPlot(QwtPlot):
                 ticks_font = self.axisFont(axis_id)
                 self.setAxisFont(axis_id, ticks_font)
         
-        self.canvas().setFrameStyle(0)
-        self.plotLayout().setCanvasMargin(0)
-        self.axisWidget(QwtPlot.yLeft).setMargin(0)
-        self.axisWidget(QwtPlot.xTop).setMargin(0)
-        self.axisWidget(QwtPlot.yRight).setMargin(0)
-        self.axisWidget(QwtPlot.xBottom).setMargin(0)
-
         self.marker = QwtPlotMarker()
         self.marker.setValue(0, 5)
         self.marker.attach(self)
         
     def resizeEvent(self, event):
-        super(TestPlot, self).resizeEvent(event)
+        super(VerticalPlot, self).resizeEvent(event)
         self.show_layout_details()
     
     def show_layout_details(self):
@@ -100,4 +100,4 @@ class TestPlot(QwtPlot):
 
 if __name__ == '__main__':
     from qwt.tests import test_widget
-    app = test_widget(TestPlot, size=(300, 650))
+    app = test_widget(VerticalPlot, size=(300, 650))

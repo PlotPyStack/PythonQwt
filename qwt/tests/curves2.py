@@ -122,4 +122,4 @@ class CurveDemo2(QFrame):
 
 if __name__ == '__main__':
     from qwt.tests import test_widget
-    app = test_widget(CurveDemo2)
+    app = test_widget(CurveDemo2, options=False)
