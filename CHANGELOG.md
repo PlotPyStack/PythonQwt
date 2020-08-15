@@ -3,7 +3,7 @@
 
 ### Version 0.7.0 ###
 
-- Added new test launcher
+- Added new test launcher with screenshots (automatically generated)
 - QwtPlot: added "flatStyle" option, a PythonQwt-exclusive feature improving 
   default plot style (without margin, more compact and flat look) -- option is 
   enabled by default

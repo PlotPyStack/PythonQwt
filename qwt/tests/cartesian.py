@@ -2,11 +2,11 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
@@ -18,6 +18,7 @@ from qwt import QwtPlot, QwtScaleDraw, QwtPlotGrid, QwtPlotCurve, QwtPlotItem
 class CartesianAxis(QwtPlotItem):
     """Supports a coordinate system similar to 
     http://en.wikipedia.org/wiki/Image:Cartesian-coordinate-system.svg"""
+
     def __init__(self, masterAxis, slaveAxis):
         """Valid input values for masterAxis and slaveAxis are QwtPlot.yLeft,
         QwtPlot.yRight, QwtPlot.xBottom, and QwtPlot.xTop. When masterAxis is
@@ -29,10 +30,14 @@ class CartesianAxis(QwtPlotItem):
         else:
             self.setAxes(masterAxis, slaveAxis)
         self.scaleDraw = QwtScaleDraw()
-        self.scaleDraw.setAlignment((QwtScaleDraw.LeftScale,
-                                     QwtScaleDraw.RightScale,
-                                     QwtScaleDraw.BottomScale,
-                                     QwtScaleDraw.TopScale)[masterAxis])
+        self.scaleDraw.setAlignment(
+            (
+                QwtScaleDraw.LeftScale,
+                QwtScaleDraw.RightScale,
+                QwtScaleDraw.BottomScale,
+                QwtScaleDraw.TopScale,
+            )[masterAxis]
+        )
 
     def draw(self, painter, xMap, yMap, rect):
         """Draw an axis on the plot canvas"""
@@ -40,10 +45,10 @@ class CartesianAxis(QwtPlotItem):
         ytr = yMap.transform
         if self.__axis in (QwtPlot.yLeft, QwtPlot.yRight):
             self.scaleDraw.move(round(xtr(0.0)), yMap.p2())
-            self.scaleDraw.setLength(yMap.p1()-yMap.p2())
+            self.scaleDraw.setLength(yMap.p1() - yMap.p2())
         elif self.__axis in (QwtPlot.xBottom, QwtPlot.xTop):
             self.scaleDraw.move(xMap.p1(), round(ytr(0.0)))
-            self.scaleDraw.setLength(xMap.p2()-xMap.p1())
+            self.scaleDraw.setLength(xMap.p2() - xMap.p1())
         self.scaleDraw.setScaleDiv(self.plot().axisScaleDiv(self.__axis))
         self.scaleDraw.draw(painter, self.plot().palette())
 
@@ -51,9 +56,10 @@ class CartesianAxis(QwtPlotItem):
 class CartesianPlot(QwtPlot):
     """Creates a coordinate system similar system 
     http://en.wikipedia.org/wiki/Image:Cartesian-coordinate-system.svg"""
+
     def __init__(self, *args):
         QwtPlot.__init__(self, *args)
-        self.setTitle('Cartesian Coordinate System Demo')
+        self.setTitle("Cartesian Coordinate System Demo")
         # create a plot with a white canvas
         self.setCanvasBackground(Qt.white)
         # set plot layout
@@ -73,22 +79,23 @@ class CartesianPlot(QwtPlot):
         yaxis.attach(self)
         self.enableAxis(QwtPlot.yLeft, False)
         # calculate 3 NumPy arrays
-        x = np.arange(-2*np.pi, 2*np.pi, 0.01)
-        y = np.pi*np.sin(x)
-        z = 4*np.pi*np.cos(x)*np.cos(x)*np.sin(x)
+        x = np.arange(-2 * np.pi, 2 * np.pi, 0.01)
+        y = np.pi * np.sin(x)
+        z = 4 * np.pi * np.cos(x) * np.cos(x) * np.sin(x)
         # attach a curve
-        curve = QwtPlotCurve('y = pi*sin(x)')
+        curve = QwtPlotCurve("y = pi*sin(x)")
         curve.attach(self)
         curve.setPen(QPen(Qt.green, 2))
         curve.setData(x, y)
         # attach another curve
-        curve = QwtPlotCurve('y = 4*pi*sin(x)*cos(x)**2')
+        curve = QwtPlotCurve("y = 4*pi*sin(x)*cos(x)**2")
         curve.attach(self)
         curve.setPen(QPen(Qt.blue, 2))
         curve.setData(x, z)
         self.replot()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from qwt.tests import test_widget
+
     test_widget(CartesianPlot, (800, 480))

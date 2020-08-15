@@ -2,11 +2,11 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
@@ -31,49 +31,47 @@ class CurveDemo1(QFrame):
         self.setMidLineWidth(3)
 
         # calculate values
-        self.x = np.arange(0, 10.0, 10.0/27)
-        self.y = np.sin(self.x)*np.cos(2*self.x)
-        
+        self.x = np.arange(0, 10.0, 10.0 / 27)
+        self.y = np.sin(self.x) * np.cos(2 * self.x)
+
         # make curves with different styles
         self.curves = []
         self.titles = []
         # curve 1
-        self.titles.append('Style: Sticks, Symbol: Ellipse')
+        self.titles.append("Style: Sticks, Symbol: Ellipse")
         curve = QwtPlotCurve()
         curve.setPen(QPen(Qt.red))
         curve.setStyle(QwtPlotCurve.Sticks)
-        curve.setSymbol(QwtSymbol(QwtSymbol.Ellipse,
-                                      QBrush(Qt.yellow),
-                                      QPen(Qt.blue),
-                                      QSize(5, 5)))
+        curve.setSymbol(
+            QwtSymbol(QwtSymbol.Ellipse, QBrush(Qt.yellow), QPen(Qt.blue), QSize(5, 5))
+        )
         self.curves.append(curve)
         # curve 2
-        self.titles.append('Style: Lines, Symbol: None')
+        self.titles.append("Style: Lines, Symbol: None")
         curve = QwtPlotCurve()
         curve.setPen(QPen(Qt.darkBlue))
         curve.setStyle(QwtPlotCurve.Lines)
         self.curves.append(curve)
         # curve 3
-        self.titles.append('Style: Lines, Symbol: None, Antialiased')
+        self.titles.append("Style: Lines, Symbol: None, Antialiased")
         curve = QwtPlotCurve()
         curve.setPen(QPen(Qt.darkBlue))
         curve.setStyle(QwtPlotCurve.Lines)
         curve.setRenderHint(QwtPlotItem.RenderAntialiased)
         self.curves.append(curve)
         # curve 4
-        self.titles.append('Style: Steps, Symbol: None')
+        self.titles.append("Style: Steps, Symbol: None")
         curve = QwtPlotCurve()
         curve.setPen(QPen(Qt.darkCyan))
         curve.setStyle(QwtPlotCurve.Steps)
-        self.curves.append(curve)        
+        self.curves.append(curve)
         # curve 5
-        self.titles.append('Style: NoCurve, Symbol: XCross')
+        self.titles.append("Style: NoCurve, Symbol: XCross")
         curve = QwtPlotCurve()
         curve.setStyle(QwtPlotCurve.NoCurve)
-        curve.setSymbol(QwtSymbol(QwtSymbol.XCross,
-                                      QBrush(),
-                                      QPen(Qt.darkMagenta),
-                                      QSize(5, 5)))
+        curve.setSymbol(
+            QwtSymbol(QwtSymbol.XCross, QBrush(), QPen(Qt.darkMagenta), QSize(5, 5))
+        )
         self.curves.append(curve)
 
         # attach data, using Numeric
@@ -92,28 +90,35 @@ class CurveDemo1(QFrame):
     def drawContents(self, painter):
         # draw curves
         r = self.contentsRect()
-        dy = int(r.height()/len(self.curves))
+        dy = int(r.height() / len(self.curves))
         r.setHeight(dy)
         for curve in self.curves:
             self.xMap.setPaintInterval(r.left(), r.right())
             self.yMap.setPaintInterval(r.top(), r.bottom())
             painter.setRenderHint(
                 QPainter.Antialiasing,
-                curve.testRenderHint(QwtPlotItem.RenderAntialiased))
+                curve.testRenderHint(QwtPlotItem.RenderAntialiased),
+            )
             curve.draw(painter, self.xMap, self.yMap, r)
             self.shiftDown(r, dy)
         # draw titles
         r = self.contentsRect()
         r.setHeight(dy)
-        painter.setFont(QFont('Helvetica', 8))
+        painter.setFont(QFont("Helvetica", 8))
         painter.setPen(Qt.black)
         for title in self.titles:
             painter.drawText(
-                0, r.top(), r.width(), painter.fontMetrics().height(),
-                Qt.AlignTop | Qt.AlignHCenter, title)
+                0,
+                r.top(),
+                r.width(),
+                painter.fontMetrics().height(),
+                Qt.AlignTop | Qt.AlignHCenter,
+                title,
+            )
             self.shiftDown(r, dy)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from qwt.tests import test_widget
+
     app = test_widget(CurveDemo1, size=(300, 600), options=False)

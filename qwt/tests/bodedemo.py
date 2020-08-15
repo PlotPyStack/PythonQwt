@@ -2,78 +2,101 @@
 #
 # Licensed under the terms of the PyQwt License
 # Copyright (C) 2003-2009 Gerard Vermeulen, for the original PyQwt example
-# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+# Copyright (c) 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
 from __future__ import unicode_literals
 
-SHOW = True # Show test in GUI-based test launcher
+SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from qwt.qt.QtGui import (QPen, QBrush, QFrame, QFont, QWidget, QMainWindow,
-                          QToolButton, QIcon, QPixmap, QToolBar, QHBoxLayout,
-                          QLabel, QPrinter, QPrintDialog)
+from qwt.qt.QtGui import (
+    QPen,
+    QBrush,
+    QFrame,
+    QFont,
+    QWidget,
+    QMainWindow,
+    QToolButton,
+    QIcon,
+    QPixmap,
+    QToolBar,
+    QHBoxLayout,
+    QLabel,
+    QPrinter,
+    QPrintDialog,
+)
 from qwt.qt.QtCore import QSize, Qt
-from qwt import (QwtPlot, QwtPlotMarker, QwtSymbol, QwtLegend, QwtPlotGrid,
-                 QwtPlotCurve, QwtPlotItem, QwtLogScaleEngine, QwtText,
-                 QwtPlotRenderer)
+from qwt import (
+    QwtPlot,
+    QwtPlotMarker,
+    QwtSymbol,
+    QwtLegend,
+    QwtPlotGrid,
+    QwtPlotCurve,
+    QwtPlotItem,
+    QwtLogScaleEngine,
+    QwtText,
+    QwtPlotRenderer,
+)
 
 
-print_xpm = ['32 32 12 1',
-             'a c #ffffff',
-             'h c #ffff00',
-             'c c #ffffff',
-             'f c #dcdcdc',
-             'b c #c0c0c0',
-             'j c #a0a0a4',
-             'e c #808080',
-             'g c #808000',
-             'd c #585858',
-             'i c #00ff00',
-             '# c #000000',
-             '. c None',
-             '................................',
-             '................................',
-             '...........###..................',
-             '..........#abb###...............',
-             '.........#aabbbbb###............',
-             '.........#ddaaabbbbb###.........',
-             '........#ddddddaaabbbbb###......',
-             '.......#deffddddddaaabbbbb###...',
-             '......#deaaabbbddddddaaabbbbb###',
-             '.....#deaaaaaaabbbddddddaaabbbb#',
-             '....#deaaabbbaaaa#ddedddfggaaad#',
-             '...#deaaaaaaaaaa#ddeeeeafgggfdd#',
-             '..#deaaabbbaaaa#ddeeeeabbbbgfdd#',
-             '.#deeefaaaaaaa#ddeeeeabbhhbbadd#',
-             '#aabbbeeefaaa#ddeeeeabbbbbbaddd#',
-             '#bbaaabbbeee#ddeeeeabbiibbadddd#',
-             '#bbbbbaaabbbeeeeeeabbbbbbaddddd#',
-             '#bjbbbbbbaaabbbbeabbbbbbadddddd#',
-             '#bjjjjbbbbbbaaaeabbbbbbaddddddd#',
-             '#bjaaajjjbbbbbbaaabbbbadddddddd#',
-             '#bbbbbaaajjjbbbbbbaaaaddddddddd#',
-             '#bjbbbbbbaaajjjbbbbbbddddddddd#.',
-             '#bjjjjbbbbbbaaajjjbbbdddddddd#..',
-             '#bjaaajjjbbbbbbjaajjbddddddd#...',
-             '#bbbbbaaajjjbbbjbbaabdddddd#....',
-             '###bbbbbbaaajjjjbbbbbddddd#.....',
-             '...###bbbbbbaaajbbbbbdddd#......',
-             '......###bbbbbbjbbbbbddd#.......',
-             '.........###bbbbbbbbbdd#........',
-             '............###bbbbbbd#.........',
-             '...............###bbb#..........',
-             '..................###...........']
+print_xpm = [
+    "32 32 12 1",
+    "a c #ffffff",
+    "h c #ffff00",
+    "c c #ffffff",
+    "f c #dcdcdc",
+    "b c #c0c0c0",
+    "j c #a0a0a4",
+    "e c #808080",
+    "g c #808000",
+    "d c #585858",
+    "i c #00ff00",
+    "# c #000000",
+    ". c None",
+    "................................",
+    "................................",
+    "...........###..................",
+    "..........#abb###...............",
+    ".........#aabbbbb###............",
+    ".........#ddaaabbbbb###.........",
+    "........#ddddddaaabbbbb###......",
+    ".......#deffddddddaaabbbbb###...",
+    "......#deaaabbbddddddaaabbbbb###",
+    ".....#deaaaaaaabbbddddddaaabbbb#",
+    "....#deaaabbbaaaa#ddedddfggaaad#",
+    "...#deaaaaaaaaaa#ddeeeeafgggfdd#",
+    "..#deaaabbbaaaa#ddeeeeabbbbgfdd#",
+    ".#deeefaaaaaaa#ddeeeeabbhhbbadd#",
+    "#aabbbeeefaaa#ddeeeeabbbbbbaddd#",
+    "#bbaaabbbeee#ddeeeeabbiibbadddd#",
+    "#bbbbbaaabbbeeeeeeabbbbbbaddddd#",
+    "#bjbbbbbbaaabbbbeabbbbbbadddddd#",
+    "#bjjjjbbbbbbaaaeabbbbbbaddddddd#",
+    "#bjaaajjjbbbbbbaaabbbbadddddddd#",
+    "#bbbbbaaajjjbbbbbbaaaaddddddddd#",
+    "#bjbbbbbbaaajjjbbbbbbddddddddd#.",
+    "#bjjjjbbbbbbaaajjjbbbdddddddd#..",
+    "#bjaaajjjbbbbbbjaajjbddddddd#...",
+    "#bbbbbaaajjjbbbjbbaabdddddd#....",
+    "###bbbbbbaaajjjjbbbbbddddd#.....",
+    "...###bbbbbbaaajbbbbbdddd#......",
+    "......###bbbbbbjbbbbbddd#.......",
+    ".........###bbbbbbbbbdd#........",
+    "............###bbbbbbd#.........",
+    "...............###bbb#..........",
+    "..................###...........",
+]
 
 
 class BodePlot(QwtPlot):
-
     def __init__(self, *args):
         QwtPlot.__init__(self, *args)
 
-        self.setTitle('Frequency Response of a 2<sup>nd</sup>-order System')
+        self.setTitle("Frequency Response of a 2<sup>nd</sup>-order System")
         self.setCanvasBackground(Qt.darkBlue)
 
         # legend
@@ -89,23 +112,23 @@ class BodePlot(QwtPlot):
 
         # axes
         self.enableAxis(QwtPlot.yRight)
-        self.setAxisTitle(QwtPlot.xBottom, '\u03c9/\u03c9<sub>0</sub>')
-        self.setAxisTitle(QwtPlot.yLeft, 'Amplitude [dB]')
-        self.setAxisTitle(QwtPlot.yRight, 'Phase [\u00b0]')
+        self.setAxisTitle(QwtPlot.xBottom, "\u03c9/\u03c9<sub>0</sub>")
+        self.setAxisTitle(QwtPlot.yLeft, "Amplitude [dB]")
+        self.setAxisTitle(QwtPlot.yRight, "Phase [\u00b0]")
 
         self.setAxisMaxMajor(QwtPlot.xBottom, 6)
         self.setAxisMaxMinor(QwtPlot.xBottom, 10)
         self.setAxisScaleEngine(QwtPlot.xBottom, QwtLogScaleEngine())
 
         # curves
-        self.curve1 = QwtPlotCurve('Amplitude')
-        self.curve1.setRenderHint(QwtPlotItem.RenderAntialiased);
+        self.curve1 = QwtPlotCurve("Amplitude")
+        self.curve1.setRenderHint(QwtPlotItem.RenderAntialiased)
         self.curve1.setPen(QPen(Qt.yellow))
         self.curve1.setYAxis(QwtPlot.yLeft)
         self.curve1.attach(self)
-        
-        self.curve2 = QwtPlotCurve('Phase')
-        self.curve2.setRenderHint(QwtPlotItem.RenderAntialiased);
+
+        self.curve2 = QwtPlotCurve("Phase")
+        self.curve2.setRenderHint(QwtPlotItem.RenderAntialiased)
         self.curve2.setPen(QPen(Qt.cyan))
         self.curve2.setYAxis(QwtPlot.yRight)
         self.curve2.attach(self)
@@ -119,7 +142,7 @@ class BodePlot(QwtPlot):
         m.setLineStyle(QwtPlotMarker.VLine)
         m.setLabelAlignment(Qt.AlignRight | Qt.AlignBottom)
         m.setLinePen(QPen(Qt.green, 2, Qt.DashDotLine))
-        text = QwtText('')
+        text = QwtText("")
         text.setColor(Qt.white)
         text.setBackgroundBrush(Qt.red)
         text.setFont(QFont(fn, 10, QFont.Light))
@@ -130,16 +153,15 @@ class BodePlot(QwtPlot):
         m.setLineStyle(QwtPlotMarker.HLine)
         m.setLabelAlignment(Qt.AlignRight | Qt.AlignBottom)
         m.setLinePen(QPen(Qt.red, 2, Qt.DashDotLine))
-        text = QwtText('')
+        text = QwtText("")
         text.setColor(Qt.red)
         text.setBackgroundBrush(QBrush(self.canvasBackground()))
         text.setFont(QFont(fn, 10, QFont.Bold))
-        
+
         m.setLabel(text)
-        m.setSymbol(QwtSymbol(QwtSymbol.Diamond,
-                              QBrush(Qt.yellow),
-                              QPen(Qt.green),
-                              QSize(7,7)))
+        m.setSymbol(
+            QwtSymbol(QwtSymbol.Diamond, QBrush(Qt.yellow), QPen(Qt.green), QSize(7, 7))
+        )
         m.attach(self)
 
         # text marker
@@ -147,9 +169,8 @@ class BodePlot(QwtPlot):
         m.setValue(0.1, -20.0)
         m.setLabelAlignment(Qt.AlignRight | Qt.AlignBottom)
         text = QwtText(
-            '[1-(\u03c9/\u03c9<sub>0</sub>)<sup>2</sup>+2j\u03c9/Q]'
-            '<sup>-1</sup>'
-            )
+            "[1-(\u03c9/\u03c9<sub>0</sub>)<sup>2</sup>+2j\u03c9/Q]" "<sup>-1</sup>"
+        )
         text.setFont(QFont(fn, 10, QFont.Bold))
         text.setColor(Qt.white)
         text.setBackgroundBrush(QBrush(Qt.lightGray))
@@ -167,25 +188,25 @@ class BodePlot(QwtPlot):
     def showPeak(self, frequency, amplitude):
         self.peakMarker.setValue(frequency, amplitude)
         label = self.peakMarker.label()
-        label.setText('Peak: %4g dB' % amplitude)
+        label.setText("Peak: %4g dB" % amplitude)
         self.peakMarker.setLabel(label)
 
     def show3dB(self, frequency):
         self.dB3Marker.setValue(frequency, 0.0)
         label = self.dB3Marker.label()
-        label.setText('-3dB at f = %4g' % frequency)
+        label.setText("-3dB at f = %4g" % frequency)
         self.dB3Marker.setLabel(label)
 
     def setDamp(self, d):
         self.damping = d
         # Numerical Python: f, g, a and p are NumPy arrays!
-        f = np.exp(np.log(10.0)*np.arange(-2, 2.02, 0.04))
-        g = 1.0/(1.0-f*f+2j*self.damping*f)
-        a = 20.0*np.log10(abs(g))
-        p = 180*np.arctan2(g.imag, g.real)/np.pi
+        f = np.exp(np.log(10.0) * np.arange(-2, 2.02, 0.04))
+        g = 1.0 / (1.0 - f * f + 2j * self.damping * f)
+        a = 20.0 * np.log10(abs(g))
+        p = 180 * np.arctan2(g.imag, g.real) / np.pi
         # for show3dB
         i3 = np.argmax(np.where(np.less(a, -3.0), a, -100.0))
-        f3 = f[i3] - (a[i3]+3.0)*(f[i3]-f[i3-1])/(a[i3]-a[i3-1])
+        f3 = f[i3] - (a[i3] + 3.0) * (f[i3] - f[i3 - 1]) / (a[i3] - a[i3 - 1])
         # for showPeak
         imax = np.argmax(a)
 
@@ -197,7 +218,6 @@ class BodePlot(QwtPlot):
 
 
 class BodeDemo(QMainWindow):
-
     def __init__(self, *args):
         QMainWindow.__init__(self, *args)
 
@@ -205,7 +225,7 @@ class BodeDemo(QMainWindow):
         self.plot.setContentsMargins(5, 5, 5, 0)
 
         self.setContextMenuPolicy(Qt.NoContextMenu)
-        
+
         self.setCentralWidget(self.plot)
 
         toolBar = QToolBar(self)
@@ -224,38 +244,38 @@ class BodeDemo(QMainWindow):
         btnExport.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
         toolBar.addWidget(btnExport)
         btnExport.clicked.connect(self.exportDocument)
-            
+
         toolBar.addSeparator()
 
         dampBox = QWidget(toolBar)
         dampLayout = QHBoxLayout(dampBox)
         dampLayout.setSpacing(0)
-        dampLayout.addWidget(QWidget(dampBox), 10) # spacer
+        dampLayout.addWidget(QWidget(dampBox), 10)  # spacer
         dampLayout.addWidget(QLabel("Damping Factor", dampBox), 0)
         dampLayout.addSpacing(10)
 
         toolBar.addWidget(dampBox)
 
         self.statusBar()
-        
+
         self.showInfo()
 
     def print_(self):
         printer = QPrinter(QPrinter.HighResolution)
 
-        printer.setCreator('Bode example')
+        printer.setCreator("Bode example")
         printer.setOrientation(QPrinter.Landscape)
         printer.setColorMode(QPrinter.Color)
 
         docName = str(self.plot.title().text())
         if not docName:
-            docName.replace('\n', ' -- ')
+            docName.replace("\n", " -- ")
             printer.setDocName(docName)
 
         dialog = QPrintDialog(printer)
         if dialog.exec_():
             renderer = QwtPlotRenderer()
-            if (QPrinter.GrayScale == printer.colorMode()):
+            if QPrinter.GrayScale == printer.colorMode():
                 renderer.setDiscardFlag(QwtPlotRenderer.DiscardBackground)
                 renderer.setDiscardFlag(QwtPlotRenderer.DiscardCanvasBackground)
                 renderer.setDiscardFlag(QwtPlotRenderer.DiscardCanvasFrame)
@@ -265,21 +285,24 @@ class BodeDemo(QMainWindow):
     def exportDocument(self):
         renderer = QwtPlotRenderer(self.plot)
         renderer.exportTo(self.plot, "bode")
-    
+
     def showInfo(self, text=""):
         self.statusBar().showMessage(text)
-                
+
     def moved(self, point):
         info = "Freq=%g, Ampl=%g, Phase=%g" % (
             self.plot.invTransform(QwtPlot.xBottom, point.x()),
             self.plot.invTransform(QwtPlot.yLeft, point.y()),
-            self.plot.invTransform(QwtPlot.yRight, point.y()))
+            self.plot.invTransform(QwtPlot.yRight, point.y()),
+        )
         self.showInfo(info)
 
     def selected(self, _):
         self.showInfo()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from qwt.tests import test_widget
+    import os
+
     app = test_widget(BodeDemo, (640, 480))

@@ -16,10 +16,25 @@ import os.path as osp
 import sys
 import subprocess
 import platform
-from qwt.qt.QtGui import (QWidget, QMainWindow, QVBoxLayout, QFormLayout,
-                          QCheckBox, QGroupBox, QGridLayout, QToolButton,
-                          QStyle, QToolBar, QAction, QIcon, QMessageBox)
-from qwt.qt.QtCore import Qt, QSize
+from qwt.qt.QtGui import (
+    QApplication,
+    QWidget,
+    QMainWindow,
+    QVBoxLayout,
+    QFormLayout,
+    QCheckBox,
+    QGroupBox,
+    QGridLayout,
+    QToolButton,
+    QStyle,
+    QToolBar,
+    QAction,
+    QIcon,
+    QMessageBox,
+    QPixmap,
+)
+from qwt.qt.QtCore import Qt, QSize, QTimer
+from qwt.qt import PYQT5
 from qwt import QwtPlot
 
 
@@ -28,8 +43,8 @@ TEST_PATH = osp.abspath(osp.dirname(__file__))
 
 def run_test(fname, wait=False):
     """Run test"""
-    os.environ['PYTHONPATH'] = os.pathsep.join(sys.path)
-    args = " ".join([sys.executable, '"'+fname+'"'])
+    os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
+    args = " ".join([sys.executable, '"' + fname + '"'])
     if os.environ.get("TEST_UNATTENDED") is not None:
         print(args)
     if wait:
@@ -40,18 +55,22 @@ def run_test(fname, wait=False):
 
 def get_tests(package):
     """Return list of test filenames"""
-    test_package_name = '%s.tests' % package.__name__
+    test_package_name = "%s.tests" % package.__name__
     _temp = __import__(test_package_name)
     test_package = sys.modules[test_package_name]
     tests = []
     test_path = osp.dirname(osp.realpath(test_package.__file__))
-    for fname in sorted([name for name in os.listdir(test_path)
-                         if name.endswith(('.py', '.pyw')) and\
-                         not name.startswith('_')]):
+    for fname in sorted(
+        [
+            name
+            for name in os.listdir(test_path)
+            if name.endswith((".py", ".pyw")) and not name.startswith("_")
+        ]
+    ):
         module_name = osp.splitext(fname)[0]
         _temp = __import__(test_package.__name__, fromlist=[module_name])
         module = getattr(_temp, module_name)
-        if hasattr(module, 'SHOW') and module.SHOW:
+        if hasattr(module, "SHOW") and module.SHOW:
             tests.append(osp.abspath(osp.join(test_path, fname)))
     return tests
 
@@ -59,16 +78,20 @@ def get_tests(package):
 def run_all_tests(wait):
     """Run all PythonQwt tests"""
     import qwt
+
     for fname in get_tests(qwt):
         run_test(fname, wait=wait)
 
 
 class TestLauncher(QMainWindow):
     """PythonQwt Test Launcher main window"""
+
     ROWS = 5
+
     def __init__(self, parent=None):
         super(TestLauncher, self).__init__(parent)
         from qwt import __version__
+
         self.setWindowIcon(self.get_std_icon("FileDialogListView"))
         self.setWindowTitle("PythonQwt %s - Test Launcher" % __version__)
         self.setCentralWidget(QWidget())
@@ -86,6 +109,7 @@ class TestLauncher(QMainWindow):
     def fill_layout(self):
         """Fill grid layout"""
         import qwt
+
         for fname in get_tests(qwt):
             self.add_test(fname)
         toolbar = QToolBar(self)
@@ -112,8 +136,8 @@ class TestLauncher(QMainWindow):
         if self.test_nb is None:
             self.test_nb = 0
         self.test_nb += 1
-        row = (self.test_nb-1) % self.ROWS
-        column = (self.test_nb-1) // self.ROWS
+        row = (self.test_nb - 1) % self.ROWS
+        column = (self.test_nb - 1) // self.ROWS
         bname = osp.basename(fname)
         button = QToolButton(self)
         button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
@@ -127,22 +151,31 @@ class TestLauncher(QMainWindow):
         button.setIconSize(QSize(130, 80))
         button.clicked.connect(lambda checked, fname=fname: run_test(fname))
         self.grid_layout.addWidget(button, row, column)
-        
+
     def about(self):
         """About test launcher"""
         from qwt.qt.QtCore import __version__ as qt_version
-        QMessageBox.about( self, "About "+self.windowTitle(),
-              """<b>%s</b><p>Developped by Pierre Raybaut
+
+        QMessageBox.about(
+            self,
+            "About " + self.windowTitle(),
+            """<b>%s</b><p>Developped by Pierre Raybaut
               <br>Copyright &copy; 2020 Pierre Raybaut
-              <p>Python %s, Qt %s on %s""" % \
-              (self.windowTitle(), platform.python_version(),
-               qt_version, platform.system()) )
+              <p>Python %s, Qt %s on %s"""
+            % (
+                self.windowTitle(),
+                platform.python_version(),
+                qt_version,
+                platform.system(),
+            ),
+        )
 
 
 def run(wait=True):
     """Run PythonQwt tests or test launcher (requires `guidata`)"""
     if os.environ.get("TEST_UNATTENDED") is None:
         from qwt.qt.QtGui import QApplication
+
         app = QApplication([])
         launcher = TestLauncher()
         launcher.show()
@@ -153,6 +186,7 @@ def run(wait=True):
 
 class TestOptions(QGroupBox):
     """Test options groupbox"""
+
     def __init__(self, parent=None):
         super(TestOptions, self).__init__("Test options", parent)
         self.setLayout(QFormLayout())
@@ -169,68 +203,85 @@ class TestOptions(QGroupBox):
 
 class TestCentralWidget(QWidget):
     """Test central widget"""
-    def __init__(self, parent=None):
+
+    def __init__(self, widget_name, parent=None):
         super(TestCentralWidget, self).__init__(parent)
+        self.widget_name = widget_name
+        self.plots = None
         self.setLayout(QVBoxLayout())
         self.options = TestOptions(self)
         self.add_widget(self.options)
+
+    @property
+    def widget_of_interest(self):
+        """Return widget of interest (screenshot)"""
+        if len(self.plots) == 1:
+            return self.plots[0]
+        else:
+            return self.parent()
 
     def add_widget(self, widget):
         """Add new sub-widget"""
         self.layout().addWidget(widget)
         if isinstance(widget, QwtPlot):
-            plots = [widget]
+            self.plots = [widget]
         else:
-            plots = widget.findChildren(QwtPlot)
-        for index, plot in enumerate(plots):
+            self.plots = widget.findChildren(QwtPlot)
+        for index, plot in enumerate(self.plots):
             plot_name = plot.objectName()
             if not plot_name:
                 plot_name = "Plot #%d" % (index + 1)
-            widget = self.options.add_checkbox(plot_name,
-                            "Enable new flat style option", plot.setFlatStyle)
+            widget = self.options.add_checkbox(
+                plot_name, "Enable new flat style option", plot.setFlatStyle
+            )
             widget.setChecked(plot.flatStyle())
 
 
-class TestWindow(QMainWindow):
-    """Test main window"""
-    def __init__(self):
-        super(TestWindow, self).__init__()
-        self.setCentralWidget(TestCentralWidget())
+def take_screenshot(widget):
+    """Take screenshot and save it to the data folder"""
+    if PYQT5:
+        pixmap = widget.grab()
+    else:
+        pixmap = QPixmap.grabWidget(widget)
+    bname = (widget.objectName().lower() + ".png").replace("window", "")
+    bname = bname.replace("plot", "").replace("widget", "")
+    pixmap.save(osp.join(TEST_PATH, "data", bname))
+    QTimer.singleShot(0, QApplication.instance().quit)
 
-    def add_widget(self, widget):
-        """Add new sub-widget to central widget"""
-        self.centralWidget().add_widget(widget)
 
-
-def test_widget(widget_class, size=None, title=None, options=True):
+def test_widget(widget_class, size=None, title=None, options=True, timeout=1000):
     """Test widget"""
-    from qwt.qt.QtGui import QApplication
+    widget_name = widget_class.__name__
     app = QApplication([])
     window = widget = widget_class()
     if options:
         if isinstance(widget, QMainWindow):
-            original_central_widget = window.centralWidget()
-            original_central_widget.setParent(None)
-            new_central_widget = TestCentralWidget()
-            window.setCentralWidget(new_central_widget)
-            new_central_widget.add_widget(original_central_widget)
+            widget = window.centralWidget()
+            widget.setParent(None)
         else:
-            window = TestWindow()
-            window.add_widget(widget)
+            window = QMainWindow()
+        central_widget = TestCentralWidget(widget_name)
+        central_widget.add_widget(widget)
+        window.setCentralWidget(central_widget)
+        widget_of_interest = central_widget.widget_of_interest
+    else:
+        widget_of_interest = window
+    widget_of_interest.setObjectName(widget_name)
     if title is None:
         from qwt import __version__
-        title = 'Test "%s" - PythonQwt %s' % (widget_class.__name__,
-                                              __version__)
+
+        title = 'Test "%s" - PythonQwt %s' % (widget_name, __version__)
     window.setWindowTitle(title)
     if size is not None:
         width, height = size
         window.resize(width, height)
 
     window.show()
-    if os.environ.get("TEST_UNATTENDED") is None:
-        app.exec_()
+    if os.environ.get("TEST_UNATTENDED") is not None:
+        QTimer.singleShot(timeout, lambda: take_screenshot(widget_of_interest))
+    app.exec_()
     return app
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()
