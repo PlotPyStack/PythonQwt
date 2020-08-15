@@ -84,11 +84,13 @@ class CartesianPlot(QwtPlot):
         z = 4 * np.pi * np.cos(x) * np.cos(x) * np.sin(x)
         # attach a curve
         curve = QwtPlotCurve("y = pi*sin(x)")
+        curve.setRenderHint(QwtPlotCurve.RenderAntialiased, True)
         curve.attach(self)
         curve.setPen(QPen(Qt.green, 2))
         curve.setData(x, y)
         # attach another curve
         curve = QwtPlotCurve("y = 4*pi*sin(x)*cos(x)**2")
+        curve.setRenderHint(QwtPlotCurve.RenderAntialiased, True)
         curve.attach(self)
         curve.setPen(QPen(Qt.blue, 2))
         curve.setData(x, z)
