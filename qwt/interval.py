@@ -28,24 +28,22 @@ class QwtInterval(object):
         :param float maxValue: Maximum value
         :param int borderFlags: Include/Exclude borders
     """
-    
+
     # enum BorderFlag
     IncludeBorders = 0x00
     ExcludeMinimum = 0x01
     ExcludeMaximum = 0x02
     ExcludeBorders = ExcludeMinimum | ExcludeMaximum
-    
-    def __init__(self, minValue=0., maxValue=-1., borderFlags=None):
+
+    def __init__(self, minValue=0.0, maxValue=-1.0, borderFlags=None):
         assert not isinstance(minValue, QwtInterval)
         assert not isinstance(maxValue, QwtInterval)
-        self.__minValue = float(minValue)  # avoid overflows with NumPy scalars
-        self.__maxValue = float(maxValue)  # avoid overflows with NumPy scalars
-        if borderFlags is None:
-            self.__borderFlags = self.IncludeBorders
-        else:
-            self.__borderFlags = borderFlags
+        self.__minValue = None
+        self.__maxValue = None
+        self.__borderFlags = None
+        self.setInterval(minValue, maxValue, borderFlags)
 
-    def setInterval(self, minValue, maxValue, borderFlags):
+    def setInterval(self, minValue, maxValue, borderFlags=None):
         """
         Assign the limits of the interval
         
@@ -55,8 +53,11 @@ class QwtInterval(object):
         """
         self.__minValue = float(minValue)  # avoid overflows with NumPy scalars
         self.__maxValue = float(maxValue)  # avoid overflows with NumPy scalars
-        self.__borderFlags = borderFlags
-        
+        if borderFlags is None:
+            self.__borderFlags = self.IncludeBorders
+        else:
+            self.__borderFlags = borderFlags
+
     def setBorderFlags(self, borderFlags):
         """
         Change the border flags
@@ -78,7 +79,7 @@ class QwtInterval(object):
             :py:meth:`setBorderFlags()`
         """
         return self.__borderFlags
-    
+
     def setMinValue(self, minValue):
         """
         Assign the lower limit of the interval
@@ -86,7 +87,7 @@ class QwtInterval(object):
         :param float minValue: Minimum value
         """
         self.__minValue = float(minValue)  # avoid overflows with NumPy scalars
-    
+
     def setMaxValue(self, maxValue):
         """
         Assign the upper limit of the interval
@@ -94,13 +95,13 @@ class QwtInterval(object):
         :param float maxValue: Maximum value
         """
         self.__maxValue = float(maxValue)  # avoid overflows with NumPy scalars
-    
+
     def minValue(self):
         """
         :return: Lower limit of the interval
         """
         return self.__minValue
-    
+
     def maxValue(self):
         """
         :return: Upper limit of the interval
@@ -119,7 +120,7 @@ class QwtInterval(object):
             return self.__minValue <= self.__maxValue
         else:
             return self.__minValue < self.__maxValue
-    
+
     def width(self):
         """
         The width of invalid intervals is 0.0, otherwise the result is
@@ -130,39 +131,41 @@ class QwtInterval(object):
         if self.isValid():
             return self.__maxValue - self.__minValue
         else:
-            return 0.
-    
+            return 0.0
+
     def __and__(self, other):
         return self.intersect(other)
-    
+
     def __iand__(self, other):
         self = self & other
         return self
-    
+
     def __or__(self, other):
         if isinstance(other, QwtInterval):
             return self.unite(other)
         else:
             return self.extend(other)
-    
+
     def __ior__(self, other):
         self = self | other
         return self
-    
+
     def __eq__(self, other):
-        return self.__minValue == other.__minValue and\
-               self.__maxValue == other.__maxValue and\
-               self.__borderFlags == other.__borderFlags
+        return (
+            self.__minValue == other.__minValue
+            and self.__maxValue == other.__maxValue
+            and self.__borderFlags == other.__borderFlags
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
-    
+
     def isNull(self):
         """
         :return: true, if isValid() && (minValue() >= maxValue())
         """
         return self.isValid() and self.__minValue >= self.__maxValue
-    
+
     def invalidate(self):
         """
         The limits are set to interval [0.0, -1.0]
@@ -171,9 +174,9 @@ class QwtInterval(object):
         
             :py:meth:`isValid()`
         """
-        self.__minValue = 0.
-        self.__maxValue = -1.
-    
+        self.__minValue = 0.0
+        self.__maxValue = -1.0
+
     def normalized(self):
         """
         Normalize the limits of the interval
@@ -188,12 +191,14 @@ class QwtInterval(object):
         """
         if self.__minValue > self.__maxValue:
             return self.inverted()
-        elif self.__minValue == self.__maxValue and\
-             self.__borderFlags == self.ExcludeMinimum:
+        elif (
+            self.__minValue == self.__maxValue
+            and self.__borderFlags == self.ExcludeMinimum
+        ):
             return self.inverted()
         else:
             return self
-    
+
     def inverted(self):
         """
         Invert the limits of the interval
@@ -210,7 +215,7 @@ class QwtInterval(object):
         if self.__borderFlags & self.ExcludeMaximum:
             borderFlags |= self.ExcludeMinimum
         return QwtInterval(self.__maxValue, self.__minValue, borderFlags)
-    
+
     def contains(self, value):
         """
         Test if a value is inside an interval
@@ -222,11 +227,9 @@ class QwtInterval(object):
             return False
         elif value < self.__minValue or value > self.__maxValue:
             return False
-        elif value == self.__minValue and\
-             self.__borderFlags & self.ExcludeMinimum:
+        elif value == self.__minValue and self.__borderFlags & self.ExcludeMinimum:
             return False
-        elif value == self.__maxValue and\
-             self.__borderFlags & self.ExcludeMaximum:
+        elif value == self.__maxValue and self.__borderFlags & self.ExcludeMaximum:
             return False
         else:
             return True
@@ -245,10 +248,10 @@ class QwtInterval(object):
                 return other
         elif not other.isValid():
             return self
-        
+
         united = QwtInterval()
         flags = self.IncludeBorders
-        
+
         # minimum
         if self.__minValue < other.minValue():
             united.setMinValue(self.__minValue)
@@ -258,9 +261,8 @@ class QwtInterval(object):
             flags &= other.borderFlags() & self.ExcludeMinimum
         else:
             united.setMinValue(self.__minValue)
-            flags &= (self.__borderFlags & other.borderFlags())\
-                     & self.ExcludeMinimum
-        
+            flags &= (self.__borderFlags & other.borderFlags()) & self.ExcludeMinimum
+
         # maximum
         if self.__maxValue > other.maxValue():
             united.setMaxValue(self.__maxValue)
@@ -270,12 +272,11 @@ class QwtInterval(object):
             flags &= other.borderFlags() & self.ExcludeMaximum
         else:
             united.setMaxValue(self.__maxValue)
-            flags &= self.__borderFlags & other.borderFlags()\
-                     & self.ExcludeMaximum
-        
+            flags &= self.__borderFlags & other.borderFlags() & self.ExcludeMaximum
+
         united.setBorderFlags(flags)
         return united
-        
+
     def intersect(self, other):
         """
         Intersect two intervals
@@ -285,30 +286,32 @@ class QwtInterval(object):
         """
         if not other.isValid() or not self.isValid():
             return QwtInterval()
-        
+
         i1 = self
         i2 = other
-        
+
         if i1.minValue() > i2.minValue():
             i1, i2 = i2, i1
         elif i1.minValue() == i2.minValue():
             if i1.borderFlags() & self.ExcludeMinimum:
                 i1, i2 = i2, i1
-        
+
         if i1.maxValue() < i2.maxValue():
             return QwtInterval()
-        
+
         if i1.maxValue() == i2.minValue():
-            if i1.borderFlags() & self.ExcludeMaximum or\
-               i2.borderFlags() & self.ExcludeMinimum:
+            if (
+                i1.borderFlags() & self.ExcludeMaximum
+                or i2.borderFlags() & self.ExcludeMinimum
+            ):
                 return QwtInterval()
-        
+
         intersected = QwtInterval()
         flags = self.IncludeBorders
-        
+
         intersected.setMinValue(i2.minValue())
         flags |= i2.borderFlags() & self.ExcludeMinimum
-        
+
         if i1.maxValue() < i2.maxValue():
             intersected.setMaxValue(i1.maxValue())
             flags |= i1.borderFlags() & self.ExcludeMaximum
@@ -318,10 +321,10 @@ class QwtInterval(object):
         else:  # i1.maxValue() == i2.maxValue()
             intersected.setMaxValue(i1.maxValue())
             flags |= i1.borderFlags() & i2.borderFlags() & self.ExcludeMaximum
-        
+
         intersected.setBorderFlags(flags)
         return intersected
-    
+
     def intersects(self, other):
         """
         Test if two intervals overlap
@@ -331,23 +334,24 @@ class QwtInterval(object):
         """
         if not other.isValid() or not self.isValid():
             return False
-        
+
         i1 = self
         i2 = other
-        
+
         if i1.minValue() > i2.minValue():
             i1, i2 = i2, i1
-        elif i1.minValue() == i2.minValue() and\
-             i1.borderFlags() & self.ExcludeMinimum:
+        elif i1.minValue() == i2.minValue() and i1.borderFlags() & self.ExcludeMinimum:
             i1, i2 = i2, i1
-        
+
         if i1.maxValue() > i2.minValue():
             return True
         elif i1.maxValue() == i2.minValue():
-            return i1.borderFlags() & self.ExcludeMaximum and\
-                   i2.borderFlags() & self.ExcludeMinimum
+            return (
+                i1.borderFlags() & self.ExcludeMaximum
+                and i2.borderFlags() & self.ExcludeMinimum
+            )
         return False
-    
+
     def symmetrize(self, value):
         """
         Adjust the limit that is closer to value, so that value becomes
@@ -358,9 +362,8 @@ class QwtInterval(object):
         """
         if not self.isValid():
             return self
-        delta = max([abs(value-self.__maxValue),
-                     abs(value-self.__minValue)])
-        return QwtInterval(value-delta, value+delta)
+        delta = max([abs(value - self.__maxValue), abs(value - self.__minValue)])
+        return QwtInterval(value - delta, value + delta)
 
     def limited(self, lowerBound, upperBound):
         """
@@ -377,7 +380,7 @@ class QwtInterval(object):
         maxValue = max([self.__maxValue, lowerBound])
         maxValue = min([maxValue, upperBound])
         return QwtInterval(minValue, maxValue, self.__borderFlags)
-    
+
     def extend(self, value):
         """
         Extend the interval
@@ -392,6 +395,5 @@ class QwtInterval(object):
         """
         if not self.isValid():
             return self
-        return QwtInterval(min([value, self.__minValue]),
-                           max([value, self.__maxValue]))
+        return QwtInterval(min([value, self.__minValue]), max([value, self.__maxValue]))
 

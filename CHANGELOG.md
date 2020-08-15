@@ -13,6 +13,7 @@
   each tick type (minor, medium, major) -- this feature is used with the new 
   flatStyle option
 - Fixed obvious errors (+ poor implementations) in untested code parts
+- Major code cleaning and formatting
 
 
 ### Version 0.6.2 ###

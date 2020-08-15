@@ -28,11 +28,12 @@ class QwtDynGridLayout_PrivateData(object):
         self.expanding = Qt.Orientations()
         self.itemSizeHints = []
         self.itemList = []
-    
+
     def updateLayoutCache(self):
         self.itemSizeHints = [it.sizeHint() for it in self.itemList]
         self.isDirty = False
-    
+
+
 class QwtDynGridLayout(QLayout):
     """
     The `QwtDynGridLayout` class lays out widgets in a grid,
@@ -71,60 +72,62 @@ class QwtDynGridLayout(QLayout):
                 spacing = args[-1]
         elif len(args) == 1:
             if isinstance(args[0], int):
-                spacing, = args
+                (spacing,) = args
             else:
-                parent, = args
+                (parent,) = args
         elif len(args) != 0:
-            raise TypeError("%s() takes 0, 1, 2 or 3 argument(s) (%s given)"\
-                            % (self.__class__.__name__, len(args)))
+            raise TypeError(
+                "%s() takes 0, 1, 2 or 3 argument(s) (%s given)"
+                % (self.__class__.__name__, len(args))
+            )
         QLayout.__init__(self, parent)
         self.__data = QwtDynGridLayout_PrivateData()
         self.setSpacing(spacing)
         self.setContentsMargins(margin, margin, margin, margin)
-        
+
     def invalidate(self):
         """Invalidate all internal caches"""
         self.__data.isDirty = True
         QLayout.invalidate(self)
-    
+
     def setMaxColumns(self, maxColumns):
         """Limit the number of columns"""
         self.__data.maxColumns = maxColumns
-    
+
     def maxColumns(self):
         """Return the upper limit for the number of columns"""
         return self.__data.maxColumns
-    
+
     def addItem(self, item):
         """Add an item to the next free position"""
         self.__data.itemList.append(item)
         self.invalidate()
-    
+
     def isEmpty(self):
         """Return true if this layout is empty"""
         return self.count() == 0
-    
+
     def itemCount(self):
         """Return number of layout items"""
         return self.count()
-    
+
     def itemAt(self, index):
         """Find the item at a specific index"""
         if index < 0 or index >= len(self.__data.itemList):
             return
         return self.__data.itemList[index]
-    
+
     def takeAt(self, index):
         """Find the item at a specific index and remove it from the layout"""
         if index < 0 or index >= len(self.__data.itemList):
             return
         self.__data.isDirty = True
         return self.__data.itemList.pop(index)
-    
+
     def count(self):
         """Return Number of items in the layout"""
         return len(self.__data.itemList)
-    
+
     def setExpandingDirections(self, expanding):
         """
         Set whether this layout can make use of more space than sizeHint().
@@ -133,7 +136,7 @@ class QwtDynGridLayout(QLayout):
         wants to grow in both dimensions. The default value is 0.
         """
         self.__data.expanding = expanding
-    
+
     def expandingDirections(self):
         """
         Returns whether this layout can make use of more space than sizeHint().
@@ -142,7 +145,7 @@ class QwtDynGridLayout(QLayout):
         wants to grow in both dimensions.
         """
         return self.__data.expanding
-    
+
     def setGeometry(self, rect):
         """
         Reorganizes columns and rows and resizes managed items within a 
@@ -152,13 +155,13 @@ class QwtDynGridLayout(QLayout):
         if self.isEmpty():
             return
         self.__data.numColumns = self.columnsForWidth(rect.width())
-        self.__data.numRows = self.itemCount()/self.__data.numColumns
+        self.__data.numRows = self.itemCount() / self.__data.numColumns
         if self.itemCount() % self.__data.numColumns:
             self.__data.numRows += 1
         itemGeometries = self.layoutItems(rect, self.__data.numColumns)
         for it, geo in zip(self.__data.itemList, itemGeometries):
             it.setGeometry(geo)
-    
+
     def columnsForWidth(self, width):
         """
         Calculate the number of columns for a given width. 
@@ -173,12 +176,12 @@ class QwtDynGridLayout(QLayout):
             maxColumns = min([self.__data.maxColumns, maxColumns])
         if self.maxRowWidth(maxColumns) <= width:
             return maxColumns
-        for numColumns in range(2, maxColumns+1):
+        for numColumns in range(2, maxColumns + 1):
             rowWidth = self.maxRowWidth(numColumns)
             if rowWidth > width:
-                return numColumns-1
+                return numColumns - 1
         return 1
-    
+
     def maxRowWidth(self, numColumns):
         """Calculate the width of a layout for a given number of columns."""
         colWidth = [0] * numColumns
@@ -189,8 +192,8 @@ class QwtDynGridLayout(QLayout):
             colWidth[col] = max([colWidth[col], hint.width()])
         margins = self.contentsMargins()
         margin_w = margins.left() + margins.right()
-        return margin_w+(numColumns-1)*self.spacing()+sum(colWidth)
-    
+        return margin_w + (numColumns - 1) * self.spacing() + sum(colWidth)
+
     def maxItemWidth(self):
         """Return the maximum width of all layout items"""
         if self.isEmpty():
@@ -198,7 +201,7 @@ class QwtDynGridLayout(QLayout):
         if self.__data.isDirty:
             self.__data.updateLayoutCache()
         return max([hint.width() for hint in self.__data.itemSizeHints])
-    
+
     def layoutItems(self, rect, numColumns):
         """
         Calculate the geometries of the layout items for a layout
@@ -207,13 +210,13 @@ class QwtDynGridLayout(QLayout):
         itemGeometries = []
         if numColumns == 0 or self.isEmpty():
             return itemGeometries
-        numRows = int(self.itemCount()/numColumns)
+        numRows = int(self.itemCount() / numColumns)
         if numColumns % self.itemCount():
             numRows += 1
         if numRows == 0:
             return itemGeometries
-        rowHeight = [0]*numRows
-        colWidth = [0]*numColumns
+        rowHeight = [0] * numRows
+        colWidth = [0] * numColumns
         self.layoutGrid(numColumns, rowHeight, colWidth)
         expandH = self.expandingDirections() & Qt.Horizontal
         expandV = self.expandingDirections() & Qt.Vertical
@@ -231,19 +234,18 @@ class QwtDynGridLayout(QLayout):
         margins = self.contentsMargins()
         rowY[0] = yOffset + margins.bottom()
         for r in range(1, numRows):
-            rowY[r] = rowY[r-1] + rowHeight[r-1] + xySpace
+            rowY[r] = rowY[r - 1] + rowHeight[r - 1] + xySpace
         colX[0] = xOffset + margins.left()
         for c in range(1, numColumns):
-            colX[c] = colX[c-1] + colWidth[c-1] + xySpace
+            colX[c] = colX[c - 1] + colWidth[c - 1] + xySpace
         itemCount = len(self.__data.itemList)
         for i in range(itemCount):
-            row = int(i/numColumns)
+            row = int(i / numColumns)
             col = i % numColumns
-            itemGeometry = QRect(colX[col], rowY[row],
-                                 colWidth[col], rowHeight[row])
+            itemGeometry = QRect(colX[col], rowY[row], colWidth[col], rowHeight[row])
             itemGeometries.append(itemGeometry)
         return itemGeometries
-        
+
     def layoutGrid(self, numColumns, rowHeight, colWidth):
         """
         Calculate the dimensions for the columns and rows for a grid
@@ -254,7 +256,7 @@ class QwtDynGridLayout(QLayout):
         if self.__data.isDirty:
             self.__data.updateLayoutCache()
         for index in range(len(self.__data.itemSizeHints)):
-            row = int(index/numColumns)
+            row = int(index / numColumns)
             col = index % numColumns
             size = self.__data.itemSizeHints[index]
             if col == 0:
@@ -265,17 +267,17 @@ class QwtDynGridLayout(QLayout):
                 colWidth[col] = size.width()
             else:
                 colWidth[col] = max([colWidth[col], size.width()])
-    
+
     def hasHeightForWidth(self):
         """Return true: QwtDynGridLayout implements heightForWidth()."""
         return True
-    
+
     def heightForWidth(self, width):
         """Return The preferred height for this layout, given a width."""
         if self.isEmpty():
             return 0
         numColumns = self.columnsForWidth(width)
-        numRows = int(self.itemCount()/numColumns)
+        numRows = int(self.itemCount() / numColumns)
         if self.itemCount() % numColumns:
             numRows += 1
         rowHeight = [0] * numRows
@@ -283,8 +285,8 @@ class QwtDynGridLayout(QLayout):
         self.layoutGrid(numColumns, rowHeight, colWidth)
         margins = self.contentsMargins()
         margin_h = margins.top() + margins.bottom()
-        return margin_h+(numRows-1)*self.spacing()+sum(rowHeight)
-    
+        return margin_h + (numRows - 1) * self.spacing() + sum(rowHeight)
+
     def stretchGrid(self, rect, numColumns, rowHeight, colWidth):
         """
         Stretch columns in case of expanding() & QSizePolicy::Horizontal and
@@ -296,27 +298,29 @@ class QwtDynGridLayout(QLayout):
         expandH = self.expandingDirections() & Qt.Horizontal
         expandV = self.expandingDirections() & Qt.Vertical
         if expandH:
-            xDelta = rect.width()-2*self.margin()-(numColumns-1)*self.spacing()
+            xDelta = (
+                rect.width() - 2 * self.margin() - (numColumns - 1) * self.spacing()
+            )
             for col in range(numColumns):
                 xDelta -= colWidth[col]
             if xDelta > 0:
                 for col in range(numColumns):
-                    space = xDelta/(numColumns-col)
+                    space = xDelta / (numColumns - col)
                     colWidth[col] += space
                     xDelta -= space
         if expandV:
-            numRows = self.itemCount()/numColumns
+            numRows = self.itemCount() / numColumns
             if self.itemCount() % numColumns:
                 numRows += 1
-            yDelta = rect.height()-2*self.margin()-(numRows-1)*self.spacing()
+            yDelta = rect.height() - 2 * self.margin() - (numRows - 1) * self.spacing()
             for row in range(numRows):
                 yDelta -= rowHeight[row]
             if yDelta > 0:
                 for row in range(numRows):
-                    space = yDelta/(numRows-row)
+                    space = yDelta / (numRows - row)
                     rowHeight[row] += space
                     yDelta -= space
-        
+
     def sizeHint(self):
         """
         Return the size hint. If maxColumns() > 0 it is the size for
@@ -328,7 +332,7 @@ class QwtDynGridLayout(QLayout):
         numColumns = self.itemCount()
         if self.__data.maxColumns > 0:
             numColumns = min([self.__data.maxColumns, numColumns])
-        numRows = int(self.itemCount()/numColumns)
+        numRows = int(self.itemCount() / numColumns)
         if self.itemCount() % numColumns:
             numRows += 1
         rowHeight = [0] * numRows
@@ -337,14 +341,14 @@ class QwtDynGridLayout(QLayout):
         margins = self.contentsMargins()
         margin_h = margins.top() + margins.bottom()
         margin_w = margins.left() + margins.right()
-        h = margin_h+(numRows-1)*self.spacing()+sum(rowHeight)
-        w = margin_w+(numColumns-1)*self.spacing()+sum(colWidth)
+        h = margin_h + (numRows - 1) * self.spacing() + sum(rowHeight)
+        w = margin_w + (numColumns - 1) * self.spacing() + sum(colWidth)
         return QSize(w, h)
-    
+
     def numRows(self):
         """Return Number of rows of the current layout."""
         return self.__data.numRows
-    
+
     def numColumns(self):
         """Return Number of columns of the current layout."""
         return self.__data.numColumns

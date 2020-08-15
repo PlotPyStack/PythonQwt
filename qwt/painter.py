@@ -16,12 +16,25 @@ QwtPainterClass
 from .color_map import QwtColorMap
 from .scale_map import QwtScaleMap
 
-from .qt.QtGui import (QPaintEngine, QFrame, QPixmap, QPainter, QPalette, 
-                       QStyle, QPen, QStyleOptionFocusRect, QBrush, QRegion,
-                       QLinearGradient, QPainterPath, QColor, QStyleOption)
+from .qt.QtGui import (
+    QPaintEngine,
+    QFrame,
+    QPixmap,
+    QPainter,
+    QPalette,
+    QStyle,
+    QPen,
+    QStyleOptionFocusRect,
+    QBrush,
+    QRegion,
+    QLinearGradient,
+    QPainterPath,
+    QColor,
+    QStyleOption,
+)
 from .qt.QtCore import Qt, QRect, QPoint, QT_VERSION, QRectF
 
-QWIDGETSIZE_MAX = (1<<24)-1
+QWIDGETSIZE_MAX = (1 << 24) - 1
 
 
 def isX11GraphicsSystem():
@@ -30,6 +43,7 @@ def isX11GraphicsSystem():
     isX11 = painter.paintEngine().type() == QPaintEngine.X11
     del painter
     return isX11
+
 
 def qwtFillRect(widget, painter, rect, brush):
     if brush.style() == Qt.TexturePattern:
@@ -48,29 +62,29 @@ def qwtFillRect(widget, painter, rect, brush):
 
 class QwtPainterClass(object):
     """A collection of `QPainter` workarounds"""
-    
+
     def drawImage(self, painter, rect, image):
         alignedRect = rect.toAlignedRect()
         if alignedRect != rect:
-            clipRect = rect.adjusted(0., 0., -1., -1.)
+            clipRect = rect.adjusted(0.0, 0.0, -1.0, -1.0)
             painter.save()
             painter.setClipRect(clipRect, Qt.IntersectClip)
             painter.drawImage(alignedRect, image)
             painter.restore()
         else:
             painter.drawImage(alignedRect, image)
-    
+
     def drawPixmap(self, painter, rect, pixmap):
         alignedRect = rect.toAlignedRect()
         if alignedRect != rect:
-            clipRect = rect.adjusted(0., 0., -1., -1.)
+            clipRect = rect.adjusted(0.0, 0.0, -1.0, -1.0)
             painter.save()
             painter.setClipRect(clipRect, Qt.IntersectClip)
             painter.drawPixmap(alignedRect, pixmap)
             painter.restore()
         else:
             painter.drawPixmap(alignedRect, pixmap)
-    
+
     def drawFocusRect(self, *args):
         if len(args) == 2:
             painter, widget = args
@@ -83,12 +97,13 @@ class QwtPainterClass(object):
             opt.state |= QStyle.State_HasFocus
             palette = widget.palette()
             opt.backgroundColor = palette.color(widget.backgroundRole())
-            widget.style().drawPrimitive(QStyle.PE_FrameFocusRect,
-                                         opt, painter, widget)
+            widget.style().drawPrimitive(QStyle.PE_FrameFocusRect, opt, painter, widget)
         else:
-            raise TypeError("QwtPainter.drawFocusRect() takes 2 or 3 argument"\
-                            "(s) (%s given)" % len(args))
-    
+            raise TypeError(
+                "QwtPainter.drawFocusRect() takes 2 or 3 argument"
+                "(s) (%s given)" % len(args)
+            )
+
     def drawRoundFrame(self, painter, rect, palette, lineWidth, frameStyle):
         """
         Draw a round frame
@@ -105,7 +120,7 @@ class QwtPainterClass(object):
             style = Sunken
         elif (frameStyle & QFrame.Raised) == QFrame.Raised:
             style = Raised
-        lw2 = .5*lineWidth
+        lw2 = 0.5 * lineWidth
         r = rect.adjusted(lw2, lw2, -lw2, -lw2)
         if style != Plain:
             c1 = palette.color(QPalette.Light)
@@ -113,8 +128,8 @@ class QwtPainterClass(object):
             if style == Sunken:
                 c1, c2 = c2, c1
             gradient = QLinearGradient(r.topLeft(), r.bottomRight())
-            gradient.setColorAt(0., c1)
-            gradient.setColorAt(1., c2)
+            gradient.setColorAt(0.0, c1)
+            gradient.setColorAt(1.0, c2)
             brush = QBrush(gradient)
         else:
             brush = palette.brush(QPalette.WindowText)
@@ -122,9 +137,17 @@ class QwtPainterClass(object):
         painter.setPen(QPen(brush, lineWidth))
         painter.drawEllipse(r)
         painter.restore()
-    
-    def drawFrame(self, painter, rect, palette, foregroundRole,
-                  frameWidth, midLineWidth, frameStyle):
+
+    def drawFrame(
+        self,
+        painter,
+        rect,
+        palette,
+        foregroundRole,
+        frameWidth,
+        midLineWidth,
+        frameStyle,
+    ):
         """
         Draw a rectangular frame
         
@@ -141,9 +164,10 @@ class QwtPainterClass(object):
         shadow = frameStyle & QFrame.Shadow_Mask
         painter.save()
         if shadow == QFrame.Plain:
-            outerRect = rect.adjusted(0., 0., -1., -1.)
+            outerRect = rect.adjusted(0.0, 0.0, -1.0, -1.0)
             innerRect = outerRect.adjusted(
-                            frameWidth, frameWidth, -frameWidth, -frameWidth)
+                frameWidth, frameWidth, -frameWidth, -frameWidth
+            )
             path = QPainterPath()
             path.addRect(outerRect)
             path.addRect(innerRect)
@@ -153,13 +177,16 @@ class QwtPainterClass(object):
         else:
             shape = frameStyle & QFrame.Shape_Mask
             if shape == QFrame.Box:
-                outerRect = rect.adjusted(0., 0., -1., -1.)
+                outerRect = rect.adjusted(0.0, 0.0, -1.0, -1.0)
                 midRect1 = outerRect.adjusted(
-                    frameWidth, frameWidth, -frameWidth, -frameWidth)
+                    frameWidth, frameWidth, -frameWidth, -frameWidth
+                )
                 midRect2 = midRect1.adjusted(
-                    midLineWidth, midLineWidth, -midLineWidth, -midLineWidth)
+                    midLineWidth, midLineWidth, -midLineWidth, -midLineWidth
+                )
                 innerRect = midRect2.adjusted(
-                    frameWidth, frameWidth, -frameWidth, -frameWidth)
+                    frameWidth, frameWidth, -frameWidth, -frameWidth
+                )
                 path1 = QPainterPath()
                 path1.moveTo(outerRect.bottomLeft())
                 path1.lineTo(outerRect.topLeft())
@@ -205,9 +232,13 @@ class QwtPainterClass(object):
                 painter.setBrush(palette.mid())
                 painter.drawPath(path5)
             else:
-                outerRect = rect.adjusted(0., 0., -1., -1.)
-                innerRect = outerRect.adjusted(frameWidth-1., frameWidth-1.,
-                                           -(frameWidth-1.), -(frameWidth-1.))
+                outerRect = rect.adjusted(0.0, 0.0, -1.0, -1.0)
+                innerRect = outerRect.adjusted(
+                    frameWidth - 1.0,
+                    frameWidth - 1.0,
+                    -(frameWidth - 1.0),
+                    -(frameWidth - 1.0),
+                )
                 path1 = QPainterPath()
                 path1.moveTo(outerRect.bottomLeft())
                 path1.lineTo(outerRect.topLeft())
@@ -232,9 +263,10 @@ class QwtPainterClass(object):
                 painter.setBrush(brush2)
                 painter.drawPath(path2)
         painter.restore()
-        
-    def drawRoundedFrame(self, painter, rect, xRadius, yRadius,
-                         palette, lineWidth, frameStyle):
+
+    def drawRoundedFrame(
+        self, painter, rect, xRadius, yRadius, palette, lineWidth, frameStyle
+    ):
         """
         Draw a rectangular frame with rounded borders
         
@@ -249,7 +281,7 @@ class QwtPainterClass(object):
         painter.save()
         painter.setRenderHint(QPainter.Antialiasing, True)
         painter.setBrush(Qt.NoBrush)
-        lw2 = lineWidth*.5
+        lw2 = lineWidth * 0.5
         r = rect.adjusted(lw2, lw2, -lw2, -lw2)
         path = QPainterPath()
         path.addRoundedRect(r, xRadius, yRadius)
@@ -262,23 +294,28 @@ class QwtPainterClass(object):
         if style != Plain and path.elementCount() == 17:
             pathList = [QPainterPath() for _i in range(8)]
             for i in range(4):
-                j = i*4+1
-                pathList[2*i].moveTo(path.elementAt(j-1).x,
-                                     path.elementAt(j-1).y)
-                pathList[2*i].cubicTo(
-                        path.elementAt(j+0).x, path.elementAt(j+0).y,
-                        path.elementAt(j+1).x, path.elementAt(j+1).y,
-                        path.elementAt(j+2).x, path.elementAt(j+2).y)
-                pathList[2*i+1].moveTo(path.elementAt(j+2).x,
-                                       path.elementAt(j+2).y)
-                pathList[2*i+1].lineTo(path.elementAt(j+3).x,
-                                       path.elementAt(j+3).y)
+                j = i * 4 + 1
+                pathList[2 * i].moveTo(path.elementAt(j - 1).x, path.elementAt(j - 1).y)
+                pathList[2 * i].cubicTo(
+                    path.elementAt(j + 0).x,
+                    path.elementAt(j + 0).y,
+                    path.elementAt(j + 1).x,
+                    path.elementAt(j + 1).y,
+                    path.elementAt(j + 2).x,
+                    path.elementAt(j + 2).y,
+                )
+                pathList[2 * i + 1].moveTo(
+                    path.elementAt(j + 2).x, path.elementAt(j + 2).y
+                )
+                pathList[2 * i + 1].lineTo(
+                    path.elementAt(j + 3).x, path.elementAt(j + 3).y
+                )
             c1 = QColor(palette.color(QPalette.Dark))
             c2 = QColor(palette.color(QPalette.Light))
             if style == Raised:
                 c1, c2 = c2, c1
             for i in range(5):
-                r = pathList[2*i].controlPointRect()
+                r = pathList[2 * i].controlPointRect()
                 arcPen = QPen()
                 arcPen.setCapStyle(Qt.FlatCap)
                 arcPen.setWidth(lineWidth)
@@ -292,8 +329,8 @@ class QwtPainterClass(object):
                     gradient = QLinearGradient()
                     gradient.setStart(r.topLeft())
                     gradient.setFinalStop(r.bottomRight())
-                    gradient.setColorAt(0., c1)
-                    gradient.setColorAt(1., c2)
+                    gradient.setColorAt(0.0, c1)
+                    gradient.setColorAt(1.0, c2)
                     arcPen.setBrush(gradient)
                     linePen.setColor(c2)
                 elif i == 2:
@@ -303,22 +340,21 @@ class QwtPainterClass(object):
                     gradient = QLinearGradient()
                     gradient.setStart(r.bottomRight())
                     gradient.setFinalStop(r.topLeft())
-                    gradient.setColorAt(0., c2)
-                    gradient.setColorAt(1., c1)
+                    gradient.setColorAt(0.0, c2)
+                    gradient.setColorAt(1.0, c1)
                     arcPen.setBrush(gradient)
                     linePen.setColor(c1)
                 painter.setPen(arcPen)
-                painter.drawPath(pathList[2*i])
+                painter.drawPath(pathList[2 * i])
                 painter.setPen(linePen)
-                painter.drawPath(pathList[2*i+1])
+                painter.drawPath(pathList[2 * i + 1])
         else:
             pen = QPen(palette.color(QPalette.WindowText), lineWidth)
             painter.setPen(pen)
             painter.drawPath(path)
         painter.restore()
-        
-    def drawColorBar(self, painter, colorMap, interval, scaleMap,
-                     orientation, rect):
+
+    def drawColorBar(self, painter, colorMap, interval, scaleMap, orientation, rect):
         """
         Draw a color bar into a rectangle
         
@@ -341,7 +377,7 @@ class QwtPainterClass(object):
         if orientation == Qt.Horizontal:
             sMap = QwtScaleMap(scaleMap)
             sMap.setPaintInterval(rect.left(), rect.right())
-            for x in range(devRect.left(), devRect.right()+1):
+            for x in range(devRect.left(), devRect.right() + 1):
                 value = sMap.invTransform(x)
                 if colorMap.format() == QwtColorMap.RGB:
                     c.setRgba(colorMap.rgb(interval, value))
@@ -352,7 +388,7 @@ class QwtPainterClass(object):
         else:
             sMap = QwtScaleMap(scaleMap)
             sMap.setPaintInterval(rect.bottom(), rect.top())
-            for y in range(devRect.top(), devRect.bottom()+1):
+            for y in range(devRect.top(), devRect.bottom() + 1):
                 value = sMap.invTransform(y)
                 if colorMap.format() == QwtColorMap.RGB:
                     c.setRgba(colorMap.rgb(interval, value))
@@ -362,7 +398,7 @@ class QwtPainterClass(object):
                 pmPainter.drawLine(devRect.left(), y, devRect.right(), y)
         pmPainter.end()
         self.drawPixmap(painter, rect, pixmap)
-    
+
     def fillPixmap(self, widget, pixmap, offset=None):
         """
         Fill a pixmap with the content of a widget
@@ -394,9 +430,8 @@ class QwtPainterClass(object):
             painter.setClipRegion(QRegion(rect))
             opt = QStyleOption()
             opt.initFrom(widget)
-            widget.style().drawPrimitive(QStyle.PE_Widget, opt,
-                                         painter, widget)
-    
+            widget.style().drawPrimitive(QStyle.PE_Widget, opt, painter, widget)
+
     def drawBackground(self, painter, rect, widget):
         """
         Fill rect with the background of a widget
@@ -413,12 +448,11 @@ class QwtPainterClass(object):
             opt = QStyleOption()
             opt.initFrom(widget)
             opt.rect = QRectF(rect).toAlignedRect()
-            widget.style().drawPrimitive(QStyle.PE_Widget, opt,
-                                         painter, widget)
+            widget.style().drawPrimitive(QStyle.PE_Widget, opt, painter, widget)
         else:
             brush = widget.palette().brush(widget.backgroundRole())
             painter.fillRect(rect, brush)
-        
+
     def backingStore(self, widget, size):
         """
         :param QWidget widget: Widget, for which the backinstore is intended
@@ -426,17 +460,18 @@ class QwtPainterClass(object):
         :return: A pixmap that can be used as backing store
         """
         if QT_VERSION >= 0x050000:
-            pixelRatio = 1.
+            pixelRatio = 1.0
             if widget and widget.windowHandle():
                 pixelRatio = widget.windowHandle().devicePixelRatio()
             else:
                 from .qt.QtGui import qApp
+
                 if qApp is not None:
                     try:
                         pixelRatio = qApp.devicePixelRatio()
                     except RuntimeError:
                         pass
-            pm = QPixmap(size*pixelRatio)
+            pm = QPixmap(size * pixelRatio)
             pm.setDevicePixelRatio(pixelRatio)
         else:
             pm = QPixmap(size)
@@ -444,5 +479,6 @@ class QwtPainterClass(object):
             if pm.x11Info().screen() != widget.x11Info().screen():
                 pm.x11SetScreen(widget.x11Info().screen())
         return pm
+
 
 QwtPainter = QwtPainterClass()

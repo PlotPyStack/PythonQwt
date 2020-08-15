@@ -21,14 +21,24 @@ from .plot_layout import QwtPlotLayout
 from .scale_draw import QwtScaleDraw
 from .scale_map import QwtScaleMap
 
-from .qt.QtGui import (QPrinter, QPainter, QImageWriter, QImage, QColor,
-                          QPaintDevice, QTransform, QPalette, QFileDialog,
-                          QPainterPath, QPen)
+from .qt.QtGui import (
+    QPrinter,
+    QPainter,
+    QImageWriter,
+    QImage,
+    QColor,
+    QPaintDevice,
+    QTransform,
+    QPalette,
+    QFileDialog,
+    QPainterPath,
+    QPen,
+)
 from .qt.QtCore import Qt, QRect, QRectF, QObject, QSizeF
 from .qt.QtSvg import QSvgGenerator
 from .qt.compat import getsavefilename
 
-import numpy as np
+import math
 import os.path as osp
 
 
@@ -38,11 +48,11 @@ def qwtCanvasClip(canvas, canvasRect):
     To avoid too much rounding errors better
     calculate it in target device resolution
     """
-    x1 = np.ceil(canvasRect.left())
-    x2 = np.floor(canvasRect.right())
-    y1 = np.ceil(canvasRect.top())
-    y2 = np.floor(canvasRect.bottom())
-    r = QRect(x1, y1, x2-x1-1, y2-y1-1)
+    x1 = math.ceil(canvasRect.left())
+    x2 = math.floor(canvasRect.right())
+    y1 = math.ceil(canvasRect.top())
+    y2 = math.floor(canvasRect.bottom())
+    r = QRect(x1, y1, x2 - x1 - 1, y2 - y1 - 1)
     return canvas.borderPath(r)
 
 
@@ -50,6 +60,7 @@ class QwtPlotRenderer_PrivateData(object):
     def __init__(self):
         self.discardFlags = QwtPlotRenderer.DiscardNone
         self.layoutFlags = QwtPlotRenderer.DefaultLayout
+
 
 class QwtPlotRenderer(QObject):
     """
@@ -76,7 +87,7 @@ class QwtPlotRenderer(QObject):
       * `QwtPlotRenderer.DefaultLayout`: Use the default layout as on screen
       * `QwtPlotRenderer.FrameWithScales`: Instead of the scales a box is painted around the plot canvas, where the scale ticks are aligned to.
     """
-    
+
     # enum DiscardFlag
     DiscardNone = 0x00
     DiscardBackground = 0x01
@@ -85,15 +96,15 @@ class QwtPlotRenderer(QObject):
     DiscardCanvasBackground = 0x08
     DiscardFooter = 0x10
     DiscardCanvasFrame = 0x20
-    
+
     # enum LayoutFlag
     DefaultLayout = 0x00
     FrameWithScales = 0x01
-    
+
     def __init__(self, parent=None):
         QObject.__init__(self, parent)
         self.__data = QwtPlotRenderer_PrivateData()
-    
+
     def setDiscardFlag(self, flag, on=True):
         """
         Change a flag, indicating what to discard from rendering
@@ -110,7 +121,7 @@ class QwtPlotRenderer(QObject):
             self.__data.discardFlags |= flag
         else:
             self.__data.discardFlags &= ~flag
-    
+
     def testDiscardFlag(self, flag):
         """
         :param int flag: Flag to be tested
@@ -122,7 +133,7 @@ class QwtPlotRenderer(QObject):
             :py:meth:`discardFlags()`
         """
         return self.__data.discardFlags & flag
-    
+
     def setDiscardFlags(self, flags):
         """
         Set the flags, indicating what to discard from rendering
@@ -135,7 +146,7 @@ class QwtPlotRenderer(QObject):
             :py:meth:`discardFlags()`
         """
         self.__data.discardFlags = flags
-    
+
     def discardFlags(self):
         """
         :return: Flags, indicating what to discard from rendering
@@ -146,7 +157,7 @@ class QwtPlotRenderer(QObject):
             :py:meth:`testDiscardFlag()`
         """
         return self.__data.discardFlags
-    
+
     def setLayoutFlag(self, flag, on=True):
         """
         Change a layout flag
@@ -162,7 +173,7 @@ class QwtPlotRenderer(QObject):
             self.__data.layoutFlags |= flag
         else:
             self.__data.layoutFlags &= ~flag
-    
+
     def testLayoutFlag(self, flag):
         """
         :param int flag: Flag to be tested
@@ -187,7 +198,7 @@ class QwtPlotRenderer(QObject):
             :py:meth:`layoutFlags()`
         """
         self.__data.layoutFlags = flags
-    
+
     def layoutFlags(self):
         """
         :return: Layout flags
@@ -198,9 +209,10 @@ class QwtPlotRenderer(QObject):
             :py:meth:`testLayoutFlag()`
         """
         return self.__data.layoutFlags
-    
-    def renderDocument(self, plot, filename, sizeMM=(300, 200), resolution=85,
-                       format_=None):
+
+    def renderDocument(
+        self, plot, filename, sizeMM=(300, 200), resolution=85, format_=None
+    ):
         """
         Render a plot to a file
 
@@ -224,7 +236,7 @@ class QwtPlotRenderer(QObject):
         title = plot.title().text()
         if not title:
             title = "Plot Document"
-        mmToInch = 1./25.4
+        mmToInch = 1.0 / 25.4
         size = sizeMM * mmToInch * resolution
         documentRect = QRectF(0.0, 0.0, size.width(), size.height())
         fmt = format_.lower()
@@ -254,7 +266,7 @@ class QwtPlotRenderer(QObject):
             painter.end()
         elif fmt in QImageWriter.supportedImageFormats():
             imageRect = documentRect.toRect()
-            dotsPerMeter = int(round(resolution*mmToInch*1000.))
+            dotsPerMeter = int(round(resolution * mmToInch * 1000.0))
             image = QImage(imageRect.size(), QImage.Format_ARGB32)
             image.setDotsPerMeterX(dotsPerMeter)
             image.setDotsPerMeterY(dotsPerMeter)
@@ -296,9 +308,9 @@ class QwtPlotRenderer(QObject):
             w = dest.width()
             h = dest.height()
             rect = QRectF(0, 0, w, h)
-            aspect = rect.width()/rect.height()
-            if aspect < 1.:
-                rect.setHeight(aspect*rect.width())
+            aspect = rect.width() / rect.height()
+            if aspect < 1.0:
+                rect.setHeight(aspect * rect.width())
         elif isinstance(dest, QSvgGenerator):
             rect = dest.viewBoxF()
             if rect.isEmpty():
@@ -309,7 +321,7 @@ class QwtPlotRenderer(QObject):
             raise TypeError("Unsupported destination type %s" % type(dest))
         p = QPainter(dest)
         self.render(plot, p, rect)
-    
+
     def render(self, plot, painter, plotRect):
         """
         Paint the contents of a QwtPlot instance into a given rectangle.
@@ -324,8 +336,12 @@ class QwtPlotRenderer(QObject):
             :py:meth:`renderDocument()`, :py:meth:`renderTo()`, 
             :py:meth:`qwt.painter.QwtPainter.setRoundingAlignment()`
         """
-        if painter == 0 or not painter.isActive() or not plotRect.isValid()\
-           or plot.size().isNull():
+        if (
+            painter == 0
+            or not painter.isActive()
+            or not plotRect.isValid()
+            or plot.size().isNull()
+        ):
             return
         if not self.__data.discardFlags & self.DiscardBackground:
             QwtPainter.drawBackground(painter, plotRect, plot)
@@ -334,9 +350,11 @@ class QwtPlotRenderer(QObject):
         #  by the Qt layout system. Therefore we need to calculate the
         #  layout in screen coordinates and paint with a scaled painter.
         transform = QTransform()
-        transform.scale(float(painter.device().logicalDpiX())/plot.logicalDpiX(),
-                        float(painter.device().logicalDpiY())/plot.logicalDpiY())
-        
+        transform.scale(
+            float(painter.device().logicalDpiX()) / plot.logicalDpiX(),
+            float(painter.device().logicalDpiY()) / plot.logicalDpiY(),
+        )
+
         invtrans, _ok = transform.inverted()
         layoutRect = invtrans.mapRect(plotRect)
         if not (self.__data.discardFlags & self.DiscardBackground):
@@ -368,18 +386,20 @@ class QwtPlotRenderer(QObject):
 
         #  Calculate the layout for the document.
         layoutOptions = QwtPlotLayout.IgnoreScrollbars
-        
-        if self.__data.layoutFlags & self.FrameWithScales or\
-           self.__data.discardFlags & self.DiscardCanvasFrame:
+
+        if (
+            self.__data.layoutFlags & self.FrameWithScales
+            or self.__data.discardFlags & self.DiscardCanvasFrame
+        ):
             layoutOptions |= QwtPlotLayout.IgnoreFrames
-        
+
         if self.__data.discardFlags & self.DiscardLegend:
             layoutOptions |= QwtPlotLayout.IgnoreLegend
         if self.__data.discardFlags & self.DiscardTitle:
             layoutOptions |= QwtPlotLayout.IgnoreTitle
         if self.__data.discardFlags & self.DiscardFooter:
             layoutOptions |= QwtPlotLayout.IgnoreFooter
-        
+
         layout.activate(plot, layoutRect, layoutOptions)
 
         maps = self.buildCanvasMaps(plot, layout.canvasRect())
@@ -388,34 +408,44 @@ class QwtPlotRenderer(QObject):
             #  have been changed
             layout.activate(plot, layoutRect, layoutOptions)
             maps = self.buildCanvasMaps(plot, layout.canvasRect())
-        
+
         painter.save()
         painter.setWorldTransform(transform, True)
-        
+
         self.renderCanvas(plot, painter, layout.canvasRect(), maps)
-        
-        if (not self.__data.discardFlags & self.DiscardTitle) and\
-           plot.titleLabel().text():
+
+        if (
+            not self.__data.discardFlags & self.DiscardTitle
+        ) and plot.titleLabel().text():
             self.renderTitle(plot, painter, layout.titleRect())
-        
-        if (not self.__data.discardFlags & self.DiscardFooter) and\
-           plot.titleLabel().text():
+
+        if (
+            not self.__data.discardFlags & self.DiscardFooter
+        ) and plot.titleLabel().text():
             self.renderFooter(plot, painter, layout.footerRect())
-            
-        if (not self.__data.discardFlags & self.DiscardLegend) and\
-           plot.titleLabel().text():
+
+        if (
+            not self.__data.discardFlags & self.DiscardLegend
+        ) and plot.titleLabel().text():
             self.renderLegend(plot, painter, layout.legendRect())
-            
+
         for axisId in QwtPlot.AXES:
             scaleWidget = plot.axisWidget(axisId)
             if scaleWidget:
                 baseDist = scaleWidget.margin()
                 startDist, endDist = scaleWidget.getBorderDistHint()
-                self.renderScale(plot, painter, axisId, startDist, endDist,
-                                 baseDist, layout.scaleRect(axisId))
-        
+                self.renderScale(
+                    plot,
+                    painter,
+                    axisId,
+                    startDist,
+                    endDist,
+                    baseDist,
+                    layout.scaleRect(axisId),
+                )
+
         painter.restore()
-        
+
         for axisId in QwtPlot.AXES:
             if self.__data.layoutFlags & self.FrameWithScales:
                 scaleWidget = plot.axisWidget(axisId)
@@ -424,7 +454,7 @@ class QwtPlotRenderer(QObject):
             layout.setCanvasMargin(canvasMargins[axisId])
 
         layout.invalidate()
-    
+
     def renderTitle(self, plot, painter, rect):
         """
         Render the title into a given rectangle.
@@ -437,7 +467,7 @@ class QwtPlotRenderer(QObject):
         color = plot.titleLabel().palette().color(QPalette.Active, QPalette.Text)
         painter.setPen(color)
         plot.titleLabel().text().draw(painter, rect)
-    
+
     def renderFooter(self, plot, painter, rect):
         """
         Render the footer into a given rectangle.
@@ -450,7 +480,7 @@ class QwtPlotRenderer(QObject):
         color = plot.footerLabel().palette().color(QPalette.Active, QPalette.Text)
         painter.setPen(color)
         plot.footerLabel().text().draw(painter, rect)
-    
+
     def renderLegend(self, plot, painter, rect):
         """
         Render the legend into a given rectangle.
@@ -462,9 +492,8 @@ class QwtPlotRenderer(QObject):
         if plot.legend():
             fillBackground = not self.__data.discardFlags & self.DiscardBackground
             plot.legend().renderLegend(painter, rect, fillBackground)
-        
-    def renderScale(self, plot, painter, axisId, startDist, endDist,
-                    baseDist, rect):
+
+    def renderScale(self, plot, painter, axisId, startDist, endDist, baseDist, rect):
         """
         Paint a scale into a given rectangle.
         Paint the scale into a given rectangle.
@@ -504,7 +533,7 @@ class QwtPlotRenderer(QObject):
             y = rect.top() + baseDist
             w = rect.width() - startDist - endDist
             align = QwtScaleDraw.BottomScale
-        
+
         scaleWidget.drawTitle(painter, align, rect)
         painter.setFont(scaleWidget.font())
         sd = scaleWidget.scaleDraw()
@@ -518,7 +547,7 @@ class QwtPlotRenderer(QObject):
         sd.move(sdPos)
         sd.setLength(sdLength)
         painter.restore()
-        
+
     def renderCanvas(self, plot, painter, canvasRect, maps):
         """
         Render the canvas into a given rectangle.
@@ -529,10 +558,10 @@ class QwtPlotRenderer(QObject):
         :param QRectF rect: Bounding rectangle
         """
         canvas = plot.canvas()
-        r = canvasRect.adjusted(0., 0., -1., 1.)
+        r = canvasRect.adjusted(0.0, 0.0, -1.0, 1.0)
         if self.__data.layoutFlags & self.FrameWithScales:
             painter.save()
-            r.adjust(-1., -1., 1., 1.)
+            r.adjust(-1.0, -1.0, 1.0, 1.0)
             painter.setPen(QPen(Qt.black))
             if not (self.__data.discardFlags & self.DiscardCanvasBackground):
                 bgBrush = canvas.palette().brush(plot.backgroundRole())
@@ -563,8 +592,9 @@ class QwtPlotRenderer(QObject):
             if not self.__data.discardFlags & self.DiscardCanvasFrame:
                 frameWidth = canvas.frameWidth()
                 clipPath = qwtCanvasClip(canvas, canvasRect)
-            innerRect = canvasRect.adjusted(frameWidth, frameWidth,
-                                            -frameWidth, -frameWidth)
+            innerRect = canvasRect.adjusted(
+                frameWidth, frameWidth, -frameWidth, -frameWidth
+            )
             painter.save()
             if clipPath.isEmpty():
                 painter.setClipRect(innerRect)
@@ -578,16 +608,27 @@ class QwtPlotRenderer(QObject):
                 painter.save()
                 frameStyle = canvas.frameShadow() | canvas.frameShape()
                 radius = canvas.borderRadius()
-                if radius > 0.:
-                    QwtPainter.drawRoundedFrame(painter, canvasRect,
-                                                radius, radius,
-                                                canvas.palette(), frameWidth,
-                                                frameStyle)
+                if radius > 0.0:
+                    QwtPainter.drawRoundedFrame(
+                        painter,
+                        canvasRect,
+                        radius,
+                        radius,
+                        canvas.palette(),
+                        frameWidth,
+                        frameStyle,
+                    )
                 else:
                     midLineWidth = canvas.midLineWidth()
-                    QwtPainter.drawFrame(painter, canvasRect, canvas.palette(),
-                                         canvas.foregroundRole(), frameWidth,
-                                         midLineWidth, frameStyle)
+                    QwtPainter.drawFrame(
+                        painter,
+                        canvasRect,
+                        canvas.palette(),
+                        canvas.foregroundRole(),
+                        frameWidth,
+                        midLineWidth,
+                        frameStyle,
+                    )
                 painter.restore()
 
     def buildCanvasMaps(self, plot, canvasRect):
@@ -601,8 +642,7 @@ class QwtPlotRenderer(QObject):
         maps = []
         for axisId in QwtPlot.AXES:
             map_ = QwtScaleMap()
-            map_.setTransformation(
-                                plot.axisScaleEngine(axisId).transformation())
+            map_.setTransformation(plot.axisScaleEngine(axisId).transformation())
             sd = plot.axisScaleDiv(axisId)
             map_.setScaleInterval(sd.lowerBound(), sd.upperBound())
             if plot.axisEnabled(axisId):
@@ -627,17 +667,17 @@ class QwtPlotRenderer(QObject):
             map_.setPaintInterval(from_, to)
             maps.append(map_)
         return maps
-            
+
     def updateCanvasMargins(self, plot, canvasRect, maps):
         margins = plot.getCanvasMarginsHint(maps, canvasRect)
         marginsChanged = False
         for axisId in QwtPlot.AXES:
-            if margins[axisId] >= 0.:
-                m = np.ceil(margins[axisId])
+            if margins[axisId] >= 0.0:
+                m = math.ceil(margins[axisId])
                 plot.plotLayout().setCanvasMargin(m, axisId)
                 marginsChanged = True
         return marginsChanged
-    
+
     def exportTo(self, plot, documentname, sizeMM=None, resolution=85):
         """
         Execute a file dialog and render the plot to the selected file
@@ -658,21 +698,27 @@ class QwtPlotRenderer(QObject):
             sizeMM = QSizeF(300, 200)
         filename = documentname
         imageFormats = QImageWriter.supportedImageFormats()
-        filter_ = ["PDF documents (*.pdf)",
-                   "SVG documents (*.svg)",
-                   "Postscript documents (*.ps)"]
+        filter_ = [
+            "PDF documents (*.pdf)",
+            "SVG documents (*.svg)",
+            "Postscript documents (*.ps)",
+        ]
         if imageFormats:
             imageFilter = "Images"
             imageFilter += " ("
             for idx, fmt in enumerate(imageFormats):
                 if idx > 0:
                     imageFilter += " "
-                imageFilter += "*."+str(fmt)
+                imageFilter += "*." + str(fmt)
             imageFilter += ")"
             filter_ += [imageFilter]
-        filename, _s = getsavefilename(plot, "Export File Name", filename,
-                                   ";;".join(filter_),
-                                   options=QFileDialog.DontConfirmOverwrite)
+        filename, _s = getsavefilename(
+            plot,
+            "Export File Name",
+            filename,
+            ";;".join(filter_),
+            options=QFileDialog.DontConfirmOverwrite,
+        )
         if not filename:
             return False
         self.renderDocument(plot, filename, sizeMM, resolution)

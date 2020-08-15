@@ -17,9 +17,23 @@ from .null_paintdevice import QwtNullPaintDevice
 from .painter import QwtPainter
 
 from .qt import PYQT5
-from .qt.QtGui import (QFrame, QPaintEngine, QPen, QBrush, QRegion, QImage,
-                          QPainterPath, QPixmap, QGradient, QPainter, qAlpha,
-                          QPolygonF, QStyleOption, QStyle, QStyleOptionFrame)
+from .qt.QtGui import (
+    QFrame,
+    QPaintEngine,
+    QPen,
+    QBrush,
+    QRegion,
+    QImage,
+    QPainterPath,
+    QPixmap,
+    QGradient,
+    QPainter,
+    qAlpha,
+    QPolygonF,
+    QStyleOption,
+    QStyle,
+    QStyleOptionFrame,
+)
 from .qt.QtCore import Qt, QSizeF, QT_VERSION, QEvent, QPointF, QRectF
 
 
@@ -47,7 +61,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
         self.clipRects = []
         self.border = Border()
         self.background = Background()
-        
+
     def updateState(self, state):
         if state.state() & QPaintEngine.DirtyPen:
             self.__pen = state.pen()
@@ -55,13 +69,13 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
             self.__brush = state.brush()
         if state.state() & QPaintEngine.DirtyBrushOrigin:
             self.__origin = state.brushOrigin()
-    
+
     def drawRects(self, rects, count):
         for i in range(count):
             self.border.rectList += [rects[i]]
-    
+
     def drawPath(self, path):
-        rect = QRectF(QPointF(0., 0.), self.__size)
+        rect = QRectF(QPointF(0.0, 0.0), self.__size)
         if path.controlPointRect().contains(rect.center()):
             self.setCornerRects(path)
             self.alignCornerRects(rect)
@@ -70,13 +84,12 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
             self.background.origin = self.__origin
         else:
             self.border.pathlist += [path]
-    
+
     def setCornerRects(self, path):
-        pos = QPointF(0., 0.)
+        pos = QPointF(0.0, 0.0)
         for i in range(path.elementCount()):
             el = path.elementAt(i)
-            if el.type in (QPainterPath.MoveToElement,
-                           QPainterPath.LineToElement):
+            if el.type in (QPainterPath.MoveToElement, QPainterPath.LineToElement):
                 pos.setX(el.x)
                 pos.setY(el.y)
             elif el.type == QPainterPath.CurveToElement:
@@ -87,15 +100,17 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
             elif el.type == QPainterPath.CurveToDataElement:
                 if self.clipRects:
                     r = self.clipRects[-1]
-                    r.setCoords(min([r.left(), el.x]),
-                                min([r.top(), el.y]),
-                                max([r.right(), el.x]),
-                                max([r.bottom(), el.y]))
+                    r.setCoords(
+                        min([r.left(), el.x]),
+                        min([r.top(), el.y]),
+                        max([r.right(), el.x]),
+                        max([r.bottom(), el.y]),
+                    )
                     self.clipRects[-1] = r.normalized()
-    
+
     def sizeMetrics(self):
         return self.__size
-    
+
     def alignCornerRects(self, rect):
         for r in self.clipRects:
             if r.center().x() < rect.center().x():
@@ -109,12 +124,13 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
 
 
 def _rects_conv_PyQt5(rects):
-    # PyQt5 compatibility: the conversion from QRect to QRectF should not 
+    # PyQt5 compatibility: the conversion from QRect to QRectF should not
     # be necessary but it seems to be anyway... PyQt5 bug?
     if PYQT5:
         return [QRectF(rect) for rect in rects]
     else:
         return rects
+
 
 def qwtDrawBackground(painter, canvas):
     painter.save()
@@ -172,19 +188,19 @@ def qwtRevertPath(path):
 def qwtCombinePathList(rect, pathList):
     if not pathList:
         return QPainterPath()
-    
+
     ordered = [None] * 8
     for subPath in pathList:
         index = -1
         br = subPath.controlPointRect()
         if br.center().x() < rect.center().x():
             if br.center().y() < rect.center().y():
-                if abs(br.top()-rect.top()) < abs(br.left()-rect.left()):
+                if abs(br.top() - rect.top()) < abs(br.left() - rect.left()):
                     index = 1
                 else:
                     index = 0
             else:
-                if abs(br.bottom()-rect.bottom) < abs(br.left()-rect.left()):
+                if abs(br.bottom() - rect.bottom) < abs(br.left() - rect.left()):
                     index = 6
                 else:
                     index = 7
@@ -192,12 +208,12 @@ def qwtCombinePathList(rect, pathList):
                 qwtRevertPath(subPath)
         else:
             if br.center().y() < rect.center().y():
-                if abs(br.top()-rect.top()) < abs(br.right()-rect.right()):
+                if abs(br.top() - rect.top()) < abs(br.right() - rect.right()):
                     index = 2
                 else:
                     index = 3
             else:
-                if abs(br.bottom()-rect.bottom()) < abs(br.right()-rect.right()):
+                if abs(br.bottom() - rect.bottom()) < abs(br.right() - rect.right()):
                     index = 5
                 else:
                     index = 4
@@ -205,16 +221,16 @@ def qwtCombinePathList(rect, pathList):
                 qwtRevertPath(subPath)
         ordered[index] = subPath
     for i in range(4):
-        if ordered[2*i].isEmpty() != ordered[2*i+1].isEmpty():
+        if ordered[2 * i].isEmpty() != ordered[2 * i + 1].isEmpty():
             return QPainterPath()
     corners = QPolygonF(rect)
     path = QPainterPath()
     for i in range(4):
-        if ordered[2*i].isEmpty():
+        if ordered[2 * i].isEmpty():
             path.lineTo(corners[i])
         else:
-            path.connectPath(ordered[2*i])
-            path.connectPath(ordered[2*i+1])
+            path.connectPath(ordered[2 * i])
+            path.connectPath(ordered[2 * i + 1])
     path.closeSubpath()
     return path
 
@@ -261,18 +277,20 @@ def qwtFillBackground(*args):
         else:
             r = canvas.rect()
             radius = canvas.borderRadius()
-            if radius > 0.:
+            if radius > 0.0:
                 sz = QSizeF(radius, radius)
-                rects += [QRectF(r.topLeft(), sz),
-                          QRectF(r.topRight()-QPointF(radius, 0), sz),
-                          QRectF(r.bottomRight()-QPointF(radius, radius), sz),
-                          QRectF(r.bottomLeft()-QPointF(0, radius), sz)]
+                rects += [
+                    QRectF(r.topLeft(), sz),
+                    QRectF(r.topRight() - QPointF(radius, 0), sz),
+                    QRectF(r.bottomRight() - QPointF(radius, radius), sz),
+                    QRectF(r.bottomLeft() - QPointF(0, radius), sz),
+                ]
 
         qwtFillBackground(painter, canvas, rects)
 
     elif len(args) == 3:
         painter, widget, fillRects = args
-        
+
         if not fillRects:
             return
         if painter.hasClipping():
@@ -284,12 +302,16 @@ def qwtFillBackground(*args):
             rect = QRectF(fillRect).toAlignedRect()
             if clipRegion.intersects(rect):
                 pm = QPixmap(rect.size())
-                QwtPainter.fillPixmap(bgWidget, pm, widget.mapTo(bgWidget, rect.topLeft()))
+                QwtPainter.fillPixmap(
+                    bgWidget, pm, widget.mapTo(bgWidget, rect.topLeft())
+                )
                 painter.drawPixmap(rect, pm)
-        
+
     else:
-        raise TypeError("%s() takes 2 or 3 argument(s) (%s given)"\
-                        % ("qwtFillBackground", len(args)))
+        raise TypeError(
+            "%s() takes 2 or 3 argument(s) (%s given)"
+            % ("qwtFillBackground", len(args))
+        )
 
 
 class StyleSheetBackground(object):
@@ -297,13 +319,15 @@ class StyleSheetBackground(object):
         self.brush = QBrush()
         self.origin = QPointF()
 
+
 class StyleSheet(object):
     def __init__(self):
         self.hasBorder = False
         self.borderPath = QPainterPath()
         self.cornerRects = []
         self.background = StyleSheetBackground()
-        
+
+
 class QwtPlotCanvas_PrivateData(object):
     def __init__(self):
         self.focusIndicator = QwtPlotCanvas.NoFocusIndicator
@@ -407,20 +431,20 @@ class QwtPlotCanvas(QFrame):
         
             :py:meth:`qwt.plot.QwtPlot.setCanvas()`
     """
-    
+
     # enum PaintAttribute
     BackingStore = 1
     Opaque = 2
     HackStyledBackground = 4
     ImmediatePaint = 8
-    
+
     # enum FocusIndicator
     NoFocusIndicator, CanvasFocusIndicator, ItemFocusIndicator = list(range(3))
-    
+
     def __init__(self, plot=None):
         super(QwtPlotCanvas, self).__init__(plot)
         self.__plot = plot
-        self.setFrameStyle(QFrame.Panel|QFrame.Sunken)
+        self.setFrameStyle(QFrame.Panel | QFrame.Sunken)
         self.setLineWidth(2)
         self.__data = QwtPlotCanvas_PrivateData()
         self.setCursor(Qt.CrossCursor)
@@ -428,13 +452,13 @@ class QwtPlotCanvas(QFrame):
         self.setPaintAttribute(QwtPlotCanvas.BackingStore, False)
         self.setPaintAttribute(QwtPlotCanvas.Opaque, True)
         self.setPaintAttribute(QwtPlotCanvas.HackStyledBackground, True)
-    
+
     def plot(self):
         """
         :return: Parent plot widget
         """
         return self.__plot
-    
+
     def setPaintAttribute(self, attribute, on=True):
         """
         Changing the paint attributes
@@ -467,8 +491,7 @@ class QwtPlotCanvas(QFrame):
                     if QT_VERSION >= 0x050000:
                         self.__data.backingStore = self.grab(self.rect())
                     else:
-                        self.__data.backingStore = QPixmap.grabWidget(self,
-                                                                self.rect())
+                        self.__data.backingStore = QPixmap.grabWidget(self, self.rect())
             else:
                 self.__data.backingStore = None
         elif attribute == self.Opaque:
@@ -476,7 +499,7 @@ class QwtPlotCanvas(QFrame):
                 self.setAttribute(Qt.WA_OpaquePaintEvent, True)
         elif attribute in (self.HackStyledBackground, self.ImmediatePaint):
             pass
-        
+
     def testPaintAttribute(self, attribute):
         """
         Test whether a paint attribute is enabled
@@ -489,18 +512,18 @@ class QwtPlotCanvas(QFrame):
             :py:meth:`setPaintAttribute()`
         """
         return self.__data.paintAttributes & attribute
-        
+
     def backingStore(self):
         """
         :return: Backing store, might be None
         """
         return self.__data.backingStore
-    
+
     def invalidateBackingStore(self):
         """Invalidate the internal backing store"""
         if self.__data.backingStore:
             self.__data.backingStore = QPixmap()
-    
+
     def setFocusIndicator(self, focusIndicator):
         """
         Set the focus indicator
@@ -518,7 +541,7 @@ class QwtPlotCanvas(QFrame):
             :py:meth:`focusIndicator()`
         """
         self.__data.focusIndicator = focusIndicator
-    
+
     def focusIndicator(self):
         """
         :return: Focus indicator
@@ -528,7 +551,7 @@ class QwtPlotCanvas(QFrame):
             :py:meth:`setFocusIndicator()`
         """
         return self.__data.focusIndicator
-    
+
     def setBorderRadius(self, radius):
         """
         Set the radius for the corners of the border frame
@@ -539,8 +562,8 @@ class QwtPlotCanvas(QFrame):
         
             :py:meth:`borderRadius()`
         """
-        self.__data.borderRadius = max([0., radius])
-        
+        self.__data.borderRadius = max([0.0, radius])
+
     def borderRadius(self):
         """
         :return: Radius for the corners of the border frame
@@ -550,7 +573,7 @@ class QwtPlotCanvas(QFrame):
             :py:meth:`setBorderRadius()`
         """
         return self.__data.borderRadius
-        
+
     def event(self, event):
         if event.type() == QEvent.PolishRequest:
             if self.testPaintAttribute(self.Opaque):
@@ -558,18 +581,20 @@ class QwtPlotCanvas(QFrame):
         if event.type() in (QEvent.PolishRequest, QEvent.StyleChange):
             self.updateStyleSheetInfo()
         return QFrame.event(self, event)
-    
+
     def paintEvent(self, event):
         painter = QPainter(self)
         painter.setClipRegion(event.region())
-        if self.testPaintAttribute(self.BackingStore) and\
-           self.__data.backingStore is not None:
+        if (
+            self.testPaintAttribute(self.BackingStore)
+            and self.__data.backingStore is not None
+        ):
             bs = self.__data.backingStore
             if QT_VERSION >= 0x050000:
                 pixelRatio = bs.devicePixelRatio()
             else:
-                pixelRatio = 1.
-            if bs.size() != self.size()*pixelRatio:
+                pixelRatio = 1.0
+            if bs.size() != self.size() * pixelRatio:
                 bs = QwtPainter.backingStore(self, self.size())
                 if self.testAttribute(Qt.WA_StyledBackground):
                     p = QPainter(bs)
@@ -577,8 +602,8 @@ class QwtPlotCanvas(QFrame):
                     self.drawCanvas(p, True)
                 else:
                     p = QPainter()
-                    if self.__data.borderRadius <= 0.:
-#                        print('**DEBUG: QwtPlotCanvas.paintEvent')
+                    if self.__data.borderRadius <= 0.0:
+                        #                        print('**DEBUG: QwtPlotCanvas.paintEvent')
                         QwtPainter.fillPixmap(self, bs)
                         p.begin(bs)
                         self.drawCanvas(p, False)
@@ -603,7 +628,7 @@ class QwtPlotCanvas(QFrame):
                         qwtFillBackground(painter, self)
                         qwtDrawBackground(painter, self)
                 else:
-                    if self.borderRadius() > 0.:
+                    if self.borderRadius() > 0.0:
                         clipPath = QPainterPath()
                         clipPath.addRect(self.rect())
                         clipPath = clipPath.subtracted(self.borderPath(self.rect()))
@@ -617,13 +642,16 @@ class QwtPlotCanvas(QFrame):
                     self.drawBorder(painter)
         if self.hasFocus() and self.focusIndicator() == self.CanvasFocusIndicator:
             self.drawFocusIndicator(painter)
-    
+
     def drawCanvas(self, painter, withBackground):
         hackStyledBackground = False
-        if withBackground and self.testAttribute(Qt.WA_StyledBackground) and\
-           self.testPaintAttribute(self.HackStyledBackground):
+        if (
+            withBackground
+            and self.testAttribute(Qt.WA_StyledBackground)
+            and self.testPaintAttribute(self.HackStyledBackground)
+        ):
             #  Antialiasing rounded borders is done by
-            #  inserting pixels with colors between the 
+            #  inserting pixels with colors between the
             #  border color and the color on the canvas,
             #  When the border is painted before the plot items
             #  these colors are interpolated for the canvas
@@ -633,8 +661,10 @@ class QwtPlotCanvas(QFrame):
             #  borders this is noticeable.
             #  The only way to avoid these annoying "artefacts"
             #  is to paint the border on top of the plot items.
-            if self.__data.styleSheet.hasBorder and\
-               not self.__data.styleSheet.borderPath.isEmpty():
+            if (
+                self.__data.styleSheet.hasBorder
+                and not self.__data.styleSheet.borderPath.isEmpty()
+            ):
                 #  We have a border with at least one rounded corner
                 hackStyledBackground = True
         if withBackground:
@@ -652,7 +682,7 @@ class QwtPlotCanvas(QFrame):
             elif self.autoFillBackground():
                 painter.setPen(Qt.NoPen)
                 painter.setBrush(self.palette().brush(self.backgroundRole()))
-                if self.__data.borderRadius > 0. and self.rect() == self.frameRect():
+                if self.__data.borderRadius > 0.0 and self.rect() == self.frameRect():
                     if self.frameWidth() > 0:
                         painter.setClipPath(self.borderPath(self.rect()))
                         painter.drawRect(self.rect())
@@ -664,14 +694,12 @@ class QwtPlotCanvas(QFrame):
             painter.restore()
         painter.save()
         if not self.__data.styleSheet.borderPath.isEmpty():
-            painter.setClipPath(self.__data.styleSheet.borderPath,
-                                Qt.IntersectClip)
+            painter.setClipPath(self.__data.styleSheet.borderPath, Qt.IntersectClip)
         else:
-            if self.__data.borderRadius > 0.:
-                painter.setClipPath(self.borderPath(self.frameRect()),
-                                    Qt.IntersectClip)
+            if self.__data.borderRadius > 0.0:
+                painter.setClipPath(self.borderPath(self.frameRect()), Qt.IntersectClip)
             else:
-#                print('**DEBUG: QwtPlotCanvas.drawCanvas')
+                #                print('**DEBUG: QwtPlotCanvas.drawCanvas')
                 painter.setClipRect(self.contentsRect(), Qt.IntersectClip)
         self.plot().drawCanvas(painter)
         painter.restore()
@@ -680,7 +708,7 @@ class QwtPlotCanvas(QFrame):
             opt = QStyleOptionFrame()
             opt.initFrom(self)
             self.style().drawPrimitive(QStyle.PE_Frame, opt, painter, self)
-    
+
     def drawBorder(self, painter):
         """
         Draw the border of the plot canvas
@@ -693,23 +721,33 @@ class QwtPlotCanvas(QFrame):
         """
         if self.__data.borderRadius > 0:
             if self.frameWidth() > 0:
-                QwtPainter.drawRoundedFrame(painter, QRectF(self.frameRect()),
-                        self.__data.borderRadius, self.__data.borderRadius,
-                        self.palette(), self.frameWidth(), self.frameStyle())
+                QwtPainter.drawRoundedFrame(
+                    painter,
+                    QRectF(self.frameRect()),
+                    self.__data.borderRadius,
+                    self.__data.borderRadius,
+                    self.palette(),
+                    self.frameWidth(),
+                    self.frameStyle(),
+                )
         else:
             if QT_VERSION >= 0x040500:
                 if PYQT5:
                     from .qt.QtGui import QStyleOptionFrame
                 else:
-                    from .qt.QtGui import QStyleOptionFrameV3 as\
-                                             QStyleOptionFrame
+                    from .qt.QtGui import QStyleOptionFrameV3 as QStyleOptionFrame
                 opt = QStyleOptionFrame()
                 opt.initFrom(self)
                 frameShape = self.frameStyle() & QFrame.Shape_Mask
                 frameShadow = self.frameStyle() & QFrame.Shadow_Mask
-                opt.frameShape = QFrame.Shape(int(opt.frameShape)|frameShape)
-                if frameShape in (QFrame.Box, QFrame.HLine, QFrame.VLine,
-                                  QFrame.StyledPanel, QFrame.Panel):
+                opt.frameShape = QFrame.Shape(int(opt.frameShape) | frameShape)
+                if frameShape in (
+                    QFrame.Box,
+                    QFrame.HLine,
+                    QFrame.VLine,
+                    QFrame.StyledPanel,
+                    QFrame.Panel,
+                ):
                     opt.lineWidth = self.lineWidth()
                     opt.midLineWidth = self.midLineWidth()
                 else:
@@ -721,11 +759,11 @@ class QwtPlotCanvas(QFrame):
                 self.style().drawControl(QStyle.CE_ShapedFrame, opt, painter, self)
             else:
                 self.drawFrame(painter)
-    
+
     def resizeEvent(self, event):
         QFrame.resizeEvent(self, event)
         self.updateStyleSheetInfo()
-    
+
     def drawFocusIndicator(self, painter):
         """
         Draw the focus indication
@@ -734,10 +772,14 @@ class QwtPlotCanvas(QFrame):
         """
         margin = 1
         focusRect = self.contentsRect()
-        focusRect.setRect(focusRect.x()+margin, focusRect.y()+margin,
-                          focusRect.width()-2*margin, focusRect.height()-2*margin)
+        focusRect.setRect(
+            focusRect.x() + margin,
+            focusRect.y() + margin,
+            focusRect.width() - 2 * margin,
+            focusRect.height() - 2 * margin,
+        )
         QwtPainter.drawFocusRect(painter, self, focusRect)
-    
+
     def replot(self):
         """
         Invalidate the paint cache and repaint the canvas
@@ -747,11 +789,14 @@ class QwtPlotCanvas(QFrame):
             self.repaint(self.contentsRect())
         else:
             self.update(self.contentsRect())
-    
+
     def invalidatePaintCache(self):
         import warnings
-        warnings.warn("`invalidatePaintCache` has been removed: "\
-                      "please use `replot` instead", RuntimeWarning)
+
+        warnings.warn(
+            "`invalidatePaintCache` has been removed: " "please use `replot` instead",
+            RuntimeWarning,
+        )
         self.replot()
 
     def updateStyleSheetInfo(self):
@@ -770,13 +815,14 @@ class QwtPlotCanvas(QFrame):
         self.__data.styleSheet.cornerRects = recorder.clipRects
         if recorder.background.path.isEmpty():
             if self.__data.styleSheet.hasBorder:
-                self.__data.styleSheet.borderPath =\
-                    qwtCombinePathList(self.rect(), recorder.border.pathlist)
+                self.__data.styleSheet.borderPath = qwtCombinePathList(
+                    self.rect(), recorder.border.pathlist
+                )
         else:
             self.__data.styleSheet.borderPath = recorder.background.path
             self.__data.styleSheet.background.brush = recorder.background.brush
             self.__data.styleSheet.background.origin = recorder.background.origin
-    
+
     def borderPath(self, rect):
         """
         Calculate the painter path for a styled or rounded border
@@ -799,11 +845,10 @@ class QwtPlotCanvas(QFrame):
                 return recorder.background.path
             if len(recorder.border.rectList) > 0:
                 return qwtCombinePathList(rect, recorder.border.pathlist)
-        elif self.__data.borderRadius > 0.:
-            fw2 = self.frameWidth()*.5
+        elif self.__data.borderRadius > 0.0:
+            fw2 = self.frameWidth() * 0.5
             r = QRectF(rect).adjusted(fw2, fw2, -fw2, -fw2)
             path = QPainterPath()
-            path.addRoundedRect(r, self.__data.borderRadius,
-                                self.__data.borderRadius)
+            path.addRoundedRect(r, self.__data.borderRadius, self.__data.borderRadius)
             return path
         return QPainterPath()

@@ -75,11 +75,11 @@ class QwtScaleDiv(object):
     
         lowerBound might be greater than upperBound for inverted scales
     """
-    
+
     # enum TickType
     NoTick = -1
     MinorTick, MediumTick, MajorTick, NTickTypes = list(range(4))
-    
+
     def __init__(self, *args):
         self.__ticks = None
         if len(args) == 2 and isinstance(args[1], (tuple, list)):
@@ -93,17 +93,24 @@ class QwtScaleDiv(object):
             self.__lowerBound, self.__upperBound, ticks = args
             self.__ticks = ticks[:]
         elif len(args) == 5:
-            (self.__lowerBound, self.__upperBound,
-             minorTicks, mediumTicks, majorTicks) = args
+            (
+                self.__lowerBound,
+                self.__upperBound,
+                minorTicks,
+                mediumTicks,
+                majorTicks,
+            ) = args
             self.__ticks[self.MinorTick] = minorTicks
             self.__ticks[self.MediumTick] = mediumTicks
             self.__ticks[self.MajorTick] = majorTicks
         elif len(args) == 0:
-            self.__lowerBound, self.__upperBound = 0., 0.
+            self.__lowerBound, self.__upperBound = 0.0, 0.0
         else:
-            raise TypeError("%s() takes 0, 2, 3 or 5 argument(s) (%s given)"\
-                            % (self.__class__.__name__, len(args)))
-    
+            raise TypeError(
+                "%s() takes 0, 2, 3 or 5 argument(s) (%s given)"
+                % (self.__class__.__name__, len(args))
+            )
+
     def setInterval(self, *args):
         """
         Change the interval
@@ -124,19 +131,21 @@ class QwtScaleDiv(object):
         if len(args) == 2:
             self.__lowerBound, self.__upperBound = args
         elif len(args) == 1:
-            interval, = args
+            (interval,) = args
             self.__lowerBound = interval.minValue()
             self.__upperBound = interval.maxValue()
         else:
-            raise TypeError("%s().setInterval() takes 1 or 2 argument(s) (%s "\
-                            "given)" % (self.__class__.__name__, len(args)))
-    
+            raise TypeError(
+                "%s().setInterval() takes 1 or 2 argument(s) (%s "
+                "given)" % (self.__class__.__name__, len(args))
+            )
+
     def interval(self):
         """
         :return: Interval
         """
         return QwtInterval(self.__lowerBound, self.__upperBound)
-    
+
     def setLowerBound(self, lowerBound):
         """
         Set the first boundary
@@ -148,7 +157,7 @@ class QwtScaleDiv(object):
             :py:meth:`lowerBound()`, :py:meth:`setUpperBound()`
         """
         self.__lowerBound = lowerBound
-    
+
     def lowerBound(self):
         """
         :return: the first boundary
@@ -158,7 +167,7 @@ class QwtScaleDiv(object):
             :py:meth:`upperBound()`
         """
         return self.__lowerBound
-    
+
     def setUpperBound(self, upperBound):
         """
         Set the second boundary
@@ -170,7 +179,7 @@ class QwtScaleDiv(object):
             :py:meth:`upperBound()`, :py:meth:`setLowerBound()`
         """
         self.__upperBound = upperBound
-    
+
     def upperBound(self):
         """
         :return: the second boundary
@@ -180,36 +189,38 @@ class QwtScaleDiv(object):
             :py:meth:`lowerBound()`
         """
         return self.__upperBound
-    
+
     def range(self):
         """
         :return: upperBound() - lowerBound()
         """
         return self.__upperBound - self.__lowerBound
-    
+
     def __eq__(self, other):
         if self.__ticks is None:
             return False
-        if self.__lowerBound != other.__lowerBound or\
-           self.__upperBound != other.__upperBound:
+        if (
+            self.__lowerBound != other.__lowerBound
+            or self.__upperBound != other.__upperBound
+        ):
             return False
         return self.__ticks == other.__ticks
-    
+
     def __ne__(self, other):
         return not self.__eq__(other)
-    
+
     def isEmpty(self):
         """
         Check if the scale division is empty( lowerBound() == upperBound() )
         """
         return self.__lowerBound == self.__upperBound
-    
+
     def isIncreasing(self):
         """
         Check if the scale division is increasing( lowerBound() <= upperBound() )
         """
         return self.__lowerBound <= self.__upperBound
-    
+
     def contains(self, value):
         """
         Return if a value is between lowerBound() and upperBound()
@@ -220,7 +231,7 @@ class QwtScaleDiv(object):
         min_ = min([self.__lowerBound, self.__upperBound])
         max_ = max([self.__lowerBound, self.__upperBound])
         return value >= min_ and value <= max_
-    
+
     def invert(self):
         """
         Invert the scale division
@@ -229,11 +240,10 @@ class QwtScaleDiv(object):
             
             :py:meth:`inverted()`
         """
-        (self.__lowerBound,
-         self.__upperBound) = self.__upperBound, self.__lowerBound
+        (self.__lowerBound, self.__upperBound) = self.__upperBound, self.__lowerBound
         for index in range(self.NTickTypes):
             self.__ticks[index].reverse()
-    
+
     def inverted(self):
         """
         :return: A scale division with inverted boundaries and ticks
@@ -245,7 +255,7 @@ class QwtScaleDiv(object):
         other = copy.deepcopy(self)
         other.invert()
         return other
-    
+
     def bounded(self, lowerBound, upperBound):
         """
         Return a scale division with an interval [lowerBound, upperBound]
@@ -264,10 +274,16 @@ class QwtScaleDiv(object):
         sd = QwtScaleDiv()
         sd.setInterval(lowerBound, upperBound)
         for tickType in range(self.NTickTypes):
-            sd.setTicks(tickType, [tick for tick in self.__ticks[tickType]
-                                   if tick >= min_ and tick <= max_])
+            sd.setTicks(
+                tickType,
+                [
+                    tick
+                    for tick in self.__ticks[tickType]
+                    if tick >= min_ and tick <= max_
+                ],
+            )
         return sd
-    
+
     def setTicks(self, tickType, ticks):
         """
         Assign ticks
@@ -277,7 +293,7 @@ class QwtScaleDiv(object):
         """
         if tickType in range(self.NTickTypes):
             self.__ticks[tickType] = ticks
-    
+
     def ticks(self, tickType):
         """
         Return a list of ticks

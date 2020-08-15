@@ -16,8 +16,14 @@ QwtGraphic
 from .null_paintdevice import QwtNullPaintDevice
 from .painter_command import QwtPainterCommand
 
-from .qt.QtGui import (QPainter, QPainterPathStroker, QPaintEngine, QPixmap,
-                          QTransform, QImage)
+from .qt.QtGui import (
+    QPainter,
+    QPainterPathStroker,
+    QPaintEngine,
+    QPixmap,
+    QTransform,
+    QImage,
+)
 from .qt.QtCore import Qt, QRectF, QSizeF, QSize, QPointF, QRect
 
 import numpy as np
@@ -28,7 +34,7 @@ def qwtHasScalablePen(painter):
     scalablePen = False
     if pen.style() != Qt.NoPen and pen.brush().style() != Qt.NoBrush:
         scalablePen = not pen.isCosmetic()
-        if not scalablePen and pen.widthF() == 0.:
+        if not scalablePen and pen.widthF() == 0.0:
             hints = painter.renderHints()
             if hints & QPainter.NonCosmeticDefaultPen:
                 scalablePen = True
@@ -55,10 +61,12 @@ def qwtStrokedPathRect(painter, path):
 def qwtExecCommand(painter, cmd, renderHints, transform, initialTransform):
     if cmd.type() == QwtPainterCommand.Path:
         doMap = False
-        if bool(renderHints & QwtGraphic.RenderPensUnscaled)\
-           and painter.transform().isScaling():
+        if (
+            bool(renderHints & QwtGraphic.RenderPensUnscaled)
+            and painter.transform().isScaling()
+        ):
             isCosmetic = painter.pen().isCosmetic()
-            if isCosmetic and painter.pen().widthF() == 0.:
+            if isCosmetic and painter.pen().widthF() == 0.0:
                 hints = painter.renderHints()
                 if hints & QPainter.NonCosmeticDefaultPen:
                     isCosmetic = False
@@ -103,11 +111,13 @@ def qwtExecCommand(painter, cmd, renderHints, transform, initialTransform):
         if data.flags & QPaintEngine.DirtyClipPath:
             painter.setClipPath(data.clipPath, data.clipOperation)
         if data.flags & QPaintEngine.DirtyHints:
-            for hint in (QPainter.Antialiasing,
-                         QPainter.TextAntialiasing,
-                         QPainter.SmoothPixmapTransform,
-                         QPainter.HighQualityAntialiasing,
-                         QPainter.NonCosmeticDefaultPen):
+            for hint in (
+                QPainter.Antialiasing,
+                QPainter.TextAntialiasing,
+                QPainter.SmoothPixmapTransform,
+                QPainter.HighQualityAntialiasing,
+                QPainter.NonCosmeticDefaultPen,
+            ):
                 painter.setRenderHint(hint, bool(data.renderHints & hint))
         if data.flags & QPaintEngine.DirtyCompositionMode:
             painter.setCompositionMode(data.compositionMode)
@@ -125,11 +135,13 @@ class PathInfo(object):
             self.__boundingRect = boundingRect
             self.__scalablePen = scalablePen
         else:
-            raise TypeError("%s() takes 0 or 3 argument(s) (%s given)"\
-                            % (self.__class__.__name__, len(args)))
-    
+            raise TypeError(
+                "%s() takes 0 or 3 argument(s) (%s given)"
+                % (self.__class__.__name__, len(args))
+            )
+
     def scaledBoundingRect(self, sx, sy, scalePens):
-        if sx == 1. and sy == 1.:
+        if sx == 1.0 and sy == 1.0:
             return self.__boundingRect
         transform = QTransform()
         transform.scale(sx, sy)
@@ -137,43 +149,51 @@ class PathInfo(object):
             rect = transform.mapRect(self.__boundingRect)
         else:
             rect = transform.mapRect(self.__pointRect)
-            l = abs(self.__pointRect.left()-self.__boundingRect.left())
-            r = abs(self.__pointRect.right()-self.__boundingRect.right())
-            t = abs(self.__pointRect.top()-self.__boundingRect.top())
-            b = abs(self.__pointRect.bottom()-self.__boundingRect.bottom())
+            l = abs(self.__pointRect.left() - self.__boundingRect.left())
+            r = abs(self.__pointRect.right() - self.__boundingRect.right())
+            t = abs(self.__pointRect.top() - self.__boundingRect.top())
+            b = abs(self.__pointRect.bottom() - self.__boundingRect.bottom())
             rect.adjust(-l, -t, r, b)
         return rect
-    
+
     def scaleFactorX(self, pathRect, targetRect, scalePens):
         if pathRect.width() <= 0.0:
-            return 0.
+            return 0.0
         p0 = self.__pointRect.center()
-        l = abs(pathRect.left()-p0.x())
-        r = abs(pathRect.right()-p0.x())
-        w = 2.*min([l, r])*targetRect.width()/pathRect.width()
+        l = abs(pathRect.left() - p0.x())
+        r = abs(pathRect.right() - p0.x())
+        w = 2.0 * min([l, r]) * targetRect.width() / pathRect.width()
         if scalePens and self.__scalablePen:
-            sx = w/self.__boundingRect.width()
+            sx = w / self.__boundingRect.width()
         else:
-            pw = max([abs(self.__boundingRect.left()-self.__pointRect.left()),
-                      abs(self.__boundingRect.right()-self.__pointRect.right())])
-            sx = (w-2*pw)/self.__pointRect.width()
+            pw = max(
+                [
+                    abs(self.__boundingRect.left() - self.__pointRect.left()),
+                    abs(self.__boundingRect.right() - self.__pointRect.right()),
+                ]
+            )
+            sx = (w - 2 * pw) / self.__pointRect.width()
         return sx
-    
+
     def scaleFactorY(self, pathRect, targetRect, scalePens):
         if pathRect.height() <= 0.0:
-            return 0.
+            return 0.0
         p0 = self.__pointRect.center()
-        t = abs(pathRect.top()-p0.y())
-        b = abs(pathRect.bottom()-p0.y())
-        h = 2.*min([t, b])*targetRect.height()/pathRect.height()
+        t = abs(pathRect.top() - p0.y())
+        b = abs(pathRect.bottom() - p0.y())
+        h = 2.0 * min([t, b]) * targetRect.height() / pathRect.height()
         if scalePens and self.__scalablePen:
-            sy = h/self.__boundingRect.height()
+            sy = h / self.__boundingRect.height()
         else:
-            pw = max([abs(self.__boundingRect.top()-self.__pointRect.top()),
-                      abs(self.__boundingRect.bottom()-self.__pointRect.bottom())])
-            sy = (h-2*pw)/self.__pointRect.height()
+            pw = max(
+                [
+                    abs(self.__boundingRect.top() - self.__pointRect.top()),
+                    abs(self.__boundingRect.bottom() - self.__pointRect.bottom()),
+                ]
+            )
+            sy = (h - 2 * pw) / self.__pointRect.height()
         return sy
-    
+
 
 class QwtGraphic_PrivateData(object):
     def __init__(self):
@@ -252,23 +272,25 @@ class QwtGraphic(QwtNullPaintDevice):
         
         :param qwt.graphic.QwtGraphic other: Source
     """
-    
+
     # enum RenderHint
     RenderPensUnscaled = 0x1
-    
+
     def __init__(self, *args):
         QwtNullPaintDevice.__init__(self)
         if len(args) == 0:
             self.setMode(QwtNullPaintDevice.PathMode)
             self.__data = QwtGraphic_PrivateData()
         elif len(args) == 1:
-            other, = args
+            (other,) = args
             self.setMode(other.mode())
             self.__data = other.__data
         else:
-            raise TypeError("%s() takes 0 or 1 argument(s) (%s given)"\
-                            % (self.__class__.__name__, len(args)))
-    
+            raise TypeError(
+                "%s() takes 0 or 1 argument(s) (%s given)"
+                % (self.__class__.__name__, len(args))
+            )
+
     def reset(self):
         """Clear all stored commands"""
         self.__data.commands = []
@@ -276,26 +298,26 @@ class QwtGraphic(QwtNullPaintDevice):
         self.__data.boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
         self.__data.pointRect = QRectF(0.0, 0.0, -1.0, -1.0)
         self.__data.defaultSize = QSizeF()
-    
+
     def isNull(self):
         """Return True, when no painter commands have been stored"""
         return len(self.__data.commands) == 0
-    
+
     def isEmpty(self):
         """Return True, when the bounding rectangle is empty"""
         return self.__data.boundingRect.isEmpty()
-    
+
     def setRenderHint(self, hint, on=True):
         """Toggle an render hint"""
         if on:
             self.__data.renderHints |= hint
         else:
             self.__data.renderHints &= ~hint
-    
+
     def testRenderHint(self, hint):
         """Test a render hint"""
         return bool(self.__data.renderHints & hint)
-    
+
     def boundingRect(self):
         """
         The bounding rectangle is the :py:meth:`controlPointRect`
@@ -311,7 +333,7 @@ class QwtGraphic(QwtNullPaintDevice):
         if self.__data.boundingRect.width() < 0:
             return QRectF()
         return self.__data.boundingRect
-    
+
     def controlPointRect(self):
         """
         The control point rectangle is the bounding rectangle 
@@ -327,7 +349,7 @@ class QwtGraphic(QwtNullPaintDevice):
         if self.__data.pointRect.width() < 0:
             return QRectF()
         return self.__data.pointRect
-    
+
     def scaledBoundingRect(self, sx, sy):
         """
         Calculate the target rectangle for scaling the graphic
@@ -346,21 +368,22 @@ class QwtGraphic(QwtNullPaintDevice):
         
             :py:meth:`boundingRect()`, :py:meth:`controlPointRect()`
         """
-        if sx == 1. and sy == 1.:
+        if sx == 1.0 and sy == 1.0:
             return self.__data.boundingRect
         transform = QTransform()
         transform.scale(sx, sy)
         rect = transform.mapRect(self.__data.pointRect)
         for pathInfo in self.__data.pathInfos:
-            rect |= pathInfo.scaledBoundingRect(sx, sy,
-                not bool(self.__data.renderHints & self.RenderPensUnscaled))
+            rect |= pathInfo.scaledBoundingRect(
+                sx, sy, not bool(self.__data.renderHints & self.RenderPensUnscaled)
+            )
         return rect
-    
+
     def sizeMetrics(self):
         """Return Ceiled :py:meth:`defaultSize()`"""
         sz = self.defaultSize()
         return QSize(np.ceil(sz.width()), np.ceil(sz.height()))
-        
+
     def setDefaultSize(self, size):
         """
         The default size is used in all methods rendering the graphic,
@@ -374,10 +397,10 @@ class QwtGraphic(QwtNullPaintDevice):
         
             :py:meth:`defaultSize()`, :py:meth:`boundingRect()`
         """
-        w = max([0., size.width()])
-        h = max([0., size.height()])
+        w = max([0.0, size.width()])
+        h = max([0.0, size.height()])
         self.__data.defaultSize = QSizeF(w, h)
-        
+
     def defaultSize(self):
         """
         When a non empty size has been assigned by setDefaultSize() this
@@ -396,7 +419,7 @@ class QwtGraphic(QwtNullPaintDevice):
         if not self.__data.defaultSize.isEmpty():
             return self.__data.defaultSize
         return self.boundingRect().size()
-    
+
     def render(self, *args):
         """
         .. py:method:: render(painter)
@@ -438,21 +461,26 @@ class QwtGraphic(QwtNullPaintDevice):
             :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale        
         """
         if len(args) == 1:
-            painter, = args
+            (painter,) = args
             if self.isNull():
                 return
             transform = painter.transform()
             painter.save()
             for command in self.__data.commands:
-                qwtExecCommand(painter, command, self.__data.renderHints,
-                               transform, self.__data.initialTransform)
+                qwtExecCommand(
+                    painter,
+                    command,
+                    self.__data.renderHints,
+                    transform,
+                    self.__data.initialTransform,
+                )
             painter.restore()
         elif len(args) in (2, 3) and isinstance(args[1], QSizeF):
             painter, size = args[:2]
             aspectRatioMode = Qt.IgnoreAspectRatio
             if len(args) == 3:
                 aspectRatioMode = args[-1]
-            r = QRectF(0., 0., size.width(), size.height())
+            r = QRectF(0.0, 0.0, size.width(), size.height())
             self.render(painter, r, aspectRatioMode)
         elif len(args) in (2, 3) and isinstance(args[1], QRectF):
             painter, rect = args[:2]
@@ -461,19 +489,19 @@ class QwtGraphic(QwtNullPaintDevice):
                 aspectRatioMode = args[-1]
             if self.isEmpty() or rect.isEmpty():
                 return
-            sx = 1.
-            sy = 1.
-            if self.__data.pointRect.width() > 0.:
-                sx = rect.width()/self.__data.pointRect.width()
-            if self.__data.pointRect.height() > 0.:
-                sy = rect.height()/self.__data.pointRect.height()
+            sx = 1.0
+            sy = 1.0
+            if self.__data.pointRect.width() > 0.0:
+                sx = rect.width() / self.__data.pointRect.width()
+            if self.__data.pointRect.height() > 0.0:
+                sy = rect.height() / self.__data.pointRect.height()
             scalePens = not bool(self.__data.renderHints & self.RenderPensUnscaled)
             for info in self.__data.pathInfos:
                 ssx = info.scaleFactorX(self.__data.pointRect, rect, scalePens)
-                if ssx > 0.:
+                if ssx > 0.0:
                     sx = min([sx, ssx])
                 ssy = info.scaleFactorY(self.__data.pointRect, rect, scalePens)
-                if ssy > 0.:
+                if ssy > 0.0:
                     sy = min([sy, ssy])
             if aspectRatioMode == Qt.KeepAspectRatio:
                 s = min([sx, sy])
@@ -484,26 +512,26 @@ class QwtGraphic(QwtNullPaintDevice):
                 sx = s
                 sy = s
             tr = QTransform()
-            tr.translate(rect.center().x()-.5*sx*self.__data.pointRect.width(),
-                         rect.center().y()-.5*sy*self.__data.pointRect.height())
+            tr.translate(
+                rect.center().x() - 0.5 * sx * self.__data.pointRect.width(),
+                rect.center().y() - 0.5 * sy * self.__data.pointRect.height(),
+            )
             tr.scale(sx, sy)
-            tr.translate(-self.__data.pointRect.x(),
-                         -self.__data.pointRect.y())
+            tr.translate(-self.__data.pointRect.x(), -self.__data.pointRect.y())
             transform = painter.transform()
             if not scalePens and transform.isScaling():
                 #  we don't want to scale pens according to sx/sy,
-                #  but we want to apply the scaling from the 
+                #  but we want to apply the scaling from the
                 #  painter transformation later
                 self.__data.initialTransform = QTransform()
-                self.__data.initialTransform.scale(transform.m11(),
-                                                   transform.m22())
+                self.__data.initialTransform.scale(transform.m11(), transform.m22())
             painter.setTransform(tr, True)
             self.render(painter)
             painter.setTransform(transform)
             self.__data.initialTransform = None
         elif len(args) in (2, 3) and isinstance(args[1], QPointF):
             painter, pos = args[:2]
-            alignment = Qt.AlignTop|Qt.AlignLeft
+            alignment = Qt.AlignTop | Qt.AlignLeft
             if len(args) == 3:
                 alignment = args[-1]
             r = QRectF(pos, self.defaultSize())
@@ -521,9 +549,11 @@ class QwtGraphic(QwtNullPaintDevice):
                 r.moveBottom(pos.y())
             self.render(painter, r)
         else:
-            raise TypeError("%s().render() takes 1, 2 or 3 argument(s) (%s "\
-                            "given)" % (self.__class__.__name__, len(args)))
-    
+            raise TypeError(
+                "%s().render() takes 1, 2 or 3 argument(s) (%s "
+                "given)" % (self.__class__.__name__, len(args))
+            )
+
     def toPixmap(self, *args):
         """
         Convert the graphic to a `QPixmap`
@@ -548,7 +578,7 @@ class QwtGraphic(QwtNullPaintDevice):
             h = np.ceil(sz.height())
             pixmap = QPixmap(w, h)
             pixmap.fill(Qt.transparent)
-            r = QRectF(0., 0., sz.width(), sz.height())
+            r = QRectF(0.0, 0.0, sz.width(), sz.height())
             painter = QPainter(pixmap)
             self.render(painter, r, Qt.KeepAspectRatio)
             painter.end()
@@ -565,7 +595,7 @@ class QwtGraphic(QwtNullPaintDevice):
             self.render(painter, r, aspectRatioMode)
             painter.end()
             return pixmap
-        
+
     def toImage(self, *args):
         """
         .. py:method:: toImage()
@@ -623,7 +653,7 @@ class QwtGraphic(QwtNullPaintDevice):
             painter = QPainter(image)
             self.render(painter, r, aspectRatioMode)
             return image
-        
+
     def drawPath(self, path):
         """
         Store a path command in the command list
@@ -642,14 +672,17 @@ class QwtGraphic(QwtNullPaintDevice):
             scaledPath = painter.transform().map(path)
             pointRect = scaledPath.boundingRect()
             boundingRect = QRectF(pointRect)
-            if painter.pen().style() != Qt.NoPen\
-               and painter.pen().brush().style() != Qt.NoBrush:
+            if (
+                painter.pen().style() != Qt.NoPen
+                and painter.pen().brush().style() != Qt.NoBrush
+            ):
                 boundingRect = qwtStrokedPathRect(painter, path)
             self.updateControlPointRect(pointRect)
             self.updateBoundingRect(boundingRect)
-            self.__data.pathInfos += [PathInfo(pointRect, boundingRect,
-                                               qwtHasScalablePen(painter))]
-    
+            self.__data.pathInfos += [
+                PathInfo(pointRect, boundingRect, qwtHasScalablePen(painter))
+            ]
+
     def drawPixmap(self, rect, pixmap, subRect):
         """
         Store a pixmap command in the command list
@@ -669,7 +702,7 @@ class QwtGraphic(QwtNullPaintDevice):
         r = painter.transform().mapRect(rect)
         self.updateControlPointRect(r)
         self.updateBoundingRect(r)
-    
+
     def drawImage(self, rect, image, subRect, flags):
         """
         Store a image command in the command list
@@ -690,7 +723,7 @@ class QwtGraphic(QwtNullPaintDevice):
         r = painter.transform().mapRect(rect)
         self.updateControlPointRect(r)
         self.updateBoundingRect(r)
-        
+
     def updateState(self, state):
         """
         Store a state command in the command list
@@ -701,9 +734,9 @@ class QwtGraphic(QwtNullPaintDevice):
         
             :py:meth:`QPaintEngine.updateState()`
         """
-        #XXX: shall we call the parent's implementation of updateState?
+        # XXX: shall we call the parent's implementation of updateState?
         self.__data.commands += [QwtPainterCommand(state)]
-        
+
     def updateBoundingRect(self, rect):
         br = QRectF(rect)
         painter = self.paintEngine().painter()
@@ -715,16 +748,16 @@ class QwtGraphic(QwtNullPaintDevice):
             self.__data.boundingRect = br
         else:
             self.__data.boundingRect |= br
-            
+
     def updateControlPointRect(self, rect):
-        if self.__data.pointRect.width() < 0.:
+        if self.__data.pointRect.width() < 0.0:
             self.__data.pointRect = rect
         else:
             self.__data.pointRect |= rect
-    
+
     def commands(self):
         return self.__data.commands
-    
+
     def setCommands(self, commands):
         self.reset()
         painter = QPainter(self)

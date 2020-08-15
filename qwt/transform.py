@@ -58,16 +58,17 @@ class QwtTransform(object):
         p = p1 + (p2 - p1) * ( T(s) - T(s1) / (T(s2) - T(s1)) )
         s = invT( T(s1) + ( T(s2) - T(s1) ) * (p - p1) / (p2 - p1) )
     """
+
     def __init__(self):
         pass
-    
+
     def bounded(self, value):
         """
         Modify value to be a valid value for the transformation.
         The default implementation does nothing.
         """
         return value
-    
+
     def transform(self, value):
         """
         Transformation function
@@ -80,7 +81,7 @@ class QwtTransform(object):
             :py:meth:`invTransform()`
         """
         raise NotImplementedError
-    
+
     def invTransform(self, value):
         """
         Inverse transformation function
@@ -93,7 +94,7 @@ class QwtTransform(object):
             :py:meth:`transform()`
         """
         raise NotImplementedError
-    
+
     def copy(self):
         """
         :return: Clone of the transformation
@@ -116,7 +117,7 @@ class QwtNullTransform(QwtTransform):
             :py:meth:`invTransform()`
         """
         return value
-    
+
     def invTransform(self, value):
         """
         Inverse transformation function
@@ -129,7 +130,7 @@ class QwtNullTransform(QwtTransform):
             :py:meth:`transform()`
         """
         return value
-    
+
     def copy(self):
         """
         :return: Clone of the transformation
@@ -157,10 +158,10 @@ class QwtLogTransform(QwtTransform):
         * `QwtLogTransform.LogMax`: Largest allowed value for logarithmic 
           scales: 1.0e150
     """
-    
+
     LogMin = 1.0e-150
     LogMax = 1.0e150
-    
+
     def bounded(self, value):
         """
         Modify value to be a valid value for the transformation.
@@ -182,7 +183,7 @@ class QwtLogTransform(QwtTransform):
             :py:meth:`invTransform()`
         """
         return np.log(self.bounded(value))
-    
+
     def invTransform(self, value):
         """
         Inverse transformation function
@@ -195,7 +196,7 @@ class QwtLogTransform(QwtTransform):
             :py:meth:`transform()`
         """
         return np.exp(value)
-    
+
     def copy(self):
         """
         :return: Clone of the transformation
@@ -212,7 +213,7 @@ class QwtPowerTransform(QwtTransform):
     transforms a value of -3 to -9 and v.v. Thus `QwtPowerTransform`
     can be used for scales including negative values.
     """
-    
+
     def __init__(self, exponent):
         self.__exponent = exponent
         super(QwtPowerTransform, self).__init__()
@@ -228,11 +229,11 @@ class QwtPowerTransform(QwtTransform):
         
             :py:meth:`invTransform()`
         """
-        if value < 0.:
-            return -np.pow(-value, 1./self.__exponent)
+        if value < 0.0:
+            return -np.pow(-value, 1.0 / self.__exponent)
         else:
-            return np.pow(value, 1./self.__exponent)
-    
+            return np.pow(value, 1.0 / self.__exponent)
+
     def invTransform(self, value):
         """
         Inverse transformation function
@@ -244,11 +245,11 @@ class QwtPowerTransform(QwtTransform):
         
             :py:meth:`transform()`
         """
-        if value < 0.:
+        if value < 0.0:
             return -np.pow(-value, self.__exponent)
         else:
             return np.pow(value, self.__exponent)
-    
+
     def copy(self):
         """
         :return: Clone of the transformation

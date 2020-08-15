@@ -12,42 +12,42 @@ from .qt.QtCore import QRectF, Qt
 
 
 def qwtDrawBox(p, rect, pal, lw):
-    if lw > 0.:
-        if rect.width() == 0.:
+    if lw > 0.0:
+        if rect.width() == 0.0:
             p.setPen(pal.dark().color())
             p.drawLine(rect.topLeft(), rect.bottomLeft())
             return
-        if rect.height() == 0.:
+        if rect.height() == 0.0:
             p.setPen(pal.dark().color())
             p.drawLine(rect.topLeft(), rect.topRight())
             return
-        lw = min([lw, rect.height()/2.-1.])
-        lw = min([lw, rect.width()/2.-1.])
+        lw = min([lw, rect.height() / 2.0 - 1.0])
+        lw = min([lw, rect.width() / 2.0 - 1.0])
         outerRect = rect.adjusted(0, 0, 1, 1)
         polygon = QPolygonF(outerRect)
-        if outerRect.width() > 2*lw and outerRect.height() > 2*lw:
+        if outerRect.width() > 2 * lw and outerRect.height() > 2 * lw:
             innerRect = outerRect.adjusted(lw, lw, -lw, -lw)
             polygon = polygon.subtracted(innerRect)
         p.setPen(Qt.NoPen)
         p.setBrush(pal.dark())
         p.drawPolygon(polygon)
-    windowRect = rect.adjusted(lw, lw, -lw+1, -lw+1)
+    windowRect = rect.adjusted(lw, lw, -lw + 1, -lw + 1)
     if windowRect.isValid():
         p.fillRect(windowRect, pal.window())
 
 
 def qwtDrawPanel(painter, rect, pal, lw):
-    if lw > 0.:
-        if rect.width() == 0.:
+    if lw > 0.0:
+        if rect.width() == 0.0:
             painter.setPen(pal.window().color())
             painter.drawLine(rect.topLeft(), rect.bottomLeft())
             return
-        if rect.height() == 0.:
+        if rect.height() == 0.0:
             painter.setPen(pal.window().color())
             painter.drawLine(rect.topLeft(), rect.topRight())
             return
-        lw = min([lw, rect.height()/2.-1.])
-        lw = min([lw, rect.width()/2.-1.])
+        lw = min([lw, rect.height() / 2.0 - 1.0])
+        lw = min([lw, rect.width() / 2.0 - 1.0])
         outerRect = rect.adjusted(0, 0, 1, 1)
         innerRect = outerRect.adjusted(lw, lw, -lw, -lw)
         lines = [QPolygonF(), QPolygonF()]
@@ -68,7 +68,7 @@ def qwtDrawPanel(painter, rect, pal, lw):
         painter.drawPolygon(lines[0])
         painter.setBrush(pal.dark())
         painter.drawPolygon(lines[1])
-    painter.fillRect(rect.adjusted(lw, lw, -lw+1, -lw+1), pal.window())
+    painter.fillRect(rect.adjusted(lw, lw, -lw + 1, -lw + 1), pal.window())
 
 
 class QwtColumnSymbol_PrivateData(object):
@@ -78,50 +78,51 @@ class QwtColumnSymbol_PrivateData(object):
         self.lineWidth = 2
         self.palette = QPalette(Qt.gray)
 
+
 class QwtColumnSymbol(object):
-    
+
     # enum Style
     NoStyle = -1
     Box = 0
     UserStyle = 1000
-    
+
     # enum FrameStyle
     NoFrame, Plain, Raised = list(range(3))
-    
+
     def __init__(self, style):
         self.__data = QwtColumnSymbol_PrivateData()
         self.__data.style = style
-        
+
     def setStyle(self, style):
         self.__data.style = style
-    
+
     def style(self):
         return self.__data.style
-    
+
     def setPalette(self, palette):
         self.__data.palette = palette
-    
+
     def palette(self):
         return self.__data.palette
 
     def setFrameStyle(self, frameStyle):
         self.__data.frameStyle = frameStyle
-    
+
     def frameStyle(self):
         return self.__data.frameStyle
 
     def setLineWidth(self, width):
         self.__data.lineWidth = width
-    
+
     def lineWidth(self):
         return self.__data.lineWidth
-        
+
     def draw(self, painter, rect):
         painter.save()
         if self.__data.style == QwtColumnSymbol.Box:
             self.drawBox(painter, rect)
         painter.restore()
-    
+
     def drawBox(self, painter, rect):
         r = rect.toRect()
         if self.__data.frameStyle == QwtColumnSymbol.Raised:
@@ -129,24 +130,26 @@ class QwtColumnSymbol(object):
         elif self.__data.frameStyle == QwtColumnSymbol.Plain:
             qwtDrawBox(painter, r, self.__data.palette, self.__data.lineWidth)
         else:
-            painter.fillRect(r.adjusted(0, 0, 1, 1),
-                             self.__data.palette.window())
+            painter.fillRect(r.adjusted(0, 0, 1, 1), self.__data.palette.window())
 
 
 class QwtColumnRect(object):
-    
+
     # enum Direction
     LeftToRight, RightToLeft, BottomToTop, TopToBottom = list(range(4))
-    
+
     def __init__(self):
         self.hInterval = QwtInterval()
         self.vInterval = QwtInterval()
         self.direction = 0
-        
+
     def toRect(self):
-        r = QRectF(self.hInterval.minValue(), self.vInterval.minValue(),
-                   self.hInterval.maxValue()-self.hInterval.minValue(),
-                   self.vInterval.maxValue()-self.vInterval.minValue())
+        r = QRectF(
+            self.hInterval.minValue(),
+            self.vInterval.minValue(),
+            self.hInterval.maxValue() - self.hInterval.minValue(),
+            self.vInterval.maxValue() - self.vInterval.minValue(),
+        )
         r = r.normalized()
         if self.hInterval.borderFlags() & QwtInterval.ExcludeMinimum:
             r.adjust(1, 0, 0, 0)
@@ -157,7 +160,7 @@ class QwtColumnRect(object):
         if self.vInterval.borderFlags() & QwtInterval.ExcludeMaximum:
             r.adjust(0, 0, 0, -1)
         return r
-    
+
     def orientation(self):
         if self.direction in (self.LeftToRight, self.RightToLeft):
             return Qt.Horizontal

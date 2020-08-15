@@ -52,13 +52,14 @@ class QwtPlotSeriesItem(QwtPlotItem):
     """
     Base class for plot items representing a series of samples
     """
+
     def __init__(self, title):
         if not isinstance(title, QwtText):
             title = QwtText(title)
         QwtPlotItem.__init__(self, title)
         self.__data = QwtPlotSeriesItem_PrivateData()
         self.setItemInterest(QwtPlotItem.ScaleInterest, True)
-        
+
     def setOrientation(self, orientation):
         """
         Set the orientation of the item. Default is `Qt.Horizontal`.
@@ -75,7 +76,7 @@ class QwtPlotSeriesItem(QwtPlotItem):
             self.__data.orientation = orientation
             self.legendChanged()
             self.itemChanged()
-    
+
     def orientation(self):
         """
         :return: Orientation of the plot item
@@ -85,7 +86,7 @@ class QwtPlotSeriesItem(QwtPlotItem):
             :py:meth`setOrientation()`
         """
         return self.__data.orientation
-    
+
     def draw(self, painter, xMap, yMap, canvasRect):
         """
         Draw the complete series
@@ -96,18 +97,40 @@ class QwtPlotSeriesItem(QwtPlotItem):
         :param QRectF canvasRect: Contents rectangle of the canvas
         """
         self.drawSeries(painter, xMap, yMap, canvasRect, 0, -1)
-    
-    def boundingRect(self):
-        return self.dataRect()
-    
-    def updateScaleDiv(self, xScaleDiv, yScaleDiv):
-        rect = QRectF(xScaleDiv.lowerBound(), yScaleDiv.lowerBound(),
-                      xScaleDiv.range(), yScaleDiv.range())
-        self.setRectOfInterest(rect)
+
+    def drawSeries(self, painter, xMap, yMap, canvasRect, from_, to):
+        """
+        Draw a subset of the samples
         
+        :param QPainter painter: Painter
+        :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
+        :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
+        :param QRectF canvasRect: Contents rectangle of the canvas
+        :param int from_: Index of the first point to be painted
+        :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
+        
+        .. seealso::
+        
+            This method is implemented in `qwt.plot_curve.QwtPlotCurve`
+        """
+        raise NotImplementedError
+
+    def boundingRect(self):
+        return self.dataRect()  # dataRect method is implemented in QwtSeriesStore
+
+    def updateScaleDiv(self, xScaleDiv, yScaleDiv):
+        rect = QRectF(
+            xScaleDiv.lowerBound(),
+            yScaleDiv.lowerBound(),
+            xScaleDiv.range(),
+            yScaleDiv.range(),
+        )
+        self.setRectOfInterest(
+            rect
+        )  # setRectOfInterest method is implemented in QwtSeriesData
+
     def dataChanged(self):
         self.itemChanged()
-
 
 
 class QwtSeriesData(object):
@@ -138,9 +161,10 @@ class QwtSeriesData(object):
         The member `_boundingRect` is intended for caching the calculated 
         rectangle.
     """
+
     def __init__(self):
         self._boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
-    
+
     def setRectOfInterest(self, rect):
         """
         Set a the "rect of interest"
@@ -154,13 +178,13 @@ class QwtSeriesData(object):
         :param QRectF rect: Rectangle of interest
         """
         pass
-    
+
     def size(self):
         """
         :return: Number of samples
         """
         pass
-        
+
     def sample(self, i):
         """
         Return a sample
@@ -169,7 +193,7 @@ class QwtSeriesData(object):
         :return: Sample at position i
         """
         pass
-    
+
     def boundingRect(self):
         """
         Calculate the bounding rect of all samples
@@ -195,6 +219,7 @@ class QwtPointArrayData(QwtSeriesData):
         :param int size: Size of the x and y arrays
         :param bool finite: if True, keep only finite array elements (remove all infinity and not a number values), otherwise do not filter array elements
     """
+
     def __init__(self, x=None, y=None, size=None, finite=None):
         QwtSeriesData.__init__(self)
         if x is None and y is not None:
@@ -210,8 +235,8 @@ class QwtPointArrayData(QwtSeriesData):
         if isinstance(y, (tuple, list)):
             y = np.array(y)
         if size is not None:
-            x = np.resize(x, (size, ))
-            y = np.resize(y, (size, ))
+            x = np.resize(x, (size,))
+            y = np.resize(y, (size,))
         if finite if finite is not None else True:
             indexes = np.logical_and(np.isfinite(x), np.isfinite(y))
             self.__x = x[indexes]
@@ -219,7 +244,7 @@ class QwtPointArrayData(QwtSeriesData):
         else:
             self.__x = x
             self.__y = y
-        
+
     def boundingRect(self):
         """
         Calculate the bounding rectangle
@@ -233,33 +258,32 @@ class QwtPointArrayData(QwtSeriesData):
         xmax = self.__x.max()
         ymin = self.__y.min()
         ymax = self.__y.max()
-        return QRectF(xmin, ymin, xmax-xmin, ymax-ymin)
-    
+        return QRectF(xmin, ymin, xmax - xmin, ymax - ymin)
+
     def size(self):
         """
         :return: Size of the data set
         """
         return min([self.__x.size, self.__y.size])
-    
+
     def sample(self, index):
         """
         :param int index: Index
         :return: Sample at position `index`
         """
         return QPointF(self.__x[index], self.__y[index])
-    
+
     def xData(self):
         """
         :return: Array of the x-values
         """
         return self.__x
-        
+
     def yData(self):
         """
         :return: Array of the y-values
         """
         return self.__y
-
 
 
 class QwtSeriesStore(object):
@@ -269,9 +293,10 @@ class QwtSeriesStore(object):
     `QwtSeriesStore` and `QwtPlotSeriesItem` are intended as base classes for 
     all plot items iterating over a series of samples.
     """
+
     def __init__(self):
         self.__series = None
-    
+
     def setData(self, series):
         """
         Assign a series of samples
@@ -286,13 +311,16 @@ class QwtSeriesStore(object):
         if self.__series != series:
             self.__series = series
             self.dataChanged()
-    
+
+    def dataChanged(self):
+        raise NotImplementedError
+
     def data(self):
         """
         :return: the series data
         """
         return self.__series
-        
+
     def sample(self, index):
         """
         :param int index: Index
@@ -302,7 +330,7 @@ class QwtSeriesStore(object):
             return self.__series.sample(index)
         else:
             return
-    
+
     def dataSize(self):
         """
         :return: Number of samples of the series
@@ -315,7 +343,7 @@ class QwtSeriesStore(object):
         if self.__series is None:
             return 0
         return self.__series.size()
-    
+
     def dataRect(self):
         """
         :return: Bounding rectangle of the series or an invalid rectangle, when no series is stored
@@ -327,7 +355,7 @@ class QwtSeriesStore(object):
         if self.__series is None or self.dataSize() == 0:
             return QRectF(1.0, 1.0, -2.0, -2.0)
         return self.__series.boundingRect()
-    
+
     def setRectOfInterest(self, rect):
         """
         Set a the "rect of interest" for the series
@@ -340,7 +368,7 @@ class QwtSeriesStore(object):
         """
         if self.__series:
             self.__series.setRectOfInterest(rect)
-    
+
     def swapData(self, series):
         """
         Replace a series without deleting the previous one

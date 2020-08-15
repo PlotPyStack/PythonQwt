@@ -14,6 +14,7 @@ QwtPainterCommand
 """
 
 from .qt.QtGui import QPainterPath, QPaintEngine
+import copy
 
 
 class PixmapData(object):
@@ -22,12 +23,14 @@ class PixmapData(object):
         self.pixmap = None
         self.subRect = None
 
+
 class ImageData(object):
     def __init__(self):
         self.rect = None
         self.image = None
         self.subRect = None
         self.flags = None
+
 
 class StateData(object):
     def __init__(self):
@@ -47,6 +50,7 @@ class StateData(object):
         self.renderHints = None
         self.compositionMode = None
         self.opacity = None
+
 
 class QwtPainterCommand(object):
     """
@@ -94,16 +98,16 @@ class QwtPainterCommand(object):
         
         :param QPaintEngineState state: Paint engine state
     """
-    
+
     # enum Type
     Invalid = -1
     Path, Pixmap, Image, State = list(range(4))
-    
+
     def __init__(self, *args):
         if len(args) == 0:
             self.__type = self.Invalid
         elif len(args) == 1:
-            arg, = args
+            (arg,) = args
             if isinstance(arg, QPainterPath):
                 path = arg
                 self.__type = self.Path
@@ -159,34 +163,36 @@ class QwtPainterCommand(object):
             self.__imageData.subRect = subRect
             self.__imageData.flags = flags
         else:
-            raise TypeError("%s() takes 0, 1, 3 or 4 argument(s) (%s given)"\
-                            % (self.__class__.__name__, len(args)))
-    
+            raise TypeError(
+                "%s() takes 0, 1, 3 or 4 argument(s) (%s given)"
+                % (self.__class__.__name__, len(args))
+            )
+
     def copy(self, other):
         self.__type = other.__type
         if other.__type == self.Path:
             self.__path = QPainterPath(other.__path)
         elif other.__type == self.Pixmap:
-            self.__pixmapData = PixmapData(other.__pixmapData)
+            self.__pixmapData = copy.deepcopy(other.__pixmapData)
         elif other.__type == self.Image:
-            self.__imageData = ImageData(other.__imageData)
+            self.__imageData = copy.deepcopy(other.__imageData)
         elif other.__type == self.State:
-            self.__stateData == StateData(other.__stateData)
-    
+            self.__stateData == copy.deepcopy(other.__stateData)
+
     def reset(self):
         self.__type = self.Invalid
 
     def type(self):
         return self.__type
-    
+
     def path(self):
         return self.__path
-    
+
     def pixmapData(self):
         return self.__pixmapData
-    
+
     def imageData(self):
         return self.__imageData
-    
+
     def stateData(self):
         return self.__stateData

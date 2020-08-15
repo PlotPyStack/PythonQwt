@@ -46,19 +46,19 @@ class QwtPlotGrid(QwtPlotItem):
     The `draw()` member draws the grid within a bounding
     rectangle.
     """
-    
+
     def __init__(self):
         QwtPlotItem.__init__(self, QwtText("Grid"))
         self.__data = QwtPlotGrid_PrivateData()
         self.setItemInterest(QwtPlotItem.ScaleInterest, True)
-        self.setZ(10.)
-        
+        self.setZ(10.0)
+
     def rtti(self):
         """
         :return: Return `QwtPlotItem.Rtti_PlotGrid`
         """
         return QwtPlotItem.Rtti_PlotGrid
-    
+
     def enableX(self, on):
         """
         Enable or disable vertical grid lines
@@ -73,7 +73,7 @@ class QwtPlotGrid(QwtPlotItem):
             self.__data.xEnabled = on
             self.legendChanged()
             self.itemChanged()
-    
+
     def enableY(self, on):
         """
         Enable or disable horizontal grid lines
@@ -88,7 +88,7 @@ class QwtPlotGrid(QwtPlotItem):
             self.__data.yEnabled = on
             self.legendChanged()
             self.itemChanged()
-    
+
     def enableXMin(self, on):
         """
         Enable or disable  minor vertical grid lines.
@@ -103,7 +103,7 @@ class QwtPlotGrid(QwtPlotItem):
             self.__data.xMinEnabled = on
             self.legendChanged()
             self.itemChanged()
-    
+
     def enableYMin(self, on):
         """
         Enable or disable  minor horizontal grid lines.
@@ -169,15 +169,17 @@ class QwtPlotGrid(QwtPlotItem):
             color, width, style = args
             self.setPen(QPen(color, width, style))
         elif len(args) == 1:
-            pen, = args
+            (pen,) = args
             if self.__data.majorPen != pen or self.__data.minorPen != pen:
                 self.__data.majorPen = pen
                 self.__data.minorPen = pen
                 self.legendChanged()
                 self.itemChanged()
         else:
-            raise TypeError("%s().setPen() takes 1 or 3 argument(s) (%s given)"\
-                            % (self.__class__.__name__, len(args)))
+            raise TypeError(
+                "%s().setPen() takes 1 or 3 argument(s) (%s given)"
+                % (self.__class__.__name__, len(args))
+            )
 
     def setMajorPen(self, *args):
         """
@@ -210,14 +212,16 @@ class QwtPlotGrid(QwtPlotItem):
             color, width, style = args
             self.setMajorPen(QPen(color, width, style))
         elif len(args) == 1:
-            pen, = args
+            (pen,) = args
             if self.__data.majorPen != pen:
                 self.__data.majorPen = pen
                 self.legendChanged()
                 self.itemChanged()
         else:
-            raise TypeError("%s().setMajorPen() takes 1 or 3 argument(s) (%s "\
-                            "given)" % (self.__class__.__name__, len(args)))
+            raise TypeError(
+                "%s().setMajorPen() takes 1 or 3 argument(s) (%s "
+                "given)" % (self.__class__.__name__, len(args))
+            )
 
     def setMinorPen(self, *args):
         """
@@ -250,15 +254,17 @@ class QwtPlotGrid(QwtPlotItem):
             color, width, style = args
             self.setMinorPen(QPen(color, width, style))
         elif len(args) == 1:
-            pen, = args
+            (pen,) = args
             if self.__data.minorPen != pen:
                 self.__data.minorPen = pen
                 self.legendChanged()
                 self.itemChanged()
         else:
-            raise TypeError("%s().setMinorPen() takes 1 or 3 argument(s) (%s "\
-                            "given)" % (self.__class__.__name__, len(args)))
-    
+            raise TypeError(
+                "%s().setMinorPen() takes 1 or 3 argument(s) (%s "
+                "given)" % (self.__class__.__name__, len(args))
+            )
+
     def draw(self, painter, xMap, yMap, canvasRect):
         """
         Draw the grid
@@ -277,41 +283,69 @@ class QwtPlotGrid(QwtPlotItem):
         minorPen.setCapStyle(Qt.FlatCap)
         painter.setPen(minorPen)
         if self.__data.xEnabled and self.__data.xMinEnabled:
-            self.drawLines(painter, canvasRect, Qt.Vertical, xMap,
-                           self.__data.xScaleDiv.ticks(QwtScaleDiv.MinorTick))
-            self.drawLines(painter, canvasRect, Qt.Vertical, xMap,
-                           self.__data.xScaleDiv.ticks(QwtScaleDiv.MediumTick))
+            self.drawLines(
+                painter,
+                canvasRect,
+                Qt.Vertical,
+                xMap,
+                self.__data.xScaleDiv.ticks(QwtScaleDiv.MinorTick),
+            )
+            self.drawLines(
+                painter,
+                canvasRect,
+                Qt.Vertical,
+                xMap,
+                self.__data.xScaleDiv.ticks(QwtScaleDiv.MediumTick),
+            )
         if self.__data.yEnabled and self.__data.yMinEnabled:
-            self.drawLines(painter, canvasRect, Qt.Horizontal, yMap,
-                           self.__data.yScaleDiv.ticks(QwtScaleDiv.MinorTick))
-            self.drawLines(painter, canvasRect, Qt.Horizontal, yMap,
-                           self.__data.yScaleDiv.ticks(QwtScaleDiv.MediumTick))
+            self.drawLines(
+                painter,
+                canvasRect,
+                Qt.Horizontal,
+                yMap,
+                self.__data.yScaleDiv.ticks(QwtScaleDiv.MinorTick),
+            )
+            self.drawLines(
+                painter,
+                canvasRect,
+                Qt.Horizontal,
+                yMap,
+                self.__data.yScaleDiv.ticks(QwtScaleDiv.MediumTick),
+            )
         majorPen = QPen(self.__data.majorPen)
         majorPen.setCapStyle(Qt.FlatCap)
         painter.setPen(majorPen)
         if self.__data.xEnabled:
-            self.drawLines(painter, canvasRect, Qt.Vertical, xMap,
-                           self.__data.xScaleDiv.ticks(QwtScaleDiv.MajorTick))
+            self.drawLines(
+                painter,
+                canvasRect,
+                Qt.Vertical,
+                xMap,
+                self.__data.xScaleDiv.ticks(QwtScaleDiv.MajorTick),
+            )
         if self.__data.yEnabled:
-            self.drawLines(painter, canvasRect, Qt.Horizontal, yMap,
-                           self.__data.yScaleDiv.ticks(QwtScaleDiv.MajorTick))
-        
+            self.drawLines(
+                painter,
+                canvasRect,
+                Qt.Horizontal,
+                yMap,
+                self.__data.yScaleDiv.ticks(QwtScaleDiv.MajorTick),
+            )
+
     def drawLines(self, painter, canvasRect, orientation, scaleMap, values):
         x1 = canvasRect.left()
-        x2 = canvasRect.right()-1.
+        x2 = canvasRect.right() - 1.0
         y1 = canvasRect.top()
-        y2 = canvasRect.bottom()-1.
+        y2 = canvasRect.bottom() - 1.0
         for val in values:
             value = scaleMap.transform(val)
             if orientation == Qt.Horizontal:
-                if qwtFuzzyGreaterOrEqual(value, y1) and\
-                   qwtFuzzyLessOrEqual(value, y2):
+                if qwtFuzzyGreaterOrEqual(value, y1) and qwtFuzzyLessOrEqual(value, y2):
                     painter.drawLine(x1, value, x2, value)
             else:
-                if qwtFuzzyGreaterOrEqual(value, x1) and\
-                   qwtFuzzyLessOrEqual(value, x2):
+                if qwtFuzzyGreaterOrEqual(value, x1) and qwtFuzzyLessOrEqual(value, x2):
                     painter.drawLine(value, y1, value, y2)
-    
+
     def majorPen(self):
         """
         :return: the pen for the major grid lines
@@ -322,7 +356,7 @@ class QwtPlotGrid(QwtPlotItem):
             :py:meth:`setPen()`
         """
         return self.__data.majorPen
-    
+
     def minorPen(self):
         """
         :return: the pen for the minor grid lines
@@ -333,7 +367,7 @@ class QwtPlotGrid(QwtPlotItem):
             :py:meth:`setPen()`
         """
         return self.__data.minorPen
-    
+
     def xEnabled(self):
         """
         :return: True if vertical grid lines are enabled
@@ -343,7 +377,7 @@ class QwtPlotGrid(QwtPlotItem):
             :py:meth:`enableX()`
         """
         return self.__data.xEnabled
-    
+
     def yEnabled(self):
         """
         :return: True if horizontal grid lines are enabled
@@ -353,7 +387,7 @@ class QwtPlotGrid(QwtPlotItem):
             :py:meth:`enableY()`
         """
         return self.__data.yEnabled
-    
+
     def xMinEnabled(self):
         """
         :return: True if minor vertical grid lines are enabled
@@ -363,7 +397,7 @@ class QwtPlotGrid(QwtPlotItem):
             :py:meth:`enableXMin()`
         """
         return self.__data.xMinEnabled
-    
+
     def yMinEnabled(self):
         """
         :return: True if minor horizontal grid lines are enabled
@@ -373,19 +407,19 @@ class QwtPlotGrid(QwtPlotItem):
             :py:meth:`enableYMin()`
         """
         return self.__data.yMinEnabled
-    
+
     def xScaleDiv(self):
         """
         :return: the scale division of the x axis
         """
         return self.__data.xScaleDiv
-    
+
     def yScaleDiv(self):
         """
         :return: the scale division of the y axis
         """
         return self.__data.yScaleDiv
-    
+
     def updateScaleDiv(self, xScaleDiv, yScaleDiv):
         """
         Update the grid to changes of the axes scale division
@@ -399,4 +433,4 @@ class QwtPlotGrid(QwtPlotItem):
         """
         self.setXDiv(xScaleDiv)
         self.setYDiv(yScaleDiv)
-        
+

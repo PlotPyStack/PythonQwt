@@ -210,17 +210,10 @@ class TestCentralWidget(QWidget):
         super(TestCentralWidget, self).__init__(parent)
         self.widget_name = widget_name
         self.plots = None
+        self.widget_of_interest = self.parent()
         self.setLayout(QVBoxLayout())
         self.options = TestOptions(self)
         self.add_widget(self.options)
-
-    @property
-    def widget_of_interest(self):
-        """Return widget of interest (screenshot)"""
-        if len(self.plots) == 1:
-            return self.plots[0]
-        else:
-            return self.parent()
 
     def add_widget(self, widget):
         """Add new sub-widget"""
@@ -237,6 +230,8 @@ class TestCentralWidget(QWidget):
                 plot_name, "Enable new flat style option", plot.setFlatStyle
             )
             widget.setChecked(plot.flatStyle())
+        if len(self.plots) == 1:
+            self.widget_of_interest = self.plots[0]
 
 
 def take_screenshot(widget):
@@ -262,7 +257,7 @@ def test_widget(widget_class, size=None, title=None, options=True, timeout=1000)
             widget.setParent(None)
         else:
             window = QMainWindow()
-        central_widget = TestCentralWidget(widget_name)
+        central_widget = TestCentralWidget(widget_name, parent=window)
         central_widget.add_widget(widget)
         window.setCentralWidget(central_widget)
         widget_of_interest = central_widget.widget_of_interest

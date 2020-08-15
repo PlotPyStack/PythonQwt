@@ -30,8 +30,8 @@ class QwtPlotMarker_PrivateData(object):
         self.spacing = 2
         self.symbol = None
         self.style = QwtPlotMarker.NoLine
-        self.xValue = 0.
-        self.yValue = 0.
+        self.xValue = 0.0
+        self.yValue = 0.0
         self.label = QwtText()
         self.pen = QPen()
 
@@ -63,10 +63,10 @@ class QwtPlotMarker(QwtPlotItem):
       * `QwtPlotMarker.VLine`: A vertical line
       * `QwtPlotMarker.Cross`: A crosshair
     """
-    
+
     # enum LineStyle
     NoLine, HLine, VLine, Cross = list(range(4))
-    
+
     def __init__(self, title=None):
         if title is None:
             title = ""
@@ -74,24 +74,24 @@ class QwtPlotMarker(QwtPlotItem):
             title = QwtText(title)
         QwtPlotItem.__init__(self, title)
         self.__data = QwtPlotMarker_PrivateData()
-        self.setZ(30.)
-        
+        self.setZ(30.0)
+
     def rtti(self):
         """:return: `QwtPlotItem.Rtti_PlotMarker`"""
         return QwtPlotItem.Rtti_PlotMarker
-    
+
     def value(self):
         """:return: Value"""
         return QPointF(self.__data.xValue, self.__data.yValue)
-    
+
     def xValue(self):
         """:return: x Value"""
         return self.__data.xValue
-    
+
     def yValue(self):
         """:return: y Value"""
         return self.__data.yValue
-    
+
     def setValue(self, *args):
         """
         Set Value
@@ -106,7 +106,7 @@ class QwtPlotMarker(QwtPlotItem):
             :param float y: y position
         """
         if len(args) == 1:
-            pos, = args
+            (pos,) = args
             self.setValue(pos.x(), pos.y())
         elif len(args) == 2:
             x, y = args
@@ -115,8 +115,10 @@ class QwtPlotMarker(QwtPlotItem):
                 self.__data.yValue = y
                 self.itemChanged()
         else:
-            raise TypeError("%s() takes 1 or 2 argument(s) (%s given)"\
-                            % (self.__class__.__name__, len(args)))
+            raise TypeError(
+                "%s() takes 1 or 2 argument(s) (%s given)"
+                % (self.__class__.__name__, len(args))
+            )
 
     def setXValue(self, x):
         """
@@ -125,7 +127,7 @@ class QwtPlotMarker(QwtPlotItem):
         :param float x: x position
         """
         self.setValue(x, self.__data.yValue)
-    
+
     def setYValue(self, y):
         """
         Set Y Value
@@ -133,7 +135,7 @@ class QwtPlotMarker(QwtPlotItem):
         :param float y: y position
         """
         self.setValue(self.__data.xValue, y)
-    
+
     def draw(self, painter, xMap, yMap, canvasRect):
         """
         Draw the marker
@@ -143,18 +145,19 @@ class QwtPlotMarker(QwtPlotItem):
         :param qwt.scale_map.QwtScaleMap yMap: y Scale Map
         :param QRectF canvasRect: Contents rectangle of the canvas in painter coordinates
         """
-        pos = QPointF(xMap.transform(self.__data.xValue),
-                      yMap.transform(self.__data.yValue))
+        pos = QPointF(
+            xMap.transform(self.__data.xValue), yMap.transform(self.__data.yValue)
+        )
         self.drawLines(painter, canvasRect, pos)
-        if self.__data.symbol and\
-           self.__data.symbol.style() != QwtSymbol.NoSymbol:
+        if self.__data.symbol and self.__data.symbol.style() != QwtSymbol.NoSymbol:
             sz = self.__data.symbol.size()
-            clipRect = QRectF(canvasRect.adjusted(-sz.width(), -sz.height(),
-                                                  sz.width(), sz.height()))
+            clipRect = QRectF(
+                canvasRect.adjusted(-sz.width(), -sz.height(), sz.width(), sz.height())
+            )
             if clipRect.contains(pos):
                 self.__data.symbol.drawSymbols(painter, [pos])
         self.drawLabel(painter, canvasRect, pos)
-    
+
     def drawLines(self, painter, canvasRect, pos):
         """
         Draw the lines marker
@@ -173,11 +176,11 @@ class QwtPlotMarker(QwtPlotItem):
         painter.setPen(self.__data.pen)
         if self.__data.style in (QwtPlotMarker.HLine, QwtPlotMarker.Cross):
             y = pos.y()
-            painter.drawLine(canvasRect.left(), y, canvasRect.right()-1., y)
+            painter.drawLine(canvasRect.left(), y, canvasRect.right() - 1.0, y)
         if self.__data.style in (QwtPlotMarker.VLine, QwtPlotMarker.Cross):
             x = pos.x()
-            painter.drawLine(x, canvasRect.top(), x, canvasRect.bottom()-1.)
-    
+            painter.drawLine(x, canvasRect.top(), x, canvasRect.bottom() - 1.0)
+
     def drawLabel(self, painter, canvasRect, pos):
         """
         Align and draw the text label of the marker
@@ -206,7 +209,7 @@ class QwtPlotMarker(QwtPlotItem):
             elif bool(self.__data.labelAlignment & Qt.AlignBottom):
                 #  In HLine-style the x-position is pointless and
                 #  the alignment flags are relative to the canvas
-                alignPos.setY(canvasRect.bottom()-1)
+                alignPos.setY(canvasRect.bottom() - 1)
                 align &= ~Qt.AlignBottom
                 align |= Qt.AlignTop
             else:
@@ -217,55 +220,54 @@ class QwtPlotMarker(QwtPlotItem):
                 align &= ~Qt.AlignLeft
                 align |= Qt.AlignRight
             elif bool(self.__data.labelAlignment & Qt.AlignRight):
-                alignPos.setX(canvasRect.right()-1)
+                alignPos.setX(canvasRect.right() - 1)
                 align &= ~Qt.AlignRight
                 align |= Qt.AlignLeft
             else:
                 alignPos.setX(canvasRect.center().x())
         else:
-            if self.__data.symbol and\
-               self.__data.symbol.style() != QwtSymbol.NoSymbol:
-                symbolOff = self.__data.symbol.size()+QSizeF(1, 1)
+            if self.__data.symbol and self.__data.symbol.style() != QwtSymbol.NoSymbol:
+                symbolOff = self.__data.symbol.size() + QSizeF(1, 1)
                 symbolOff /= 2
-        pw2 = self.__data.pen.widthF()/2.
-        if pw2 == 0.:
-            pw2 = .5
+        pw2 = self.__data.pen.widthF() / 2.0
+        if pw2 == 0.0:
+            pw2 = 0.5
         spacing = self.__data.spacing
         xOff = max([pw2, symbolOff.width()])
         yOff = max([pw2, symbolOff.height()])
         textSize = self.__data.label.textSize(painter.font())
         if align & Qt.AlignLeft:
-            alignPos.setX(alignPos.x()-(xOff+spacing))
+            alignPos.setX(alignPos.x() - (xOff + spacing))
             if self.__data.labelOrientation == Qt.Vertical:
-                alignPos.setX(alignPos.x()-textSize.height())
+                alignPos.setX(alignPos.x() - textSize.height())
             else:
-                alignPos.setX(alignPos.x()-textSize.width())
+                alignPos.setX(alignPos.x() - textSize.width())
         elif align & Qt.AlignRight:
-            alignPos.setX(alignPos.x()+xOff+spacing)
+            alignPos.setX(alignPos.x() + xOff + spacing)
         else:
             if self.__data.labelOrientation == Qt.Vertical:
-                alignPos.setX(alignPos.x()-textSize.height()/2)
+                alignPos.setX(alignPos.x() - textSize.height() / 2)
             else:
-                alignPos.setX(alignPos.x()-textSize.width()/2)
+                alignPos.setX(alignPos.x() - textSize.width() / 2)
         if align & Qt.AlignTop:
-            alignPos.setY(alignPos.y()-(yOff+spacing))
+            alignPos.setY(alignPos.y() - (yOff + spacing))
             if self.__data.labelOrientation != Qt.Vertical:
-                alignPos.setY(alignPos.y()-textSize.height())
+                alignPos.setY(alignPos.y() - textSize.height())
         elif align & Qt.AlignBottom:
-            alignPos.setY(alignPos.y()+yOff+spacing)
+            alignPos.setY(alignPos.y() + yOff + spacing)
             if self.__data.labelOrientation == Qt.Vertical:
-                alignPos.setY(alignPos.y()+textSize.width())
+                alignPos.setY(alignPos.y() + textSize.width())
         else:
             if self.__data.labelOrientation == Qt.Vertical:
-                alignPos.setY(alignPos.y()+textSize.width()/2)
+                alignPos.setY(alignPos.y() + textSize.width() / 2)
             else:
-                alignPos.setY(alignPos.y()-textSize.height()/2)
+                alignPos.setY(alignPos.y() - textSize.height() / 2)
         painter.translate(alignPos.x(), alignPos.y())
         if self.__data.labelOrientation == Qt.Vertical:
-            painter.rotate(-90.)
+            painter.rotate(-90.0)
         textRect = QRectF(0, 0, textSize.width(), textSize.height())
         self.__data.label.draw(painter, textRect)
-    
+
     def setLineStyle(self, style):
         """
         Set the line style
@@ -287,7 +289,7 @@ class QwtPlotMarker(QwtPlotItem):
             self.__data.style = style
             self.legendChanged()
             self.itemChanged()
-    
+
     def lineStyle(self):
         """
         :return: the line style
@@ -297,7 +299,7 @@ class QwtPlotMarker(QwtPlotItem):
             :py:meth:`setLineStyle()`
         """
         return self.__data.style
-            
+
     def setSymbol(self, symbol):
         """
         Assign a symbol
@@ -314,7 +316,7 @@ class QwtPlotMarker(QwtPlotItem):
                 self.setLegendIconSize(symbol.boundingRect().size())
             self.legendChanged()
             self.itemChanged()
-    
+
     def symbol(self):
         """
         :return: the symbol
@@ -324,7 +326,7 @@ class QwtPlotMarker(QwtPlotItem):
             :py:meth:`setSymbol()`
         """
         return self.__data.symbol
-    
+
     def setLabel(self, label):
         """
         Set the label
@@ -339,7 +341,7 @@ class QwtPlotMarker(QwtPlotItem):
         if label != self.__data.label:
             self.__data.label = label
             self.itemChanged()
-    
+
     def label(self):
         """
         :return: the label
@@ -349,7 +351,7 @@ class QwtPlotMarker(QwtPlotItem):
             :py:meth:`setLabel()`
         """
         return self.__data.label
-    
+
     def setLabelAlignment(self, align):
         """
         Set the alignment of the label
@@ -371,7 +373,7 @@ class QwtPlotMarker(QwtPlotItem):
         if align != self.__data.labelAlignment:
             self.__data.labelAlignment = align
             self.itemChanged()
-    
+
     def labelAlignment(self):
         """
         :return: the label alignment
@@ -381,7 +383,7 @@ class QwtPlotMarker(QwtPlotItem):
             :py:meth:`setLabelAlignment()`, :py:meth:`setLabelOrientation()`
         """
         return self.__data.labelAlignment
-    
+
     def setLabelOrientation(self, orientation):
         """
         Set the orientation of the label
@@ -398,7 +400,7 @@ class QwtPlotMarker(QwtPlotItem):
         if orientation != self.__data.labelOrientation:
             self.__data.labelOrientation = orientation
             self.itemChanged()
-    
+
     def labelOrientation(self):
         """
         :return: the label orientation
@@ -408,7 +410,7 @@ class QwtPlotMarker(QwtPlotItem):
             :py:meth:`setLabelOrientation()`, :py:meth:`labelAlignment()`
         """
         return self.__data.labelOrientation
-    
+
     def setSpacing(self, spacing):
         """
         Set the spacing
@@ -427,7 +429,7 @@ class QwtPlotMarker(QwtPlotItem):
         if spacing != self.__data.spacing:
             self.__data.spacing = spacing
             self.itemChanged()
-    
+
     def spacing(self):
         """
         :return: the spacing
@@ -438,7 +440,6 @@ class QwtPlotMarker(QwtPlotItem):
         """
         return self.__data.spacing
 
-    
     def setLinePen(self, *args):
         """
         Build and/or assigna a line pen, depending on the arguments.
@@ -466,10 +467,10 @@ class QwtPlotMarker(QwtPlotItem):
             :py:meth:`pen()`, :py:meth:`brush()`
         """
         if len(args) == 1 and isinstance(args[0], QPen):
-            pen, = args
+            (pen,) = args
         elif len(args) in (1, 2, 3):
             color = args[0]
-            width = 0.
+            width = 0.0
             style = Qt.SolidLine
             if len(args) > 1:
                 width = args[1]
@@ -478,13 +479,15 @@ class QwtPlotMarker(QwtPlotItem):
             pen = QPen(color, width, style)
             self.setLinePen(pen)
         else:
-            raise TypeError("%s().setLinePen() takes 1, 2 or 3 argument(s) "\
-                            "(%s given)" % (self.__class__.__name__, len(args)))
+            raise TypeError(
+                "%s().setLinePen() takes 1, 2 or 3 argument(s) "
+                "(%s given)" % (self.__class__.__name__, len(args))
+            )
         if pen != self.__data.pen:
             self.__data.pen = pen
             self.legendChanged()
             self.itemChanged()
-    
+
     def linePen(self):
         """
         :return: the line pen
@@ -497,12 +500,12 @@ class QwtPlotMarker(QwtPlotItem):
 
     def boundingRect(self):
         if self.__data.style == QwtPlotMarker.HLine:
-            return QRectF(self.__data.xValue, self.__data.yValue, -1., 0.)
+            return QRectF(self.__data.xValue, self.__data.yValue, -1.0, 0.0)
         elif self.__data.style == QwtPlotMarker.VLine:
-            return QRectF(self.__data.xValue, self.__data.yValue, 0., -1.)
+            return QRectF(self.__data.xValue, self.__data.yValue, 0.0, -1.0)
         else:
-            return QRectF(self.__data.xValue, self.__data.yValue, 0., 0.)
-    
+            return QRectF(self.__data.xValue, self.__data.yValue, 0.0, 0.0)
+
     def legendIcon(self, index, size):
         """
         :param int index: Index of the legend entry (ignored as there is only one)
@@ -520,16 +523,17 @@ class QwtPlotMarker(QwtPlotItem):
         icon.setDefaultSize(size)
         icon.setRenderHint(QwtGraphic.RenderPensUnscaled, True)
         painter = QPainter(icon)
-        painter.setRenderHint(QPainter.Antialiasing,
-                          self.testRenderHint(QwtPlotItem.RenderAntialiased))
+        painter.setRenderHint(
+            QPainter.Antialiasing, self.testRenderHint(QwtPlotItem.RenderAntialiased)
+        )
         if self.__data.style != QwtPlotMarker.NoLine:
             painter.setPen(self.__data.pen)
             if self.__data.style in (QwtPlotMarker.HLine, QwtPlotMarker.Cross):
-                y = .5*size.height()
-                painter.drawLine(0., y, size.width(), y)
+                y = 0.5 * size.height()
+                painter.drawLine(0.0, y, size.width(), y)
             if self.__data.style in (QwtPlotMarker.VLine, QwtPlotMarker.Cross):
-                x = .5*size.width()
-                painter.drawLine(x, 0., x, size.height())
+                x = 0.5 * size.width()
+                painter.drawLine(x, 0.0, x, size.height())
         if self.__data.symbol:
             r = QRect(0, 0, size.width(), size.height())
             self.__data.symbol.drawSymbol(painter, r)

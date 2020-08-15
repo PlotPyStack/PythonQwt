@@ -21,18 +21,20 @@ from .plot_canvas import QwtPlotCanvas
 
 
 def qwtRenderItem(painter, canvasRect, seriesItem, from_, to):
-    #TODO: A minor performance improvement is possible with caching the maps
+    # TODO: A minor performance improvement is possible with caching the maps
     plot = seriesItem.plot()
     xMap = plot.canvasMap(seriesItem.xAxis())
     yMap = plot.canvasMap(seriesItem.yAxis())
-    painter.setRenderHint(QPainter.Antialiasing,
-                      seriesItem.testRenderHint(QwtPlotItem.RenderAntialiased))
+    painter.setRenderHint(
+        QPainter.Antialiasing, seriesItem.testRenderHint(QwtPlotItem.RenderAntialiased)
+    )
     seriesItem.drawSeries(painter, xMap, yMap, canvasRect, from_, to)
 
 
 def qwtHasBackingStore(canvas):
-    return canvas.testPaintAttribute(QwtPlotCanvas.BackingStore)\
-           and canvas.backingStore()
+    return (
+        canvas.testPaintAttribute(QwtPlotCanvas.BackingStore) and canvas.backingStore()
+    )
 
 
 class QwtPlotDirectPainter_PrivateData(object):
@@ -92,16 +94,16 @@ class QwtPlotDirectPainter(QObject):
         This flag can also be useful for settings, where Qt fills the
         the clip region with the widget background.
     """
-    
+
     # enum Attribute
     AtomicPainter = 0x01
     FullRepaint = 0x02
     CopyBackingStore = 0x04
-    
+
     def __init__(self, parent=None):
         QObject.__init__(self, parent)
         self.__data = QwtPlotDirectPainter_PrivateData()
-    
+
     def setAttribute(self, attribute, on=True):
         """
         Change an attribute
@@ -119,7 +121,7 @@ class QwtPlotDirectPainter(QObject):
             self.__data.attributes &= ~attribute
         if attribute == self.AtomicPainter and on:
             self.reset()
-    
+
     def testAttribute(self, attribute):
         """
         :param int attribute: Attribute to be tested
@@ -130,7 +132,7 @@ class QwtPlotDirectPainter(QObject):
             :py:meth:`setAttribute()`
         """
         return self.__data.attributes & attribute
-    
+
     def setClipping(self, enable):
         """
         En/Disables clipping
@@ -143,7 +145,7 @@ class QwtPlotDirectPainter(QObject):
             :py:meth:`setClipRegion()`
         """
         self.__data.hasClipping = enable
-    
+
     def hasClipping(self):
         """
         :return: Return true, when clipping is enabled
@@ -154,7 +156,7 @@ class QwtPlotDirectPainter(QObject):
             :py:meth:`setClipRegion()`
         """
         return self.__data.hasClipping
-    
+
     def setClipRegion(self, region):
         """
         Assign a clip region and enable clipping
@@ -173,7 +175,7 @@ class QwtPlotDirectPainter(QObject):
         """
         self.__data.clipRegion = region
         self.__data.hasClipping = True
-    
+
     def clipRegion(self):
         """
         :return: Return Currently set clip region.
@@ -184,7 +186,7 @@ class QwtPlotDirectPainter(QObject):
             :py:meth:`setClipRegion()`
         """
         return self.__data.clipRegion
-    
+
     def drawSeries(self, seriesItem, from_, to):
         """
         Draw a set of points of a seriesItem.
@@ -205,9 +207,11 @@ class QwtPlotDirectPainter(QObject):
             return
         canvas = seriesItem.plot().canvas()
         canvasRect = canvas.contentsRect()
-        plotCanvas = canvas  #XXX: cast to QwtPlotCanvas
+        plotCanvas = canvas  # XXX: cast to QwtPlotCanvas
         if plotCanvas and qwtHasBackingStore(plotCanvas):
-            painter = QPainter(plotCanvas.backingStore())  #XXX: cast plotCanvas.backingStore() to QPixmap
+            painter = QPainter(
+                plotCanvas.backingStore()
+            )  # XXX: cast plotCanvas.backingStore() to QPixmap
             if self.__data.hasClipping:
                 painter.setClipRegion(self.__data.clipRegion)
             qwtRenderItem(painter, canvasRect, seriesItem, from_, to)
@@ -217,8 +221,9 @@ class QwtPlotDirectPainter(QObject):
                 return
         immediatePaint = True
         if not canvas.testAttribute(Qt.WA_WState_InPaintEvent):
-            if QT_VERSION >= 0x050000 or\
-               not canvas.testAttribute(Qt.WA_PaintOutsidePaintEvent):
+            if QT_VERSION >= 0x050000 or not canvas.testAttribute(
+                Qt.WA_PaintOutsidePaintEvent
+            ):
                 immediatePaint = False
         if immediatePaint:
             if not self.__data.painter.isActive():
@@ -227,11 +232,11 @@ class QwtPlotDirectPainter(QObject):
                 canvas.installEventFilter(self)
             if self.__data.hasClipping:
                 self.__data.painter.setClipRegion(
-                        QRegion(canvasRect) & self.__data.clipRegion)
+                    QRegion(canvasRect) & self.__data.clipRegion
+                )
             elif not self.__data.painter.hasClipping():
                 self.__data.painter.setClipRect(canvasRect)
-            qwtRenderItem(self.__data.painter,
-                          canvasRect, seriesItem, from_, to)
+            qwtRenderItem(self.__data.painter, canvasRect, seriesItem, from_, to)
             if self.__data.attributes & self.AtomicPainter:
                 self.reset()
             elif self.__data.hasClipping:
@@ -248,34 +253,39 @@ class QwtPlotDirectPainter(QObject):
             canvas.repaint(clipRegion)
             canvas.removeEventFilter(self)
             self.__data.seriesItem = None
-    
+
     def reset(self):
         """Close the internal QPainter"""
         if self.__data.painter.isActive():
-            w = self.__data.painter.device()  #XXX: cast to QWidget
+            w = self.__data.painter.device()  # XXX: cast to QWidget
             if w:
                 w.removeEventFilter(self)
             self.__data.painter.end()
-    
+
     def eventFilter(self, obj_, event):
         if event.type() == QEvent.Paint:
             self.reset()
             if self.__data.seriesItem:
-                pe = event  #XXX: cast to QPaintEvent
+                pe = event  # XXX: cast to QPaintEvent
                 canvas = self.__data.seriesItem.plot().canvas()
                 painter = QPainter(canvas)
                 painter.setClipRegion(pe.region())
                 doCopyCache = self.testAttribute(self.CopyBackingStore)
                 if doCopyCache:
-                    plotCanvas = canvas  #XXX: cast to QwtPlotCanvas
+                    plotCanvas = canvas  # XXX: cast to QwtPlotCanvas
                     if plotCanvas:
                         doCopyCache = qwtHasBackingStore(plotCanvas)
                         if doCopyCache:
-                            painter.drawPixmap(plotCanvas.rect().topLeft(),
-                                               plotCanvas.backingStore())
+                            painter.drawPixmap(
+                                plotCanvas.rect().topLeft(), plotCanvas.backingStore()
+                            )
                 if not doCopyCache:
-                    qwtRenderItem(painter, canvas.contentsRect(),
-                                  self.__data.seriesItem,
-                                  self.__data.from_, self.__data.to)
+                    qwtRenderItem(
+                        painter,
+                        canvas.contentsRect(),
+                        self.__data.seriesItem,
+                        self.__data.from_,
+                        self.__data.to,
+                    )
                 return True
         return False

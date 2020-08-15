@@ -17,8 +17,12 @@ from .text import QwtText
 from .plot import QwtPlotItem, QwtPlotItem_PrivateData
 from ._math import qwtSqr
 from .graphic import QwtGraphic
-from .plot_series import (QwtPlotSeriesItem, QwtSeriesStore, QwtSeriesData,
-                          QwtPointArrayData)
+from .plot_series import (
+    QwtPlotSeriesItem,
+    QwtSeriesStore,
+    QwtSeriesData,
+    QwtPointArrayData,
+)
 from .symbol import QwtSymbol
 from .plot_directpainter import QwtPlotDirectPainter
 
@@ -29,52 +33,54 @@ import numpy as np
 
 
 def qwtUpdateLegendIconSize(curve):
-    if curve.symbol() and\
-       curve.testLegendAttribute(QwtPlotCurve.LegendShowSymbol):
+    if curve.symbol() and curve.testLegendAttribute(QwtPlotCurve.LegendShowSymbol):
         sz = curve.symbol().boundingRect().size()
         sz += QSize(2, 2)
         if curve.testLegendAttribute(QwtPlotCurve.LegendShowLine):
-            w = np.ceil(1.5*sz.width())
+            w = np.ceil(1.5 * sz.width())
             if w % 2:
                 w += 1
             sz.setWidth(max([8, w]))
         curve.setLegendIconSize(sz)
 
+
 def qwtVerifyRange(size, i1, i2):
     if size < 1:
         return 0
-    i1 = max([0, min([i1, size-1])])
-    i2 = max([0, min([i2, size-1])])
+    i1 = max([0, min([i1, size - 1])])
+    i2 = max([0, min([i2, size - 1])])
     if i1 > i2:
         i1, i2 = i2, i1
-    return i2-i1+1
+    return i2 - i1 + 1
 
 
 def series_to_polyline(xMap, yMap, series, from_, to):
     """
     Convert series data to QPolygon(F) polyline
     """
-    polyline = QPolygonF(to-from_+1)
+    polyline = QPolygonF(to - from_ + 1)
     pointer = polyline.data()
     dtype, tinfo = np.float, np.finfo  # integers: = np.int, np.iinfo
-    pointer.setsize(2*polyline.size()*tinfo(dtype).dtype.itemsize)
+    pointer.setsize(2 * polyline.size() * tinfo(dtype).dtype.itemsize)
     memory = np.frombuffer(pointer, dtype)
-    memory[:(to-from_)*2+1:2] = xMap.transform(series.xData()[from_:to+1])
-    memory[1:(to-from_)*2+2:2] = yMap.transform(series.yData()[from_:to+1])
-    return polyline    
+    memory[: (to - from_) * 2 + 1 : 2] = xMap.transform(series.xData()[from_ : to + 1])
+    memory[1 : (to - from_) * 2 + 2 : 2] = yMap.transform(
+        series.yData()[from_ : to + 1]
+    )
+    return polyline
 
 
 class QwtPlotCurve_PrivateData(QwtPlotItem_PrivateData):
     def __init__(self):
         QwtPlotItem_PrivateData.__init__(self)
         self.style = QwtPlotCurve.Lines
-        self.baseline = 0.
+        self.baseline = 0.0
         self.symbol = None
         self.attributes = 0
         self.legendAttributes = QwtPlotCurve.LegendShowLine
         self.pen = QPen(Qt.black)
         self.brush = QBrush()
-        
+
 
 class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
     """
@@ -158,21 +164,21 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         :param title: Curve title
         :type title: qwt.text.QwtText or str or None
     """
-    
+
     # enum CurveStyle
     NoCurve = -1
     Lines, Sticks, Steps, Dots = list(range(4))
     UserCurve = 100
-    
+
     # enum CurveAttribute
     Inverted = 0x01
-    
+
     # enum LegendAttribute
     LegendNoAttribute = 0x00
     LegendShowLine = 0x01
     LegendShowSymbol = 0x02
     LegendShowBrush = 0x04
-    
+
     def __init__(self, title=None):
         if title is None:
             title = QwtText("")
@@ -182,19 +188,19 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         QwtPlotSeriesItem.__init__(self, title)
         QwtSeriesStore.__init__(self)
         self.init()
-        
+
     def init(self):
         """Initialize internal members"""
         self.__data = QwtPlotCurve_PrivateData()
         self.setItemAttribute(QwtPlotItem.Legend)
         self.setItemAttribute(QwtPlotItem.AutoScale)
         self.setData(QwtPointArrayData())
-        self.setZ(20.)
-    
+        self.setZ(20.0)
+
     def rtti(self):
         """:return: `QwtPlotItem.Rtti_PlotCurve`"""
         return QwtPlotItem.Rtti_PlotCurve
-    
+
     def setLegendAttribute(self, attribute, on=True):
         """
         Specify an attribute how to draw the legend icon
@@ -220,7 +226,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
                 self.__data.legendAttributes &= ~attribute
             qwtUpdateLegendIconSize(self)
             self.legendChanged()
-    
+
     def testLegendAttribute(self, attribute):
         """
         :param int attribute: Legend attribute
@@ -231,7 +237,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`setLegendAttribute()`
         """
         return self.__data.legendAttributes & attribute
-    
+
     def setStyle(self, style):
         """
         Set the curve's drawing style
@@ -255,7 +261,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             self.__data.style = style
             self.legendChanged()
             self.itemChanged()
-    
+
     def style(self):
         """
         :return: Style of the curve
@@ -265,7 +271,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`setStyle()`
         """
         return self.__data.style
-    
+
     def setSymbol(self, symbol):
         """
         Assign a symbol
@@ -285,7 +291,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             qwtUpdateLegendIconSize(self)
             self.legendChanged()
             self.itemChanged()
-    
+
     def symbol(self):
         """
         :return: Current symbol or None, when no symbol has been assigned
@@ -295,7 +301,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`setSymbol()`
         """
         return self.__data.symbol
-    
+
     def setPen(self, *args):
         """
         Build and/or assign a pen, depending on the arguments.
@@ -326,10 +332,12 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             color, width, style = args
             pen = QPen(color, width, style)
         elif len(args) == 1:
-            pen, = args
+            (pen,) = args
         else:
-            raise TypeError("%s().setPen() takes 1 or 3 argument(s) (%s given)"\
-                            % (self.__class__.__name__, len(args)))
+            raise TypeError(
+                "%s().setPen() takes 1 or 3 argument(s) (%s given)"
+                % (self.__class__.__name__, len(args))
+            )
         if pen != self.__data.pen:
             if isinstance(pen, QColor):
                 pen = QPen(pen)
@@ -338,7 +346,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             self.__data.pen = pen
             self.legendChanged()
             self.itemChanged()
-    
+
     def pen(self):
         """
         :return: Pen used to draw the lines
@@ -348,7 +356,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`setPen()`, :py:meth:`brush()`
         """
         return self.__data.pen
-    
+
     def setBrush(self, brush):
         """
         Assign a brush.
@@ -377,7 +385,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             self.__data.brush = brush
             self.legendChanged()
             self.itemChanged()
-    
+
     def brush(self):
         """
         :return: Brush used to fill the area between lines and the baseline
@@ -388,7 +396,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`baseline()`
         """
         return self.__data.brush
-    
+
     def directPaint(self, from_, to):
         """
         When observing a measurement while it is running, new points have 
@@ -408,7 +416,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         """
         directPainter = QwtPlotDirectPainter(self.plot())
         directPainter.drawSeries(self, from_, to)
-        
+
     def drawSeries(self, painter, xMap, yMap, canvasRect, from_, to):
         """
         Draw an interval of the curve
@@ -428,20 +436,21 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if not painter or numSamples <= 0:
             return
         if to < 0:
-            to = numSamples-1
+            to = numSamples - 1
         if qwtVerifyRange(numSamples, from_, to) > 0:
             painter.save()
             painter.setPen(self.__data.pen)
-            self.drawCurve(painter, self.__data.style, xMap, yMap, canvasRect,
-                           from_, to)
+            self.drawCurve(
+                painter, self.__data.style, xMap, yMap, canvasRect, from_, to
+            )
             painter.restore()
-            if self.__data.symbol and\
-               self.__data.symbol.style() != QwtSymbol.NoSymbol:
+            if self.__data.symbol and self.__data.symbol.style() != QwtSymbol.NoSymbol:
                 painter.save()
-                self.drawSymbols(painter, self.__data.symbol,
-                                 xMap, yMap, canvasRect, from_, to)
+                self.drawSymbols(
+                    painter, self.__data.symbol, xMap, yMap, canvasRect, from_, to
+                )
                 painter.restore()
-    
+
     def drawCurve(self, painter, style, xMap, yMap, canvasRect, from_, to):
         """
         Draw the line part (without symbols) of a curve interval.
@@ -467,7 +476,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             self.drawSteps(painter, xMap, yMap, canvasRect, from_, to)
         elif style == self.Dots:
             self.drawDots(painter, xMap, yMap, canvasRect, from_, to)
-    
+
     def drawLines(self, painter, xMap, yMap, canvasRect, from_, to):
         """
         Draw lines
@@ -486,13 +495,15 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         """
         if from_ > to:
             return
-        doFill = self.__data.brush.style() != Qt.NoBrush\
-                 and self.__data.brush.color().alpha() > 0
+        doFill = (
+            self.__data.brush.style() != Qt.NoBrush
+            and self.__data.brush.color().alpha() > 0
+        )
         polyline = series_to_polyline(xMap, yMap, self.data(), from_, to)
         painter.drawPolyline(polyline)
         if doFill:
             self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
-    
+
     def drawSticks(self, painter, xMap, yMap, canvasRect, from_, to):
         """
         Draw sticks
@@ -515,7 +526,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         y0 = yMap.transform(self.__data.baseline)
         o = self.orientation()
         series = self.data()
-        for i in range(from_, to+1):
+        for i in range(from_, to + 1):
             sample = series.sample(i)
             xi = xMap.transform(sample.x())
             yi = yMap.transform(sample.y())
@@ -524,7 +535,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             else:
                 painter.drawLine(x0, yi, xi, yi)
         painter.restore()
-        
+
     def drawDots(self, painter, xMap, yMap, canvasRect, from_, to):
         """
         Draw dots
@@ -541,13 +552,15 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`draw()`, :py:meth:`drawSticks()`, 
             :py:meth:`drawSteps()`, :py:meth:`drawLines()`
         """
-        doFill = self.__data.brush.style() != Qt.NoBrush\
-                 and self.__data.brush.color().alpha() > 0
+        doFill = (
+            self.__data.brush.style() != Qt.NoBrush
+            and self.__data.brush.color().alpha() > 0
+        )
         polyline = series_to_polyline(xMap, yMap, self.data(), from_, to)
         painter.drawPoints(polyline)
         if doFill:
             self.fillCurve(painter, xMap, yMap, canvasRect, polyline)
-    
+
     def drawSteps(self, painter, xMap, yMap, canvasRect, from_, to):
         """
         Draw steps
@@ -564,28 +577,28 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`draw()`, :py:meth:`drawSticks()`, 
             :py:meth:`drawDots()`, :py:meth:`drawLines()`
         """
-        polygon = QPolygonF(2*(to-from_)+1)
+        polygon = QPolygonF(2 * (to - from_) + 1)
         inverted = self.orientation() == Qt.Vertical
         if self.__data.attributes & self.Inverted:
             inverted = not inverted
         series = self.data()
         ip = 0
-        for i in range(from_, to+1):
+        for i in range(from_, to + 1):
             sample = series.sample(i)
             xi = xMap.transform(sample.x())
             yi = yMap.transform(sample.y())
             if ip > 0:
-                p0 = polygon[ip-2]
+                p0 = polygon[ip - 2]
                 if inverted:
-                    polygon[ip-1] = QPointF(p0.x(), yi)
+                    polygon[ip - 1] = QPointF(p0.x(), yi)
                 else:
-                    polygon[ip-1] = QPointF(xi, p0.y())
+                    polygon[ip - 1] = QPointF(xi, p0.y())
             polygon[ip] = QPointF(xi, yi)
             ip += 2
         painter.drawPolyline(polygon)
         if self.__data.brush.style() != Qt.NoBrush:
             self.fillCurve(painter, xMap, yMap, canvasRect, polygon)
-    
+
     def setCurveAttribute(self, attribute, on=True):
         """
         Specify an attribute for drawing the curve
@@ -608,7 +621,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         else:
             self.__data.attributes &= ~attribute
         self.itemChanged()
-    
+
     def testCurveAttribute(self, attribute):
         """
         :return: True, if attribute is enabled
@@ -618,7 +631,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`setCurveAttribute()`
         """
         return self.__data.attributes & attribute
-    
+
     def fillCurve(self, painter, xMap, yMap, canvasRect, polygon):
         """
         Fill the area between the curve and the baseline with
@@ -648,7 +661,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         painter.setBrush(brush)
         painter.drawPolygon(polygon)
         painter.restore()
-    
+
     def closePolyline(self, painter, xMap, yMap, polygon):
         """
         Complete a polygon to be a closed polygon including the 
@@ -674,7 +687,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             refX = xMap.transform(baseline)
             polygon += QPointF(refX, polygon.last().y())
             polygon += QPointF(refX, polygon.first().y())
-    
+
     def drawSymbols(self, painter, symbol, xMap, yMap, canvasRect, from_, to):
         """
         Draw symbols
@@ -693,12 +706,12 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`drawCurve()`
         """
         chunkSize = 500
-        for i in range(from_, to+1, chunkSize):
-            n = min([chunkSize, to-i+1])
-            points = series_to_polyline(xMap, yMap, self.data(), i, i+n-1)
+        for i in range(from_, to + 1, chunkSize):
+            n = min([chunkSize, to - i + 1])
+            points = series_to_polyline(xMap, yMap, self.data(), i, i + n - 1)
             if points.size() > 0:
                 symbol.drawSymbols(painter, points)
-    
+
     def setBaseline(self, value):
         """
         Set the value of the baseline
@@ -723,7 +736,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if self.__data.baseline != value:
             self.__data.baseline = value
             self.itemChanged()
-    
+
     def baseline(self):
         """
         :return: Value of the baseline
@@ -733,7 +746,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`setBaseline()`
         """
         return self.__data.baseline
-    
+
     def closestPoint(self, pos):
         """
         Find the closest curve point for a specific position
@@ -760,15 +773,15 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         dmin = 1.0e10
         for i in range(numSamples):
             sample = series.sample(i)
-            cx = xMap.transform(sample.x())-pos.x()
-            cy = yMap.transform(sample.y())-pos.y()
-            f = qwtSqr(cx)+qwtSqr(cy)
+            cx = xMap.transform(sample.x()) - pos.x()
+            cy = yMap.transform(sample.y()) - pos.y()
+            f = qwtSqr(cx) + qwtSqr(cy)
             if f < dmin:
                 index = i
                 dmin = f
         dist = np.sqrt(dmin)
         return index, dist
-    
+
     def legendIcon(self, index, size):
         """
         :param int index: Index of the legend entry (ignored as there is only one)
@@ -786,16 +799,20 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         graphic.setDefaultSize(size)
         graphic.setRenderHint(QwtGraphic.RenderPensUnscaled, True)
         painter = QPainter(graphic)
-        painter.setRenderHint(QPainter.Antialiasing,
-                          self.testRenderHint(QwtPlotItem.RenderAntialiased))
-        if self.__data.legendAttributes == 0 or\
-           (self.__data.legendAttributes & QwtPlotCurve.LegendShowBrush):
+        painter.setRenderHint(
+            QPainter.Antialiasing, self.testRenderHint(QwtPlotItem.RenderAntialiased)
+        )
+        if self.__data.legendAttributes == 0 or (
+            self.__data.legendAttributes & QwtPlotCurve.LegendShowBrush
+        ):
             brush = self.__data.brush
             if brush.style() == Qt.NoBrush and self.__data.legendAttributes == 0:
                 if self.style() != QwtPlotCurve.NoCurve:
                     brush = QBrush(self.pen().color())
-                elif self.__data.symbol and\
-                     self.__data.symbol.style() != QwtSymbol.NoSymbol:
+                elif (
+                    self.__data.symbol
+                    and self.__data.symbol.style() != QwtSymbol.NoSymbol
+                ):
                     brush = QBrush(self.__data.symbol.pen().color())
             if brush.style() != Qt.NoBrush:
                 r = QRectF(0, 0, size.width(), size.height())
@@ -803,15 +820,15 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if self.__data.legendAttributes & QwtPlotCurve.LegendShowLine:
             if self.pen() != Qt.NoPen:
                 pn = self.pen()
-#                pn.setCapStyle(Qt.FlatCap)
+                #                pn.setCapStyle(Qt.FlatCap)
                 painter.setPen(pn)
-                y = .5*size.height()
-                painter.drawLine(0., y, size.width(), y)
+                y = 0.5 * size.height()
+                painter.drawLine(0.0, y, size.width(), y)
         if self.__data.legendAttributes & QwtPlotCurve.LegendShowSymbol:
             if self.__data.symbol:
                 r = QRectF(0, 0, size.width(), size.height())
                 self.__data.symbol.drawSymbol(painter, r)
-        return graphic    
+        return graphic
 
     def setData(self, *args, **kwargs):
         """
@@ -845,9 +862,11 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         elif len(args) in (2, 3, 4):
             self.setSamples(*args, **kwargs)
         else:
-            raise TypeError("%s().setData() takes 1, 2, 3 or 4 argument(s) (%s given)"\
-                            % (self.__class__.__name__, len(args)))
-    
+            raise TypeError(
+                "%s().setData() takes 1, 2, 3 or 4 argument(s) (%s given)"
+                % (self.__class__.__name__, len(args))
+            )
+
     def setSamples(self, *args, **kwargs):
         """
         Initialize data with an array of points.
@@ -879,7 +898,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:class:`.plot_series.QwtPointArrayData`
         """
         if len(args) == 1 and not kwargs:
-            samples, = args
+            (samples,) = args
             if isinstance(samples, QwtSeriesData):
                 self.setData(samples)
             else:
@@ -887,25 +906,28 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         elif len(args) >= 2:
             xData, yData = args[:2]
             try:
-                size = kwargs.pop('size')
+                size = kwargs.pop("size")
             except KeyError:
                 size = None
             try:
-                finite = kwargs.pop('finite')
+                finite = kwargs.pop("finite")
             except KeyError:
                 finite = None
             if kwargs:
-                raise TypeError("%s().setSamples(): unknown %s keyword "\
-                                "argument(s)"\
-                                % (self.__class__.__name__,
-                                   ", ".join(list(kwargs.keys()))))
+                raise TypeError(
+                    "%s().setSamples(): unknown %s keyword "
+                    "argument(s)"
+                    % (self.__class__.__name__, ", ".join(list(kwargs.keys())))
+                )
             for arg in args[2:]:
                 if isinstance(arg, bool):
                     finite = arg
                 elif isinstance(arg, int):
                     size = arg
-            self.setData(QwtPointArrayData(xData, yData,
-                                           size=size, finite=finite))
+            self.setData(QwtPointArrayData(xData, yData, size=size, finite=finite))
         else:
-            raise TypeError("%s().setSamples() takes 1, 2 or 3 argument(s) "\
-                            "(%s given)" % (self.__class__.__name__, len(args)))
+            raise TypeError(
+                "%s().setSamples() takes 1, 2 or 3 argument(s) "
+                "(%s given)" % (self.__class__.__name__, len(args))
+            )
+
