@@ -13,7 +13,7 @@ A lot of examples are available in the `qwt.test` module ::
 
 The two lines above execute the `PythonQwt` test launcher:
 
-.. image:: /images/tests/__init__.png
+.. image:: /../qwt/tests/data/testlauncher.png
 
 
 Tests
@@ -24,15 +24,19 @@ Here are some examples from the `qwt.test` module:
 .. toctree::
     :maxdepth: 2
     
-    bode_demo
-    cartesian_demo
-    cpu_plot
-    curve_benchmark
-    curve_demo1
-    curve_styles
-    data_demo
-    error_bar
-    event_filter_demo
-    image_plot_demo
-    map_demo
-    really_simple_demo
+    bodedemo
+    cartesian
+    cpudemo
+    curvebenchmark1
+    curvebenchmark2
+    curvedemo1
+    curvedemo2
+    data
+    errorbar
+    eventfilter
+    image
+    logcurve
+    mapdemo
+    multidemo
+    simple
+    vertical

@@ -4,6 +4,8 @@
 ### Version 0.7.0 ###
 
 - Added new test launcher with screenshots (automatically generated)
+- Removed `guidata` dependency thanks to the new specific GUI-based test launcher
+- Updated documentation (added more examples, using automatically generated screenshots)
 - QwtPlot: added "flatStyle" option, a PythonQwt-exclusive feature improving 
   default plot style (without margin, more compact and flat look) -- option is 
   enabled by default

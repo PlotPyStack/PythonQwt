@@ -7,7 +7,7 @@
 [![download count](https://img.shields.io/conda/dn/conda-forge/PythonQwt.svg)](https://www.anaconda.com/download/)
 [![Documentation Status](https://readthedocs.org/projects/pythonqwt/badge/?version=latest)](https://pythonqwt.readthedocs.io/en/latest/?badge=latest)
 
-<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/test_launcher.png">
+<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/qwt/tests/data/testlauncher.png">
 
 The `PythonQwt` project was initiated to solve -at least temporarily- the 
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
@@ -70,7 +70,6 @@ for more details on API limitations when comparing to Qwt.
 - Python >=2.6 or Python >=3.2
 - PyQt4 >=4.4 or PyQt5 >= 5.5
 - NumPy >= 1.5
-- guidata >= 1.7 for the GUI-based test launcher
 
 ## Installation
 

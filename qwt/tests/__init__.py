@@ -92,6 +92,7 @@ class TestLauncher(QMainWindow):
         super(TestLauncher, self).__init__(parent)
         from qwt import __version__
 
+        self.setObjectName("TestLauncher")
         self.setWindowIcon(self.get_std_icon("FileDialogListView"))
         self.setWindowTitle("PythonQwt %s - Test Launcher" % __version__)
         self.setCentralWidget(QWidget())
@@ -173,14 +174,15 @@ class TestLauncher(QMainWindow):
 
 def run(wait=True):
     """Run PythonQwt tests or test launcher (requires `guidata`)"""
-    if os.environ.get("TEST_UNATTENDED") is None:
-        from qwt.qt.QtGui import QApplication
-
-        app = QApplication([])
-        launcher = TestLauncher()
-        launcher.show()
-        app.exec_()
-    else:
+    app = QApplication([])
+    launcher = TestLauncher()
+    launcher.show()
+    unattended = os.environ.get("TEST_UNATTENDED") is not None
+    if unattended:
+        QTimer.singleShot(100, lambda: take_screenshot(launcher))
+    app.exec_()
+    launcher.close()
+    if unattended:
         run_all_tests(wait=wait)
 
 
