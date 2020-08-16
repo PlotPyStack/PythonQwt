@@ -608,6 +608,68 @@ class QwtText(object):
             self.__data.textEngine = self.textEngine(text, textFormat)
             self.__layoutCache = QwtText_LayoutCache()
 
+    @classmethod
+    def make(
+        cls,
+        text=None,
+        textformat=None,
+        renderflags=None,
+        font=None,
+        family=None,
+        pointsize=None,
+        weight=None,
+        color=None,
+        borderradius=None,
+        borderpen=None,
+        brush=None,
+    ):
+        """
+        Create and setup a new `QwtText` object (convenience function).
+        
+        :param str text: Text content
+        :param int textformat: Text format
+        :param int renderflags: Flags from `Qt.AlignmentFlag` and `Qt.TextFlag`
+        :param font: Font
+        :type font: QFont or None
+        :param family: Font family (default: Helvetica)
+        :type family: str or None
+        :param pointsize: Font point size (default: 10)
+        :type pointsize: int or None
+        :param weight: Font weight (default: QFont.Normal)
+        :type weight: int or None
+        :param color: Pen color
+        :type color: QColor or None
+        :param borderradius: Radius for the corners of the border frame
+        :type borderradius: float or None
+        :param borderpen: Background pen
+        :type borderpen: QPen or None
+        :param brush: Background brush
+        :type brush: QBrush or None
+
+        .. seealso::
+        
+            :py:meth:`setText()`
+        """
+        item = cls(text=text, textFormat=textformat)
+        if renderflags is not None:
+            item.setRenderFlags(renderflags)
+        if font is not None:
+            item.setFont(font)
+        elif family is not None or pointsize is not None or weight is not None:
+            family = "Helvetica" if family is None else family
+            pointsize = 10 if pointsize is None else pointsize
+            weight = QFont.Normal if weight is None else weight
+            item.setFont(QFont(family, pointsize, weight))
+        if color is not None:
+            item.setColor(color)
+        if borderradius is not None:
+            item.setBorderRadius(borderradius)
+        if borderpen is not None:
+            item.setBorderPen(borderpen)
+        if brush is not None:
+            item.setBackgroundBrush(brush)
+        return item
+
     @property
     def _desktopwidget(self):
         """

@@ -30,10 +30,8 @@ class VerticalPlot(QwtPlot):
         self.enableAxis(self.xTop, True)
         self.enableAxis(self.yRight, True)
         y = np.linspace(0, 10, 500)
-        curve1 = QwtPlotCurve("Test Curve 1")
-        curve1.setData(np.sin(y), y)
-        curve2 = QwtPlotCurve("Test Curve 2")
-        curve2.setData(y ** 3, y)
+        curve1 = QwtPlotCurve.make(np.sin(y), y, title="Test Curve 1")
+        curve2 = QwtPlotCurve.make(y ** 3, y, title="Test Curve 2")
         if USE_PYQWT5:
             # PyQwt
             curve2.setAxis(self.xTop, self.yRight)
@@ -64,16 +62,14 @@ class VerticalPlot(QwtPlot):
                 ticks_font = self.axisFont(axis_id)
                 self.setAxisFont(axis_id, ticks_font)
 
-        self.marker = QwtPlotMarker()
-        self.marker.setValue(0, 5)
-        self.marker.attach(self)
+        self.marker = QwtPlotMarker.make(0, 5, plot=self)
 
     def resizeEvent(self, event):
         super(VerticalPlot, self).resizeEvent(event)
         self.show_layout_details()
 
     def show_layout_details(self):
-        text = QwtText(
+        text = (
             "plotLayout().canvasRect():\n%r\n\n"
             "canvas().geometry():\n%r\n\n"
             "plotLayout().scaleRect(QwtPlot.yLeft):\n%r\n\n"
@@ -97,9 +93,7 @@ class VerticalPlot(QwtPlot):
                 self.axisWidget(QwtPlot.xTop).geometry().getCoords(),
             )
         )
-        text.setFont(QFont("Courier New"))
-        text.setColor(Qt.blue)
-        self.marker.setLabel(text)
+        self.marker.setLabel(QwtText.make(text, family="Courier New", color=Qt.blue))
 
 
 if __name__ == "__main__":

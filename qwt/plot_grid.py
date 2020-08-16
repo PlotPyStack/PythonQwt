@@ -14,7 +14,7 @@ QwtPlotGrid
 """
 
 from .scale_div import QwtScaleDiv
-from .plot import QwtPlotItem
+from .plot import QwtPlot, QwtPlotItem
 from .text import QwtText
 from ._math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
 
@@ -47,11 +47,87 @@ class QwtPlotGrid(QwtPlotItem):
     rectangle.
     """
 
-    def __init__(self):
-        QwtPlotItem.__init__(self, QwtText("Grid"))
+    def __init__(self, title="Grid"):
+        QwtPlotItem.__init__(self, title)
         self.__data = QwtPlotGrid_PrivateData()
         self.setItemInterest(QwtPlotItem.ScaleInterest, True)
         self.setZ(10.0)
+
+    @classmethod
+    def make(
+        cls,
+        plot=None,
+        z=None,
+        enablemajor=None,
+        enableminor=None,
+        color=None,
+        width=None,
+        style=None,
+        mincolor=None,
+        minwidth=None,
+        minstyle=None,
+    ):
+        """
+        Create and setup a new `QwtPlotGrid` object (convenience function).
+        
+        :param plot: Plot to attach the curve to
+        :type plot: qwt.plot.QwtPlot or None
+        :param z: Z-value
+        :type z: float or None
+        :param enablemajor: Tuple of two boolean values (x, y) for enabling major grid lines
+        :type enablemajor: bool or None
+        :param enableminor: Tuple of two boolean values (x, y) for enabling minor grid lines
+        :type enableminor: bool or None
+        :param color: Pen color for both major and minor grid lines (default: Qt.gray)
+        :type color: QColor or None
+        :param width: Pen width for both major and minor grid lines (default: 1.0)
+        :type width: float or None
+        :param style: Pen style for both major and minor grid lines (default: Qt.DotLine)
+        :type style: Qt.PenStyle or None
+        :param mincolor: Pen color for minor grid lines only (default: Qt.gray)
+        :type mincolor: QColor or None
+        :param minwidth: Pen width for minor grid lines only (default: 1.0)
+        :type minwidth: float or None
+        :param minstyle: Pen style for minor grid lines only (default: Qt.DotLine)
+        :type minstyle: Qt.PenStyle or None
+
+        .. seealso::
+        
+            :py:meth:`setMinorPen()`, :py:meth:`setMajorPen()`
+        """
+        item = cls()
+        if z is not None:
+            item.setZ(z)
+        color = Qt.gray if color is None else color
+        width = 1.0 if width is None else width
+        style = Qt.DotLine if style is None else style
+        item.setPen(QPen(color, width, style))
+        if mincolor is not None or minwidth is not None or minstyle is not None:
+            mincolor = Qt.gray if mincolor is None else mincolor
+            minwidth = 1.0 if width is None else minwidth
+            minstyle = Qt.DotLine if style is None else minstyle
+            item.setMinorPen(QPen(mincolor, minwidth, minstyle))
+        if enablemajor is not None:
+            if isinstance(enablemajor, tuple) and len(enablemajor) == 2:
+                item.enableX(enablemajor[0])
+                item.enableY(enablemajor[1])
+            else:
+                raise TypeError(
+                    "Invalid enablemajor %r (expecting tuple of two booleans)"
+                    % enablemajor
+                )
+        if enableminor is not None:
+            if isinstance(enableminor, tuple) and len(enableminor) == 2:
+                item.enableXMin(enableminor[0])
+                item.enableYMin(enableminor[1])
+            else:
+                raise TypeError(
+                    "Invalid enableminor %r (expecting tuple of two booleans)"
+                    % enableminor
+                )
+        if plot is not None:
+            item.attach(plot)
+        return item
 
     def rtti(self):
         """

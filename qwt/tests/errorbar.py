@@ -12,7 +12,7 @@ import numpy as np
 
 from qwt.qt.QtGui import QPen, QBrush
 from qwt.qt.QtCore import QSize, QRectF, QLineF, Qt
-from qwt import QwtPlot, QwtSymbol, QwtPlotGrid, QwtPlotCurve, QwtText
+from qwt import QwtPlot, QwtSymbol, QwtPlotGrid, QwtPlotCurve
 
 
 class ErrorBarPlotCurve(QwtPlotCurve):
@@ -274,7 +274,7 @@ class ErrorBarPlotCurve(QwtPlotCurve):
 
 class ErrorBarPlot(QwtPlot):
     def __init__(self, parent=None, title=None):
-        super(ErrorBarPlot, self).__init__(QwtText("Errorbar Demonstation"))
+        super(ErrorBarPlot, self).__init__("Errorbar Demonstation")
         self.setCanvasBackground(Qt.white)
         self.plotLayout().setAlignCanvasToScales(True)
         grid = QwtPlotGrid()

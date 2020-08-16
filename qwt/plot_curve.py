@@ -14,7 +14,7 @@ QwtPlotCurve
 """
 
 from .text import QwtText
-from .plot import QwtPlotItem, QwtPlotItem_PrivateData
+from .plot import QwtPlot, QwtPlotItem, QwtPlotItem_PrivateData
 from ._math import qwtSqr
 from .graphic import QwtGraphic
 from .plot_series import (
@@ -188,6 +188,84 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         QwtPlotSeriesItem.__init__(self, title)
         QwtSeriesStore.__init__(self)
         self.init()
+
+    @classmethod
+    def make(
+        cls,
+        xdata=None,
+        ydata=None,
+        title=None,
+        plot=None,
+        z=None,
+        x_axis=None,
+        y_axis=None,
+        style=None,
+        symbol=None,
+        linecolor=None,
+        linewidth=None,
+        linestyle=None,
+        antialiased=False,
+        size=None,
+        finite=None,
+    ):
+        """
+        Create and setup a new `QwtPlotCurve` object (convenience function).
+        
+        :param xdata: List/array of x values
+        :param ydata: List/array of y values
+        :param title: Curve title
+        :type title: qwt.text.QwtText or str or None
+        :param plot: Plot to attach the curve to
+        :type plot: qwt.plot.QwtPlot or None
+        :param z: Z-value
+        :type z: float or None
+        :param x_axis: curve X-axis (default: QwtPlot.yLeft)
+        :type x_axis: int or None
+        :param y_axis: curve Y-axis (default: QwtPlot.xBottom)
+        :type y_axis: int or None
+        :param style: curve style (`QwtPlotCurve.NoCurve`, `QwtPlotCurve.Lines`, `QwtPlotCurve.Sticks`, `QwtPlotCurve.Steps`, `QwtPlotCurve.Dots`, `QwtPlotCurve.UserCurve`)
+        :type style: int or None
+        :param symbol: curve symbol
+        :type symbol: qwt.symbol.QwtSymbol or None
+        :param linecolor: curve line color
+        :type linecolor: QColor or None
+        :param linewidth: curve line width
+        :type linewidth: float or None
+        :param linestyle: curve pen style
+        :type linestyle: Qt.PenStyle or None
+        :param bool antialiased: if True, enable antialiasing rendering
+        :param size: size of xData and yData
+        :type size: int or None
+        :param bool finite: if True, keep only finite array elements (remove all infinity and not a number values), otherwise do not filter array elements
+
+        .. seealso::
+        
+            :py:meth:`setData()`, :py:meth:`setPen()`, :py:meth:`attach()`
+        """
+        item = cls(title)
+        if z is not None:
+            item.setZ(z)
+        if xdata is not None or ydata is not None:
+            if xdata is None:
+                raise ValueError("Missing xdata parameter")
+            if ydata is None:
+                raise ValueError("Missing ydata parameter")
+            item.setData(xdata, ydata, size=size, finite=finite)
+        x_axis = QwtPlot.xBottom if x_axis is None else x_axis
+        y_axis = QwtPlot.yLeft if y_axis is None else y_axis
+        item.setAxes(x_axis, y_axis)
+        if style is not None:
+            item.setStyle(style)
+        if symbol is not None:
+            item.setSymbol(symbol)
+        linecolor = Qt.black if linecolor is None else linecolor
+        linewidth = 1.0 if linewidth is None else linewidth
+        linestyle = Qt.SolidLine if linestyle is None else linestyle
+        item.setPen(QPen(linecolor, linewidth, linestyle))
+        item.setRenderHint(cls.RenderAntialiased, antialiased)
+        if plot is not None:
+            item.attach(plot)
+        return item
 
     def init(self):
         """Initialize internal members"""

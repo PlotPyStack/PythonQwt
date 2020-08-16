@@ -24,15 +24,9 @@ class LogCurvePlot(QwtPlot):
         )
         self.enableAxis(QwtPlot.xBottom)
         self.setAxisScaleEngine(QwtPlot.yLeft, QwtLogScaleEngine())
-        curve = QwtPlotCurve()
-        curve.setRenderHint(QwtPlotCurve.RenderAntialiased)
-        pen = QPen(Qt.magenta)
-        pen.setWidth(1)
-        curve.setPen(pen)
-        curve.attach(self)
         x = np.arange(0.0, 10.0, 0.1)
         y = 10 * np.cos(x) ** 2 - 0.1
-        curve.setData(x, y)
+        QwtPlotCurve.make(x, y, linecolor=Qt.magenta, plot=self, antialiased=True)
         self.replot()
 
 

@@ -16,47 +16,37 @@ from qwt import QwtPlot, QwtPlotMarker, QwtLegend, QwtPlotCurve, QwtText
 
 
 class SimplePlot(QwtPlot):
-    def __init__(self, *args):
-        QwtPlot.__init__(self, *args)
+    def __init__(self):
+        QwtPlot.__init__(self)
         self.setTitle("ReallySimpleDemo.py")
         self.insertLegend(QwtLegend(), QwtPlot.RightLegend)
-        self.setAxisTitle(QwtPlot.xBottom, "x -->")
-        self.setAxisTitle(QwtPlot.yLeft, "y -->")
+        self.setAxisTitle(QwtPlot.xBottom, "X-axis")
+        self.setAxisTitle(QwtPlot.yLeft, "Y-axis")
         self.enableAxis(self.xBottom)
-        # self.setFlatStyle(False)
 
-        # insert a few curves
-        cSin = QwtPlotCurve("y = sin(x)")
-        cSin.setPen(QPen(Qt.red))
-        cSin.attach(self)
-        cCos = QwtPlotCurve("y = cos(x)")
-        cCos.setPen(QPen(Qt.blue))
-        cCos.attach(self)
-
-        # make a Numeric array for the horizontal data
         x = np.arange(0.0, 10.0, 0.1)
 
-        # initialize the data
-        cSin.setData(x, np.sin(x))
-        cCos.setData(x, np.cos(x))
+        # insert a few curves
+        QwtPlotCurve.make(x, np.sin(x), "y = sin(x)", self, linecolor=Qt.red)
+        QwtPlotCurve.make(x, np.cos(x), "y = cos(x)", self, linecolor=Qt.blue)
 
         # insert a horizontal marker at y = 0
-        mY = QwtPlotMarker()
-        mY.setLabel(QwtText("y = 0"))
-        mY.setLabelAlignment(Qt.AlignRight | Qt.AlignTop)
-        mY.setLineStyle(QwtPlotMarker.HLine)
-        mY.setYValue(0.0)
-        mY.attach(self)
+        QwtPlotMarker.make(
+            label="y = 0",
+            align=Qt.AlignRight | Qt.AlignTop,
+            linestyle=QwtPlotMarker.HLine,
+            plot=self,
+        )
 
         # insert a vertical marker at x = 2 pi
-        mX = QwtPlotMarker()
-        mX.setLabel(QwtText("x = 2 pi"))
-        mX.setLabelAlignment(Qt.AlignRight | Qt.AlignTop)
-        mX.setLineStyle(QwtPlotMarker.VLine)
-        mX.setXValue(2 * np.pi)
-        mX.attach(self)
+        QwtPlotMarker.make(
+            xvalue=2 * np.pi,
+            label="x = 2 pi",
+            align=Qt.AlignRight | Qt.AlignTop,
+            linestyle=QwtPlotMarker.VLine,
+            plot=self,
+        )
 
-        # replot
         self.replot()
 
 

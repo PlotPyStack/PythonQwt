@@ -19,7 +19,6 @@ from qwt import (
     QwtPlotGrid,
     QwtPlotCurve,
     QwtPlotItem,
-    QwtText,
     QwtLegendData,
     QwtLinearColorMap,
     QwtInterval,
@@ -58,7 +57,7 @@ def square(n, min, max):
 
 
 class PlotImage(QwtPlotItem):
-    def __init__(self, title=QwtText()):
+    def __init__(self, title=""):
         QwtPlotItem.__init__(self)
         self.setTitle(title)
         self.setItemAttribute(QwtPlotItem.Legend)
@@ -148,33 +147,33 @@ class ImagePlot(QwtPlot):
         y = np.pi * np.sin(x)
         z = 4 * np.pi * np.cos(x) * np.cos(x) * np.sin(x)
         # attach a curve
-        curve = QwtPlotCurve("y = pi*sin(x)")
-        curve.attach(self)
-        curve.setPen(QPen(Qt.green, 2))
-        curve.setData(x, y)
+        QwtPlotCurve.make(
+            x, y, title="y = pi*sin(x)", linecolor=Qt.green, linewidth=2, plot=self
+        )
         # attach another curve
-        curve = QwtPlotCurve("y = 4*pi*sin(x)*cos(x)**2")
-        curve.attach(self)
-        curve.setPen(QPen(Qt.black, 2))
-        curve.setData(x, z)
+        QwtPlotCurve.make(
+            x, z, title="y = 4*pi*sin(x)*cos(x)**2", linewidth=2, plot=self
+        )
         # attach a grid
         grid = QwtPlotGrid()
         grid.attach(self)
         grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
         # attach a horizontal marker at y = 0
-        marker = QwtPlotMarker()
-        marker.attach(self)
-        marker.setValue(0.0, 0.0)
-        marker.setLineStyle(QwtPlotMarker.HLine)
-        marker.setLabelAlignment(Qt.AlignRight | Qt.AlignTop)
-        marker.setLabel(QwtText("y = 0"))
+        QwtPlotMarker.make(
+            label="y = 0",
+            linestyle=QwtPlotMarker.HLine,
+            align=Qt.AlignRight | Qt.AlignTop,
+            plot=self,
+        )
         # attach a vertical marker at x = pi
-        marker = QwtPlotMarker()
-        marker.attach(self)
-        marker.setValue(np.pi, 0.0)
-        marker.setLineStyle(QwtPlotMarker.VLine)
-        marker.setLabelAlignment(Qt.AlignRight | Qt.AlignBottom)
-        marker.setLabel(QwtText("x = pi"))
+        QwtPlotMarker.make(
+            np.pi,
+            0.0,
+            label="x = pi",
+            linestyle=QwtPlotMarker.VLine,
+            align=Qt.AlignRight | Qt.AlignBottom,
+            plot=self,
+        )
         # attach a plot image
         plotImage = PlotImage("Image")
         plotImage.attach(self)

@@ -105,10 +105,7 @@ class BodePlot(QwtPlot):
         self.insertLegend(legend, QwtPlot.BottomLegend)
 
         # grid
-        self.grid = QwtPlotGrid()
-        self.grid.enableXMin(True)
-        self.grid.attach(self)
-        self.grid.setPen(QPen(Qt.darkGray, 1, Qt.DotLine))
+        QwtPlotGrid.make(plot=self, enableminor=(True, False), color=Qt.darkGray)
 
         # axes
         self.enableAxis(QwtPlot.yRight)
@@ -121,63 +118,48 @@ class BodePlot(QwtPlot):
         self.setAxisScaleEngine(QwtPlot.xBottom, QwtLogScaleEngine())
 
         # curves
-        self.curve1 = QwtPlotCurve("Amplitude")
-        self.curve1.setRenderHint(QwtPlotItem.RenderAntialiased)
-        self.curve1.setPen(QPen(Qt.yellow))
-        self.curve1.setYAxis(QwtPlot.yLeft)
-        self.curve1.attach(self)
-
-        self.curve2 = QwtPlotCurve("Phase")
-        self.curve2.setRenderHint(QwtPlotItem.RenderAntialiased)
-        self.curve2.setPen(QPen(Qt.cyan))
-        self.curve2.setYAxis(QwtPlot.yRight)
-        self.curve2.attach(self)
-
-        # alias
-        fn = "Helvetica"
-
-        # marker
-        self.dB3Marker = m = QwtPlotMarker()
-        m.setValue(0.0, 0.0)
-        m.setLineStyle(QwtPlotMarker.VLine)
-        m.setLabelAlignment(Qt.AlignRight | Qt.AlignBottom)
-        m.setLinePen(QPen(Qt.green, 2, Qt.DashDotLine))
-        text = QwtText("")
-        text.setColor(Qt.white)
-        text.setBackgroundBrush(Qt.red)
-        text.setFont(QFont(fn, 10, QFont.Light))
-        m.setLabel(text)
-        m.attach(self)
-
-        self.peakMarker = m = QwtPlotMarker()
-        m.setLineStyle(QwtPlotMarker.HLine)
-        m.setLabelAlignment(Qt.AlignRight | Qt.AlignBottom)
-        m.setLinePen(QPen(Qt.red, 2, Qt.DashDotLine))
-        text = QwtText("")
-        text.setColor(Qt.red)
-        text.setBackgroundBrush(QBrush(self.canvasBackground()))
-        text.setFont(QFont(fn, 10, QFont.Bold))
-
-        m.setLabel(text)
-        m.setSymbol(
-            QwtSymbol(QwtSymbol.Diamond, QBrush(Qt.yellow), QPen(Qt.green), QSize(7, 7))
+        self.curve1 = QwtPlotCurve.make(
+            title="Amplitude", linecolor=Qt.yellow, plot=self, antialiased=True
         )
-        m.attach(self)
-
-        # text marker
-        m = QwtPlotMarker()
-        m.setValue(0.1, -20.0)
-        m.setLabelAlignment(Qt.AlignRight | Qt.AlignBottom)
-        text = QwtText(
-            "[1-(\u03c9/\u03c9<sub>0</sub>)<sup>2</sup>+2j\u03c9/Q]" "<sup>-1</sup>"
+        self.curve2 = QwtPlotCurve.make(
+            title="Phase", linecolor=Qt.cyan, plot=self, antialiased=True
         )
-        text.setFont(QFont(fn, 10, QFont.Bold))
-        text.setColor(Qt.white)
-        text.setBackgroundBrush(QBrush(Qt.lightGray))
-        text.setBorderPen(QPen(Qt.lightGray, 5))
-        text.setBorderRadius(2)
-        m.setLabel(text)
-        m.attach(self)
+        self.dB3Marker = QwtPlotMarker.make(
+            label=QwtText.make(color=Qt.white, brush=Qt.red, weight=QFont.Light),
+            linestyle=QwtPlotMarker.VLine,
+            align=Qt.AlignRight | Qt.AlignBottom,
+            color=Qt.green,
+            width=2,
+            style=Qt.DashDotLine,
+            plot=self,
+        )
+        self.peakMarker = QwtPlotMarker.make(
+            label=QwtText.make(
+                color=Qt.red, brush=self.canvasBackground(), weight=QFont.Bold
+            ),
+            symbol=QwtSymbol.make(QwtSymbol.Diamond, Qt.yellow, Qt.green, (7, 7)),
+            linestyle=QwtPlotMarker.HLine,
+            align=Qt.AlignRight | Qt.AlignBottom,
+            color=Qt.red,
+            width=2,
+            style=Qt.DashDotLine,
+            plot=self,
+        )
+        QwtPlotMarker.make(
+            xvalue=0.1,
+            yvalue=-20.0,
+            align=Qt.AlignRight | Qt.AlignBottom,
+            label=QwtText.make(
+                "[1-(\u03c9/\u03c9<sub>0</sub>)<sup>2</sup>+2j\u03c9/Q]"
+                "<sup>-1</sup>",
+                color=Qt.white,
+                borderradius=2,
+                borderpen=QPen(Qt.lightGray, 5),
+                brush=Qt.lightGray,
+                weight=QFont.Bold,
+            ),
+            plot=self,
+        )
 
         self.setDamp(0.01)
 

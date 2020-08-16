@@ -13,7 +13,6 @@ import numpy as np
 
 from qwt.qt.QtGui import (
     QApplication,
-    QPen,
     QMainWindow,
     QGridLayout,
     QTabWidget,
@@ -56,16 +55,15 @@ class BMPlot(QwtPlot):
         self.curve_nb = 0
         for idx in range(1, 11):
             self.curve_nb += 1
-            curve = QwtPlotCurve()
-            curve.setPen(QPen(get_curve_color()))
-            curve.setStyle(style)
-            curve.setRenderHint(QwtPlotCurve.RenderAntialiased)
-            if symbol is not None:
-                curve.setSymbol(symbol)
-            curve.attach(self)
-            curve.setData(xdata, ydata * idx)  # , finite=False)
-        #        self.setAxisScale(self.yLeft, -1.5, 1.5)
-        #        self.setAxisScale(self.xBottom, 9.9, 10.)
+            QwtPlotCurve.make(
+                xdata,
+                ydata * idx,
+                style=style,
+                symbol=symbol,
+                linecolor=get_curve_color(),
+                antialiased=True,
+                plot=self,
+            )
         self.replot()
 
 

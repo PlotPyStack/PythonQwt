@@ -24,10 +24,10 @@ else:
 class CSWidget(cb.BMWidget):
     def params(self, *args, **kwargs):
         (symbols,) = args
-        symb1 = QwtSymbol(
-            QwtSymbol.Ellipse, QBrush(Qt.yellow), QPen(Qt.blue), QSize(5, 5)
+        symb1 = QwtSymbol.make(
+            QwtSymbol.Ellipse, brush=Qt.yellow, pen=Qt.blue, size=(5, 5)
         )
-        symb2 = QwtSymbol(QwtSymbol.XCross, QBrush(), QPen(Qt.darkMagenta), QSize(5, 5))
+        symb2 = QwtSymbol.make(QwtSymbol.XCross, pen=Qt.darkMagenta, size=(5, 5))
         if symbols:
             if kwargs.get("only_lines", False):
                 return (

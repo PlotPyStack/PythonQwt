@@ -13,7 +13,7 @@ QwtPlotMarker
    :members:
 """
 
-from .plot import QwtPlotItem
+from .plot import QwtPlot, QwtPlotItem
 from .text import QwtText
 from .painter import QwtPainter
 from .graphic import QwtGraphic
@@ -75,6 +75,93 @@ class QwtPlotMarker(QwtPlotItem):
         QwtPlotItem.__init__(self, title)
         self.__data = QwtPlotMarker_PrivateData()
         self.setZ(30.0)
+
+    @classmethod
+    def make(
+        cls,
+        xvalue=None,
+        yvalue=None,
+        title=None,
+        label=None,
+        symbol=None,
+        plot=None,
+        z=None,
+        x_axis=None,
+        y_axis=None,
+        align=None,
+        orientation=None,
+        spacing=None,
+        linestyle=None,
+        color=None,
+        width=None,
+        style=None,
+        antialiased=False,
+    ):
+        """
+        Create and setup a new `QwtPlotMarker` object (convenience function).
+        
+        :param xvalue: x position (optional, default: None)
+        :type xvalue: float or None
+        :param yvalue: y position (optional, default: None)
+        :type yvalue: float or None
+        :param title: Marker title
+        :type title: qwt.text.QwtText or str or None
+        :param label: Label text
+        :type label: qwt.text.QwtText or str or None
+        :param symbol: New symbol
+        :type symbol: qwt.symbol.QwtSymbol or None
+        :param plot: Plot to attach the curve to
+        :type plot: qwt.plot.QwtPlot or None
+        :param z: Z-value
+        :type z: float or None
+        :param int x_axis: curve X-axis (default: QwtPlot.yLeft)
+        :param int y_axis: curve Y-axis (default: QwtPlot.xBottom)
+        :param align: Alignment of the label
+        :type align: Qt.Alignment or None
+        :param orientation: Orientation of the label
+        :type orientation: Qt.Orientation or None
+        :param spacing: Spacing (distance between the position and the label)
+        :type spacing: int or None
+        :param int linestyle: Line style
+        :param QColor color: Pen color
+        :param float width: Pen width
+        :param Qt.PenStyle style: Pen style
+        :param bool antialiased: if True, enable antialiasing rendering
+
+        .. seealso::
+        
+            :py:meth:`setData()`, :py:meth:`setPen()`, :py:meth:`attach()`
+        """
+        item = cls(title)
+        if z is not None:
+            item.setZ(z)
+        if symbol is not None:
+            item.setSymbol(symbol)
+        if xvalue is not None:
+            item.setXValue(xvalue)
+        if yvalue is not None:
+            item.setYValue(yvalue)
+        if label is not None:
+            item.setLabel(label)
+        x_axis = QwtPlot.xBottom if x_axis is None else x_axis
+        y_axis = QwtPlot.yLeft if y_axis is None else y_axis
+        item.setAxes(x_axis, y_axis)
+        if align is not None:
+            item.setLabelAlignment(align)
+        if orientation is not None:
+            item.setLabelOrientation(orientation)
+        if spacing is not None:
+            item.setSpacing(spacing)
+        color = Qt.black if color is None else color
+        width = 1.0 if width is None else width
+        style = Qt.SolidLine if style is None else style
+        item.setLinePen(QPen(color, width, style))
+        item.setRenderHint(cls.RenderAntialiased, antialiased)
+        if linestyle is not None:
+            item.setLineStyle(linestyle)
+        if plot is not None:
+            item.attach(plot)
+        return item
 
     def rtti(self):
         """:return: `QwtPlotItem.Rtti_PlotMarker`"""
@@ -338,6 +425,8 @@ class QwtPlotMarker(QwtPlotItem):
         
             :py:meth:`label()`
         """
+        if not isinstance(label, QwtText):
+            label = QwtText(label)
         if label != self.__data.label:
             self.__data.label = label
             self.itemChanged()
@@ -444,7 +533,7 @@ class QwtPlotMarker(QwtPlotItem):
         """
         Build and/or assigna a line pen, depending on the arguments.
         
-        .. py:method:: setPen(color, width, style)
+        .. py:method:: setLinePen(color, width, style)
         
             Build and assign a line pen
     
@@ -456,7 +545,7 @@ class QwtPlotMarker(QwtPlotItem):
             :param float width: Pen width
             :param Qt.PenStyle style: Pen style
         
-        .. py:method:: setPen(pen)
+        .. py:method:: setLinePen(pen)
         
             Specify a pen for the line.
     

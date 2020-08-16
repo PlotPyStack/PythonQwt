@@ -538,6 +538,57 @@ class QwtSymbol(object):
                 % (self.__class__.__name__, len(args))
             )
 
+    @classmethod
+    def make(
+        cls, style=None, brush=None, pen=None, size=None, path=None, pixmap=None, graphic=None, svgdocument=None, pinpoint=None,
+    ):
+        """
+        Create and setup a new `QwtSymbol` object (convenience function).
+        
+        :param style: Symbol Style
+        :type style: int or None
+        :param brush: Brush to fill the interior
+        :type brush: QBrush or None
+        :param pen: Outline pen
+        :type pen: QPen or None
+        :param size: Size
+        :type size: QSize or None
+        :param path: Painter path
+        :type path: QPainterPath or None
+        :param path: Painter path
+        :type path: QPainterPath or None
+        :param pixmap: Pixmap as symbol
+        :type pixmap: QPixmap or None
+        :param graphic: Graphic
+        :type graphic: qwt.graphic.QwtGraphic or None
+        :param svgdocument: SVG icon as symbol
+
+        .. seealso::
+        
+            :py:meth:`setPixmap()`, :py:meth:`setGraphic()`, :py:meth:`setPath()`
+        """
+        style = QwtSymbol.NoSymbol if style is None else style
+        brush = QBrush(Qt.gray) if brush is None else QBrush(brush)
+        pen = QPen(Qt.black, 0) if pen is None else QPen(pen)
+        size = QSize() if size is None else size
+        if not isinstance(size, QSize):
+            if isinstance(size, tuple) and len(size) == 2:
+                size = QSize(size[0], size[1])
+            else:
+                raise TypeError("Invalid size %r" % size)
+        item = cls(style, brush, pen, size)
+        if path is not None:
+            item.setPath(path)
+        elif pixmap is not None:
+            item.setPixmap(pixmap)
+        elif graphic is not None:
+            item.setGraphic(graphic)
+        elif svgdocument is not None:
+            item.setSvgDocument(svgdocument)
+        if pinpoint is not None:
+            item.setPinPoint(pinpoint)
+        return item
+
     def setCachePolicy(self, policy):
         """
         Change the cache policy

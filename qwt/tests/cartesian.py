@@ -66,10 +66,7 @@ class CartesianPlot(QwtPlot):
         self.plotLayout().setCanvasMargin(0)
         self.plotLayout().setAlignCanvasToScales(True)
         # attach a grid
-        grid = QwtPlotGrid()
-        grid.attach(self)
-        grid.setPen(QPen(Qt.lightGray, 0, Qt.DotLine))
-        grid.setZ(-1)
+        QwtPlotGrid.make(plot=self, color=Qt.lightGray, width=0, style=Qt.DotLine, z=-1)
         # attach a x-axis
         xaxis = CartesianAxis(QwtPlot.xBottom, QwtPlot.yLeft)
         xaxis.attach(self)
@@ -80,20 +77,26 @@ class CartesianPlot(QwtPlot):
         self.enableAxis(QwtPlot.yLeft, False)
         # calculate 3 NumPy arrays
         x = np.arange(-2 * np.pi, 2 * np.pi, 0.01)
-        y = np.pi * np.sin(x)
-        z = 4 * np.pi * np.cos(x) * np.cos(x) * np.sin(x)
         # attach a curve
-        curve = QwtPlotCurve("y = pi*sin(x)")
-        curve.setRenderHint(QwtPlotCurve.RenderAntialiased, True)
-        curve.attach(self)
-        curve.setPen(QPen(Qt.green, 2))
-        curve.setData(x, y)
+        QwtPlotCurve.make(
+            x,
+            np.pi * np.sin(x),
+            title="y = pi*sin(x)",
+            linecolor=Qt.green,
+            linewidth=2,
+            plot=self,
+            antialiased=True,
+        )
         # attach another curve
-        curve = QwtPlotCurve("y = 4*pi*sin(x)*cos(x)**2")
-        curve.setRenderHint(QwtPlotCurve.RenderAntialiased, True)
-        curve.attach(self)
-        curve.setPen(QPen(Qt.blue, 2))
-        curve.setData(x, z)
+        QwtPlotCurve.make(
+            x,
+            4 * np.pi * np.cos(x) * np.cos(x) * np.sin(x),
+            title="y = 4*pi*sin(x)*cos(x)**2",
+            linecolor=Qt.blue,
+            linewidth=2,
+            plot=self,
+            antialiased=True,
+        )
         self.replot()
 
 

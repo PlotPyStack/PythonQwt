@@ -3,6 +3,14 @@
 
 ### Version 0.7.0 ###
 
+- Added convenience functions for creating usual objects (curve, grid, marker, ...):
+
+    - `QwtPlotCurve.make`
+    - `QwtPlotMarker.make`
+    - `QwtPlotGrid.make`
+    - `QwtSymbol.make`
+    - `QwtText.make`
+
 - Added new test launcher with screenshots (automatically generated)
 - Removed `guidata` dependency thanks to the new specific GUI-based test launcher
 - Updated documentation (added more examples, using automatically generated screenshots)
