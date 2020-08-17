@@ -66,7 +66,7 @@ class CartesianPlot(QwtPlot):
         self.plotLayout().setCanvasMargin(0)
         self.plotLayout().setAlignCanvasToScales(True)
         # attach a grid
-        QwtPlotGrid.make(plot=self, color=Qt.lightGray, width=0, style=Qt.DotLine, z=-1)
+        QwtPlotGrid.make(self, color=Qt.lightGray, width=0, style=Qt.DotLine, z=-1)
         # attach a x-axis
         xaxis = CartesianAxis(QwtPlot.xBottom, QwtPlot.yLeft)
         xaxis.attach(self)

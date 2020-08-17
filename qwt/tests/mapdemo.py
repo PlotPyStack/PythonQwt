@@ -68,10 +68,6 @@ class MapDemo(QMainWindow):
         self.killTimer(self.tid)
         self.tid = self.startTimer(ticks)
 
-    def resizeEvent(self, event):
-        self.plot.resize(event.size())
-        self.plot.move(0, 0)
-
     def moreData(self):
         if self.i == self.count:
             self.i = 0

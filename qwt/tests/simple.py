@@ -10,47 +10,48 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from qwt.qt.QtGui import QPen
 from qwt.qt.QtCore import Qt
-from qwt import QwtPlot, QwtPlotMarker, QwtLegend, QwtPlotCurve, QwtText
+import qwt
 
 
-class SimplePlot(QwtPlot):
+class SimplePlot(qwt.QwtPlot):
     def __init__(self):
-        QwtPlot.__init__(self)
-        self.setTitle("ReallySimpleDemo.py")
-        self.insertLegend(QwtLegend(), QwtPlot.RightLegend)
-        self.setAxisTitle(QwtPlot.xBottom, "X-axis")
-        self.setAxisTitle(QwtPlot.yLeft, "Y-axis")
+        qwt.QwtPlot.__init__(self)
+        self.setTitle("Really simple demo")
+        self.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.RightLegend)
+        self.setAxisTitle(qwt.QwtPlot.xBottom, "X-axis")
+        self.setAxisTitle(qwt.QwtPlot.yLeft, "Y-axis")
         self.enableAxis(self.xBottom)
+        self.setCanvasBackground(Qt.white)
 
-        x = np.arange(0.0, 10.0, 0.1)
+        qwt.QwtPlotGrid.make(self, color=Qt.lightGray, width=0, style=Qt.DotLine)
 
         # insert a few curves
-        QwtPlotCurve.make(x, np.sin(x), "y = sin(x)", self, linecolor=Qt.red)
-        QwtPlotCurve.make(x, np.cos(x), "y = cos(x)", self, linecolor=Qt.blue)
+        x = np.arange(0.0, 10.0, 0.1)
+        qwt.QwtPlotCurve.make(x, np.sin(x), "y = sin(x)", self, linecolor="red")
+        qwt.QwtPlotCurve.make(x, np.cos(x), "y = cos(x)", self, linecolor="blue")
 
         # insert a horizontal marker at y = 0
-        QwtPlotMarker.make(
+        qwt.QwtPlotMarker.make(
             label="y = 0",
             align=Qt.AlignRight | Qt.AlignTop,
-            linestyle=QwtPlotMarker.HLine,
+            linestyle=qwt.QwtPlotMarker.HLine,
+            color="darkGreen",
             plot=self,
         )
 
         # insert a vertical marker at x = 2 pi
-        QwtPlotMarker.make(
+        qwt.QwtPlotMarker.make(
             xvalue=2 * np.pi,
             label="x = 2 pi",
             align=Qt.AlignRight | Qt.AlignTop,
-            linestyle=QwtPlotMarker.VLine,
+            linestyle=qwt.QwtPlotMarker.VLine,
+            color="darkGreen",
             plot=self,
         )
-
-        self.replot()
 
 
 if __name__ == "__main__":
     from qwt.tests import test_widget
 
-    app = test_widget(SimplePlot, size=(800, 500))
+    app = test_widget(SimplePlot, size=(600, 400))
