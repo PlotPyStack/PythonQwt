@@ -4,9 +4,19 @@ setlocal
 set PYTHONPATH=%cd%
 set TEST_UNATTENDED=1
 
+if not defined WINPYDIRBASE ( goto :no )
+
+choice /t 5 /c yn /cs /d n /m "Do you want to run tests only from %WINPYDIRBASE% (y/n)?"
+if errorlevel 2 goto :no
+
+:yes
+call %WINPYDIRBASE%\scripts\env.bat
+python -m qwt.tests.__init__
+pause
+exit /B %ERRORLEVEL%
+:no
 for /f %%f in ('dir /b c:\w*') do (call :test %%f)
 pause
-
 exit /B %ERRORLEVEL%
 
 :test
