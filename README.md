@@ -21,32 +21,45 @@ of a few other files (examples, doc, ...).
 See documentation [online](https://pythonqwt.readthedocs.io/en/latest/) or [PDF](https://pythonqwt.readthedocs.io/_/downloads/en/latest/pdf/) for more details on 
 the library and [changelog](CHANGELOG.md) for recent history of changes.
 
-## Copyrights
+## Sample
 
-#### Main code base
-- Copyright © 2002 Uwe Rathmann, for the original Qwt C++ code
-- Copyright © 2015 Pierre Raybaut, for the Qwt C++ to Python translation and 
-optimization
-- Copyright © 2015 Pierre Raybaut, for the PythonQwt specific and exclusive 
-Python material
+```python
+import qwt
+import numpy as np
 
-#### PyQt, PySide and Python2/Python3 compatibility modules
-- Copyright © 2009-2013 Pierre Raybaut
-- Copyright © 2013-2015 The Spyder Development Team
+app = qwt.qt.QtGui.QApplication([])
 
-#### Some examples
-- Copyright © 2003-2009 Gerard Vermeulen, for the original PyQwt code
-- Copyright © 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
-developments (e.g. ported to PythonQwt API)
+# Create plot widget
+plot = qwt.QwtPlot("Trigonometric functions")
+plot.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.BottomLegend)
 
-## License
+# Create two curves and attach them to plot
+x = np.linspace(-10, 10, 500)
+qwt.QwtPlotCurve.make(x, np.cos(x), "Cosinus", plot, linecolor="red", antialiased=True)
+qwt.QwtPlotCurve.make(x, np.sin(x), "Sinus", plot, linecolor="blue", antialiased=True)
 
-The `qwt` Python package was partly (>95%) translated from Qwt C++ library: 
-the associated code is distributed under the terms of the LGPL license. The 
-rest of the code was either wrote from scratch or strongly inspired from MIT 
-licensed third-party software.
+# Resize and show plot
+plot.resize(600, 300)
+plot.show()
 
-See included [LICENSE](LICENSE) file for more details about licensing terms.
+app.exec_()
+```
+
+<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/QwtPlot_example.png">
+## Examples (tests)
+
+The GUI-based test launcher may be executed from Python:
+
+```python
+from qwt import tests
+tests.run()
+```
+
+or from the command line:
+
+```bash
+PythonQwt-tests
+```
 
 ## Overview
 
@@ -79,35 +92,29 @@ From the source package:
 python setup.py install
 ```
 
-## Examples (tests)
+## Copyrights
 
-The GUI-based test launcher may be executed from Python:
+#### Main code base
+- Copyright © 2002 Uwe Rathmann, for the original Qwt C++ code
+- Copyright © 2015 Pierre Raybaut, for the Qwt C++ to Python translation and 
+optimization
+- Copyright © 2015 Pierre Raybaut, for the PythonQwt specific and exclusive 
+Python material
 
-```python
-from qwt import tests
-tests.run()
-```
+#### PyQt, PySide and Python2/Python3 compatibility modules
+- Copyright © 2009-2013 Pierre Raybaut
+- Copyright © 2013-2015 The Spyder Development Team
 
-or from the command line:
+#### Some examples
+- Copyright © 2003-2009 Gerard Vermeulen, for the original PyQwt code
+- Copyright © 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+developments (e.g. ported to PythonQwt API)
 
-```bash
-PythonQwt-tests
-```
+## License
 
-## Sample
+The `qwt` Python package was partly (>95%) translated from Qwt C++ library: 
+the associated code is distributed under the terms of the LGPL license. The 
+rest of the code was either wrote from scratch or strongly inspired from MIT 
+licensed third-party software.
 
-```python
-import qwt
-import numpy as np
-
-app = qwt.qt.QtGui.QApplication([])
-x = np.linspace(-10, 10, 500)
-plot = qwt.QwtPlot("Trigonometric functions")
-plot.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.BottomLegend)
-qwt.QwtPlotCurve.make(x, np.cos(x), "Cosinus", plot, linecolor="red", antialiased=True)
-qwt.QwtPlotCurve.make(x, np.sin(x), "Sinus", plot, linecolor="blue", antialiased=True)
-plot.resize(600, 300)
-plot.show()
-```
-
-<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/QwtPlot_example.png">
+See included [LICENSE](LICENSE) file for more details about licensing terms.
