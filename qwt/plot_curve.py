@@ -25,6 +25,7 @@ from .plot_series import (
 )
 from .symbol import QwtSymbol
 from .plot_directpainter import QwtPlotDirectPainter
+from .qthelpers import qcolor_from_str
 
 from .qt.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
 from .qt.QtCore import QSize, Qt, QRectF, QPointF
@@ -228,7 +229,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         :param symbol: curve symbol
         :type symbol: qwt.symbol.QwtSymbol or None
         :param linecolor: curve line color
-        :type linecolor: QColor or None
+        :type linecolor: QColor or str or None
         :param linewidth: curve line width
         :type linewidth: float or None
         :param linestyle: curve pen style
@@ -258,7 +259,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             item.setStyle(style)
         if symbol is not None:
             item.setSymbol(symbol)
-        linecolor = Qt.black if linecolor is None else linecolor
+        linecolor = qcolor_from_str(linecolor, Qt.black)
         linewidth = 1.0 if linewidth is None else linewidth
         linestyle = Qt.SolidLine if linestyle is None else linestyle
         item.setPen(QPen(linecolor, linewidth, linestyle))

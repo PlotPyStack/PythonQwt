@@ -18,6 +18,7 @@ from .text import QwtText
 from .painter import QwtPainter
 from .graphic import QwtGraphic
 from .symbol import QwtSymbol
+from .qthelpers import qcolor_from_str
 
 from .qt.QtGui import QPen, QPainter
 from .qt.QtCore import Qt, QPointF, QRectF, QSizeF, QRect
@@ -123,7 +124,8 @@ class QwtPlotMarker(QwtPlotItem):
         :param spacing: Spacing (distance between the position and the label)
         :type spacing: int or None
         :param int linestyle: Line style
-        :param QColor color: Pen color
+        :param color: Pen color
+        :type color: QColor or str or None
         :param float width: Pen width
         :param Qt.PenStyle style: Pen style
         :param bool antialiased: if True, enable antialiasing rendering
@@ -152,7 +154,7 @@ class QwtPlotMarker(QwtPlotItem):
             item.setLabelOrientation(orientation)
         if spacing is not None:
             item.setSpacing(spacing)
-        color = Qt.black if color is None else color
+        color = qcolor_from_str(color, Qt.black)
         width = 1.0 if width is None else width
         style = Qt.SolidLine if style is None else style
         item.setLinePen(QPen(color, width, style))

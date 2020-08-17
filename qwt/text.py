@@ -67,6 +67,7 @@ from .qt.QtGui import (
 from .qt.QtCore import Qt, QSizeF, QSize, QRectF
 
 from .painter import QwtPainter
+from .qthelpers import qcolor_from_str
 
 QWIDGETSIZE_MAX = (1 << 24) - 1
 
@@ -638,7 +639,7 @@ class QwtText(object):
         :param weight: Font weight (default: QFont.Normal)
         :type weight: int or None
         :param color: Pen color
-        :type color: QColor or None
+        :type color: QColor or str or None
         :param borderradius: Radius for the corners of the border frame
         :type borderradius: float or None
         :param borderpen: Background pen
@@ -661,7 +662,7 @@ class QwtText(object):
             weight = QFont.Normal if weight is None else weight
             item.setFont(QFont(family, pointsize, weight))
         if color is not None:
-            item.setColor(color)
+            item.setColor(qcolor_from_str(color, Qt.black))
         if borderradius is not None:
             item.setBorderRadius(borderradius)
         if borderpen is not None:

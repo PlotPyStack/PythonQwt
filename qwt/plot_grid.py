@@ -17,6 +17,7 @@ from .scale_div import QwtScaleDiv
 from .plot import QwtPlot, QwtPlotItem
 from .text import QwtText
 from ._math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
+from .qthelpers import qcolor_from_str
 
 from .qt.QtGui import QPen
 from .qt.QtCore import Qt
@@ -79,13 +80,13 @@ class QwtPlotGrid(QwtPlotItem):
         :param enableminor: Tuple of two boolean values (x, y) for enabling minor grid lines
         :type enableminor: bool or None
         :param color: Pen color for both major and minor grid lines (default: Qt.gray)
-        :type color: QColor or None
+        :type color: QColor or str or None
         :param width: Pen width for both major and minor grid lines (default: 1.0)
         :type width: float or None
         :param style: Pen style for both major and minor grid lines (default: Qt.DotLine)
         :type style: Qt.PenStyle or None
         :param mincolor: Pen color for minor grid lines only (default: Qt.gray)
-        :type mincolor: QColor or None
+        :type mincolor: QColor or str or None
         :param minwidth: Pen width for minor grid lines only (default: 1.0)
         :type minwidth: float or None
         :param minstyle: Pen style for minor grid lines only (default: Qt.DotLine)
@@ -98,12 +99,12 @@ class QwtPlotGrid(QwtPlotItem):
         item = cls()
         if z is not None:
             item.setZ(z)
-        color = Qt.gray if color is None else color
+        color = qcolor_from_str(color, Qt.gray)
         width = 1.0 if width is None else width
         style = Qt.DotLine if style is None else style
         item.setPen(QPen(color, width, style))
         if mincolor is not None or minwidth is not None or minstyle is not None:
-            mincolor = Qt.gray if mincolor is None else mincolor
+            mincolor = qcolor_from_str(mincolor, Qt.gray)
             minwidth = 1.0 if width is None else minwidth
             minstyle = Qt.DotLine if style is None else minstyle
             item.setMinorPen(QPen(mincolor, minwidth, minstyle))
