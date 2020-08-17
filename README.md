@@ -79,7 +79,7 @@ From the source package:
 python setup.py install
 ```
 
-## Examples/tests
+## Examples (tests)
 
 The GUI-based test launcher may be executed from Python:
 
@@ -93,3 +93,21 @@ or from the command line:
 ```bash
 PythonQwt-tests
 ```
+
+## Sample
+
+```python
+import qwt
+import numpy as np
+
+app = qwt.qt.QtGui.QApplication([])
+x = np.linspace(-10, 10, 500)
+plot = qwt.QwtPlot("Trigonometric functions")
+plot.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.BottomLegend)
+qwt.QwtPlotCurve.make(x, np.cos(x), "Cosinus", plot, linecolor="red", antialiased=True)
+qwt.QwtPlotCurve.make(x, np.sin(x), "Sinus", plot, linecolor="blue", antialiased=True)
+plot.resize(600, 300)
+plot.show()
+```
+
+<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/QwtPlot_example.png">
