@@ -1,4 +1,4 @@
-# PythonQwt: Qt plotting widgets for Python
+# Qt plotting widgets for Python
 
 [![license](https://img.shields.io/pypi/l/PythonQwt.svg)](./LICENSE)
 [![pypi version](https://img.shields.io/pypi/v/PythonQwt.svg)](https://pypi.org/project/PythonQwt/)
