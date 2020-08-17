@@ -10,7 +10,7 @@ if errorlevel 1 goto :yes
 :yes
 @echo ==============================================================================
 @echo:
-@echo twine upload dist/*
+twine upload dist/*
 GOTO :continue
 :no
 @echo:
