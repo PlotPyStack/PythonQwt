@@ -12,7 +12,9 @@ exit /B %ERRORLEVEL%
 :test
 set ENV=C:\%~1\scripts\env.bat
 if exist %ENV% (
-    echo ************************** Testing with %~1 **************************
+    @echo:
+    @echo ************************** Testing with %~1 **************************
+    @echo:
     call %ENV%
     python -m qwt.tests.__init__
     )
