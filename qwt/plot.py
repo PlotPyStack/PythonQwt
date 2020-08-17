@@ -347,8 +347,6 @@ class QwtPlot(QFrame, QwtPlotDict):
 
         self.setSizePolicy(QSizePolicy.MinimumExpanding, QSizePolicy.MinimumExpanding)
 
-        self.resize(200, 200)
-
         focusChain = [
             self,
             self.__data.titleLabel,
