@@ -23,12 +23,13 @@ def qcolor_from_str(color, default):
     """
     if color is None:
         return default
-    elif isinstance(color, QG.QColor):
-        return color
     elif isinstance(color, str):
         try:
             return getattr(Qt, color)
         except AttributeError:
             raise ValueError("Unknown Qt color %r" % color)
     else:
-        raise TypeError("Invalid color %r" % color)
+        try:
+            return QG.QColor(color)
+        except TypeError:
+            raise TypeError("Invalid color %r" % color)
