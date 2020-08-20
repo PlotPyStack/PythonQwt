@@ -11,8 +11,9 @@ SHOW = True  # Show test in GUI-based test launcher
 import random
 import numpy as np
 
-from qwt.qt.QtGui import QPen, QBrush, QFrame
-from qwt.qt.QtCore import QSize, Qt
+from qtpy.QtWidgets import QFrame
+from qtpy.QtGui import QPen, QBrush
+from qtpy.QtCore import QSize, Qt
 from qwt import (
     QwtPlot,
     QwtPlotMarker,

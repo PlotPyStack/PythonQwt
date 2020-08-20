@@ -11,7 +11,7 @@ SHOW = True  # Show test in GUI-based test launcher
 import time
 import numpy as np
 
-from qwt.qt.QtGui import (
+from qtpy.QtWidgets import (
     QApplication,
     QMainWindow,
     QGridLayout,
@@ -20,7 +20,7 @@ from qwt.qt.QtGui import (
     QTextEdit,
     QLineEdit,
 )
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import Qt
 
 import os
 

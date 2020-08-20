@@ -12,23 +12,18 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from qwt.qt.QtGui import (
-    QPen,
-    QBrush,
+from qtpy.QtWidgets import (
     QFrame,
-    QFont,
     QWidget,
     QMainWindow,
     QToolButton,
-    QIcon,
-    QPixmap,
     QToolBar,
     QHBoxLayout,
     QLabel,
-    QPrinter,
-    QPrintDialog,
 )
-from qwt.qt.QtCore import QSize, Qt
+from qtpy.QtGui import QPen, QBrush, QFont, QIcon, QPixmap
+from qtpy.QtPrintSupport import QPrinter, QPrintDialog
+from qtpy.QtCore import QSize, Qt
 from qwt import (
     QwtPlot,
     QwtPlotMarker,

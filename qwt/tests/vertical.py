@@ -10,8 +10,8 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from qwt.qt.QtGui import QFont, QPen, QPalette, QColor
-from qwt.qt.QtCore import Qt
+from qtpy.QtGui import QFont, QPen, QPalette, QColor
+from qtpy.QtCore import Qt
 
 import os
 

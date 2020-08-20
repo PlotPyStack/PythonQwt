@@ -5,10 +5,10 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
-from .interval import QwtInterval
+from qwt.interval import QwtInterval
 
-from .qt.QtGui import QPolygonF, QPalette
-from .qt.QtCore import QRectF, Qt
+from qtpy.QtGui import QPolygonF, QPalette
+from qtpy.QtCore import QRectF, Qt
 
 
 def qwtDrawBox(p, rect, pal, lw):

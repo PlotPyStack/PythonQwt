@@ -13,12 +13,11 @@ QwtPlotCanvas
    :members:
 """
 
-from .null_paintdevice import QwtNullPaintDevice
-from .painter import QwtPainter
+from qwt.null_paintdevice import QwtNullPaintDevice
+from qwt.painter import QwtPainter
 
-from .qt import PYQT5
-from .qt.QtGui import (
-    QFrame,
+from qtpy import PYQT5
+from qtpy.QtGui import (
     QPaintEngine,
     QPen,
     QBrush,
@@ -30,11 +29,12 @@ from .qt.QtGui import (
     QPainter,
     qAlpha,
     QPolygonF,
-    QStyleOption,
-    QStyle,
-    QStyleOptionFrame,
 )
-from .qt.QtCore import Qt, QSizeF, QT_VERSION, QEvent, QPointF, QRectF
+from qtpy.QtWidgets import QFrame, QStyleOption, QStyle, QStyleOptionFrame
+from qtpy.QtCore import Qt, QSizeF, QEvent, QPointF, QRectF
+from qtpy import QtCore as QC
+
+QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
 
 
 class Border(object):
@@ -488,7 +488,7 @@ class QwtPlotCanvas(QFrame):
                 if self.__data.backingStore is None:
                     self.__data.backingStore = QPixmap()
                 if self.isVisible():
-                    if QT_VERSION >= 0x050000:
+                    if QT_MAJOR_VERSION >= 5:
                         self.__data.backingStore = self.grab(self.rect())
                     else:
                         self.__data.backingStore = QPixmap.grabWidget(self, self.rect())
@@ -590,7 +590,7 @@ class QwtPlotCanvas(QFrame):
             and self.__data.backingStore is not None
         ):
             bs = self.__data.backingStore
-            if QT_VERSION >= 0x050000:
+            if QT_MAJOR_VERSION >= 5:
                 pixelRatio = bs.devicePixelRatio()
             else:
                 pixelRatio = 1.0
@@ -731,34 +731,34 @@ class QwtPlotCanvas(QFrame):
                     self.frameStyle(),
                 )
         else:
-            if QT_VERSION >= 0x040500:
-                if PYQT5:
-                    from .qt.QtGui import QStyleOptionFrame
-                else:
-                    from .qt.QtGui import QStyleOptionFrameV3 as QStyleOptionFrame
-                opt = QStyleOptionFrame()
-                opt.initFrom(self)
-                frameShape = self.frameStyle() & QFrame.Shape_Mask
-                frameShadow = self.frameStyle() & QFrame.Shadow_Mask
-                opt.frameShape = QFrame.Shape(int(opt.frameShape) | frameShape)
-                if frameShape in (
-                    QFrame.Box,
-                    QFrame.HLine,
-                    QFrame.VLine,
-                    QFrame.StyledPanel,
-                    QFrame.Panel,
-                ):
-                    opt.lineWidth = self.lineWidth()
-                    opt.midLineWidth = self.midLineWidth()
-                else:
-                    opt.lineWidth = self.frameWidth()
-                if frameShadow == self.Sunken:
-                    opt.state |= QStyle.State_Sunken
-                elif frameShadow == self.Raised:
-                    opt.state |= QStyle.State_Raised
-                self.style().drawControl(QStyle.CE_ShapedFrame, opt, painter, self)
+            if PYQT5:
+                from qtpy.QtWidgets import QStyleOptionFrame
             else:
-                self.drawFrame(painter)
+                try:
+                    from PyQt4.QtGui import QStyleOptionFrameV3 as QStyleOptionFrame
+                except ImportError:
+                    from PySide2.QtWidgets import QStyleOptionFrame
+            opt = QStyleOptionFrame()
+            opt.initFrom(self)
+            frameShape = self.frameStyle() & QFrame.Shape_Mask
+            frameShadow = self.frameStyle() & QFrame.Shadow_Mask
+            opt.frameShape = QFrame.Shape(int(opt.frameShape) | frameShape)
+            if frameShape in (
+                QFrame.Box,
+                QFrame.HLine,
+                QFrame.VLine,
+                QFrame.StyledPanel,
+                QFrame.Panel,
+            ):
+                opt.lineWidth = self.lineWidth()
+                opt.midLineWidth = self.midLineWidth()
+            else:
+                opt.lineWidth = self.frameWidth()
+            if frameShadow == self.Sunken:
+                opt.state |= QStyle.State_Sunken
+            elif frameShadow == self.Raised:
+                opt.state |= QStyle.State_Raised
+            self.style().drawControl(QStyle.CE_ShapedFrame, opt, painter, self)
 
     def resizeEvent(self, event):
         QFrame.resizeEvent(self, event)

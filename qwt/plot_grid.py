@@ -13,14 +13,14 @@ QwtPlotGrid
    :members:
 """
 
-from .scale_div import QwtScaleDiv
-from .plot import QwtPlot, QwtPlotItem
-from .text import QwtText
-from ._math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
-from .qthelpers import qcolor_from_str
+from qwt.scale_div import QwtScaleDiv
+from qwt.plot import QwtPlot, QwtPlotItem
+from qwt.text import QwtText
+from qwt._math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
+from qwt.qthelpers import qcolor_from_str
 
-from .qt.QtGui import QPen
-from .qt.QtCore import Qt
+from qtpy.QtGui import QPen
+from qtpy.QtCore import Qt
 
 
 class QwtPlotGrid_PrivateData(object):

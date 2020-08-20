@@ -13,11 +13,14 @@ QwtPlotDirectPainter
    :members:
 """
 
-from .qt.QtGui import QPainter, QRegion
-from .qt.QtCore import QObject, QT_VERSION, Qt, QEvent
+from qtpy.QtGui import QPainter, QRegion
+from qtpy.QtCore import QObject, Qt, QEvent
+from qtpy import QtCore as QC
 
-from .plot import QwtPlotItem
-from .plot_canvas import QwtPlotCanvas
+QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
+
+from qwt.plot import QwtPlotItem
+from qwt.plot_canvas import QwtPlotCanvas
 
 
 def qwtRenderItem(painter, canvasRect, seriesItem, from_, to):
@@ -221,7 +224,7 @@ class QwtPlotDirectPainter(QObject):
                 return
         immediatePaint = True
         if not canvas.testAttribute(Qt.WA_WState_InPaintEvent):
-            if QT_VERSION >= 0x050000 or not canvas.testAttribute(
+            if QT_MAJOR_VERSION >= 5 or not canvas.testAttribute(
                 Qt.WA_PaintOutsidePaintEvent
             ):
                 immediatePaint = False

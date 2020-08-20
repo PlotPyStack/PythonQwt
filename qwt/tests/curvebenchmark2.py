@@ -10,8 +10,8 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import time
 
-from qwt.qt.QtGui import QPen, QBrush
-from qwt.qt.QtCore import QSize, Qt
+from qtpy.QtGui import QPen, QBrush
+from qtpy.QtCore import QSize, Qt
 
 from qwt.tests import curvebenchmark1 as cb
 

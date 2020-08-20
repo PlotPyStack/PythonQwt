@@ -13,10 +13,10 @@ QwtGraphic
    :members:
 """
 
-from .null_paintdevice import QwtNullPaintDevice
-from .painter_command import QwtPainterCommand
+from qwt.null_paintdevice import QwtNullPaintDevice
+from qwt.painter_command import QwtPainterCommand
 
-from .qt.QtGui import (
+from qtpy.QtGui import (
     QPainter,
     QPainterPathStroker,
     QPaintEngine,
@@ -24,7 +24,7 @@ from .qt.QtGui import (
     QTransform,
     QImage,
 )
-from .qt.QtCore import Qt, QRectF, QSizeF, QSize, QPointF, QRect
+from qtpy.QtCore import Qt, QRectF, QSizeF, QSize, QPointF, QRect
 
 import numpy as np
 

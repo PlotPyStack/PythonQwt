@@ -46,16 +46,12 @@ QwtRichTextEngine
 import numpy as np
 import struct
 
-from .qt.QtGui import (
+from qtpy.QtGui import (
     QPainter,
-    QFrame,
-    QSizePolicy,
     QPalette,
     QFont,
     QFontMetrics,
-    QApplication,
     QColor,
-    QWidget,
     QTextDocument,
     QTextOption,
     QFontMetricsF,
@@ -64,10 +60,11 @@ from .qt.QtGui import (
     QTransform,
     QAbstractTextDocumentLayout,
 )
-from .qt.QtCore import Qt, QSizeF, QSize, QRectF
+from qtpy.QtWidgets import QFrame, QWidget, QSizePolicy, QApplication
+from qtpy.QtCore import Qt, QSizeF, QSize, QRectF
 
-from .painter import QwtPainter
-from .qthelpers import qcolor_from_str
+from qwt.painter import QwtPainter
+from qwt.qthelpers import qcolor_from_str
 
 QWIDGETSIZE_MAX = (1 << 24) - 1
 

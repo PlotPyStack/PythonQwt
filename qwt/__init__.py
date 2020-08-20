@@ -33,37 +33,37 @@ QWT_VERSION_STR = "6.1.5"
 
 import warnings
 
-from .plot import QwtPlot
-from .symbol import QwtSymbol as QSbl  # see deprecated section
-from .scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine
-from .text import QwtText
-from .plot_canvas import QwtPlotCanvas
-from .plot_curve import QwtPlotCurve as QPC  # see deprecated section
-from .plot_curve import QwtPlotItem
-from .scale_map import QwtScaleMap
-from .interval import QwtInterval
-from .legend import QwtLegend, QwtLegendData, QwtLegendLabel
-from .plot_marker import QwtPlotMarker
-from .plot_grid import QwtPlotGrid as QPG  # see deprecated section
-from .color_map import QwtLinearColorMap
+from qwt.plot import QwtPlot
+from qwt.symbol import QwtSymbol as QSbl  # see deprecated section
+from qwt.scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine
+from qwt.text import QwtText
+from qwt.plot_canvas import QwtPlotCanvas
+from qwt.plot_curve import QwtPlotCurve as QPC  # see deprecated section
+from qwt.plot_curve import QwtPlotItem
+from qwt.scale_map import QwtScaleMap
+from qwt.interval import QwtInterval
+from qwt.legend import QwtLegend, QwtLegendData, QwtLegendLabel
+from qwt.plot_marker import QwtPlotMarker
+from qwt.plot_grid import QwtPlotGrid as QPG  # see deprecated section
+from qwt.color_map import QwtLinearColorMap
 
-from .toqimage import array_to_qimage as toQImage
+from qwt.toqimage import array_to_qimage as toQImage
 
-from .scale_div import QwtScaleDiv
-from .scale_draw import QwtScaleDraw
-from .scale_draw import QwtAbstractScaleDraw
-from .painter import QwtPainter
+from qwt.scale_div import QwtScaleDiv
+from qwt.scale_draw import QwtScaleDraw
+from qwt.scale_draw import QwtAbstractScaleDraw
+from qwt.painter import QwtPainter
 
-from .plot_series import (
+from qwt.plot_series import (
     QwtSeriesData,
     QwtPointArrayData,
     QwtSeriesStore,
     QwtPlotSeriesItem,
 )
 
-from .plot_renderer import QwtPlotRenderer
+from qwt.plot_renderer import QwtPlotRenderer
 
-from .plot_directpainter import QwtPlotDirectPainter
+from qwt.plot_directpainter import QwtPlotDirectPainter
 
 
 ## ============================================================================
@@ -127,7 +127,7 @@ class QwtSymbol(QSbl):
             "please rely on `drawSymbol` and `drawSymbols` instead",
             RuntimeWarning,
         )
-        from .qt.QtCore import QPointF
+        from qtpy.QtCore import QPointF
 
         if len(args) == 2:
             self.drawSymbols(painter, [QPointF(*args)])

@@ -13,22 +13,22 @@ QwtPlotCurve
    :members:
 """
 
-from .text import QwtText
-from .plot import QwtPlot, QwtPlotItem, QwtPlotItem_PrivateData
-from ._math import qwtSqr
-from .graphic import QwtGraphic
-from .plot_series import (
+from qwt.text import QwtText
+from qwt.plot import QwtPlot, QwtPlotItem, QwtPlotItem_PrivateData
+from qwt._math import qwtSqr
+from qwt.graphic import QwtGraphic
+from qwt.plot_series import (
     QwtPlotSeriesItem,
     QwtSeriesStore,
     QwtSeriesData,
     QwtPointArrayData,
 )
-from .symbol import QwtSymbol
-from .plot_directpainter import QwtPlotDirectPainter
-from .qthelpers import qcolor_from_str
+from qwt.symbol import QwtSymbol
+from qwt.plot_directpainter import QwtPlotDirectPainter
+from qwt.qthelpers import qcolor_from_str
 
-from .qt.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
-from .qt.QtCore import QSize, Qt, QRectF, QPointF
+from qtpy.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
+from qtpy.QtCore import QSize, Qt, QRectF, QPointF
 
 import numpy as np
 

@@ -7,7 +7,7 @@
 
 from __future__ import division
 
-from .qt.QtCore import qFuzzyCompare
+from qtpy.QtCore import qFuzzyCompare
 
 import math
 

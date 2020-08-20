@@ -19,28 +19,25 @@ QwtPlotItem
    :members:
 """
 
-from .qt.QtGui import (
+from qtpy.QtWidgets import (
     QWidget,
-    QFont,
     QSizePolicy,
     QFrame,
     QApplication,
-    QPainter,
-    QPalette,
-    QColor,
 )
-from .qt.QtCore import Qt, Signal, QEvent, QSize, QRectF
+from qtpy.QtGui import QFont, QPainter, QPalette, QColor
+from qtpy.QtCore import Qt, Signal, QEvent, QSize, QRectF
 
-from .text import QwtText, QwtTextLabel
-from .scale_widget import QwtScaleWidget
-from .scale_draw import QwtScaleDraw
-from .scale_engine import QwtLinearScaleEngine
-from .plot_canvas import QwtPlotCanvas
-from .scale_div import QwtScaleDiv
-from .scale_map import QwtScaleMap
-from .graphic import QwtGraphic
-from .legend import QwtLegendData
-from .interval import QwtInterval
+from qwt.text import QwtText, QwtTextLabel
+from qwt.scale_widget import QwtScaleWidget
+from qwt.scale_draw import QwtScaleDraw
+from qwt.scale_engine import QwtLinearScaleEngine
+from qwt.plot_canvas import QwtPlotCanvas
+from qwt.scale_div import QwtScaleDiv
+from qwt.scale_map import QwtScaleMap
+from qwt.graphic import QwtGraphic
+from qwt.legend import QwtLegendData
+from qwt.interval import QwtInterval
 
 import numpy as np
 
@@ -242,7 +239,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         import qwt
         import numpy as np
 
-        app = qwt.qt.QtGui.QApplication([])
+        app = qtpy.QtGui.QApplication([])
         x = np.linspace(-10, 10, 500)
         plot = qwt.QwtPlot("Trigonometric functions")
         plot.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.BottomLegend)
@@ -308,7 +305,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         self.__layout_state = None
 
         self.__data = QwtPlot_PrivateData()
-        from .plot_layout import QwtPlotLayout
+        from qwt.plot_layout import QwtPlotLayout
 
         self.__data.layout = QwtPlotLayout()
         self.__data.autoReplot = False
@@ -1696,7 +1693,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         :param printer: Printer
         :type printer: QPaintDevice or QPrinter or QSvgGenerator
         """
-        from .plot_renderer import QwtPlotRenderer
+        from qwt.plot_renderer import QwtPlotRenderer
 
         renderer = QwtPlotRenderer(self)
         renderer.renderTo(self, printer)
@@ -1715,7 +1712,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         """
         if size_mm is None:
             size_mm = tuple(25.4 * np.array(size) / resolution)
-        from .plot_renderer import QwtPlotRenderer
+        from qwt.plot_renderer import QwtPlotRenderer
 
         renderer = QwtPlotRenderer(self)
         renderer.renderDocument(self, filename, size_mm, resolution, format_)

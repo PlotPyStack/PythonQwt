@@ -13,7 +13,7 @@ QwtScaleDiv
    :members:
 """
 
-from .interval import QwtInterval
+from qwt.interval import QwtInterval
 
 import copy
 

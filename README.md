@@ -82,6 +82,7 @@ for more details on API limitations when comparing to Qwt.
 ### Requirements ###
 - Python >=2.6 or Python >=3.2
 - PyQt4 >=4.4 or PyQt5 >= 5.5
+- QtPy
 - NumPy >= 1.5
 
 ## Installation

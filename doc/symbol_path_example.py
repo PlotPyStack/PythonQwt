@@ -1,5 +1,5 @@
-from qwt.qt.QtGui import QApplication, QPen, QPainterPath, QTransform
-from qwt.qt.QtCore import Qt, QPointF
+from qtpy.QtGui import QApplication, QPen, QPainterPath, QTransform
+from qtpy.QtCore import Qt, QPointF
 from qwt import QwtPlot, QwtPlotCurve, QwtSymbol
 import numpy as np
 import os.path as osp

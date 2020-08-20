@@ -13,7 +13,7 @@ QwtNullPaintDevice
    :members:
 """
 
-from .qt.QtGui import QPaintEngine, QPainterPath, QPaintDevice
+from qtpy.QtGui import QPaintEngine, QPainterPath, QPaintDevice
 
 
 class QwtNullPaintDevice_PrivateData(object):

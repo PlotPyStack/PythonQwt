@@ -6,8 +6,8 @@
 
 """Qt helpers"""
 
-from qwt.qt import QtGui as QG
-from qwt.qt.QtCore import Qt
+from qtpy import QtGui as QG
+from qtpy.QtCore import Qt
 
 
 def qcolor_from_str(color, default):

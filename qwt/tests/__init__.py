@@ -16,7 +16,7 @@ import os.path as osp
 import sys
 import subprocess
 import platform
-from qwt.qt.QtGui import (
+from qtpy.QtWidgets import (
     QApplication,
     QWidget,
     QMainWindow,
@@ -29,12 +29,11 @@ from qwt.qt.QtGui import (
     QStyle,
     QToolBar,
     QAction,
-    QIcon,
     QMessageBox,
-    QPixmap,
 )
-from qwt.qt.QtCore import Qt, QSize, QTimer
-from qwt.qt import PYQT5
+from qtpy.QtGui import QIcon, QPixmap
+from qtpy.QtCore import Qt, QSize, QTimer
+from qtpy import PYQT5
 from qwt import QwtPlot
 
 
@@ -155,7 +154,7 @@ class TestLauncher(QMainWindow):
 
     def about(self):
         """About test launcher"""
-        from qwt.qt.QtCore import __version__ as qt_version
+        from qtpy.QtCore import __version__ as qt_version
 
         QMessageBox.about(
             self,

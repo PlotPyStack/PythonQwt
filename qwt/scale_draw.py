@@ -19,13 +19,13 @@ QwtScaleDraw
    :members:
 """
 
-from .scale_div import QwtScaleDiv
-from .scale_map import QwtScaleMap
-from .text import QwtText
-from ._math import qwtRadians
+from qwt.scale_div import QwtScaleDiv
+from qwt.scale_map import QwtScaleMap
+from qwt.text import QwtText
+from qwt._math import qwtRadians
 
-from .qt.QtGui import QPalette, QFontMetrics, QTransform
-from .qt.QtCore import Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect, QPoint
+from qtpy.QtGui import QPalette, QFontMetrics, QTransform
+from qtpy.QtCore import Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect, QPoint
 
 import numpy as np
 

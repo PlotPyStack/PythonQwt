@@ -27,13 +27,13 @@ QwtLogScaleEngine
 
 from __future__ import division
 
-from .interval import QwtInterval
-from .scale_div import QwtScaleDiv
-from .transform import QwtLogTransform
-from ._math import qwtFuzzyCompare
-from .transform import QwtTransform
+from qwt.interval import QwtInterval
+from qwt.scale_div import QwtScaleDiv
+from qwt.transform import QwtLogTransform
+from qwt._math import qwtFuzzyCompare
+from qwt.transform import QwtTransform
 
-from .qt.QtCore import qFuzzyCompare
+from qtpy.QtCore import qFuzzyCompare
 
 import sys
 import math

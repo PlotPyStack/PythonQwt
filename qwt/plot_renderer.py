@@ -15,14 +15,13 @@ QwtPlotRenderer
 
 from __future__ import division
 
-from .painter import QwtPainter
-from .plot import QwtPlot
-from .plot_layout import QwtPlotLayout
-from .scale_draw import QwtScaleDraw
-from .scale_map import QwtScaleMap
+from qwt.painter import QwtPainter
+from qwt.plot import QwtPlot
+from qwt.plot_layout import QwtPlotLayout
+from qwt.scale_draw import QwtScaleDraw
+from qwt.scale_map import QwtScaleMap
 
-from .qt.QtGui import (
-    QPrinter,
+from qtpy.QtGui import (
     QPainter,
     QImageWriter,
     QImage,
@@ -30,13 +29,14 @@ from .qt.QtGui import (
     QPaintDevice,
     QTransform,
     QPalette,
-    QFileDialog,
     QPainterPath,
     QPen,
 )
-from .qt.QtCore import Qt, QRect, QRectF, QObject, QSizeF
-from .qt.QtSvg import QSvgGenerator
-from .qt.compat import getsavefilename
+from qtpy.QtWidgets import QFileDialog
+from qtpy.QtPrintSupport import QPrinter
+from qtpy.QtCore import Qt, QRect, QRectF, QObject, QSizeF
+from qtpy.QtSvg import QSvgGenerator
+from qtpy.compat import getsavefilename
 
 import math
 import os.path as osp

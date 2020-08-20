@@ -21,24 +21,22 @@ QwtLegend
 
 import math
 
-from .qt.QtGui import (
+from qtpy.QtWidgets import (
     QFrame,
     QScrollArea,
     QWidget,
     QVBoxLayout,
-    QPalette,
     QApplication,
     QStyleOption,
     QStyle,
-    QPixmap,
-    QPainter,
-    qDrawWinButton,
+    # qDrawWinButton,
 )
-from .qt.QtCore import Signal, QEvent, QSize, Qt, QRect, QRectF, QPoint
+from qtpy.QtGui import QPalette, QPixmap, QPainter
+from qtpy.QtCore import Signal, QEvent, QSize, Qt, QRect, QRectF, QPoint
 
-from .text import QwtText, QwtTextLabel
-from .dyngrid_layout import QwtDynGridLayout
-from .painter import QwtPainter
+from qwt.text import QwtText, QwtTextLabel
+from qwt.dyngrid_layout import QwtDynGridLayout
+from qwt.painter import QwtPainter
 
 
 class QwtLegendData(object):
@@ -399,10 +397,10 @@ class QwtLegendLabel(QwtTextLabel):
         cr = self.contentsRect()
         painter = QPainter(self)
         painter.setClipRegion(e.region())
-        if self.__data.isDown:
-            qDrawWinButton(
-                painter, 0, 0, self.width(), self.height(), self.palette(), True
-            )
+        # if self.__data.isDown:
+        #     qDrawWinButton(
+        #         painter, 0, 0, self.width(), self.height(), self.palette(), True
+        #     )
         painter.save()
         if self.__data.isDown:
             shiftSize = buttonShift(self)

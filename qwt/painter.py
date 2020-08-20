@@ -13,26 +13,26 @@ QwtPainterClass
    :members:
 """
 
-from .color_map import QwtColorMap
-from .scale_map import QwtScaleMap
+from qwt.color_map import QwtColorMap
+from qwt.scale_map import QwtScaleMap
 
-from .qt.QtGui import (
+from qtpy.QtGui import (
     QPaintEngine,
-    QFrame,
     QPixmap,
     QPainter,
     QPalette,
-    QStyle,
     QPen,
-    QStyleOptionFocusRect,
     QBrush,
     QRegion,
     QLinearGradient,
     QPainterPath,
     QColor,
-    QStyleOption,
 )
-from .qt.QtCore import Qt, QRect, QPoint, QT_VERSION, QRectF
+from qtpy.QtWidgets import QFrame, QStyle, QStyleOptionFocusRect, QStyleOption
+from qtpy.QtCore import Qt, QRect, QPoint, QRectF
+from qtpy import QtCore as QC
+
+QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
 
 QWIDGETSIZE_MAX = (1 << 24) - 1
 
@@ -459,12 +459,12 @@ class QwtPainterClass(object):
         :param QSize size: Size of the pixmap
         :return: A pixmap that can be used as backing store
         """
-        if QT_VERSION >= 0x050000:
+        if QT_MAJOR_VERSION >= 5:
             pixelRatio = 1.0
             if widget and widget.windowHandle():
                 pixelRatio = widget.windowHandle().devicePixelRatio()
             else:
-                from .qt.QtGui import qApp
+                from qtpy.QtGui import qApp
 
                 if qApp is not None:
                     try:
@@ -475,7 +475,7 @@ class QwtPainterClass(object):
             pm.setDevicePixelRatio(pixelRatio)
         else:
             pm = QPixmap(size)
-        if QT_VERSION < 0x050000 and widget and isX11GraphicsSystem():
+        if QT_MAJOR_VERSION < 5 and widget and isX11GraphicsSystem():
             if pm.x11Info().screen() != widget.x11Info().screen():
                 pm.x11SetScreen(widget.x11Info().screen())
         return pm

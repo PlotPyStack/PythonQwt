@@ -13,9 +13,9 @@ QwtScaleMap
    :members:
 """
 
-from ._math import qwtFuzzyCompare
+from qwt._math import qwtFuzzyCompare
 
-from .qt.QtCore import QRectF, QPointF
+from qtpy.QtCore import QRectF, QPointF
 
 
 class QwtScaleMap(object):

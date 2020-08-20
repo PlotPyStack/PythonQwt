@@ -95,7 +95,7 @@ setup(
     package_data={
         PACKAGE_NAME: get_package_data(PACKAGE_NAME, (".png", ".svg", ".mo"))
     },
-    install_requires=["NumPy>=1.5"],
+    install_requires=["NumPy>=1.5", "QtPy"],
     extras_require={"Doc": ["Sphinx>=1.1"],},
     entry_points={
         "gui_scripts": [

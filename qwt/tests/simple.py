@@ -10,7 +10,7 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from qwt.qt.QtCore import Qt
+from qtpy.QtCore import Qt
 import qwt
 
 

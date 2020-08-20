@@ -13,15 +13,15 @@ QwtPlotMarker
    :members:
 """
 
-from .plot import QwtPlot, QwtPlotItem
-from .text import QwtText
-from .painter import QwtPainter
-from .graphic import QwtGraphic
-from .symbol import QwtSymbol
-from .qthelpers import qcolor_from_str
+from qwt.plot import QwtPlot, QwtPlotItem
+from qwt.text import QwtText
+from qwt.painter import QwtPainter
+from qwt.graphic import QwtGraphic
+from qwt.symbol import QwtSymbol
+from qwt.qthelpers import qcolor_from_str
 
-from .qt.QtGui import QPen, QPainter
-from .qt.QtCore import Qt, QPointF, QRectF, QSizeF, QRect
+from qtpy.QtGui import QPen, QPainter
+from qtpy.QtCore import Qt, QPointF, QRectF, QSizeF, QRect
 
 
 class QwtPlotMarker_PrivateData(object):
