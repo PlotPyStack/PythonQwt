@@ -1,6 +1,11 @@
 # PythonQwt Releases #
 
 
+### Version 0.X.X ###
+
+- Changed QwtPlotItem.detachItems signature: removed unnecessary "autoDelete" argument, 
+  initialiazing "rtti" argument to None (remove all items) 
+
 ### Version 0.7.0 ###
 
 - Added convenience functions for creating usual objects (curve, grid, marker, ...):
