@@ -14,6 +14,7 @@ QwtNullPaintDevice
 """
 
 from qtpy.QtGui import QPaintEngine, QPainterPath, QPaintDevice
+from qtpy import PYSIDE2
 
 
 class QwtNullPaintDevice_PrivateData(object):
@@ -58,7 +59,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         device = self.nullDevice()
         if device is None:
             return
-        if device.mode() != QwtNullPaintDevice.NormalMode:
+        if device.mode() != QwtNullPaintDevice.NormalMode and not PYSIDE2:
             try:
                 QPaintEngine.drawLines(lines, lineCount)
             except TypeError:

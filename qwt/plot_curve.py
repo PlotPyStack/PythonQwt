@@ -60,28 +60,21 @@ def series_to_polyline(xMap, yMap, series, from_, to):
     """
     Convert series data to QPolygon(F) polyline
     """
+    xData = xMap.transform(series.xData()[from_ : to + 1])
+    yData = yMap.transform(series.yData()[from_ : to + 1])
     size = to - from_ + 1
-    polyline = QPolygonF(size)
-    if not PYSIDE2:
+    if PYSIDE2:
+        polyline = QPolygonF()
+        for index in range(size):
+            polyline.append(QPointF(xData[index], yData[index]))
+    else:
+        polyline = QPolygonF(size)
         pointer = polyline.data()
         dtype, tinfo = np.float, np.finfo  # integers: = np.int, np.iinfo
         pointer.setsize(2 * polyline.size() * tinfo(dtype).dtype.itemsize)
         memory = np.frombuffer(pointer, dtype)
-        memory[: (to - from_) * 2 + 1 : 2] = xMap.transform(
-            series.xData()[from_ : to + 1]
-        )
-        memory[1 : (to - from_) * 2 + 2 : 2] = yMap.transform(
-            series.yData()[from_ : to + 1]
-        )
-    else:
-        polyline.clear()
-        for index in range(size):
-            polyline.append(
-                QPointF(
-                    xMap.transform(series.xData()[index]),
-                    yMap.transform(series.yData()[index]),
-                )
-            )
+        memory[: (to - from_) * 2 + 1 : 2] = xData
+        memory[1 : (to - from_) * 2 + 2 : 2] = yData
     return polyline
 
 
