@@ -164,18 +164,16 @@ class QwtPlotDict(object):
         """
         self.__data.itemList.removeItem(item)
 
-    def detachItems(self, rtti, autoDelete):
+    def detachItems(self, rtti=None):
         """
         Detach items from the dictionary
         
-        :param int rtti: In case of `QwtPlotItem.Rtti_PlotItem` detach all items otherwise only those items of the type rtti.
-        :param bool autoDelete: If true, delete all detached items
+        :param rtti: In case of `QwtPlotItem.Rtti_PlotItem` or None (default) detach all items otherwise only those items of the type rtti.
+        :type rtti: int or None
         """
         for item in self.__data.itemList[:]:
-            if rtti == QwtPlotItem.Rtti_PlotItem and item.rtti() == rtti:
+            if rtti in (None, QwtPlotItem.Rtti_PlotItem) or item.rtti() == rtti:
                 item.attach(None)
-                if self.autoDelete:
-                    self.__data.itemList.remove(item)
 
     def itemList(self, rtti=None):
         """
