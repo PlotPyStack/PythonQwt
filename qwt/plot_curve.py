@@ -27,6 +27,7 @@ from qwt.symbol import QwtSymbol
 from qwt.plot_directpainter import QwtPlotDirectPainter
 from qwt.qthelpers import qcolor_from_str
 
+from qtpy import PYSIDE2
 from qtpy.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
 from qtpy.QtCore import QSize, Qt, QRectF, QPointF
 
@@ -59,15 +60,23 @@ def series_to_polyline(xMap, yMap, series, from_, to):
     """
     Convert series data to QPolygon(F) polyline
     """
-    polyline = QPolygonF(to - from_ + 1)
-    pointer = polyline.data()
-    dtype, tinfo = np.float, np.finfo  # integers: = np.int, np.iinfo
-    pointer.setsize(2 * polyline.size() * tinfo(dtype).dtype.itemsize)
-    memory = np.frombuffer(pointer, dtype)
-    memory[: (to - from_) * 2 + 1 : 2] = xMap.transform(series.xData()[from_ : to + 1])
-    memory[1 : (to - from_) * 2 + 2 : 2] = yMap.transform(
-        series.yData()[from_ : to + 1]
-    )
+    size = to - from_ + 1
+    polyline = QPolygonF(size)
+    if not PYSIDE2:
+        pointer = polyline.data()
+        dtype, tinfo = np.float, np.finfo  # integers: = np.int, np.iinfo
+        pointer.setsize(2 * polyline.size() * tinfo(dtype).dtype.itemsize)
+        memory = np.frombuffer(pointer, dtype)
+        memory[: (to - from_) * 2 + 1 : 2] = xMap.transform(
+            series.xData()[from_ : to + 1]
+        )
+        memory[1 : (to - from_) * 2 + 2 : 2] = yMap.transform(
+            series.yData()[from_ : to + 1]
+        )
+    else:
+        polyline.clear()
+        for index in range(size):
+            polyline.append(QPointF(series.xData()[index], series.yData()[index]))
     return polyline
 
 

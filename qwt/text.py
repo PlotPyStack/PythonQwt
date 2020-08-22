@@ -62,6 +62,7 @@ from qtpy.QtGui import (
 )
 from qtpy.QtWidgets import QFrame, QWidget, QSizePolicy, QApplication
 from qtpy.QtCore import Qt, QSizeF, QSize, QRectF
+from qtpy import PYSIDE2
 
 from qwt.painter import QwtPainter
 from qwt.qthelpers import qcolor_from_str
@@ -436,7 +437,7 @@ class QwtRichTextEngine(QwtTextEngine):
         :param str text: Text to be tested
         :return: True, if it can be rendered
         """
-        return Qt.mightBeRichText(text)
+        return PYSIDE2 or Qt.mightBeRichText(text)
 
     def textMargins(self, font):
         """
