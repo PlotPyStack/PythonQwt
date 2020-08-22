@@ -76,7 +76,12 @@ def series_to_polyline(xMap, yMap, series, from_, to):
     else:
         polyline.clear()
         for index in range(size):
-            polyline.append(QPointF(series.xData()[index], series.yData()[index]))
+            polyline.append(
+                QPointF(
+                    xMap.transform(series.xData()[index]),
+                    yMap.transform(series.yData()[index]),
+                )
+            )
     return polyline
 
 
