@@ -641,8 +641,8 @@ class QwtLegend(QwtAbstractLegend):
             Clicks are disabled as default
     """
 
-    clicked = Signal("PyQt_PyObject", int)
-    checked = Signal("PyQt_PyObject", bool, int)
+    clicked = Signal(object, int)
+    checked = Signal(object, bool, int)
 
     def __init__(self, parent=None):
         QwtAbstractLegend.__init__(self, parent)

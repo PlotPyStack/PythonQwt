@@ -28,6 +28,7 @@ from .qt.QtGui import (
     QPainter,
     QPalette,
     QColor,
+    QBrush,
 )
 from .qt.QtCore import Qt, Signal, QEvent, QSize, QRectF
 
@@ -275,8 +276,8 @@ class QwtPlot(QFrame, QwtPlotDict):
 
     """
 
-    itemAttached = Signal("PyQt_PyObject", bool)
-    legendDataChanged = Signal("PyQt_PyObject", "PyQt_PyObject")
+    itemAttached = Signal(object, bool)
+    legendDataChanged = Signal(object, object)
 
     # enum Axis
     AXES = yLeft, yRight, xBottom, xTop = list(range(4))
@@ -1516,7 +1517,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`canvasBackground()`
         """
         pal = self.__data.canvas.palette()
-        pal.setBrush(QPalette.Window, brush)
+        pal.setBrush(QPalette.Window, QBrush(brush))
         self.canvas().setPalette(pal)
 
     def canvasBackground(self):
