@@ -149,7 +149,7 @@ class TestLauncher(QMainWindow):
         button.setText(bname)
         button.setToolTip(fname)
         button.setIconSize(QSize(130, 80))
-        button.clicked.connect(lambda checked, fname=fname: run_test(fname))
+        button.clicked.connect(lambda checked=None, fname=fname: run_test(fname))
         self.grid_layout.addWidget(button, row, column)
 
     def about(self):

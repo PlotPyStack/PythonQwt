@@ -100,7 +100,7 @@ class QwtPlotGrid(QwtPlotItem):
         if z is not None:
             item.setZ(z)
         color = qcolor_from_str(color, Qt.gray)
-        width = 1.0 if width is None else width
+        width = 1.0 if width is None else float(width)
         style = Qt.DotLine if style is None else style
         item.setPen(QPen(color, width, style))
         if mincolor is not None or minwidth is not None or minstyle is not None:
