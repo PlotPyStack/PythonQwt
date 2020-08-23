@@ -297,7 +297,10 @@ class QwtPlainTextEngine(QwtTextEngine):
         w = pm.width()
         linebytes = w * 4
         for row in range(img.height()):
-            line = img.scanLine(row).asstring(linebytes)
+            if PYSIDE2:
+                line = bytes(img.scanLine(row))
+            else:
+                line = img.scanLine(row).asstring(linebytes)
             for col in range(w):
                 color = struct.unpack("I", line[col * 4 : (col + 1) * 4])[0]
                 if color != white.rgb():
