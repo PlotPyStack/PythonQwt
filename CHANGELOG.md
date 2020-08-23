@@ -1,7 +1,10 @@
 # PythonQwt Releases #
 
 
-### Version 0.X.X ###
+### Version 0.8.0 ###
+
+- Added PySide2 support: PythonQwt is now compatible with Python 2.7, Python 3.4+, 
+  PyQt4, PyQt5 and PySide2!
 
 - Changed QwtPlotItem.detachItems signature: removed unnecessary "autoDelete" argument, 
   initialiazing "rtti" argument to None (remove all items) 
