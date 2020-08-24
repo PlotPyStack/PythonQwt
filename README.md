@@ -87,36 +87,7 @@ for more details on API limitations when comparing to Qwt.
 
 ### Why PySide2 support is still experimental ###
 
-<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/pyqt5_vs_pyside2.png">
-
-Try running the `curvebenchmark1.py` test with PyQt5 and PySide: you will notice a 
-huge performance issue with PySide2 (see screenshot above). This is due to the fact 
-that PyQt5 (and PyQt4) allows an efficient way of filling a QPolygonF object from a 
-Numpy array, and PySide2 is not (see function `qwt.plot_curve.series_to_polyline` 
-below).
-
-```python
-def series_to_polyline(xMap, yMap, series, from_, to):
-    """
-    Convert series data to QPolygon(F) polyline
-    """
-    xData = xMap.transform(series.xData()[from_ : to + 1])
-    yData = yMap.transform(series.yData()[from_ : to + 1])
-    size = to - from_ + 1
-    if PYSIDE2:
-        polyline = QPolygonF()
-        for index in range(size):
-            polyline.append(QPointF(xData[index], yData[index]))
-    else:
-        polyline = QPolygonF(size)
-        pointer = polyline.data()
-        dtype, tinfo = np.float, np.finfo  # integers: = np.int, np.iinfo
-        pointer.setsize(2 * polyline.size() * tinfo(dtype).dtype.itemsize)
-        memory = np.frombuffer(pointer, dtype)
-        memory[: (to - from_) * 2 + 1 : 2] = xData
-        memory[1 : (to - from_) * 2 + 2 : 2] = yData
-    return polyline
-```
+There is still a significant performance issue with PySide2 (drawing polylines with PySide2 is apparently approx. 60 times slower than with PyQt5, see [this bug report](https://bugreports.qt.io/browse/PYSIDE-1366)).
 
 As a consequence, until an equivalent feature is implemented in PySide2, we strongly 
 recommend using PyQt5 instead of PySide2.
