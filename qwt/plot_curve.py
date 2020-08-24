@@ -31,6 +31,10 @@ from qtpy import PYSIDE2
 from qtpy.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
 from qtpy.QtCore import QSize, Qt, QRectF, QPointF
 
+if PYSIDE2:
+    import shiboken2
+    import ctypes
+
 import numpy as np
 
 
@@ -56,26 +60,46 @@ def qwtVerifyRange(size, i1, i2):
     return i2 - i1 + 1
 
 
+def array2d_to_qpolygonf(xdata, ydata):
+    """
+    Utility function to convert two 1D-NumPy arrays representing curve data 
+    (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object). 
+    This feature is compatible with PyQt4, PyQt5 and PySide2 (requires QtPy).
+    
+    License/copyright: MIT License © Pierre Raybaut 2020.
+    
+    :param numpy.ndarray xdata: 1D-NumPy array (numpy.float64)
+    :param numpy.ndarray ydata: 1D-NumPy array (numpy.float64)
+    :return: Polyline
+    :rtype: QtGui.QPolygonF
+    """
+    dtype = np.float
+    if not (
+        xdata.size == ydata.size == xdata.shape[0] == ydata.shape[0]
+        and xdata.dtype == ydata.dtype == dtype
+    ):
+        raise ValueError("Arguments must be 1D, float64 NumPy arrays with same size")
+    size = xdata.size
+    polyline = QPolygonF(size)
+    if PYSIDE2:  # PySide2 (obviously...)
+        address = shiboken2.getCppPointer(polyline.data())[0]
+        buffer = (ctypes.c_double * 2 * size).from_address(address)
+    else:  # PyQt4, PyQt5
+        buffer = polyline.data()
+        buffer.setsize(2 * size * np.finfo(dtype).dtype.itemsize)
+    memory = np.frombuffer(buffer, dtype)
+    memory[: (size - 1) * 2 + 1 : 2] = xdata
+    memory[1 : (size - 1) * 2 + 2 : 2] = ydata
+    return polyline
+
+
 def series_to_polyline(xMap, yMap, series, from_, to):
     """
     Convert series data to QPolygon(F) polyline
     """
-    xData = xMap.transform(series.xData()[from_ : to + 1])
-    yData = yMap.transform(series.yData()[from_ : to + 1])
-    size = to - from_ + 1
-    if PYSIDE2:
-        polyline = QPolygonF()
-        for index in range(size):
-            polyline.append(QPointF(xData[index], yData[index]))
-    else:
-        polyline = QPolygonF(size)
-        pointer = polyline.data()
-        dtype, tinfo = np.float, np.finfo  # integers: = np.int, np.iinfo
-        pointer.setsize(2 * polyline.size() * tinfo(dtype).dtype.itemsize)
-        memory = np.frombuffer(pointer, dtype)
-        memory[: (to - from_) * 2 + 1 : 2] = xData
-        memory[1 : (to - from_) * 2 + 2 : 2] = yData
-    return polyline
+    xdata = xMap.transform(series.xData()[from_ : to + 1])
+    ydata = yMap.transform(series.yData()[from_ : to + 1])
+    return array2d_to_qpolygonf(xdata, ydata)
 
 
 class QwtPlotCurve_PrivateData(QwtPlotItem_PrivateData):

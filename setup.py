@@ -33,9 +33,8 @@ PythonQwt: Qt plotting widgets for Python
 
 The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical 
 user interfaces for the Python programming language. It is compatible with 
-both ``PyQt4`` and ``PyQt5`` (``PySide`` is currently not supported but it
-could be in the near future as it would "only" requires testing to support 
-it as a stable alternative to PyQt).
+both ``PyQt4``, ``PyQt5`` and ``PySide2`` (see documentation for more information 
+on a performance issue due to PySide2 itself when plotting huge data sets).
 
 The ``PythonQwt`` project was initiated to solve -at least temporarily- the 
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
@@ -49,6 +48,22 @@ limitations: efforts were concentrated on basic plotting features, leaving
 higher level features to the `guiqwt` library.
 
 See `README`_ and documentation (`online`_ or `PDF`_) for more details on the library and `changelog`_ for recent history of changes.
+    
+The following example is a good starting point to see how to set up a simple plot widget::
+
+    import qwt
+    import numpy as np
+
+    app = qtpy.QtGui.QApplication([])
+    x = np.linspace(-10, 10, 500)
+    plot = qwt.QwtPlot("Trigonometric functions")
+    plot.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.BottomLegend)
+    qwt.QwtPlotCurve.make(x, np.cos(x), "Cosinus", plot, linecolor="red", antialiased=True)
+    qwt.QwtPlotCurve.make(x, np.sin(x), "Sinus", plot, linecolor="blue", antialiased=True)
+    plot.resize(600, 300)
+    plot.show()
+    
+.. image:: https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/QwtPlot_example.png
 
 .. _README: https://github.com/PierreRaybaut/PythonQwt/blob/master/README.md
 .. _online: https://pythonqwt.readthedocs.io/en/latest/

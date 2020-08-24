@@ -1,5 +1,9 @@
 # PythonQwt Releases #
 
+### Version 0.8.1 ###
+
+- PySide2 support was significatively improved betwen PythonQwt V0.8.0 and 
+  V0.8.1 thanks to the new `qwt.qwt_curve.array2d_to_qpolygonf` function.
 
 ### Version 0.8.0 ###
 
