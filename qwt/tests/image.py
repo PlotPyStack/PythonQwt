@@ -196,6 +196,6 @@ class ImagePlot(QwtPlot):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    app = test_widget(ImagePlot, size=(600, 400))
+    tests.test_widget(ImagePlot, size=(600, 400))

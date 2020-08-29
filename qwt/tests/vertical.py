@@ -10,7 +10,7 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from qtpy.QtGui import QFont, QPen, QPalette, QColor
+from qtpy.QtGui import QPen, QPalette, QColor
 from qtpy.QtCore import Qt
 
 import os
@@ -97,6 +97,6 @@ class VerticalPlot(QwtPlot):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    app = test_widget(VerticalPlot, size=(300, 650))
+    tests.test_widget(VerticalPlot, size=(300, 650))

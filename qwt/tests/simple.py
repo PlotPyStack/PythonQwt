@@ -52,6 +52,6 @@ class SimplePlot(qwt.QwtPlot):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    app = test_widget(SimplePlot, size=(600, 400))
+    tests.test_widget(SimplePlot, size=(600, 400))

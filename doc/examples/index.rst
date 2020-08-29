@@ -6,18 +6,25 @@ Examples
 The test launcher
 -----------------
 
-A lot of examples are available in the `qwt.test` module ::
+A lot of examples are available in the ``qwt.test`` module ::
 
     from qwt import tests
     tests.run()
 
-The two lines above execute the `PythonQwt` test launcher:
+The two lines above execute the ``PythonQwt`` test launcher:
 
 .. image:: /../qwt/tests/data/testlauncher.png
 
+GUI-based test launcher can be executed from the command line thanks to the 
+``PythonQwt-py3`` test script (or ``PythonQwt-py2`` for Python 2).
+
+Unit tests may be executed from the commande line thanks to the console-based script 
+``PythonQwt-tests-py3``: ``PythonQwt-tests-py3 --mode unattended``.
 
 Tests
 -----
+
+
 
 Here are some examples from the `qwt.test` module:
 

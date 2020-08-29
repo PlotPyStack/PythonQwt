@@ -21,6 +21,7 @@ from qtpy.QtWidgets import (
     QLineEdit,
 )
 from qtpy.QtCore import Qt
+from qwt import tests
 
 import os
 
@@ -133,7 +134,7 @@ class CurveBenchmark1(QMainWindow):
     TITLE = "Curve benchmark"
     SIZE = (1000, 500)
 
-    def __init__(self, max_n=1000000, parent=None, **kwargs):
+    def __init__(self, max_n=1000000, parent=None, unattended=False, **kwargs):
         super(CurveBenchmark1, self).__init__(parent=parent)
         title = self.TITLE
         if kwargs.get("only_lines", False):
@@ -153,10 +154,7 @@ class CurveBenchmark1(QMainWindow):
         self.run_benchmark(max_n, **kwargs)
         dt = time.time() - t0g
         self.text.append("<br><br><u>Total elapsed time</u>: %d ms" % (dt * 1e3))
-        if os.environ.get("TEST_UNATTENDED") is None:
-            self.tabs.setCurrentIndex(0)
-        else:
-            self.tabs.setCurrentIndex(1)
+        self.tabs.setCurrentIndex(0 if unattended else 1)
 
     def process_iteration(self, title, description, widget, t0):
         self.tabs.addTab(widget, title)

@@ -10,8 +10,7 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import time
 
-from qtpy.QtGui import QPen, QBrush
-from qtpy.QtCore import QSize, Qt
+from qtpy.QtCore import Qt
 
 from qwt.tests import curvebenchmark1 as cb
 
@@ -64,8 +63,10 @@ class CurveBenchmark2(cb.CurveBenchmark1):
     TITLE = "Curve styles"
     SIZE = (1000, 800)
 
-    def __init__(self, max_n=1000, parent=None, **kwargs):
-        super(CurveBenchmark2, self).__init__(max_n=max_n, parent=parent, **kwargs)
+    def __init__(self, max_n=1000, parent=None, unattended=False, **kwargs):
+        super(CurveBenchmark2, self).__init__(
+            max_n=max_n, parent=parent, unattended=unattended, **kwargs
+        )
 
     def run_benchmark(self, max_n, **kwargs):
         for points, symbols in zip(
@@ -85,6 +86,6 @@ class CurveBenchmark2(cb.CurveBenchmark1):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    app = test_widget(CurveBenchmark2, options=False)
+    tests.test_widget(CurveBenchmark2, options=False)

@@ -25,9 +25,6 @@ from qwt import (
     QwtText,
 )
 
-TIMER_INTERVAL = 1000
-SHOW_ALL_CURVES = False
-
 
 class CpuStat:
     User = 0
@@ -285,16 +282,14 @@ class CpuCurve(QwtPlotCurve):
         self.setBrush(c)
 
 
-HISTORY = 60
-
-
 class CpuPlot(QwtPlot):
-    def __init__(self, *args):
+    HISTORY = 60
+    def __init__(self, *args, unattended=False):
         QwtPlot.__init__(self, *args)
 
         self.curves = {}
         self.data = {}
-        self.timeData = 1.0 * np.arange(HISTORY - 1, -1, -1)
+        self.timeData = 1.0 * np.arange(self.HISTORY - 1, -1, -1)
         self.cpuStat = CpuStat()
 
         self.setAutoReplot(False)
@@ -307,7 +302,7 @@ class CpuPlot(QwtPlot):
 
         self.setAxisTitle(QwtPlot.xBottom, "System Uptime [h:m:s]")
         self.setAxisScaleDraw(QwtPlot.xBottom, TimeScaleDraw(self.cpuStat.upTime()))
-        self.setAxisScale(QwtPlot.xBottom, 0, HISTORY)
+        self.setAxisScale(QwtPlot.xBottom, 0, self.HISTORY)
         self.setAxisLabelRotation(QwtPlot.xBottom, -50.0)
         self.setAxisLabelAlignment(QwtPlot.xBottom, Qt.AlignLeft | Qt.AlignBottom)
 
@@ -324,35 +319,35 @@ class CpuPlot(QwtPlot):
         curve.setColor(Qt.red)
         curve.attach(self)
         self.curves["System"] = curve
-        self.data["System"] = np.zeros(HISTORY, np.float)
+        self.data["System"] = np.zeros(self.HISTORY, np.float)
 
         curve = CpuCurve("User")
         curve.setColor(Qt.blue)
         curve.setZ(curve.z() - 1.0)
         curve.attach(self)
         self.curves["User"] = curve
-        self.data["User"] = np.zeros(HISTORY, np.float)
+        self.data["User"] = np.zeros(self.HISTORY, np.float)
 
         curve = CpuCurve("Total")
         curve.setColor(Qt.black)
         curve.setZ(curve.z() - 2.0)
         curve.attach(self)
         self.curves["Total"] = curve
-        self.data["Total"] = np.zeros(HISTORY, np.float)
+        self.data["Total"] = np.zeros(self.HISTORY, np.float)
 
         curve = CpuCurve("Idle")
         curve.setColor(Qt.darkCyan)
         curve.setZ(curve.z() - 3.0)
         curve.attach(self)
         self.curves["Idle"] = curve
-        self.data["Idle"] = np.zeros(HISTORY, np.float)
+        self.data["Idle"] = np.zeros(self.HISTORY, np.float)
 
         self.showCurve(self.curves["System"], True)
         self.showCurve(self.curves["User"], True)
-        self.showCurve(self.curves["Total"], False or SHOW_ALL_CURVES)
-        self.showCurve(self.curves["Idle"], False or SHOW_ALL_CURVES)
+        self.showCurve(self.curves["Total"], False or unattended)
+        self.showCurve(self.curves["Idle"], False or unattended)
 
-        self.startTimer(TIMER_INTERVAL)
+        self.startTimer(20 if unattended else 1000)
 
         legend.checked.connect(self.showCurve)
         self.replot()
@@ -382,11 +377,11 @@ class CpuPlot(QwtPlot):
 
 
 class CpuDemo(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, unattended=False):
         super(CpuDemo, self).__init__(parent)
         layout = QVBoxLayout()
         self.setLayout(layout)
-        plot = CpuPlot()
+        plot = CpuPlot(unattended=unattended)
         plot.setTitle("History")
         layout.addWidget(plot)
         label = QLabel("Press the legend to en/disable a curve")
@@ -394,9 +389,6 @@ class CpuDemo(QWidget):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    if os.environ.get("TEST_UNATTENDED") is not None:
-        SHOW_ALL_CURVES = True
-        TIMER_INTERVAL = 20
-    app = test_widget(CpuDemo, (600, 400))
+    app = tests.test_widget(CpuDemo, (600, 400))

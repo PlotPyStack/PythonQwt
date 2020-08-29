@@ -96,6 +96,6 @@ class MapDemo(QMainWindow):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    app = test_widget(MapDemo, size=(600, 600))
+    tests.test_widget(MapDemo, size=(600, 600))

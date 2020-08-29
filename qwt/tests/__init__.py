@@ -16,40 +16,31 @@ import os.path as osp
 import sys
 import subprocess
 import platform
-from qtpy.QtWidgets import (
-    QApplication,
-    QWidget,
-    QMainWindow,
-    QVBoxLayout,
-    QFormLayout,
-    QCheckBox,
-    QGroupBox,
-    QGridLayout,
-    QToolButton,
-    QStyle,
-    QToolBar,
-    QAction,
-    QMessageBox,
-)
-from qtpy.QtGui import QIcon, QPixmap
-from qtpy.QtCore import Qt, QSize, QTimer
-from qtpy import PYQT5
+import argparse
+import inspect
+
+from qtpy import QtWidgets as QW
+from qtpy import QtGui as QG
+from qtpy import QtCore as QC
+from qtpy import PYQT5, PYSIDE2
+
 from qwt import QwtPlot
+
+if PYSIDE2:
+    import PySide2
+
+    PYTHON_QT_API = "PySide2 v" + PySide2.__version__
+elif PYQT5:
+    from PyQt5.QtCore import PYQT_VERSION_STR
+
+    PYTHON_QT_API = "PyQt5 v" + PYQT_VERSION_STR
+else:
+    from PyQt4.QtCore import PYQT_VERSION_STR
+
+    PYTHON_QT_API = "PyQt4 v" + PYQT_VERSION_STR
 
 
 TEST_PATH = osp.abspath(osp.dirname(__file__))
-
-
-def run_test(fname, wait=False):
-    """Run test"""
-    os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
-    args = " ".join([sys.executable, '"' + fname + '"'])
-    if os.environ.get("TEST_UNATTENDED") is not None:
-        print(args)
-    if wait:
-        subprocess.call(args, shell=True)
-    else:
-        subprocess.Popen(args, shell=True)
 
 
 def get_tests(package):
@@ -74,7 +65,16 @@ def get_tests(package):
     return tests
 
 
-def run_all_tests(wait):
+def run_test(fname, wait=True):
+    """Run test"""
+    os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
+    args = " ".join([sys.executable, '"' + fname + '"'])
+    if TestEnvironment().unattended:
+        print("    " + args)
+    (subprocess.call if wait else subprocess.Popen)(args, shell=True)
+
+
+def run_all_tests(wait=True):
     """Run all PythonQwt tests"""
     import qwt
 
@@ -82,7 +82,7 @@ def run_all_tests(wait):
         run_test(fname, wait=wait)
 
 
-class TestLauncher(QMainWindow):
+class TestLauncher(QW.QMainWindow):
     """PythonQwt Test Launcher main window"""
 
     ROWS = 5
@@ -94,8 +94,8 @@ class TestLauncher(QMainWindow):
         self.setObjectName("TestLauncher")
         self.setWindowIcon(self.get_std_icon("FileDialogListView"))
         self.setWindowTitle("PythonQwt %s - Test Launcher" % __version__)
-        self.setCentralWidget(QWidget())
-        self.grid_layout = QGridLayout()
+        self.setCentralWidget(QW.QWidget())
+        self.grid_layout = QW.QGridLayout()
         self.centralWidget().setLayout(self.grid_layout)
         self.test_nb = None
         self.fill_layout()
@@ -104,7 +104,7 @@ class TestLauncher(QMainWindow):
 
     def get_std_icon(self, name):
         """Return Qt standard icon"""
-        return self.style().standardIcon(getattr(QStyle, "SP_" + name))
+        return self.style().standardIcon(getattr(QW.QStyle, "SP_" + name))
 
     def fill_layout(self):
         """Fill grid layout"""
@@ -112,15 +112,15 @@ class TestLauncher(QMainWindow):
 
         for fname in get_tests(qwt):
             self.add_test(fname)
-        toolbar = QToolBar(self)
-        all_act = QAction(self.get_std_icon("DialogYesButton"), "", self)
+        toolbar = QW.QToolBar(self)
+        all_act = QW.QAction(self.get_std_icon("DialogYesButton"), "", self)
         all_act.setIconText("Run all tests")
         all_act.triggered.connect(lambda checked: run_all_tests(wait=False))
-        folder_act = QAction(self.get_std_icon("DirOpenIcon"), "", self)
+        folder_act = QW.QAction(self.get_std_icon("DirOpenIcon"), "", self)
         folder_act.setIconText("Open tests folder")
         open_test_folder = lambda checked: os.startfile(TEST_PATH)
         folder_act.triggered.connect(open_test_folder)
-        about_act = QAction(self.get_std_icon("FileDialogInfoView"), "", self)
+        about_act = QW.QAction(self.get_std_icon("FileDialogInfoView"), "", self)
         about_act.setIconText("About")
         about_act.triggered.connect(self.about)
         for action in (all_act, folder_act, None, about_act):
@@ -128,7 +128,7 @@ class TestLauncher(QMainWindow):
                 toolbar.addSeparator()
             else:
                 toolbar.addAction(action)
-        toolbar.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+        toolbar.setToolButtonStyle(QC.Qt.ToolButtonTextBesideIcon)
         self.addToolBar(toolbar)
 
     def add_test(self, fname):
@@ -139,16 +139,16 @@ class TestLauncher(QMainWindow):
         row = (self.test_nb - 1) % self.ROWS
         column = (self.test_nb - 1) // self.ROWS
         bname = osp.basename(fname)
-        button = QToolButton(self)
-        button.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        button = QW.QToolButton(self)
+        button.setToolButtonStyle(QC.Qt.ToolButtonTextUnderIcon)
         shot = osp.join(TEST_PATH, "data", bname.replace(".py", ".png"))
         if osp.isfile(shot):
-            button.setIcon(QIcon(shot))
+            button.setIcon(QG.QIcon(shot))
         else:
             button.setIcon(self.get_std_icon("DialogYesButton"))
         button.setText(bname)
         button.setToolTip(fname)
-        button.setIconSize(QSize(130, 80))
+        button.setIconSize(QC.QSize(130, 80))
         button.clicked.connect(lambda checked=None, fname=fname: run_test(fname))
         self.grid_layout.addWidget(button, row, column)
 
@@ -156,53 +156,40 @@ class TestLauncher(QMainWindow):
         """About test launcher"""
         from qtpy.QtCore import __version__ as qt_version
 
-        QMessageBox.about(
+        QW.QMessageBox.about(
             self,
             "About " + self.windowTitle(),
             """<b>%s</b><p>Developped by Pierre Raybaut
               <br>Copyright &copy; 2020 Pierre Raybaut
-              <p>Python %s, Qt %s on %s"""
+              <p>Python %s, Qt %s, %s on %s"""
             % (
                 self.windowTitle(),
                 platform.python_version(),
                 qt_version,
+                PYTHON_QT_API,
                 platform.system(),
             ),
         )
 
 
-def run(wait=True):
-    """Run PythonQwt tests or test launcher (requires `guidata`)"""
-    app = QApplication([])
-    launcher = TestLauncher()
-    launcher.show()
-    unattended = os.environ.get("TEST_UNATTENDED") is not None
-    if unattended:
-        QTimer.singleShot(100, lambda: take_screenshot(launcher))
-    app.exec_()
-    launcher.close()
-    if unattended:
-        run_all_tests(wait=wait)
-
-
-class TestOptions(QGroupBox):
+class TestOptions(QW.QGroupBox):
     """Test options groupbox"""
 
     def __init__(self, parent=None):
         super(TestOptions, self).__init__("Test options", parent)
-        self.setLayout(QFormLayout())
+        self.setLayout(QW.QFormLayout())
         self.hide()
 
     def add_checkbox(self, title, label, slot):
         """Add new checkbox to option panel"""
-        widget = QCheckBox(label, self)
+        widget = QW.QCheckBox(label, self)
         widget.stateChanged.connect(slot)
         self.layout().addRow(title, widget)
         self.show()
         return widget
 
 
-class TestCentralWidget(QWidget):
+class TestCentralWidget(QW.QWidget):
     """Test central widget"""
 
     def __init__(self, widget_name, parent=None):
@@ -210,7 +197,7 @@ class TestCentralWidget(QWidget):
         self.widget_name = widget_name
         self.plots = None
         self.widget_of_interest = self.parent()
-        self.setLayout(QVBoxLayout())
+        self.setLayout(QW.QVBoxLayout())
         self.options = TestOptions(self)
         self.add_widget(self.options)
 
@@ -238,24 +225,29 @@ def take_screenshot(widget):
     if PYQT5:
         pixmap = widget.grab()
     else:
-        pixmap = QPixmap.grabWidget(widget)
+        pixmap = QG.QPixmap.grabWidget(widget)
     bname = (widget.objectName().lower() + ".png").replace("window", "")
     bname = bname.replace("plot", "").replace("widget", "")
     pixmap.save(osp.join(TEST_PATH, "data", bname))
-    QTimer.singleShot(0, QApplication.instance().quit)
+    QC.QTimer.singleShot(0, QW.QApplication.instance().quit)
 
 
-def test_widget(widget_class, size=None, title=None, options=True, timeout=1000):
+def test_widget(widget_class, size=None, title=None, options=True):
     """Test widget"""
     widget_name = widget_class.__name__
-    app = QApplication([])
-    window = widget = widget_class()
+    app = QW.QApplication([])
+    test_env = TestEnvironment()
+    if inspect.signature(widget_class).parameters.get("unattended") is None:
+        widget = widget_class()
+    else:
+        widget = widget_class(unattended=test_env.unattended)
+    window = widget
     if options:
-        if isinstance(widget, QMainWindow):
+        if isinstance(widget, QW.QMainWindow):
             widget = window.centralWidget()
             widget.setParent(None)
         else:
-            window = QMainWindow()
+            window = QW.QMainWindow()
         central_widget = TestCentralWidget(widget_name, parent=window)
         central_widget.add_widget(widget)
         window.setCentralWidget(central_widget)
@@ -273,10 +265,72 @@ def test_widget(widget_class, size=None, title=None, options=True, timeout=1000)
         window.resize(width, height)
 
     window.show()
-    if os.environ.get("TEST_UNATTENDED") is not None:
-        QTimer.singleShot(timeout, lambda: take_screenshot(widget_of_interest))
+    if test_env.screenshots:
+        QC.QTimer.singleShot(1000, lambda: take_screenshot(widget_of_interest))
+    elif test_env.unattended:
+        QC.QTimer.singleShot(0, QW.QApplication.instance().quit)
     app.exec_()
     return app
+
+
+class TestEnvironment(object):
+    UNATTENDED_ARG = "unattended"
+    SCREENSHOTS_ARG = "screenshots"
+    UNATTENDED_ENV = "PYTHONQWT_UNATTENDED_TESTS"
+    SCREENSHOTS_ENV = "PYTHONQWT_TAKE_SCREENSHOTS"
+
+    def __init__(self):
+        self.parse_args()
+
+    @property
+    def unattended(self):
+        return os.environ.get(self.UNATTENDED_ENV) is not None
+
+    @property
+    def screenshots(self):
+        return os.environ.get(self.SCREENSHOTS_ENV) is not None
+
+    def parse_args(self):
+        """Parse command line arguments"""
+        parser = argparse.ArgumentParser(description="Run PythonQwt tests")
+        parser.add_argument(
+            "--mode",
+            choices=[self.UNATTENDED_ARG, self.SCREENSHOTS_ARG],
+            required=False,
+        )
+        args = parser.parse_args()
+        if args.mode is not None:
+            self.set_env_from_args(args)
+
+    def set_env_from_args(self, args):
+        """Set appropriate environment variables"""
+        for name in (self.UNATTENDED_ENV, self.SCREENSHOTS_ENV):
+            if name in os.environ:
+                os.environ.pop(name)
+        if args.mode == self.UNATTENDED_ARG:
+            os.environ[self.UNATTENDED_ENV] = "1"
+        if args.mode == self.SCREENSHOTS_ARG:
+            os.environ[self.SCREENSHOTS_ENV] = os.environ[self.UNATTENDED_ENV] = "1"
+
+
+def run(wait=True):
+    """Run PythonQwt tests or test launcher"""
+    app = QW.QApplication([])
+    launcher = TestLauncher()
+    launcher.show()
+    test_env = TestEnvironment()
+    if test_env.screenshots:
+        print("Running PythonQwt tests and taking screenshots automatically:")
+        print("-------------------------------------------------------------")
+        QC.QTimer.singleShot(100, lambda: take_screenshot(launcher))
+    elif test_env.unattended:
+        print("Running PythonQwt tests in unattended mode:")
+        print("-------------------------------------------")
+        QC.QTimer.singleShot(0, QW.QApplication.instance().quit)
+    app.exec_()
+    launcher.close()
+    if test_env.unattended:
+        run_all_tests(wait=wait)
 
 
 if __name__ == "__main__":

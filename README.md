@@ -55,10 +55,16 @@ from qwt import tests
 tests.run()
 ```
 
-or from the command line:
+or from the command line (script name depends on Python major version number):
 
 ```bash
-PythonQwt-tests
+PythonQwt-py3
+```
+
+Tests may also be executed in unattended mode:
+
+```bash
+PythonQwt-tests-py3 --mode unattended
 ```
 
 ## Overview

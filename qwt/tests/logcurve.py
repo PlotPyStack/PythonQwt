@@ -12,7 +12,6 @@ import numpy as np
 
 np.seterr(all="raise")
 
-from qtpy.QtGui import QPen
 from qtpy.QtCore import Qt
 from qwt import QwtPlot, QwtPlotCurve, QwtLogScaleEngine
 
@@ -31,6 +30,6 @@ class LogCurvePlot(QwtPlot):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    app = test_widget(LogCurvePlot, size=(800, 500))
+    tests.test_widget(LogCurvePlot, size=(800, 500))

@@ -11,7 +11,7 @@ SHOW = True  # Show test in GUI-based test launcher
 import numpy as np
 
 from qtpy.QtWidgets import QFrame
-from qtpy.QtGui import QPen, QBrush, QFont, QPainter, QPaintEngine
+from qtpy.QtGui import QPen, QBrush, QFont, QPainter
 from qtpy.QtCore import QSize, Qt
 from qwt import QwtSymbol, QwtPlotCurve, QwtPlotItem, QwtScaleMap
 
@@ -119,6 +119,6 @@ class CurveDemo1(QFrame):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    app = test_widget(CurveDemo1, size=(300, 600), options=False)
+    tests.test_widget(CurveDemo1, size=(300, 600), options=False)

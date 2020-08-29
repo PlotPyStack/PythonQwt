@@ -114,8 +114,11 @@ setup(
     extras_require={"Doc": ["Sphinx>=1.1"],},
     entry_points={
         "gui_scripts": [
+            "PythonQwt-py%d = qwt.tests:run [Tests]" % sys.version_info.major,
+        ],
+        "console_scripts": [
             "PythonQwt-tests-py%d = qwt.tests:run [Tests]" % sys.version_info.major,
-        ]
+        ],
     },
     author="Pierre Raybaut",
     author_email="pierre.raybaut@gmail.com",

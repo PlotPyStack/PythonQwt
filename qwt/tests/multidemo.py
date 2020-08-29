@@ -70,6 +70,6 @@ class MultiDemo(QWidget):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    app = test_widget(MultiDemo, size=(400, 300))
+    tests.test_widget(MultiDemo, size=(400, 300))

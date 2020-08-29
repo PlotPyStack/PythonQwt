@@ -10,7 +10,6 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
 
-from qtpy.QtGui import QPen
 from qtpy.QtCore import Qt
 from qwt import QwtPlot, QwtScaleDraw, QwtPlotGrid, QwtPlotCurve, QwtPlotItem
 
@@ -101,6 +100,6 @@ class CartesianPlot(QwtPlot):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
+    from qwt import tests
 
-    test_widget(CartesianPlot, (800, 480))
+    tests.test_widget(CartesianPlot, (800, 480))

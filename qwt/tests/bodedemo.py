@@ -21,9 +21,9 @@ from qtpy.QtWidgets import (
     QHBoxLayout,
     QLabel,
 )
-from qtpy.QtGui import QPen, QBrush, QFont, QIcon, QPixmap
+from qtpy.QtGui import QPen, QFont, QIcon, QPixmap
 from qtpy.QtPrintSupport import QPrinter, QPrintDialog
-from qtpy.QtCore import QSize, Qt
+from qtpy.QtCore import Qt
 from qwt import (
     QwtPlot,
     QwtPlotMarker,
@@ -279,7 +279,6 @@ class BodeDemo(QMainWindow):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
-    import os
+    from qwt import tests
 
-    app = test_widget(BodeDemo, (640, 480))
+    tests.test_widget(BodeDemo, (640, 480))

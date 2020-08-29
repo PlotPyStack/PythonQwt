@@ -23,11 +23,9 @@ from qwt import (
     QwtAbstractScaleDraw,
 )
 
-TIMER_INTERVAL = 50
-
 
 class DataPlot(QwtPlot):
-    def __init__(self, *args):
+    def __init__(self, *args, unattended=False):
         QwtPlot.__init__(self, *args)
 
         self.setCanvasBackground(Qt.white)
@@ -62,7 +60,7 @@ class DataPlot(QwtPlot):
         self.setAxisTitle(QwtPlot.xBottom, "Time (seconds)")
         self.setAxisTitle(QwtPlot.yLeft, "Values")
 
-        self.startTimer(TIMER_INTERVAL)
+        self.startTimer(10 if unattended else 50)
         self.phase = 0.0
 
     def alignScales(self):
@@ -98,9 +96,6 @@ class DataPlot(QwtPlot):
 
 
 if __name__ == "__main__":
-    from qwt.tests import test_widget
-    import os
+    from qwt import tests
 
-    if os.environ.get("TEST_UNATTENDED") is not None:
-        TIMER_INTERVAL = 10
-    app = test_widget(DataPlot, size=(500, 300))
+    app = tests.test_widget(DataPlot, size=(500, 300))
