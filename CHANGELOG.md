@@ -6,6 +6,8 @@
 - Added command-line options to the `PythonQwt-tests-py3` script to run all the tests 
   simultenously in unattended mode (`--mode unattended`) or to update all the 
   screenshots (`--mode screenshots`).
+- Added internal scripts for automated test in virtual environments with both PyQt5 and 
+  PySide2.
 
 ### Version 0.8.1 ###
 

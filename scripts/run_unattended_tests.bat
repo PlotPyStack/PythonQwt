@@ -1,13 +1,11 @@
 @echo off
-
 setlocal
-set PYTHONPATH=%cd%
+call %~dp0func SetPythonPath
+cd %~dp0..\
 
 if not defined WINPYDIRBASE ( goto :no )
-
 choice /t 5 /c yn /cs /d n /m "Do you want to run tests only from %WINPYDIRBASE% (y/n)?"
 if errorlevel 2 goto :no
-
 :yes
 call %WINPYDIRBASE%\scripts\env.bat
 python qwt/tests/__init__.py --mode unattended
