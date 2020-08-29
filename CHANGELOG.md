@@ -1,5 +1,12 @@
 # PythonQwt Releases #
 
+### Version 0.8.2 ###
+
+- Added new GUI-based test script `PythonQwt-py3` to run the test launcher.
+- Added command-line options to the `PythonQwt-tests-py3` script to run all the tests 
+  simultenously in unattended mode (`--mode unattended`) or to update all the 
+  screenshots (`--mode screenshots`).
+
 ### Version 0.8.1 ###
 
 - PySide2 support was significatively improved betwen PythonQwt V0.8.0 and 
