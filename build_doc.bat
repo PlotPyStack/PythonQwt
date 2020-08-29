@@ -12,9 +12,9 @@ set PATH=C:\Program Files\7-Zip;C:\Program Files (x86)\7-Zip;C:\Program Files\HT
 set PYTHONPATH=%cd%
 sphinx-build -b htmlhelp doc build\doc
 hhc build\doc\PythonQwt.hhp
-copy build\doc\PythonQwt.chm doc
-7z a doc\PythonQwt.chm.zip doc\PythonQwt.chm
-move doc\PythonQwt.chm .
+copy /y build\doc\PythonQwt.chm doc\_downloads
+7z a doc\_downloads\PythonQwt.chm.zip doc\_downloads\PythonQwt.chm
+move /y doc\PythonQwt.chm .
 sphinx-build -b html doc build\doc
 @echo:
 @echo ==============================================================================
