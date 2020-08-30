@@ -2,7 +2,7 @@
 
 ### Version 0.8.3 ###
 
-- Fixed simple plot example (setup.py & plot.py's doc page) following the introduction 
+- Fixed simple plot examples (setup.py & plot.py's doc page) following the introduction 
   of the new QtPy dependency (Qt compatibility layer) since V0.8.0.
 
 ### Version 0.8.2 ###
