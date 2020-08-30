@@ -1,5 +1,10 @@
 # PythonQwt Releases #
 
+### Version 0.8.3 ###
+
+- Fixed simple plot example (setup.py & plot.py's doc page) following the introduction 
+  of the new QtPy dependency (Qt compatibility layer) since V0.8.0.
+
 ### Version 0.8.2 ###
 
 - Added new GUI-based test script `PythonQwt-py3` to run the test launcher.

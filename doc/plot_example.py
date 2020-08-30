@@ -1,7 +1,8 @@
+from qtpy import QtWidgets as QW
 import qwt
 import numpy as np
 
-app = qtpy.QtGui.QApplication([])
+app = QW.QApplication([])
 x = np.linspace(-10, 10, 500)
 plot = qwt.QwtPlot("Trigonometric functions")
 plot.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.BottomLegend)

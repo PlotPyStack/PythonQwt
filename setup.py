@@ -51,10 +51,11 @@ See `README`_ and documentation (`online`_ or `PDF`_) for more details on the li
     
 The following example is a good starting point to see how to set up a simple plot widget::
 
+    from qtpy import QtWidgets as QW
     import qwt
     import numpy as np
 
-    app = qtpy.QtGui.QApplication([])
+    app = QW.QApplication([])
     x = np.linspace(-10, 10, 500)
     plot = qwt.QwtPlot("Trigonometric functions")
     plot.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.BottomLegend)
@@ -62,6 +63,7 @@ The following example is a good starting point to see how to set up a simple plo
     qwt.QwtPlotCurve.make(x, np.sin(x), "Sinus", plot, linecolor="blue", antialiased=True)
     plot.resize(600, 300)
     plot.show()
+    app.exec_()
     
 .. image:: https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/QwtPlot_example.png
 
