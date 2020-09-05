@@ -417,6 +417,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         Build and/or assign a pen, depending on the arguments.
         
         .. py:method:: setPen(color, width, style)
+            :noindex:
         
             Build and assign a pen
     
@@ -429,6 +430,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :param Qt.PenStyle style: Pen style
         
         .. py:method:: setPen(pen)
+            :noindex:
         
             Assign a pen
     

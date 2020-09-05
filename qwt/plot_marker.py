@@ -536,6 +536,7 @@ class QwtPlotMarker(QwtPlotItem):
         Build and/or assigna a line pen, depending on the arguments.
         
         .. py:method:: setLinePen(color, width, style)
+            :noindex:
         
             Build and assign a line pen
     
@@ -548,6 +549,7 @@ class QwtPlotMarker(QwtPlotItem):
             :param Qt.PenStyle style: Pen style
         
         .. py:method:: setLinePen(pen)
+            :noindex:
         
             Specify a pen for the line.
     

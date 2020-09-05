@@ -267,6 +267,7 @@ class QwtGraphic(QwtNullPaintDevice):
         Initializes a null graphic
         
     .. py:class:: QwtGraphic(other)
+        :noindex:
     
         Copy constructor
         
@@ -423,12 +424,14 @@ class QwtGraphic(QwtNullPaintDevice):
     def render(self, *args):
         """
         .. py:method:: render(painter)
+            :noindex:
         
             Replay all recorded painter commands
             
             :param QPainter painter: Qt painter
         
         .. py:method:: render(painter, size, aspectRatioMode)
+            :noindex:
         
             Replay all recorded painter commands
             
@@ -440,6 +443,7 @@ class QwtGraphic(QwtNullPaintDevice):
             :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale
         
         .. py:method:: render(painter, rect, aspectRatioMode)
+            :noindex:
         
             Replay all recorded painter commands
             
@@ -450,6 +454,7 @@ class QwtGraphic(QwtNullPaintDevice):
             :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale        
         
         .. py:method:: render(painter, pos, aspectRatioMode)
+            :noindex:
         
             Replay all recorded painter commands
             
@@ -599,6 +604,7 @@ class QwtGraphic(QwtNullPaintDevice):
     def toImage(self, *args):
         """
         .. py:method:: toImage()
+            :noindex:
         
             Convert the graphic to a `QImage`
 
@@ -613,6 +619,7 @@ class QwtGraphic(QwtNullPaintDevice):
             :return: The graphic as image in default size
 
         .. py:method:: toImage(size, [aspectRatioMode=Qt.IgnoreAspectRatio])
+            :noindex:
         
             Convert the graphic to a `QImage`
 

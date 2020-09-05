@@ -35,6 +35,7 @@ class QwtScaleMap(object):
         :param qwt.scale_map.QwtScaleMap other: Other scale map
     
     .. py:class:: QwtScaleMap(p1, p2, s1, s2)
+        :noindex:
     
         Constructor (was provided by `PyQwt` but not by `Qwt`)
         

@@ -485,7 +485,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
       * `QwtScaleDraw.LeftScale`: The scale is left
       * `QwtScaleDraw.RightScale`: The scale is right
       
-    .. py:class:: QwtAbstractScaleDraw()
+    .. py:class:: QwtScaleDraw()
     
         The range of the scale is initialized to [0, 100],
         The position is at (0, 0) with a length of 100.
@@ -861,11 +861,13 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             backbone.
         
         .. py:method:: move(x, y)
+            :noindex:
         
             :param float x: X coordinate
             :param float y: Y coordinate
         
         .. py:method:: move(pos)
+            :noindex:
         
             :param QPointF pos: position
         

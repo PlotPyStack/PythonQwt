@@ -1146,6 +1146,7 @@ class QwtTextLabel(QFrame):
         :param QWidget parent: Parent widget
 
     .. py:class:: QwtTextLabel([text=None], [parent=None])
+        :noindex:
     
         :param str text: Text
         :param QWidget parent: Parent widget

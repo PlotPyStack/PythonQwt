@@ -51,10 +51,12 @@ class QwtDynGridLayout(QLayout):
 		:param int spacing: spacing
 
     .. py:class:: QwtDynGridLayout(spacing)
+        :noindex:
     
 		:param int spacing: spacing
 
     .. py:class:: QwtDynGridLayout()
+        :noindex:
     
 		Initialize the layout with default values.
 	

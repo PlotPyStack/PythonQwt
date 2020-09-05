@@ -221,6 +221,7 @@ class QwtPlotGrid(QwtPlotItem):
         Build and/or assign a pen for both major and minor grid lines
         
         .. py:method:: setPen(color, width, style)
+            :noindex:
         
             Build and assign a pen for both major and minor grid lines
     
@@ -233,6 +234,7 @@ class QwtPlotGrid(QwtPlotItem):
             :param Qt.PenStyle style: Pen style
         
         .. py:method:: setPen(pen)
+            :noindex:
         
             Assign a pen for both major and minor grid lines
     
@@ -263,6 +265,7 @@ class QwtPlotGrid(QwtPlotItem):
         Build and/or assign a pen for both major grid lines
         
         .. py:method:: setMajorPen(color, width, style)
+            :noindex:
         
             Build and assign a pen for both major grid lines
     
@@ -275,6 +278,7 @@ class QwtPlotGrid(QwtPlotItem):
             :param Qt.PenStyle style: Pen style
         
         .. py:method:: setMajorPen(pen)
+            :noindex:
         
             Assign a pen for the major grid lines
     
@@ -305,6 +309,7 @@ class QwtPlotGrid(QwtPlotItem):
         Build and/or assign a pen for both minor grid lines
         
         .. py:method:: setMinorPen(color, width, style)
+            :noindex:
         
             Build and assign a pen for both minor grid lines
     
@@ -317,6 +322,7 @@ class QwtPlotGrid(QwtPlotItem):
             :param Qt.PenStyle style: Pen style
         
         .. py:method:: setMinorPen(pen)
+            :noindex:
         
             Assign a pen for the minor grid lines
     

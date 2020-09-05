@@ -69,6 +69,7 @@ class QwtScaleWidget(QWidget):
         :type parent: QWidget or None
         
     .. py:class:: QwtScaleWidget(align, parent)
+        :noindex:
     
         :param int align: Alignment
         :param QWidget parent: Parent widget

@@ -48,22 +48,26 @@ class QwtScaleDiv(object):
         Basic constructor. Lower bound = Upper bound = 0.
 
     .. py:class:: QwtScaleDiv(interval, ticks)
+        :noindex:
     
         :param qwt.interval.QwtInterval interval: Interval
         :param list ticks: list of major, medium and minor ticks
 
     .. py:class:: QwtScaleDiv(lowerBound, upperBound)
+        :noindex:
     
         :param float lowerBound: First boundary
         :param float upperBound: Second boundary
 
     .. py:class:: QwtScaleDiv(lowerBound, upperBound, ticks)
+        :noindex:
     
         :param float lowerBound: First boundary
         :param float upperBound: Second boundary
         :param list ticks: list of major, medium and minor ticks
 
     .. py:class:: QwtScaleDiv(lowerBound, upperBound, minorTicks, mediumTicks, majorTicks)
+        :noindex:
     
         :param float lowerBound: First boundary
         :param float upperBound: Second boundary
@@ -116,11 +120,13 @@ class QwtScaleDiv(object):
         Change the interval
 
         .. py:method:: setInterval(lowerBound, upperBound)
+            :noindex:
     
             :param float lowerBound: First boundary
             :param float upperBound: Second boundary
 
         .. py:method:: setInterval(interval)
+            :noindex:
     
             :param qwt.interval.QwtInterval interval: Interval
 

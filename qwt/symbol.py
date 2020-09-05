@@ -469,6 +469,7 @@ class QwtSymbol(object):
         :param int style: Symbol Style
             
     .. py:class:: QwtSymbol(style, brush, pen, size)
+        :noindex:
     
         :param int style: Symbol Style
         :param QBrush brush: Brush to fill the interior
@@ -476,6 +477,7 @@ class QwtSymbol(object):
         :param QSize size: Size
             
     .. py:class:: QwtSymbol(path, brush, pen)
+        :noindex:
     
         :param QPainterPath path: Painter path
         :param QBrush brush: Brush to fill the interior
@@ -799,11 +801,13 @@ class QwtSymbol(object):
         Specify the symbol's size
 
         .. py:method:: setSize(width, [height=-1])
+            :noindex:
         
             :param int width: Width
             :param int height: Height
 
         .. py:method:: setSize(size)
+            :noindex:
         
             :param QSize size: Size
 
@@ -874,6 +878,7 @@ class QwtSymbol(object):
         Build and/or assign a pen, depending on the arguments.
         
         .. py:method:: setPen(color, width, style)
+            :noindex:
         
             Build and assign a pen
     
@@ -886,6 +891,7 @@ class QwtSymbol(object):
             :param Qt.PenStyle style: Pen style
         
         .. py:method:: setPen(pen)
+            :noindex:
         
             Assign a pen
     

@@ -70,12 +70,14 @@ class QwtPainterCommand(object):
         Construct an invalid command
         
     .. py:class:: QwtPainterCommand(path)
+        :noindex:
     
         Copy constructor
         
         :param QPainterPath path: Source
         
     .. py:class:: QwtPainterCommand(rect, pixmap, subRect)
+        :noindex:
     
         Constructor for Pixmap paint operation
         
@@ -84,6 +86,7 @@ class QwtPainterCommand(object):
         :param QRectF subRect: Rectangle inside the pixmap
         
     .. py:class:: QwtPainterCommand(rect, image, subRect, flags)
+        :noindex:
     
         Constructor for Image paint operation
         
@@ -93,6 +96,7 @@ class QwtPainterCommand(object):
         :param Qt.ImageConversionFlags flags: Conversion flags
         
     .. py:class:: QwtPainterCommand(state)
+        :noindex:
     
         Constructor for State paint operation
         

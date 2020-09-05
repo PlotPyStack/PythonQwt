@@ -232,6 +232,7 @@ class QwtLinearColorMap(QwtColorMap):
         :param int format_: Preferred format of the color map (:py:data:`QwtColorMap.RGB` or :py:data:`QwtColorMap.Indexed`)
     
     .. py:class:: QwtLinearColorMap(color1, color2, [format_=QwtColorMap.RGB]):
+        :noindex:
         
         Build a color map with two stops at 0.0 and 1.0.
         
