@@ -321,11 +321,9 @@ def run(wait=True):
     test_env = TestEnvironment()
     if test_env.screenshots:
         print("Running PythonQwt tests and taking screenshots automatically:")
-        print("-------------------------------------------------------------")
         QC.QTimer.singleShot(100, lambda: take_screenshot(launcher))
     elif test_env.unattended:
         print("Running PythonQwt tests in unattended mode:")
-        print("-------------------------------------------")
         QC.QTimer.singleShot(0, QW.QApplication.instance().quit)
     app.exec_()
     launcher.close()

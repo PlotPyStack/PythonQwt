@@ -1,7 +1,15 @@
 @echo off
+REM ======================================================
+REM Unattended test script
+REM ======================================================
+REM Licensed under the terms of the MIT License
+REM Copyright (c) 2020 Pierre Raybaut
+REM (see LICENSE file for more details)
+REM ======================================================
 setlocal
-call %~dp0func SetPythonPath
-cd %~dp0..\
+call %~dp0utils GetScriptPath SCRIPTPATH
+call %FUNC% SetPythonPath
+cd %SCRIPTPATH%\..\
 
 if not defined WINPYDIRBASE ( goto :no )
 choice /t 5 /c yn /cs /d n /m "Do you want to run tests only from %WINPYDIRBASE% (y/n)?"
