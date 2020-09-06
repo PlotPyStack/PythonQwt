@@ -69,18 +69,18 @@ PythonQwt-tests-py3 --mode unattended
 
 ## Overview
 
-The `qwt` package is a pure Python implementation of `Qwt` C++ library with 
+The `qwt` package is a pure Python implementation of `Qwt` C++ library with
 the following limitations.
 
 The following `Qwt` classes won't be reimplemented in `qwt` because more
-powerful features already exist in `guiqwt`: `QwtPlotZoomer`, 
+powerful features already exist in `guiqwt`: `QwtPlotZoomer`,
 `QwtCounter`, `QwtEventPattern`, `QwtPicker`, `QwtPlotPicker`.
 
-Only the following plot items are currently implemented in `qwt` (the only 
-plot items needed by `guiqwt`): `QwtPlotItem` (base class), `QwtPlotItem`, 
+Only the following plot items are currently implemented in `qwt` (the only
+plot items needed by `guiqwt`): `QwtPlotItem` (base class), `QwtPlotItem`,
 `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
 
-See "Overview" section in [documentation](https://pythonqwt.readthedocs.io/en/latest/) 
+See "Overview" section in [documentation](https://pythonqwt.readthedocs.io/en/latest/)
 for more details on API limitations when comparing to Qwt.
 
 ## Dependencies
@@ -96,23 +96,23 @@ for more details on API limitations when comparing to Qwt.
 
 ![PyQt5 vs PySide2](doc/images/pyqt5_vs_pyside2.png)
 
-Try running the `curvebenchmark1.py` test with PyQt5 and PySide: you will notice a 
-huge performance issue with PySide2 (see screenshot above). This is due to the fact 
-that `QPainter.drawPolyline` is much more efficient in PyQt5 than it is in PySide2 
+Try running the `curvebenchmark1.py` test with PyQt5 and PySide: you will notice a
+huge performance issue with PySide2 (see screenshot above). This is due to the fact
+that `QPainter.drawPolyline` is much more efficient in PyQt5 than it is in PySide2
 (see [this bug report](https://bugreports.qt.io/projects/PYSIDE/issues/PYSIDE-1366)).
 
-As a consequence, until this bug is fixed in PySide2, we still recommend using PyQt5 
+As a consequence, until this bug is fixed in PySide2, we still recommend using PyQt5
 instead of PySide2 when it comes to representing huge data sets.
 
-However, PySide2 support was significatively improved betwen PythonQwt V0.8.0 and 
-V0.8.1 thanks to the new `array2d_to_qpolygonf` function (see the part related to 
+However, PySide2 support was significatively improved betwen PythonQwt V0.8.0 and
+V0.8.1 thanks to the new `array2d_to_qpolygonf` function (see the part related to
 PySide2 in the code below).
 
 ```python
 def array2d_to_qpolygonf(xdata, ydata):
     """
-    Utility function to convert two 1D-NumPy arrays representing curve data 
-    (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object). 
+    Utility function to convert two 1D-NumPy arrays representing curve data
+    (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object).
     This feature is compatible with PyQt4, PyQt5 and PySide2 (requires QtPy).
 
     License/copyright: MIT License © Pierre Raybaut 2020.
@@ -155,9 +155,9 @@ python setup.py install
 ### Main code base
 
 - Copyright © 2002 Uwe Rathmann, for the original Qwt C++ code
-- Copyright © 2015 Pierre Raybaut, for the Qwt C++ to Python translation and 
+- Copyright © 2015 Pierre Raybaut, for the Qwt C++ to Python translation and
 optimization
-- Copyright © 2015 Pierre Raybaut, for the PythonQwt specific and exclusive 
+- Copyright © 2015 Pierre Raybaut, for the PythonQwt specific and exclusive
 Python material
 
 ### PyQt, PySide and Python2/Python3 compatibility modules
@@ -168,14 +168,14 @@ Python material
 ### Some examples
 
 - Copyright © 2003-2009 Gerard Vermeulen, for the original PyQwt code
-- Copyright © 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
+- Copyright © 2015 Pierre Raybaut, for the PyQt5/PySide port and further
 developments (e.g. ported to PythonQwt API)
 
 ## License
 
-The `qwt` Python package was partly (>95%) translated from Qwt C++ library: 
-the associated code is distributed under the terms of the LGPL license. The 
-rest of the code was either wrote from scratch or strongly inspired from MIT 
+The `qwt` Python package was partly (>95%) translated from Qwt C++ library:
+the associated code is distributed under the terms of the LGPL license. The
+rest of the code was either wrote from scratch or strongly inspired from MIT
 licensed third-party software.
 
 See included [LICENSE](LICENSE) file for more details about licensing terms.
