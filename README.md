@@ -7,19 +7,18 @@
 [![download count](https://img.shields.io/conda/dn/conda-forge/PythonQwt.svg)](https://www.anaconda.com/download/)
 [![Documentation Status](https://readthedocs.org/projects/pythonqwt/badge/?version=latest)](https://pythonqwt.readthedocs.io/en/latest/?badge=latest)
 
-<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/qwt/tests/data/testlauncher.png">
+![PythonQwt Test Launcher](qwt/tests/data/testlauncher.png)
 
-The `PythonQwt` project was initiated to solve -at least temporarily- the 
-obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
-no longer maintained. The idea was to translate the original Qwt C++ code to 
-Python and then to optimize some parts of the code by writing new modules 
+The `PythonQwt` project was initiated to solve -at least temporarily- the
+obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is
+no longer maintained. The idea was to translate the original Qwt C++ code to
+Python and then to optimize some parts of the code by writing new modules
 based on NumPy and other libraries.
 
-The `PythonQwt` package consists of a single Python package named `qwt` and 
+The `PythonQwt` package consists of a single Python package named `qwt` and
 of a few other files (examples, doc, ...).
 
-See documentation [online](https://pythonqwt.readthedocs.io/en/latest/) or [PDF](https://pythonqwt.readthedocs.io/_/downloads/en/latest/pdf/) for more details on 
-the library and [changelog](CHANGELOG.md) for recent history of changes.
+See documentation [online](https://pythonqwt.readthedocs.io/en/latest/) or [PDF](https://pythonqwt.readthedocs.io/_/downloads/en/latest/pdf/) for more details on the library and [changelog](CHANGELOG.md) for recent history of changes.
 
 ## Sample
 
@@ -45,7 +44,8 @@ plot.show()
 app.exec_()
 ```
 
-<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/QwtPlot_example.png">
+![Simple plot example](doc/images/QwtPlot_example.png)
+
 ## Examples (tests)
 
 The GUI-based test launcher may be executed from Python:
@@ -85,15 +85,16 @@ for more details on API limitations when comparing to Qwt.
 
 ## Dependencies
 
-### Requirements ###
+### Requirements
+
 - Python >=2.6 or Python >=3.2
 - PyQt4 >=4.4 or PyQt5 >= 5.5 (or PySide2, still experimental, see below)
 - QtPy >= 1.3
 - NumPy >= 1.5
 
-### Why PySide2 support is still experimental ###
+### Why PySide2 support is still experimental
 
-<img src="https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/pyqt5_vs_pyside2.png">
+![PyQt5 vs PySide2](doc/images/pyqt5_vs_pyside2.png)
 
 Try running the `curvebenchmark1.py` test with PyQt5 and PySide: you will notice a 
 huge performance issue with PySide2 (see screenshot above). This is due to the fact 
@@ -113,9 +114,9 @@ def array2d_to_qpolygonf(xdata, ydata):
     Utility function to convert two 1D-NumPy arrays representing curve data 
     (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object). 
     This feature is compatible with PyQt4, PyQt5 and PySide2 (requires QtPy).
-    
+
     License/copyright: MIT License © Pierre Raybaut 2020.
-    
+
     :param numpy.ndarray xdata: 1D-NumPy array (numpy.float64)
     :param numpy.ndarray ydata: 1D-NumPy array (numpy.float64)
     :return: Polyline
@@ -151,18 +152,21 @@ python setup.py install
 
 ## Copyrights
 
-#### Main code base
+### Main code base
+
 - Copyright © 2002 Uwe Rathmann, for the original Qwt C++ code
 - Copyright © 2015 Pierre Raybaut, for the Qwt C++ to Python translation and 
 optimization
 - Copyright © 2015 Pierre Raybaut, for the PythonQwt specific and exclusive 
 Python material
 
-#### PyQt, PySide and Python2/Python3 compatibility modules
+### PyQt, PySide and Python2/Python3 compatibility modules
+
 - Copyright © 2009-2013 Pierre Raybaut
 - Copyright © 2013-2015 The Spyder Development Team
 
-#### Some examples
+### Some examples
+
 - Copyright © 2003-2009 Gerard Vermeulen, for the original PyQwt code
 - Copyright © 2015 Pierre Raybaut, for the PyQt5/PySide port and further 
 developments (e.g. ported to PythonQwt API)
