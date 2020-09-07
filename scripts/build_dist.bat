@@ -10,8 +10,6 @@ call %~dp0utils GetScriptPath SCRIPTPATH
 call %FUNC% GetLibName LIBNAME
 cd %SCRIPTPATH%\..\
 if exist MANIFEST ( del /q MANIFEST )
-if exist build ( rmdir /s /q build )
-if exist dist ( rmdir /s /q dist )
 call %FUNC% SetPythonPath
 call %FUNC% UseWinPython
 python setup.py sdist bdist_wheel --universal
