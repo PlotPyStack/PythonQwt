@@ -19,9 +19,8 @@ call :test %WINPYDIRBASE%
 pause
 exit /B %ERRORLEVEL%
 :no
-for /d %%d in (C:,C:\Apps,%localappdata%\Programs,%programfiles%,%ProgramFiles(x86)%) do (
+for /d %%d in (C:,C:\Apps,%localappdata%\Programs,%programfiles%,%ProgramFiles(x86^^^)%) do (
     for /f %%f in ('dir /b %%d\w*') do (
-        echo %%d\%%f
         call :test %%d\%%f
         )
     )
