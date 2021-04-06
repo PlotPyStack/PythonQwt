@@ -237,6 +237,10 @@ class QwtPointArrayData(QwtSeriesData):
         if size is not None:
             x = np.resize(x, (size,))
             y = np.resize(y, (size,))
+        if len(x) != len(y):
+            minlen = min(len(x),len(y))
+            x = np.resize(x, (minlen, ))
+            y = np.resize(y, (minlen, ))
         if finite if finite is not None else True:
             indexes = np.logical_and(np.isfinite(x), np.isfinite(y))
             self.__x = x[indexes]
