@@ -1729,6 +1729,7 @@ class QwtPlotItem_PrivateData(object):
         self.yAxis = QwtPlot.yLeft
         self.legendIconSize = QSize(8, 8)
         self.title = None  # QwtText
+        self.icon = None
 
 
 class QwtPlotItem(object):
@@ -1811,7 +1812,7 @@ class QwtPlotItem(object):
     # enum RenderHint
     RenderAntialiased = 0x1
 
-    def __init__(self, title=None):
+    def __init__(self, title=None, icon=None):
         """title: QwtText"""
         if title is None:
             title = QwtText("")
@@ -1820,6 +1821,14 @@ class QwtPlotItem(object):
         assert isinstance(title, QwtText)
         self.__data = QwtPlotItem_PrivateData()
         self.__data.title = title
+        self.__data.icon = icon
+         
+    def set_icon(self, icon):
+        assert isinstance(icon, QIcon)
+        self.__data.icon = icon
+        
+    def get_icon(self):
+        return self.__data.icon
 
     def attach(self, plot):
         """
