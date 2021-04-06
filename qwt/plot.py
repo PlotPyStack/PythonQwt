@@ -26,7 +26,7 @@ from qtpy.QtWidgets import (
     QApplication,
 )
 from qtpy.QtGui import QFont, QPainter, QPalette, QColor, QBrush
-from qtpy.QtCore import Qt, Signal, QEvent, QSize, QRectF
+from qtpy.QtCore import Qt, Signal, QEvent, QSize, QRectF, QObject
 
 from qwt.text import QwtText, QwtTextLabel
 from qwt.scale_widget import QwtScaleWidget
@@ -1731,7 +1731,7 @@ class QwtPlotItem_PrivateData(object):
         self.title = None  # QwtText
 
 
-class QwtPlotItem(object):
+class QwtPlotItem(QObject):
     """
     Base class for items on the plot canvas
     
@@ -1777,6 +1777,8 @@ class QwtPlotItem(object):
         :type title: qwt.text.QwtText or str
     """
 
+   SIG_LEGEND_CHANGED = Signal()
+   
     # enum RttiValues
     (
         Rtti_PlotItem,
@@ -1820,6 +1822,7 @@ class QwtPlotItem(object):
         assert isinstance(title, QwtText)
         self.__data = QwtPlotItem_PrivateData()
         self.__data.title = title
+        super(QwtPlotItem, self).__init__()
 
     def attach(self, plot):
         """
@@ -2144,6 +2147,7 @@ class QwtPlotItem(object):
         """
         if self.testItemAttribute(QwtPlotItem.Legend) and self.__data.plot:
             self.__data.plot.updateLegend(self)
+            self.SIG_LEGEND_CHANGED.emit()
 
     def setAxes(self, xAxis, yAxis):
         """
