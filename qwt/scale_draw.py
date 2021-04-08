@@ -27,6 +27,7 @@ from qwt._math import qwtRadians
 from qtpy.QtGui import QPalette, QFontMetrics, QTransform
 from qtpy.QtCore import Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect, QPoint
 
+from math import ceil
 import numpy as np
 
 
@@ -609,8 +610,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             e = self.labelRect(font, maxTick).right()
             e -= abs(maxPos - self.scaleMap().p2())
 
-        start, end = np.ceil(np.nan_to_num(np.array([s, e])).clip(0, None))
-        return start, end
+        return max(ceil(s), 0), max(ceil(e), 0)
 
     def minLabelDist(self, font):
         """

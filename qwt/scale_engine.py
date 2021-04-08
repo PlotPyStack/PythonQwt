@@ -326,9 +326,8 @@ class QwtScaleEngine(object):
         """
         if not interval.isValid():
             return False
-        elif qwtFuzzyCompare(value, interval.minValue(), interval.width()) < 0:
-            return False
-        elif qwtFuzzyCompare(value, interval.maxValue(), interval.width()) > 0:
+        eps = abs(1.0e-6 * interval.width())
+        if interval.minValue() - value > eps or value - interval.maxValue() > eps:
             return False
         else:
             return True

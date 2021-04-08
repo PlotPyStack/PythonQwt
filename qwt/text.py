@@ -230,19 +230,17 @@ class QwtPlainTextEngine(QwtTextEngine):
 
     def fontmetrics(self, font):
         fid = font.toString()
-        fm = self._fm_cache.get(fid)
-        if fm is None:
+        try:
+            return self._fm_cache[fid]
+        except KeyError:
             return self._fm_cache.setdefault(fid, QFontMetrics(font))
-        else:
-            return fm
 
     def fontmetrics_f(self, font):
         fid = font.toString()
-        fm = self._fm_cache_f.get(fid)
-        if fm is None:
+        try:
+            return self._fm_cache_f[fid]
+        except KeyError:
             return self._fm_cache_f.setdefault(fid, QFontMetricsF(font))
-        else:
-            return fm
 
     def heightForWidth(self, font, flags, text, width):
         """
