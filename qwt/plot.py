@@ -2073,25 +2073,6 @@ class QwtPlotItem(object):
         """
         return QwtGraphic()
 
-    def defaultIcon(self, brush, size):
-        """
-        Return a default icon from a brush
-
-        The default icon is a filled rectangle used
-        in several derived classes as legendIcon().
-   
-        :param QBrush brush: Fill brush
-        :param QSizeF size: Icon size
-        :return: A filled rectangle
-        """
-        icon = QwtGraphic()
-        if not size.isEmpty():
-            icon.setDefaultSize(size)
-            r = QRectF(0, 0, size.width(), size.height())
-            painter = QPainter(icon)
-            painter.fillRect(r, brush)
-        return icon
-
     def show(self):
         """Show the item"""
         self.setVisible(True)
