@@ -1461,6 +1461,8 @@ class QwtPlot(QFrame, QwtPlotDict):
 
         map_.setTransformation(self.axisScaleEngine(axisId).transformation())
         sd = self.axisScaleDiv(axisId)
+        if sd is None:
+            return map_
         map_.setScaleInterval(sd.lowerBound(), sd.upperBound())
 
         if self.axisEnabled(axisId):
