@@ -309,7 +309,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         self.__data.layout = QwtPlotLayout()
         self.__data.autoReplot = False
 
-        self.setAutoReplot(True)
+        self.setAutoReplot(False)
         self.setPlotLayout(self.__data.layout)
 
         # title
