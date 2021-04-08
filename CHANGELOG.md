@@ -1,5 +1,17 @@
 # PythonQwt Releases
 
+## Version 0.9.0
+
+- `QwtPlot`: set the `autoReplot` option at False by default, to avoid time consuming 
+  implicit plot updates.
+- Added `QwtPlotItem.setIcon` and `QwtPlotItem.icon` method for setting and getting the 
+  icon associated to the plot item (as of today, this feature is not strictly needed in 
+  PythonQwt: this has been implemented for several use cases in higher level libraries 
+  (see PR #61).
+- Removed unused `QwtPlotItem.defaultIcon` method.
+- Added various minor optimizations for axes/ticks drawing features.
+- Fixed `QwtPlot.canvasMap` when `axisScaleDiv` returns None
+
 ## Version 0.8.3
 
 - Fixed simple plot examples (setup.py & plot.py's doc page) following the introduction

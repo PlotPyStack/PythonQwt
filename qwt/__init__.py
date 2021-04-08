@@ -28,7 +28,7 @@ External resources:
 .. _GitHubPage: http://pierreraybaut.github.io/PythonQwt
 .. _GitHub: https://github.com/PierreRaybaut/PythonQwt
 """
-__version__ = "0.8.3"
+__version__ = "0.9.0"
 QWT_VERSION_STR = "6.1.5"
 
 import warnings
