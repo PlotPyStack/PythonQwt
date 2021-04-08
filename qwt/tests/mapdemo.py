@@ -44,8 +44,8 @@ class MapDemo(QMainWindow):
         self.setCentralWidget(self.plot)
         # Initialize map data
         self.count = self.i = 1000
-        self.xs = np.zeros(self.count, np.float)
-        self.ys = np.zeros(self.count, np.float)
+        self.xs = np.zeros(self.count, float)
+        self.ys = np.zeros(self.count, float)
         self.kappa = 0.2
         self.curve = QwtPlotCurve("Map")
         self.curve.attach(self.plot)

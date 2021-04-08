@@ -33,8 +33,8 @@ class DataPlot(QwtPlot):
 
         # Initialize data
         self.x = np.arange(0.0, 100.1, 0.5)
-        self.y = np.zeros(len(self.x), np.float)
-        self.z = np.zeros(len(self.x), np.float)
+        self.y = np.zeros(len(self.x), float)
+        self.z = np.zeros(len(self.x), float)
 
         self.setTitle("A Moving QwtPlot Demonstration")
         self.insertLegend(QwtLegend(), QwtPlot.BottomLegend)

@@ -319,28 +319,28 @@ class CpuPlot(QwtPlot):
         curve.setColor(Qt.red)
         curve.attach(self)
         self.curves["System"] = curve
-        self.data["System"] = np.zeros(self.HISTORY, np.float)
+        self.data["System"] = np.zeros(self.HISTORY, float)
 
         curve = CpuCurve("User")
         curve.setColor(Qt.blue)
         curve.setZ(curve.z() - 1.0)
         curve.attach(self)
         self.curves["User"] = curve
-        self.data["User"] = np.zeros(self.HISTORY, np.float)
+        self.data["User"] = np.zeros(self.HISTORY, float)
 
         curve = CpuCurve("Total")
         curve.setColor(Qt.black)
         curve.setZ(curve.z() - 2.0)
         curve.attach(self)
         self.curves["Total"] = curve
-        self.data["Total"] = np.zeros(self.HISTORY, np.float)
+        self.data["Total"] = np.zeros(self.HISTORY, float)
 
         curve = CpuCurve("Idle")
         curve.setColor(Qt.darkCyan)
         curve.setZ(curve.z() - 3.0)
         curve.attach(self)
         self.curves["Idle"] = curve
-        self.data["Idle"] = np.zeros(self.HISTORY, np.float)
+        self.data["Idle"] = np.zeros(self.HISTORY, float)
 
         self.showCurve(self.curves["System"], True)
         self.showCurve(self.curves["User"], True)

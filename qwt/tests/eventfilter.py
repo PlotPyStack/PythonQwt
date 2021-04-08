@@ -201,8 +201,8 @@ class Plot(QwtPlot):
         curve.setSymbol(
             QwtSymbol(QwtSymbol.Ellipse, QBrush(Qt.gray), QPen(color), QSize(8, 8))
         )
-        fixed = base * np.ones(10, np.float)
-        changing = np.arange(0, 95.0, 10.0, np.float) + 5.0
+        fixed = base * np.ones(10, float)
+        changing = np.arange(0, 95.0, 10.0, float) + 5.0
         if orientation == Qt.Horizontal:
             curve.setData(changing, fixed)
         else:
@@ -324,8 +324,8 @@ class CanvasPicker(QObject):
         curve = self.__selectedCurve
         if not curve:
             return
-        xData = np.zeros(curve.dataSize(), np.float)
-        yData = np.zeros(curve.dataSize(), np.float)
+        xData = np.zeros(curve.dataSize(), float)
+        yData = np.zeros(curve.dataSize(), float)
         for i in range(curve.dataSize()):
             if i == self.__selectedPoint:
                 xData[i] = self.__plot.invTransform(curve.xAxis(), pos.x())

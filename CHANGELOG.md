@@ -10,7 +10,8 @@
   (see PR #61).
 - Removed unused `QwtPlotItem.defaultIcon` method.
 - Added various minor optimizations for axes/ticks drawing features.
-- Fixed `QwtPlot.canvasMap` when `axisScaleDiv` returns None
+- Fixed `QwtPlot.canvasMap` when `axisScaleDiv` returns None.
+- Fixed alias `np.float` which is deprecated in NumPy 1.20.
 
 ## Version 0.8.3
 

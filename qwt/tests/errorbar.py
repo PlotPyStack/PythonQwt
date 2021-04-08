@@ -100,11 +100,11 @@ class ErrorBarPlotCurve(QwtPlotCurve):
             if len(args) > 3:
                 dy = args[3]
 
-        self.__x = np.asarray(x, np.float)
+        self.__x = np.asarray(x, float)
         if len(self.__x.shape) != 1:
             raise RuntimeError("len(asarray(x).shape) != 1")
 
-        self.__y = np.asarray(y, np.float)
+        self.__y = np.asarray(y, float)
         if len(self.__y.shape) != 1:
             raise RuntimeError("len(asarray(y).shape) != 1")
         if len(self.__x) != len(self.__y):
@@ -113,14 +113,14 @@ class ErrorBarPlotCurve(QwtPlotCurve):
         if dx is None:
             self.__dx = None
         else:
-            self.__dx = np.asarray(dx, np.float)
+            self.__dx = np.asarray(dx, float)
         if len(self.__dx.shape) not in [0, 1, 2]:
             raise RuntimeError("len(asarray(dx).shape) not in [0, 1, 2]")
 
         if dy is None:
             self.__dy = dy
         else:
-            self.__dy = np.asarray(dy, np.float)
+            self.__dy = np.asarray(dy, float)
         if len(self.__dy.shape) not in [0, 1, 2]:
             raise RuntimeError("len(asarray(dy).shape) not in [0, 1, 2]")
 
@@ -282,7 +282,7 @@ class ErrorBarPlot(QwtPlot):
         grid.setPen(QPen(Qt.black, 0, Qt.DotLine))
 
         # calculate data and errors for a curve with error bars
-        x = np.arange(0, 10.1, 0.5, np.float)
+        x = np.arange(0, 10.1, 0.5, float)
         y = np.sin(x)
         dy = 0.2 * abs(y)
         # dy = (0.15 * abs(y), 0.25 * abs(y)) # uncomment for asymmetric error bars

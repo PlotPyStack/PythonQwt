@@ -73,7 +73,7 @@ def array2d_to_qpolygonf(xdata, ydata):
     :return: Polyline
     :rtype: QtGui.QPolygonF
     """
-    dtype = np.float
+    dtype = np.float64
     if not (
         xdata.size == ydata.size == xdata.shape[0] == ydata.shape[0]
         and xdata.dtype == ydata.dtype == dtype
