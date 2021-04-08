@@ -4,7 +4,7 @@ REM Virtual environment test script
 REM ======================================================
 REM Licensed under the terms of the MIT License
 REM Copyright (c) 2020 Pierre Raybaut
-REM (see LICENSE file for more details)
+REM (see PythonQwt LICENSE file for more details)
 REM ======================================================
 setlocal
 call %~dp0utils GetScriptPath SCRIPTPATH
@@ -22,6 +22,7 @@ exit /B %ERRORLEVEL%
 call %FUNC% GetLibName LIBNAME
 call %FUNC% ShowTitle "Testing in %~1-based Python virtual environment"
 set VENVPATH=%SCRIPTPATH%\..\build\testenv
+if exist %VENVPATH% ( rmdir /s /q %VENVPATH% )
 python -m venv %VENVPATH%
 call %VENVPATH%\Scripts\activate
 python -m pip install --upgrade pip
