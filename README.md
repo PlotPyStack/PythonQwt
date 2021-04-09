@@ -98,11 +98,15 @@ for more details on API limitations when comparing to Qwt.
 
 Try running the `curvebenchmark1.py` test with PyQt5 and PySide: you will notice a
 huge performance issue with PySide2 (see screenshot above). This is due to the fact
-that `QPainter.drawPolyline` is much more efficient in PyQt5 than it is in PySide2
-(see [this bug report](https://bugreports.qt.io/projects/PYSIDE/issues/PYSIDE-1366)).
+that `QPainter.drawPolyline` (the `QPainter.drawPolyline` method has already been 
+optimized thanks to Cristian Maureira-Fredes from Python-Qt development team, see 
+[this bug report](https://bugreports.qt.io/projects/PYSIDE/issues/PYSIDE-1366)) is 
+much more efficient in PyQt5 than it is in PySide2 (see 
+[this bug report](https://bugreports.qt.io/projects/PYSIDE/issues/PYSIDE-1540)).
 
 As a consequence, until this bug is fixed in PySide2, we still recommend using PyQt5
-instead of PySide2 when it comes to representing huge data sets.
+instead of PySide2 when it comes to representing huge data sets (except if you do not
+use the "dots" style for drawing curves).
 
 However, PySide2 support was significatively improved betwen PythonQwt V0.8.0 and
 V0.8.1 thanks to the new `array2d_to_qpolygonf` function (see the part related to
