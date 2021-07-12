@@ -107,7 +107,7 @@ class QwtPainterClass(object):
     def drawRoundFrame(self, painter, rect, palette, lineWidth, frameStyle):
         """
         Draw a round frame
-        
+
         :param QPainter painter: Painter
         :param QRectF rect: Target rectangle
         :param QPalette palette: `QPalette.WindowText` is used for plain borders, `QPalette.Dark` and `QPalette.Light` for raised or sunken borders
@@ -150,7 +150,7 @@ class QwtPainterClass(object):
     ):
         """
         Draw a rectangular frame
-        
+
         :param QPainter painter: Painter
         :param QRectF rect: Frame rectangle
         :param QPalette palette: Palette
@@ -269,7 +269,7 @@ class QwtPainterClass(object):
     ):
         """
         Draw a rectangular frame with rounded borders
-        
+
         :param QPainter painter: Painter
         :param QRectF rect: Frame rectangle
         :param float xRadius: x-radius of the ellipses defining the corners
@@ -357,7 +357,7 @@ class QwtPainterClass(object):
     def drawColorBar(self, painter, colorMap, interval, scaleMap, orientation, rect):
         """
         Draw a color bar into a rectangle
-        
+
         :param QPainter painter: Painter
         :param qwt.color_map.QwtColorMap colorMap: Color map
         :param qwt.interval.QwtInterval interval: Value range
@@ -404,15 +404,15 @@ class QwtPainterClass(object):
         Fill a pixmap with the content of a widget
 
         In Qt >= 5.0 `QPixmap.fill()` is a nop, in Qt 4.x it is buggy
-        for backgrounds with gradients. Thus `fillPixmap()` offers 
+        for backgrounds with gradients. Thus `fillPixmap()` offers
         an alternative implementation.
-        
+
         :param QWidget widget: Widget
         :param QPixmap pixmap: Pixmap to be filled
         :param QPoint offset: Offset
-        
+
         .. seealso::
-        
+
             :py:meth:`QPixmap.fill()`
         """
         if offset is None:
@@ -435,13 +435,13 @@ class QwtPainterClass(object):
     def drawBackground(self, painter, rect, widget):
         """
         Fill rect with the background of a widget
-        
+
         :param QPainter painter: Painter
         :param QRectF rect: Rectangle to be filled
         :param QWidget widget: Widget
-        
+
         .. seealso::
-        
+
             :py:data:`QStyle.PE_Widget`, :py:meth:`QWidget.backgroundRole()`
         """
         if widget.testAttribute(Qt.WA_StyledBackground):

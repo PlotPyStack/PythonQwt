@@ -209,7 +209,7 @@ class QwtGraphic_PrivateData(object):
 class QwtGraphic(QwtNullPaintDevice):
     """
     A paint device for scalable graphics
-    
+
     `QwtGraphic` is the representation of a graphic that is tailored for
     scalability. Like `QPicture` it will be initialized by `QPainter`
     operations and can be replayed later to any target paint device.
@@ -219,58 +219,58 @@ class QwtGraphic(QwtNullPaintDevice):
     for representing a vector graphic:
 
         - `QPicture`:
-        
+
           Unfortunately `QPicture` had been forgotten, when Qt4
           introduced floating point based render engines. Its API
           is still on integers, what make it unusable for proper scaling.
 
         - `QSvgRenderer`, `QSvgGenerator`:
-        
+
           Unfortunately `QSvgRenderer` hides to much information about
-          its nodes in internal APIs, that are necessary for proper 
-          layout calculations. Also it is derived from `QObject` and 
+          its nodes in internal APIs, that are necessary for proper
+          layout calculations. Also it is derived from `QObject` and
           can't be copied like `QImage`/`QPixmap`.
 
     `QwtGraphic` maps all scalable drawing primitives to a `QPainterPath`
-    and stores them together with the painter state changes 
-    ( pen, brush, transformation ... ) in a list of `QwtPaintCommands`. 
-    For being a complete `QPaintDevice` it also stores pixmaps or images, 
-    what is somehow against the idea of the class, because these objects 
+    and stores them together with the painter state changes
+    ( pen, brush, transformation ... ) in a list of `QwtPaintCommands`.
+    For being a complete `QPaintDevice` it also stores pixmaps or images,
+    what is somehow against the idea of the class, because these objects
     can't be scaled without a loss in quality.
 
     The main issue about scaling a `QwtGraphic` object are the pens used for
-    drawing the outlines of the painter paths. While non cosmetic pens 
-    ( `QPen.isCosmetic()` ) are scaled with the same ratio as the path, 
-    cosmetic pens have a fixed width. A graphic might have paths with 
+    drawing the outlines of the painter paths. While non cosmetic pens
+    ( `QPen.isCosmetic()` ) are scaled with the same ratio as the path,
+    cosmetic pens have a fixed width. A graphic might have paths with
     different pens - cosmetic and non-cosmetic.
 
     `QwtGraphic` caches 2 different rectangles:
 
         - control point rectangle:
-        
+
           The control point rectangle is the bounding rectangle of all
-          control point rectangles of the painter paths, or the target 
+          control point rectangles of the painter paths, or the target
           rectangle of the pixmaps/images.
 
         - bounding rectangle:
-        
+
           The bounding rectangle extends the control point rectangle by
           what is needed for rendering the outline with an unscaled pen.
 
-    Because the offset for drawing the outline depends on the shape 
-    of the painter path ( the peak of a triangle is different than the flat side ) 
-    scaling with a fixed aspect ratio always needs to be calculated from the 
+    Because the offset for drawing the outline depends on the shape
+    of the painter path ( the peak of a triangle is different than the flat side )
+    scaling with a fixed aspect ratio always needs to be calculated from the
     control point rectangle.
-        
+
     .. py:class:: QwtGraphic()
-    
+
         Initializes a null graphic
-        
+
     .. py:class:: QwtGraphic(other)
         :noindex:
-    
+
         Copy constructor
-        
+
         :param qwt.graphic.QwtGraphic other: Source
     """
 
@@ -326,9 +326,9 @@ class QwtGraphic(QwtNullPaintDevice):
         with unscaled pens.
 
         :return: Bounding rectangle of the graphic
-        
+
         .. seealso::
-            
+
             :py:meth:`controlPointRect`, :py:meth:`scaledBoundingRect`
         """
         if self.__data.boundingRect.width() < 0:
@@ -337,14 +337,14 @@ class QwtGraphic(QwtNullPaintDevice):
 
     def controlPointRect(self):
         """
-        The control point rectangle is the bounding rectangle 
+        The control point rectangle is the bounding rectangle
         of all control points of the paths and the target
         rectangles of the images/pixmaps.
 
         :return: Control point rectangle
-        
+
         .. seealso::
-        
+
             :py:meth:`boundingRect()`, :py:meth:`scaledBoundingRect()`
         """
         if self.__data.pointRect.width() < 0:
@@ -354,19 +354,19 @@ class QwtGraphic(QwtNullPaintDevice):
     def scaledBoundingRect(self, sx, sy):
         """
         Calculate the target rectangle for scaling the graphic
-        
-        :param float sx: Horizontal scaling factor 
-        :param float sy: Vertical scaling factor 
+
+        :param float sx: Horizontal scaling factor
+        :param float sy: Vertical scaling factor
         :return: Scaled bounding rectangle
-            
+
         .. note::
-        
-            In case of paths that are painted with a cosmetic pen 
-            (see :py:meth:`QPen.isCosmetic()`) the target rectangle is 
+
+            In case of paths that are painted with a cosmetic pen
+            (see :py:meth:`QPen.isCosmetic()`) the target rectangle is
             different to multiplying the bounding rectangle.
 
         .. seealso::
-        
+
             :py:meth:`boundingRect()`, :py:meth:`controlPointRect()`
         """
         if sx == 1.0 and sy == 1.0:
@@ -389,13 +389,13 @@ class QwtGraphic(QwtNullPaintDevice):
         """
         The default size is used in all methods rendering the graphic,
         where no size is explicitly specified. Assigning an empty size
-        means, that the default size will be calculated from the bounding 
+        means, that the default size will be calculated from the bounding
         rectangle.
-        
+
         :param QSizeF size: Default size
 
         .. seealso::
-        
+
             :py:meth:`defaultSize()`, :py:meth:`boundingRect()`
         """
         w = max([0.0, size.width()])
@@ -409,12 +409,12 @@ class QwtGraphic(QwtNullPaintDevice):
         of the bounding rectangle.
 
         The default size is used in all methods rendering the graphic,
-        where no size is explicitly specified. 
-        
+        where no size is explicitly specified.
+
         :return: Default size
 
         .. seealso::
-        
+
             :py:meth:`setDefaultSize()`, :py:meth:`boundingRect()`
         """
         if not self.__data.defaultSize.isEmpty():
@@ -425,45 +425,45 @@ class QwtGraphic(QwtNullPaintDevice):
         """
         .. py:method:: render(painter)
             :noindex:
-        
+
             Replay all recorded painter commands
-            
+
             :param QPainter painter: Qt painter
-        
+
         .. py:method:: render(painter, size, aspectRatioMode)
             :noindex:
-        
+
             Replay all recorded painter commands
-            
+
             The graphic is scaled to fit into the rectangle
             of the given size starting at ( 0, 0 ).
-            
+
             :param QPainter painter: Qt painter
             :param QSizeF size: Size for the scaled graphic
             :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale
-        
+
         .. py:method:: render(painter, rect, aspectRatioMode)
             :noindex:
-        
+
             Replay all recorded painter commands
-            
+
             The graphic is scaled to fit into the given rectangle
-            
+
             :param QPainter painter: Qt painter
             :param QRectF rect: Rectangle for the scaled graphic
-            :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale        
-        
+            :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale
+
         .. py:method:: render(painter, pos, aspectRatioMode)
             :noindex:
-        
+
             Replay all recorded painter commands
-            
+
             The graphic is scaled to the :py:meth:`defaultSize()` and aligned
             to a position.
-            
+
             :param QPainter painter: Qt painter
             :param QPointF pos: Reference point, where to render
-            :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale        
+            :param Qt.AspectRatioMode aspectRatioMode: Mode how to scale
         """
         if len(args) == 1:
             (painter,) = args
@@ -568,11 +568,11 @@ class QwtGraphic(QwtNullPaintDevice):
 
         The size of the pixmap is the default size ( ceiled to integers )
         of the graphic.
-        
+
         :return: The graphic as pixmap in default size
 
         .. seealso::
-        
+
             :py:meth:`defaultSize()`, :py:meth:`toImage()`, :py:meth:`render()`
         """
         if len(args) == 0:
@@ -605,14 +605,14 @@ class QwtGraphic(QwtNullPaintDevice):
         """
         .. py:method:: toImage()
             :noindex:
-        
+
             Convert the graphic to a `QImage`
 
             All pixels of the image get initialized by 0 ( transparent )
             before the graphic is scaled and rendered on it.
 
             The format of the image is `QImage.Format_ARGB32_Premultiplied`.
-            
+
             The size of the image is the default size ( ceiled to integers )
             of the graphic.
 
@@ -620,20 +620,20 @@ class QwtGraphic(QwtNullPaintDevice):
 
         .. py:method:: toImage(size, [aspectRatioMode=Qt.IgnoreAspectRatio])
             :noindex:
-        
+
             Convert the graphic to a `QImage`
 
             All pixels of the image get initialized by 0 ( transparent )
             before the graphic is scaled and rendered on it.
 
             The format of the image is `QImage.Format_ARGB32_Premultiplied`.
-            
+
             :param QSize size: Size of the image
             :param `Qt.AspectRatioMode` aspectRatioMode: Aspect ratio how to scale the graphic
             :return: The graphic as image
 
         .. seealso::
-        
+
             :py:meth:`toPixmap()`, :py:meth:`render()`
         """
         if len(args) == 0:
@@ -664,11 +664,11 @@ class QwtGraphic(QwtNullPaintDevice):
     def drawPath(self, path):
         """
         Store a path command in the command list
-        
+
         :param QPainterPath path: Painter path
 
         .. seealso::
-        
+
             :py:meth:`QPaintEngine.drawPath()`
         """
         painter = self.paintEngine().painter()
@@ -693,13 +693,13 @@ class QwtGraphic(QwtNullPaintDevice):
     def drawPixmap(self, rect, pixmap, subRect):
         """
         Store a pixmap command in the command list
-        
+
         :param QRectF rect: target rectangle
         :param QPixmap pixmap: Pixmap to be painted
         :param QRectF subRect: Reactangle of the pixmap to be painted
 
         .. seealso::
-        
+
             :py:meth:`QPaintEngine.drawPixmap()`
         """
         painter = self.paintEngine().painter()
@@ -713,14 +713,14 @@ class QwtGraphic(QwtNullPaintDevice):
     def drawImage(self, rect, image, subRect, flags):
         """
         Store a image command in the command list
-        
+
         :param QRectF rect: target rectangle
         :param QImage image: Pixmap to be painted
         :param QRectF subRect: Reactangle of the pixmap to be painted
         :param Qt.ImageConversionFlags flags: Pixmap to be painted
 
         .. seealso::
-        
+
             :py:meth:`QPaintEngine.drawImage()`
         """
         painter = self.paintEngine().painter()
@@ -734,11 +734,11 @@ class QwtGraphic(QwtNullPaintDevice):
     def updateState(self, state):
         """
         Store a state command in the command list
-        
+
         :param QPaintEngineState state: State to be stored
 
         .. seealso::
-        
+
             :py:meth:`QPaintEngine.updateState()`
         """
         # XXX: shall we call the parent's implementation of updateState?

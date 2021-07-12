@@ -341,45 +341,45 @@ class QwtPlotCanvas_PrivateData(object):
 class QwtPlotCanvas(QFrame):
     """
     Canvas of a QwtPlot.
-  
+
     Canvas is the widget where all plot items are displayed
-    
+
     .. seealso::
-    
+
         :py:meth:`qwt.plot.QwtPlot.setCanvas()`
-        
+
     Paint attributes:
-    
+
         * `QwtPlotCanvas.BackingStore`:
-        
-            Paint double buffered reusing the content of the pixmap buffer 
+
+            Paint double buffered reusing the content of the pixmap buffer
             when possible.
-            
-            Using a backing store might improve the performance significantly, 
+
+            Using a backing store might improve the performance significantly,
             when working with widget overlays (like rubber bands).
             Disabling the cache might improve the performance for
-            incremental paints 
+            incremental paints
             (using :py:class:`qwt.plot_directpainter.QwtPlotDirectPainter`).
-        
+
         * `QwtPlotCanvas.Opaque`:
-        
+
             Try to fill the complete contents rectangle of the plot canvas
 
-            When using styled backgrounds Qt assumes, that the canvas doesn't 
-            fill its area completely (f.e because of rounded borders) and 
-            fills the area below the canvas. When this is done with gradients 
-            it might result in a serious performance bottleneck - depending on 
+            When using styled backgrounds Qt assumes, that the canvas doesn't
+            fill its area completely (f.e because of rounded borders) and
+            fills the area below the canvas. When this is done with gradients
+            it might result in a serious performance bottleneck - depending on
             the size.
 
             When the Opaque attribute is enabled the canvas tries to
             identify the gaps with some heuristics and to fill those only.
-            
+
             .. warning::
-            
-                Will not work for semitransparent backgrounds 
-        
+
+                Will not work for semitransparent backgrounds
+
         * `QwtPlotCanvas.HackStyledBackground`:
-        
+
             Try to improve painting of styled backgrounds
 
             `QwtPlotCanvas` supports the box model attributes for
@@ -393,42 +393,42 @@ class QwtPlotCanvas(QFrame):
             the border after the plot items. In this order the border
             gets perfectly antialiased and you can avoid some pixel
             artifacts in the corners.
-        
+
         * `QwtPlotCanvas.ImmediatePaint`:
-        
+
             When ImmediatePaint is set replot() calls repaint()
             instead of update().
-    
+
             .. seealso::
-            
-                :py:meth:`replot()`, :py:meth:`QWidget.repaint()`, 
+
+                :py:meth:`replot()`, :py:meth:`QWidget.repaint()`,
                 :py:meth:`QWidget.update()`
-                
+
     Focus indicators:
-    
+
         * `QwtPlotCanvas.NoFocusIndicator`:
-        
+
             Don't paint a focus indicator
 
         * `QwtPlotCanvas.CanvasFocusIndicator`:
-        
+
             The focus is related to the complete canvas.
             Paint the focus indicator using paintFocus()
 
         * `QwtPlotCanvas.ItemFocusIndicator`:
-        
+
             The focus is related to an item (curve, point, ...) on
             the canvas. It is up to the application to display a
             focus indication using f.e. highlighting.
-            
+
     .. py:class:: QwtPlotCanvas([plot=None])
-    
+
         Constructor
-        
+
         :param qwt.plot.QwtPlot plot: Parent plot widget
 
         .. seealso::
-        
+
             :py:meth:`qwt.plot.QwtPlot.setCanvas()`
     """
 
@@ -464,17 +464,17 @@ class QwtPlotCanvas(QFrame):
         Changing the paint attributes
 
         Paint attributes:
-        
+
             * `QwtPlotCanvas.BackingStore`
             * `QwtPlotCanvas.Opaque`
             * `QwtPlotCanvas.HackStyledBackground`
             * `QwtPlotCanvas.ImmediatePaint`
-        
+
         :param int attribute: Paint attribute
         :param bool on: On/Off
-        
+
         .. seealso::
-        
+
             :py:meth:`testPaintAttribute()`, :py:meth:`backingStore()`
         """
         if bool(self.__data.paintAttributes & attribute) == on:
@@ -503,12 +503,12 @@ class QwtPlotCanvas(QFrame):
     def testPaintAttribute(self, attribute):
         """
         Test whether a paint attribute is enabled
-        
+
         :param int attribute: Paint attribute
         :return: True, when attribute is enabled
-        
+
         .. seealso::
-        
+
             :py:meth:`setPaintAttribute()`
         """
         return self.__data.paintAttributes & attribute
@@ -529,15 +529,15 @@ class QwtPlotCanvas(QFrame):
         Set the focus indicator
 
         Focus indicators:
-        
+
             * `QwtPlotCanvas.NoFocusIndicator`
             * `QwtPlotCanvas.CanvasFocusIndicator`
             * `QwtPlotCanvas.ItemFocusIndicator`
-        
+
         :param int focusIndicator: Focus indicator
-        
+
         .. seealso::
-        
+
             :py:meth:`focusIndicator()`
         """
         self.__data.focusIndicator = focusIndicator
@@ -545,9 +545,9 @@ class QwtPlotCanvas(QFrame):
     def focusIndicator(self):
         """
         :return: Focus indicator
-        
+
         .. seealso::
-        
+
             :py:meth:`setFocusIndicator()`
         """
         return self.__data.focusIndicator
@@ -555,11 +555,11 @@ class QwtPlotCanvas(QFrame):
     def setBorderRadius(self, radius):
         """
         Set the radius for the corners of the border frame
-        
+
         :param float radius: Radius of a rounded corner
-        
+
         .. seealso::
-        
+
             :py:meth:`borderRadius()`
         """
         self.__data.borderRadius = max([0.0, radius])
@@ -567,9 +567,9 @@ class QwtPlotCanvas(QFrame):
     def borderRadius(self):
         """
         :return: Radius for the corners of the border frame
-        
+
         .. seealso::
-        
+
             :py:meth:`setBorderRadius()`
         """
         return self.__data.borderRadius
@@ -712,11 +712,11 @@ class QwtPlotCanvas(QFrame):
     def drawBorder(self, painter):
         """
         Draw the border of the plot canvas
-        
+
         :param QPainter painter: Painter
-        
+
         .. seealso::
-        
+
             :py:meth:`setBorderRadius()`
         """
         if self.__data.borderRadius > 0:
@@ -767,7 +767,7 @@ class QwtPlotCanvas(QFrame):
     def drawFocusIndicator(self, painter):
         """
         Draw the focus indication
-        
+
         :param QPainter painter: Painter
         """
         margin = 1

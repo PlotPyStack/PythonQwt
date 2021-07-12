@@ -75,4 +75,3 @@ def qwtRadians(degrees):
 
 def qwtDegrees(radians):
     return radians * 180.0 / math.pi
-

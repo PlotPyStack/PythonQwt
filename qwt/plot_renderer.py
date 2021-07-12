@@ -66,9 +66,9 @@ class QwtPlotRenderer(QObject):
     """
     Renderer for exporting a plot to a document, a printer
     or anything else, that is supported by QPainter/QPaintDevice
-    
+
     Discard flags:
-    
+
       * `QwtPlotRenderer.DiscardNone`: Render all components of the plot
       * `QwtPlotRenderer.DiscardBackground`: Don't render the background of the plot
       * `QwtPlotRenderer.DiscardTitle`: Don't render the title of the plot
@@ -76,14 +76,14 @@ class QwtPlotRenderer(QObject):
       * `QwtPlotRenderer.DiscardCanvasBackground`: Don't render the background of the canvas
       * `QwtPlotRenderer.DiscardFooter`: Don't render the footer of the plot
       * `QwtPlotRenderer.DiscardCanvasFrame`: Don't render the frame of the canvas
-      
+
     .. note::
-    
+
         The `QwtPlotRenderer.DiscardCanvasFrame` flag has no effect when using
         style sheets, where the frame is part of the background
-    
+
     Layout flags:
-    
+
       * `QwtPlotRenderer.DefaultLayout`: Use the default layout as on screen
       * `QwtPlotRenderer.FrameWithScales`: Instead of the scales a box is painted around the plot canvas, where the scale ticks are aligned to.
     """
@@ -113,8 +113,8 @@ class QwtPlotRenderer(QObject):
         :param bool on: On/Off
 
         .. seealso::
-        
-            :py:meth:`testDiscardFlag()`, :py:meth:`setDiscardFlags()`, 
+
+            :py:meth:`testDiscardFlag()`, :py:meth:`setDiscardFlags()`,
             :py:meth:`discardFlags()`
         """
         if on:
@@ -128,8 +128,8 @@ class QwtPlotRenderer(QObject):
         :return: True, if flag is enabled.
 
         .. seealso::
-        
-            :py:meth:`setDiscardFlag()`, :py:meth:`setDiscardFlags()`, 
+
+            :py:meth:`setDiscardFlag()`, :py:meth:`setDiscardFlags()`,
             :py:meth:`discardFlags()`
         """
         return self.__data.discardFlags & flag
@@ -141,8 +141,8 @@ class QwtPlotRenderer(QObject):
         :param int flags: Flags
 
         .. seealso::
-        
-            :py:meth:`testDiscardFlag()`, :py:meth:`setDiscardFlag()`, 
+
+            :py:meth:`testDiscardFlag()`, :py:meth:`setDiscardFlag()`,
             :py:meth:`discardFlags()`
         """
         self.__data.discardFlags = flags
@@ -152,8 +152,8 @@ class QwtPlotRenderer(QObject):
         :return: Flags, indicating what to discard from rendering
 
         .. seealso::
-        
-            :py:meth:`setDiscardFlag()`, :py:meth:`setDiscardFlags()`, 
+
+            :py:meth:`setDiscardFlag()`, :py:meth:`setDiscardFlags()`,
             :py:meth:`testDiscardFlag()`
         """
         return self.__data.discardFlags
@@ -165,8 +165,8 @@ class QwtPlotRenderer(QObject):
         :param int flag: Flag to change
 
         .. seealso::
-        
-            :py:meth:`testLayoutFlag()`, :py:meth:`setLayoutFlags()`, 
+
+            :py:meth:`testLayoutFlag()`, :py:meth:`setLayoutFlags()`,
             :py:meth:`layoutFlags()`
         """
         if on:
@@ -180,8 +180,8 @@ class QwtPlotRenderer(QObject):
         :return: True, if flag is enabled.
 
         .. seealso::
-        
-            :py:meth:`setLayoutFlag()`, :py:meth:`setLayoutFlags()`, 
+
+            :py:meth:`setLayoutFlag()`, :py:meth:`setLayoutFlags()`,
             :py:meth:`layoutFlags()`
         """
         return self.__data.layoutFlags & flag
@@ -193,8 +193,8 @@ class QwtPlotRenderer(QObject):
         :param int flags: Flags
 
         .. seealso::
-        
-            :py:meth:`setLayoutFlag()`, :py:meth:`testLayoutFlag()`, 
+
+            :py:meth:`setLayoutFlag()`, :py:meth:`testLayoutFlag()`,
             :py:meth:`layoutFlags()`
         """
         self.__data.layoutFlags = flags
@@ -204,8 +204,8 @@ class QwtPlotRenderer(QObject):
         :return: Layout flags
 
         .. seealso::
-        
-            :py:meth:`setLayoutFlags()`, :py:meth:`setLayoutFlag()`, 
+
+            :py:meth:`setLayoutFlags()`, :py:meth:`setLayoutFlag()`,
             :py:meth:`testLayoutFlag()`
         """
         return self.__data.layoutFlags
@@ -218,7 +218,7 @@ class QwtPlotRenderer(QObject):
 
         The format of the document will be auto-detected from the
         suffix of the file name.
-  
+
         :param qwt.plot.QwtPlot plot: Plot widget
         :param str fileName: Path of the file, where the document will be stored
         :param QSizeF sizeMM: Size for the document in millimeters
@@ -294,10 +294,10 @@ class QwtPlotRenderer(QObject):
 
         :param qwt.plot.QwtPlot plot: Plot widget
         :param dest: QPaintDevice, QPrinter or QSvgGenerator instance
-        
+
         .. seealso::
-        
-            :py:meth:`render()`, 
+
+            :py:meth:`render()`,
             :py:meth:`qwt.painter.QwtPainter.setRoundingAlignment()`
         """
         if isinstance(dest, QPaintDevice):
@@ -330,10 +330,10 @@ class QwtPlotRenderer(QObject):
         :param QPainter painter: Painter
         :param str format: Format for the document
         :param QRectF plotRect: Bounding rectangle
-        
+
         .. seealso::
-        
-            :py:meth:`renderDocument()`, :py:meth:`renderTo()`, 
+
+            :py:meth:`renderDocument()`, :py:meth:`renderTo()`,
             :py:meth:`qwt.painter.QwtPainter.setRoundingAlignment()`
         """
         if (
@@ -687,9 +687,9 @@ class QwtPlotRenderer(QObject):
         :param QSizeF sizeMM: Size for the document in millimeters
         :param int resolution: Resolution in dots per Inch (dpi)
         :return: True, when exporting was successful
-        
+
         .. seealso::
-        
+
             :py:meth:`renderDocument()`
         """
         if plot is None:

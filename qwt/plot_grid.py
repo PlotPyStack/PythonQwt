@@ -70,7 +70,7 @@ class QwtPlotGrid(QwtPlotItem):
     ):
         """
         Create and setup a new `QwtPlotGrid` object (convenience function).
-        
+
         :param plot: Plot to attach the curve to
         :type plot: qwt.plot.QwtPlot or None
         :param z: Z-value
@@ -93,7 +93,7 @@ class QwtPlotGrid(QwtPlotItem):
         :type minstyle: Qt.PenStyle or None
 
         .. seealso::
-        
+
             :py:meth:`setMinorPen()`, :py:meth:`setMajorPen()`
         """
         item = cls()
@@ -139,11 +139,11 @@ class QwtPlotGrid(QwtPlotItem):
     def enableX(self, on):
         """
         Enable or disable vertical grid lines
-        
+
         :param bool on: Enable (true) or disable
-        
+
         .. seealso::
-        
+
             :py:meth:`enableXMin()`
         """
         if self.__data.xEnabled != on:
@@ -154,11 +154,11 @@ class QwtPlotGrid(QwtPlotItem):
     def enableY(self, on):
         """
         Enable or disable horizontal grid lines
-        
+
         :param bool on: Enable (true) or disable
-        
+
         .. seealso::
-        
+
             :py:meth:`enableYMin()`
         """
         if self.__data.yEnabled != on:
@@ -169,11 +169,11 @@ class QwtPlotGrid(QwtPlotItem):
     def enableXMin(self, on):
         """
         Enable or disable  minor vertical grid lines.
-        
+
         :param bool on: Enable (true) or disable
-        
+
         .. seealso::
-        
+
             :py:meth:`enableX()`
         """
         if self.__data.xMinEnabled != on:
@@ -184,11 +184,11 @@ class QwtPlotGrid(QwtPlotItem):
     def enableYMin(self, on):
         """
         Enable or disable  minor horizontal grid lines.
-        
+
         :param bool on: Enable (true) or disable
-        
+
         .. seealso::
-        
+
             :py:meth:`enableY()`
         """
         if self.__data.yMinEnabled != on:
@@ -199,7 +199,7 @@ class QwtPlotGrid(QwtPlotItem):
     def setXDiv(self, scaleDiv):
         """
         Assign an x axis scale division
-        
+
         :param qwt.scale_div.QwtScaleDiv scaleDiv: Scale division
         """
         if self.__data.xScaleDiv != scaleDiv:
@@ -209,7 +209,7 @@ class QwtPlotGrid(QwtPlotItem):
     def setYDiv(self, scaleDiv):
         """
         Assign an y axis scale division
-        
+
         :param qwt.scale_div.QwtScaleDiv scaleDiv: Scale division
         """
         if self.__data.yScaleDiv != scaleDiv:
@@ -219,29 +219,29 @@ class QwtPlotGrid(QwtPlotItem):
     def setPen(self, *args):
         """
         Build and/or assign a pen for both major and minor grid lines
-        
+
         .. py:method:: setPen(color, width, style)
             :noindex:
-        
+
             Build and assign a pen for both major and minor grid lines
-    
+
             In Qt5 the default pen width is 1.0 ( 0.0 in Qt4 ) what makes it
-            non cosmetic (see `QPen.isCosmetic()`). This method signature has 
+            non cosmetic (see `QPen.isCosmetic()`). This method signature has
             been introduced to hide this incompatibility.
-            
+
             :param QColor color: Pen color
             :param float width: Pen width
             :param Qt.PenStyle style: Pen style
-        
+
         .. py:method:: setPen(pen)
             :noindex:
-        
+
             Assign a pen for both major and minor grid lines
-    
+
             :param QPen pen: New pen
-        
+
         .. seealso::
-        
+
             :py:meth:`pen()`, :py:meth:`brush()`
         """
         if len(args) == 3:
@@ -263,30 +263,30 @@ class QwtPlotGrid(QwtPlotItem):
     def setMajorPen(self, *args):
         """
         Build and/or assign a pen for both major grid lines
-        
+
         .. py:method:: setMajorPen(color, width, style)
             :noindex:
-        
+
             Build and assign a pen for both major grid lines
-    
+
             In Qt5 the default pen width is 1.0 ( 0.0 in Qt4 ) what makes it
-            non cosmetic (see `QPen.isCosmetic()`). This method signature has 
+            non cosmetic (see `QPen.isCosmetic()`). This method signature has
             been introduced to hide this incompatibility.
-            
+
             :param QColor color: Pen color
             :param float width: Pen width
             :param Qt.PenStyle style: Pen style
-        
+
         .. py:method:: setMajorPen(pen)
             :noindex:
-        
+
             Assign a pen for the major grid lines
-    
+
             :param QPen pen: New pen
-        
+
         .. seealso::
-        
-            :py:meth:`majorPen()`, :py:meth:`setMinorPen()`, 
+
+            :py:meth:`majorPen()`, :py:meth:`setMinorPen()`,
             :py:meth:`setPen()`, :py:meth:`pen()`, :py:meth:`brush()`
         """
         if len(args) == 3:
@@ -307,30 +307,30 @@ class QwtPlotGrid(QwtPlotItem):
     def setMinorPen(self, *args):
         """
         Build and/or assign a pen for both minor grid lines
-        
+
         .. py:method:: setMinorPen(color, width, style)
             :noindex:
-        
+
             Build and assign a pen for both minor grid lines
-    
+
             In Qt5 the default pen width is 1.0 ( 0.0 in Qt4 ) what makes it
-            non cosmetic (see `QPen.isCosmetic()`). This method signature has 
+            non cosmetic (see `QPen.isCosmetic()`). This method signature has
             been introduced to hide this incompatibility.
-            
+
             :param QColor color: Pen color
             :param float width: Pen width
             :param Qt.PenStyle style: Pen style
-        
+
         .. py:method:: setMinorPen(pen)
             :noindex:
-        
+
             Assign a pen for the minor grid lines
-    
+
             :param QPen pen: New pen
-        
+
         .. seealso::
-        
-            :py:meth:`minorPen()`, :py:meth:`setMajorPen()`, 
+
+            :py:meth:`minorPen()`, :py:meth:`setMajorPen()`,
             :py:meth:`setPen()`, :py:meth:`pen()`, :py:meth:`brush()`
         """
         if len(args) == 3:
@@ -432,10 +432,10 @@ class QwtPlotGrid(QwtPlotItem):
     def majorPen(self):
         """
         :return: the pen for the major grid lines
-        
+
         .. seealso::
-        
-            :py:meth:`setMajorPen()`, :py:meth:`setMinorPen()`, 
+
+            :py:meth:`setMajorPen()`, :py:meth:`setMinorPen()`,
             :py:meth:`setPen()`
         """
         return self.__data.majorPen
@@ -443,10 +443,10 @@ class QwtPlotGrid(QwtPlotItem):
     def minorPen(self):
         """
         :return: the pen for the minor grid lines
-        
+
         .. seealso::
-        
-            :py:meth:`setMinorPen()`, :py:meth:`setMajorPen()`, 
+
+            :py:meth:`setMinorPen()`, :py:meth:`setMajorPen()`,
             :py:meth:`setPen()`
         """
         return self.__data.minorPen
@@ -454,9 +454,9 @@ class QwtPlotGrid(QwtPlotItem):
     def xEnabled(self):
         """
         :return: True if vertical grid lines are enabled
-        
+
         .. seealso::
-        
+
             :py:meth:`enableX()`
         """
         return self.__data.xEnabled
@@ -464,9 +464,9 @@ class QwtPlotGrid(QwtPlotItem):
     def yEnabled(self):
         """
         :return: True if horizontal grid lines are enabled
-        
+
         .. seealso::
-        
+
             :py:meth:`enableY()`
         """
         return self.__data.yEnabled
@@ -474,9 +474,9 @@ class QwtPlotGrid(QwtPlotItem):
     def xMinEnabled(self):
         """
         :return: True if minor vertical grid lines are enabled
-        
+
         .. seealso::
-        
+
             :py:meth:`enableXMin()`
         """
         return self.__data.xMinEnabled
@@ -484,9 +484,9 @@ class QwtPlotGrid(QwtPlotItem):
     def yMinEnabled(self):
         """
         :return: True if minor horizontal grid lines are enabled
-        
+
         .. seealso::
-        
+
             :py:meth:`enableYMin()`
         """
         return self.__data.yMinEnabled
@@ -506,14 +506,13 @@ class QwtPlotGrid(QwtPlotItem):
     def updateScaleDiv(self, xScaleDiv, yScaleDiv):
         """
         Update the grid to changes of the axes scale division
-        
+
         :param qwt.scale_map.QwtScaleMap xMap: Scale division of the x-axis
         :param qwt.scale_map.QwtScaleMap yMap: Scale division of the y-axis
-        
+
         .. seealso::
-        
+
             :py:meth:`updateAxes()`
         """
         self.setXDiv(xScaleDiv)
         self.setYDiv(yScaleDiv)
-

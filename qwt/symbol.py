@@ -378,9 +378,9 @@ class QwtSymbol_PrivateData(object):
 class QwtSymbol(object):
     """
     A class for drawing symbols
-    
+
     Symbol styles:
-    
+
       * `QwtSymbol.NoSymbol`: No Style. The symbol cannot be drawn.
       * `QwtSymbol.Ellipse`: Ellipse or circle
       * `QwtSymbol.Rect`: Rectangle
@@ -397,43 +397,43 @@ class QwtSymbol(object):
       * `QwtSymbol.Star1`: X combined with +
       * `QwtSymbol.Star2`: Six-pointed star
       * `QwtSymbol.Hexagon`: Hexagon
-      * `QwtSymbol.Path`: The symbol is represented by a painter path, where 
-        the origin (0, 0) of the path coordinate system is mapped to the 
+      * `QwtSymbol.Path`: The symbol is represented by a painter path, where
+        the origin (0, 0) of the path coordinate system is mapped to the
         position of the symbol
-        
+
         ..seealso::
-        
+
             :py:meth:`setPath()`, :py:meth:`path()`
-      * `QwtSymbol.Pixmap`: The symbol is represented by a pixmap. 
+      * `QwtSymbol.Pixmap`: The symbol is represented by a pixmap.
         The pixmap is centered or aligned to its pin point.
-        
+
         ..seealso::
-        
+
             :py:meth:`setPinPoint()`
-      * `QwtSymbol.Graphic`: The symbol is represented by a graphic. 
+      * `QwtSymbol.Graphic`: The symbol is represented by a graphic.
         The graphic is centered or aligned to its pin point.
-        
+
         ..seealso::
-        
+
             :py:meth:`setPinPoint()`
-      * `QwtSymbol.SvgDocument`: The symbol is represented by a SVG graphic. 
+      * `QwtSymbol.SvgDocument`: The symbol is represented by a SVG graphic.
         The graphic is centered or aligned to its pin point.
-        
+
         ..seealso::
-        
+
             :py:meth:`setPinPoint()`
-      * `QwtSymbol.UserStyle`: Styles >= `QwtSymbol.UserStyle` are reserved 
+      * `QwtSymbol.UserStyle`: Styles >= `QwtSymbol.UserStyle` are reserved
         for derived classes of `QwtSymbol` that overload `drawSymbols()` with
         additional application specific symbol types.
-        
+
     Cache policies:
-    
+
         Depending on the render engine and the complexity of the
         symbol shape it might be faster to render the symbol
         to a pixmap and to paint this pixmap.
 
         F.e. the raster paint engine is a pure software renderer
-        where in cache mode a draw operation usually ends in 
+        where in cache mode a draw operation usually ends in
         raster operation with the the backing store, that are usually
         faster, than the algorithms for rendering polygons.
         But the opposite can be expected for graphic pipelines
@@ -442,50 +442,50 @@ class QwtSymbol(object):
         The default setting is AutoCache
 
         ..seealso::
-        
+
             :py:meth:`setCachePolicy()`, :py:meth:`cachePolicy()`
-            
+
         .. note::
-        
-            The policy has no effect, when the symbol is painted 
+
+            The policy has no effect, when the symbol is painted
             to a vector graphics format (PDF, SVG).
-            
+
         .. warning::
-        
+
             Since Qt 4.8 raster is the default backend on X11
-            
+
         Valid cache policies:
-        
+
           * `QwtSymbol.NoCache`: Don't use a pixmap cache
           * `QwtSymbol.Cache`: Always use a pixmap cache
-          * `QwtSymbol.AutoCache`: Use a cache when the symbol is rendered 
+          * `QwtSymbol.AutoCache`: Use a cache when the symbol is rendered
             with the software renderer (`QPaintEngine.Raster`)
-            
+
     .. py:class:: QwtSymbol([style=QwtSymbol.NoSymbol])
-    
+
         The symbol is constructed with gray interior,
         black outline with zero width, no size and style 'NoSymbol'.
-    
+
         :param int style: Symbol Style
-            
+
     .. py:class:: QwtSymbol(style, brush, pen, size)
         :noindex:
-    
+
         :param int style: Symbol Style
         :param QBrush brush: Brush to fill the interior
         :param QPen pen: Outline pen
         :param QSize size: Size
-            
+
     .. py:class:: QwtSymbol(path, brush, pen)
         :noindex:
-    
+
         :param QPainterPath path: Painter path
         :param QBrush brush: Brush to fill the interior
         :param QPen pen: Outline pen
 
     .. seealso::
-    
-        :py:meth:`setPath()`, :py:meth:`setBrush()`, 
+
+        :py:meth:`setPath()`, :py:meth:`setBrush()`,
         :py:meth:`setPen()`, :py:meth:`setSize()`
     """
 
@@ -555,7 +555,7 @@ class QwtSymbol(object):
     ):
         """
         Create and setup a new `QwtSymbol` object (convenience function).
-        
+
         :param style: Symbol Style
         :type style: int or None
         :param brush: Brush to fill the interior
@@ -575,7 +575,7 @@ class QwtSymbol(object):
         :param svgdocument: SVG icon as symbol
 
         .. seealso::
-        
+
             :py:meth:`setPixmap()`, :py:meth:`setGraphic()`, :py:meth:`setPath()`
         """
         style = QwtSymbol.NoSymbol if style is None else style
@@ -607,9 +607,9 @@ class QwtSymbol(object):
         The default policy is AutoCache
 
         :param int policy: Cache policy
-        
+
         .. seealso::
-        
+
             :py:meth:`cachePolicy()`
         """
         if self.__data.cache.policy != policy:
@@ -619,9 +619,9 @@ class QwtSymbol(object):
     def cachePolicy(self):
         """
         :return: Cache policy
-        
+
         .. seealso::
-        
+
             :py:meth:`setCachePolicy()`
         """
         return self.__data.cache.policy
@@ -630,25 +630,25 @@ class QwtSymbol(object):
         """
         Set a painter path as symbol
 
-        The symbol is represented by a painter path, where the 
+        The symbol is represented by a painter path, where the
         origin (0, 0) of the path coordinate system is mapped to
         the position of the symbol.
 
         When the symbol has valid size the painter path gets scaled
         to fit into the size. Otherwise the symbol size depends on
         the bounding rectangle of the path.
-        
+
         The following code defines a symbol drawing an arrow::
-        
+
             from qtpy.QtGui import QApplication, QPen, QPainterPath, QTransform
             from qtpy.QtCore import Qt, QPointF
             from qwt import QwtPlot, QwtPlotCurve, QwtSymbol
             import numpy as np
-            
+
             app = QApplication([])
-            
+
             # --- Construct custom symbol ---
-            
+
             path = QPainterPath()
             path.moveTo(0, 8)
             path.lineTo(0, 5)
@@ -656,23 +656,23 @@ class QwtSymbol(object):
             path.lineTo(0, 0)
             path.lineTo(3, 5)
             path.lineTo(0, 5)
-            
+
             transform = QTransform()
             transform.rotate(-30.0)
             path = transform.map(path)
-            
+
             pen = QPen(Qt.black, 2 );
             pen.setJoinStyle(Qt.MiterJoin)
-            
+
             symbol = QwtSymbol()
             symbol.setPen(pen)
             symbol.setBrush(Qt.red)
             symbol.setPath(path)
             symbol.setPinPoint(QPointF(0., 0.))
             symbol.setSize(10, 14)
-            
+
             # --- Test it within a simple plot ---
-            
+
             curve = QwtPlotCurve()
             curve_pen = QPen(Qt.blue)
             curve_pen.setStyle(Qt.DotLine)
@@ -680,21 +680,21 @@ class QwtSymbol(object):
             curve.setSymbol(symbol)
             x = np.linspace(0, 10, 10)
             curve.setData(x, np.sin(x))
-            
+
             plot = QwtPlot()
             curve.attach(plot)
             plot.resize(600, 300)
             plot.replot()
             plot.show()
-            
-            app.exec_()            
+
+            app.exec_()
 
         .. image:: /images/symbol_path_example.png
-        
-        :param QPainterPath path: Painter path        
-        
+
+        :param QPainterPath path: Painter path
+
         .. seealso::
-        
+
             :py:meth:`path()`, :py:meth:`setSize()`
         """
         self.__data.style = QwtSymbol.Path
@@ -704,9 +704,9 @@ class QwtSymbol(object):
     def path(self):
         """
         :return: Painter path for displaying the symbol
-        
+
         .. seealso::
-        
+
             :py:meth:`setPath()`
         """
         return self.__data.path.path
@@ -716,17 +716,17 @@ class QwtSymbol(object):
         Set a pixmap as symbol
 
         :param QPixmap pixmap: Pixmap
-        
+
         .. seealso::
-        
+
             :py:meth:`pixmap()`, :py:meth:`setGraphic()`
-            
+
         .. note::
-        
+
             The `style()` is set to `QwtSymbol.Pixmap`
-            
+
         .. note::
-        
+
             `brush()` and `pen()` have no effect
         """
         self.__data.style = QwtSymbol.Pixmap
@@ -735,9 +735,9 @@ class QwtSymbol(object):
     def pixmap(self):
         """
         :return: Assigned pixmap
-        
+
         .. seealso::
-        
+
             :py:meth:`setPixmap()`
         """
         return self.__data.pixmap.pixmap
@@ -747,17 +747,17 @@ class QwtSymbol(object):
         Set a graphic as symbol
 
         :param qwt.graphic.QwtGraphic graphic: Graphic
-        
+
         .. seealso::
-        
+
             :py:meth:`graphic()`, :py:meth:`setPixmap()`
-            
+
         .. note::
-        
+
             The `style()` is set to `QwtSymbol.Graphic`
-            
+
         .. note::
-        
+
             `brush()` and `pen()` have no effect
         """
         self.__data.style = QwtSymbol.Graphic
@@ -766,9 +766,9 @@ class QwtSymbol(object):
     def graphic(self):
         """
         :return: Assigned graphic
-        
+
         .. seealso::
-        
+
             :py:meth:`setGraphic()`
         """
         return self.__data.graphic.graphic
@@ -778,17 +778,17 @@ class QwtSymbol(object):
         Set a SVG icon as symbol
 
         :param svgDocument: SVG icon
-        
+
         .. seealso::
-        
+
             :py:meth:`setGraphic()`, :py:meth:`setPixmap()`
-            
+
         .. note::
-        
+
             The `style()` is set to `QwtSymbol.SvgDocument`
-            
+
         .. note::
-        
+
             `brush()` and `pen()` have no effect
         """
         self.__data.style = QwtSymbol.SvgDocument
@@ -802,17 +802,17 @@ class QwtSymbol(object):
 
         .. py:method:: setSize(width, [height=-1])
             :noindex:
-        
+
             :param int width: Width
             :param int height: Height
 
         .. py:method:: setSize(size)
             :noindex:
-        
+
             :param QSize size: Size
 
         .. seealso::
-        
+
             :py:meth:`size()`
         """
         if len(args) == 2:
@@ -838,9 +838,9 @@ class QwtSymbol(object):
     def size(self):
         """
         :return: Size
-        
+
         .. seealso::
-        
+
             :py:meth:`setSize()`
         """
         return self.__data.size
@@ -852,9 +852,9 @@ class QwtSymbol(object):
         The brush is used to draw the interior of the symbol.
 
         :param QBrush brush: Brush
-        
+
         .. seealso::
-        
+
             :py:meth:`brush()`
         """
         if brush != self.__data.brush:
@@ -866,9 +866,9 @@ class QwtSymbol(object):
     def brush(self):
         """
         :return: Brush
-        
+
         .. seealso::
-        
+
             :py:meth:`setBrush()`
         """
         return self.__data.brush
@@ -876,29 +876,29 @@ class QwtSymbol(object):
     def setPen(self, *args):
         """
         Build and/or assign a pen, depending on the arguments.
-        
+
         .. py:method:: setPen(color, width, style)
             :noindex:
-        
+
             Build and assign a pen
-    
+
             In Qt5 the default pen width is 1.0 ( 0.0 in Qt4 ) what makes it
-            non cosmetic (see `QPen.isCosmetic()`). This method signature has 
+            non cosmetic (see `QPen.isCosmetic()`). This method signature has
             been introduced to hide this incompatibility.
-            
+
             :param QColor color: Pen color
             :param float width: Pen width
             :param Qt.PenStyle style: Pen style
-        
+
         .. py:method:: setPen(pen)
             :noindex:
-        
+
             Assign a pen
-    
+
             :param QPen pen: New pen
-        
+
         .. seealso::
-        
+
             :py:meth:`pen()`, :py:meth:`brush()`
         """
         if len(args) == 3:
@@ -920,9 +920,9 @@ class QwtSymbol(object):
     def pen(self):
         """
         :return: Pen
-        
+
         .. seealso::
-        
+
             :py:meth:`setPen()`, :py:meth:`brush()`
         """
         return self.__data.pen
@@ -935,10 +935,10 @@ class QwtSymbol(object):
         For all other symbol types the color will be assigned to the pen.
 
         :param QColor color: Color
-        
+
         .. seealso::
-        
-            :py:meth:`setPen()`, :py:meth:`setBrush()`, 
+
+            :py:meth:`setPen()`, :py:meth:`setBrush()`,
             :py:meth:`brush()`, :py:meth:`pen()`
         """
         if self.__data.style in (
@@ -978,15 +978,15 @@ class QwtSymbol(object):
 
         The position of a complex symbol is not always aligned to its center
         ( f.e an arrow, where the peak points to a position ). The pin point
-        defines the position inside of a Pixmap, Graphic, SvgDocument 
+        defines the position inside of a Pixmap, Graphic, SvgDocument
         or PainterPath symbol where the represented point has to
         be aligned to.
 
         :param QPointF pos: Position
         :enable bool enable: En/Disable the pin point alignment
-        
+
         .. seealso::
-        
+
             :py:meth:`pinPoint()`, :py:meth:`setPinPointEnabled()`
         """
         if self.__data.pinPoint != pos:
@@ -998,9 +998,9 @@ class QwtSymbol(object):
     def pinPoint(self):
         """
         :return: Pin point
-        
+
         .. seealso::
-        
+
             :py:meth:`setPinPoint()`, :py:meth:`setPinPointEnabled()`
         """
         return self.__data.pinPoint
@@ -1010,9 +1010,9 @@ class QwtSymbol(object):
         En/Disable the pin point alignment
 
         :param bool on: Enabled, when on is true
-        
+
         .. seealso::
-        
+
             :py:meth:`setPinPoint()`, :py:meth:`isPinPointEnabled()`
         """
         if self.__data.isPinPointEnabled != on:
@@ -1022,9 +1022,9 @@ class QwtSymbol(object):
     def isPinPointEnabled(self):
         """
         :return: True, when the pin point translation is enabled
-        
+
         .. seealso::
-        
+
             :py:meth:`setPinPoint()`, :py:meth:`setPinPointEnabled()`
         """
         return self.__data.isPinPointEnabled
@@ -1250,7 +1250,7 @@ class QwtSymbol(object):
         that are relevant for this style.
 
         .. seealso::
-        
+
             :py:meth:`setCachePolicy()`, :py:meth:`drawSymbols()`
         """
         if self.__data.cache.pixmap is not None:
@@ -1259,11 +1259,11 @@ class QwtSymbol(object):
     def setStyle(self, style):
         """
         Specify the symbol style
-        
+
         :param int style: Style
 
         .. seealso::
-        
+
             :py:meth:`style()`
         """
         if self.__data.style != style:
@@ -1275,7 +1275,7 @@ class QwtSymbol(object):
         :return: Current symbol style
 
         .. seealso::
-        
+
             :py:meth:`setStyle()`
         """
         return self.__data.style

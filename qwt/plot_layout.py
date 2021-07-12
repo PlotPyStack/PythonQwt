@@ -159,11 +159,11 @@ class QwtPlotLayout(object):
     a QPrinter, QPixmap/QImage or QSvgRenderer.
 
     .. seealso::
-    
+
         :py:meth:`qwt.plot.QwtPlot.setPlotLayout()`
-    
+
     Valid options:
-    
+
       * `QwtPlotLayout.AlignScales`: Unused
       * `QwtPlotLayout.IgnoreScrollbars`: Ignore the dimension of the scrollbars. There are no scrollbars, when the plot is not rendered to widgets.
       * `QwtPlotLayout.IgnoreFrames`: Ignore all frames.
@@ -192,16 +192,16 @@ class QwtPlotLayout(object):
         Change a margin of the canvas. The margin is the space
         above/below the scale ticks. A negative margin will
         be set to -1, excluding the borders of the scales.
-        
+
         :param int margin: New margin
         :param int axisId: Axis index
-        
+
         .. seealso::
-        
+
             :py:meth:`canvasMargin()`
-        
+
         .. warning::
-        
+
             The margin will have no effect when `alignCanvasToScale()` is True
         """
         if margin < 1:
@@ -216,9 +216,9 @@ class QwtPlotLayout(object):
         """
         :param int axisId: Axis index
         :return: Margin around the scale tick borders
-        
+
         .. seealso::
-        
+
             :py:meth:`setCanvasMargin()`
         """
         if axisId not in QwtPlot.AXES:
@@ -228,31 +228,31 @@ class QwtPlotLayout(object):
     def setAlignCanvasToScales(self, *args):
         """
         Change the align-canvas-to-axis-scales setting.
-        
+
         .. py:method:: setAlignCanvasToScales(on):
-        
+
             Set the align-canvas-to-axis-scales flag for all axes
-            
+
             :param bool on: True/False
-        
+
         .. py:method:: setAlignCanvasToScales(axisId, on):
 
             Change the align-canvas-to-axis-scales setting.
             The canvas may:
-            
+
                 - extend beyond the axis scale ends to maximize its size,
                 - align with the axis scale ends to control its size.
 
-            The axisId parameter is somehow confusing as it identifies a 
-            border of the plot and not the axes, that are aligned. F.e when 
-            `QwtPlot.yLeft` is set, the left end of the the x-axes 
+            The axisId parameter is somehow confusing as it identifies a
+            border of the plot and not the axes, that are aligned. F.e when
+            `QwtPlot.yLeft` is set, the left end of the the x-axes
             (`QwtPlot.xTop`, `QwtPlot.xBottom`) is aligned.
-  
+
             :param int axisId: Axis index
             :param bool on: True/False
-        
+
         .. seealso::
-        
+
             :py:meth:`setAlignCanvasToScale()`,
             :py:meth:`alignCanvasToScale()`
         """
@@ -272,17 +272,17 @@ class QwtPlotLayout(object):
 
     def alignCanvasToScale(self, axisId):
         """
-        Return the align-canvas-to-axis-scales setting. 
+        Return the align-canvas-to-axis-scales setting.
         The canvas may:
-        
+
             - extend beyond the axis scale ends to maximize its size
             - align with the axis scale ends to control its size.
-        
+
         :param int axisId: Axis index
         :return: align-canvas-to-axis-scales setting
-        
+
         .. seealso::
-        
+
             :py:meth:`setAlignCanvasToScale()`, :py:meth:`setCanvasMargin()`
         """
         if axisId not in QwtPlot.AXES:
@@ -293,11 +293,11 @@ class QwtPlotLayout(object):
         """
         Change the spacing of the plot. The spacing is the distance
         between the plot components.
-        
+
         :param int spacing: New spacing
-        
+
         .. seealso::
-        
+
             :py:meth:`setCanvasMargin()`, :py:meth:`spacing()`
         """
         self.__data.spacing = max([0, spacing])
@@ -305,9 +305,9 @@ class QwtPlotLayout(object):
     def spacing(self):
         """
         :return: Spacing
-        
+
         .. seealso::
-        
+
             :py:meth:`margin()`, :py:meth:`setSpacing()`
         """
         return self.__data.spacing
@@ -315,28 +315,28 @@ class QwtPlotLayout(object):
     def setLegendPosition(self, *args):
         """
         Specify the position of the legend
-        
+
         .. py:method:: setLegendPosition(pos, [ratio=0.]):
-        
+
             Specify the position of the legend
-            
+
             :param QwtPlot.LegendPosition pos: Legend position
             :param float ratio: Ratio between legend and the bounding rectangle of title, footer, canvas and axes
-            
-            The legend will be shrunk if it would need more space than the 
-            given ratio. The ratio is limited to ]0.0 .. 1.0]. In case of 
-            <= 0.0 it will be reset to the default ratio. The default 
+
+            The legend will be shrunk if it would need more space than the
+            given ratio. The ratio is limited to ]0.0 .. 1.0]. In case of
+            <= 0.0 it will be reset to the default ratio. The default
             vertical/horizontal ratio is 0.33/0.5.
-            
+
             Valid position values:
-            
+
                 * `QwtPlot.LeftLegend`,
                 * `QwtPlot.RightLegend`,
                 * `QwtPlot.TopLegend`,
                 * `QwtPlot.BottomLegend`
-        
+
         .. seealso::
-        
+
             :py:meth:`setLegendPosition()`
         """
         if len(args) == 2:
@@ -367,7 +367,7 @@ class QwtPlotLayout(object):
         :return: Position of the legend
 
         .. seealso::
-        
+
             :py:meth:`legendPosition()`
         """
         return self.__data.legendPos
@@ -375,16 +375,16 @@ class QwtPlotLayout(object):
     def setLegendRatio(self, ratio):
         """
         Specify the relative size of the legend in the plot
-        
+
         :param float ratio: Ratio between legend and the bounding rectangle of title, footer, canvas and axes
-        
-        The legend will be shrunk if it would need more space than the 
-        given ratio. The ratio is limited to ]0.0 .. 1.0]. In case of 
-        <= 0.0 it will be reset to the default ratio. The default 
+
+        The legend will be shrunk if it would need more space than the
+        given ratio. The ratio is limited to ]0.0 .. 1.0]. In case of
+        <= 0.0 it will be reset to the default ratio. The default
         vertical/horizontal ratio is 0.33/0.5.
 
         .. seealso::
-        
+
             :py:meth:`legendRatio()`
         """
         self.setLegendPosition(self.legendPosition(), ratio)
@@ -394,7 +394,7 @@ class QwtPlotLayout(object):
         :return: The relative size of the legend in the plot.
 
         .. seealso::
-        
+
             :py:meth:`setLegendRatio()`
         """
         return self.__data.legendRatio
@@ -405,11 +405,11 @@ class QwtPlotLayout(object):
 
         This method is intended to be used from derived layouts
         overloading `activate()`
-        
+
         :param QRectF rect: Rectangle
 
         .. seealso::
-        
+
             :py:meth:`titleRect()`, :py:meth:`activate()`
         """
         self.__data.titleRect = rect
@@ -417,9 +417,9 @@ class QwtPlotLayout(object):
     def titleRect(self):
         """
         :return: Geometry for the title
-        
+
         .. seealso::
-        
+
             :py:meth:`invalidate()`, :py:meth:`activate()`
         """
         return self.__data.titleRect
@@ -430,11 +430,11 @@ class QwtPlotLayout(object):
 
         This method is intended to be used from derived layouts
         overloading `activate()`
-        
+
         :param QRectF rect: Rectangle
 
         .. seealso::
-        
+
             :py:meth:`footerRect()`, :py:meth:`activate()`
         """
         self.__data.footerRect = rect
@@ -442,9 +442,9 @@ class QwtPlotLayout(object):
     def footerRect(self):
         """
         :return: Geometry for the footer
-        
+
         .. seealso::
-        
+
             :py:meth:`invalidate()`, :py:meth:`activate()`
         """
         return self.__data.footerRect
@@ -455,11 +455,11 @@ class QwtPlotLayout(object):
 
         This method is intended to be used from derived layouts
         overloading `activate()`
-        
+
         :param QRectF rect: Rectangle for the legend
 
         .. seealso::
-        
+
             :py:meth:`footerRect()`, :py:meth:`activate()`
         """
         self.__data.legendRect = rect
@@ -467,9 +467,9 @@ class QwtPlotLayout(object):
     def legendRect(self):
         """
         :return: Geometry for the legend
-        
+
         .. seealso::
-        
+
             :py:meth:`invalidate()`, :py:meth:`activate()`
         """
         return self.__data.legendRect
@@ -485,7 +485,7 @@ class QwtPlotLayout(object):
         :param QRectF rect: Rectangle for the scale
 
         .. seealso::
-        
+
             :py:meth:`scaleRect()`, :py:meth:`activate()`
         """
         if axis in QwtPlot.AXES:
@@ -495,9 +495,9 @@ class QwtPlotLayout(object):
         """
         :param int axisId: Axis index
         :return: Geometry for the scale
-        
+
         .. seealso::
-        
+
             :py:meth:`invalidate()`, :py:meth:`activate()`
         """
         if axis not in QwtPlot.AXES:
@@ -514,7 +514,7 @@ class QwtPlotLayout(object):
         :param QRectF rect: Rectangle
 
         .. seealso::
-        
+
             :py:meth:`canvasRect()`, :py:meth:`activate()`
         """
         self.__data.canvasRect = rect
@@ -522,9 +522,9 @@ class QwtPlotLayout(object):
     def canvasRect(self):
         """
         :return: Geometry for the canvas
-        
+
         .. seealso::
-        
+
             :py:meth:`invalidate()`, :py:meth:`activate()`
         """
         return self.__data.canvasRect
@@ -532,9 +532,9 @@ class QwtPlotLayout(object):
     def invalidate(self):
         """
         Invalidate the geometry of all components.
-        
+
         .. seealso::
-        
+
             :py:meth:`activate()`
         """
         self.__data.titleRect = QRectF()
@@ -548,9 +548,9 @@ class QwtPlotLayout(object):
         """
         :param qwt.plot.QwtPlot plot: Plot widget
         :return: Minimum size hint
-        
+
         .. seealso::
-        
+
             :py:meth:`qwt.plot.QwtPlot.minimumSizeHint()`
         """
 
@@ -674,7 +674,7 @@ class QwtPlotLayout(object):
     def layoutLegend(self, options, rect):
         """
         Find the geometry for the legend
-        
+
         :param options: Options how to layout the legend
         :param QRectF rect: Rectangle where to place the legend
         :return: Geometry for the legend
@@ -704,7 +704,7 @@ class QwtPlotLayout(object):
     def alignLegend(self, canvasRect, legendRect):
         """
         Align the legend to the canvas
-        
+
         :param QRectF canvasRect: Geometry of the canvas
         :param QRectF legendRect: Maximum geometry for the legend
         :return: Geometry for the aligned legend
@@ -724,13 +724,13 @@ class QwtPlotLayout(object):
         """
         Expand all line breaks in text labels, and calculate the height
         of their widgets in orientation of the text.
-        
+
         :param options: Options how to layout the legend
         :param QRectF rect: Bounding rectangle for title, footer, axes and canvas.
         :return: tuple `(dimTitle, dimFooter, dimAxes)`
-        
+
         Returns:
-        
+
             * `dimTitle`: Expanded height of the title widget
             * `dimFooter`: Expanded height of the footer widget
             * `dimAxes`: Expanded heights of the axis in axis orientation.
@@ -858,7 +858,7 @@ class QwtPlotLayout(object):
         """
         Align the ticks of the axis to the canvas borders using
         the empty corners.
-        
+
         :param options: Options how to layout the legend
         :param QRectF canvasRect: Geometry of the canvas ( IN/OUT )
         :param QRectF scaleRect: Geometry of the scales ( IN/OUT )
@@ -1016,7 +1016,7 @@ class QwtPlotLayout(object):
     def activate(self, plot, plotRect, options=0x00):
         """
         Recalculate the geometry of all components.
-        
+
         :param qwt.plot.QwtPlot plot: Plot to be layout
         :param QRectF plotRect: Rectangle where to place the components
         :param options: Layout options
@@ -1142,4 +1142,3 @@ class QwtPlotLayout(object):
             self.__data.legendRect = self.alignLegend(
                 self.__data.canvasRect, self.__data.legendRect
             )
-

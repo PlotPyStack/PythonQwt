@@ -42,15 +42,15 @@ class ErrorBarPlotCurve(QwtPlotCurve):
           (x-dx[0], x+dx[1]) or (y-dy[0], y+dy[1]).
 
         curvePen is the pen used to plot the curve
-        
+
         curveStyle is the style used to plot the curve
-        
+
         curveSymbol is the symbol used to plot the symbols
-        
+
         errorPen is the pen used to plot the error bars
-        
+
         errorCap is the size of the error bar caps
-        
+
         errorOnTop is a boolean:
         - if True, plot the error bars on top of the curve,
         - if False, plot the curve on top of the error bars.
@@ -127,8 +127,7 @@ class ErrorBarPlotCurve(QwtPlotCurve):
         QwtPlotCurve.setData(self, self.__x, self.__y)
 
     def boundingRect(self):
-        """Return the bounding rectangle of the data, error bars included.
-        """
+        """Return the bounding rectangle of the data, error bars included."""
         if self.__dx is None:
             xmin = min(self.__x)
             xmax = max(self.__x)
@@ -159,7 +158,7 @@ class ErrorBarPlotCurve(QwtPlotCurve):
         xMap is the QwtDiMap used to map x-values to pixels
 
         yMap is the QwtDiMap used to map y-values to pixels
-        
+
         first is the index of the first data point to draw
 
         last is the index of the last data point to draw. If last < 0, last
@@ -198,7 +197,10 @@ class ErrorBarPlotCurve(QwtPlotCurve):
             if self.errorCap > 0:
                 # draw the caps
                 cap = self.errorCap / 2
-                n, i, = len(y), 0
+                n, i, = (
+                    len(y),
+                    0,
+                )
                 lines = []
                 while i < n:
                     yi = yMap.transform(y[i])
@@ -231,7 +233,10 @@ class ErrorBarPlotCurve(QwtPlotCurve):
                 ymin = self.__y - self.__dy[0]
                 ymax = self.__y + self.__dy[1]
             x = self.__x
-            n, i, = len(x), 0
+            n, i, = (
+                len(x),
+                0,
+            )
             lines = []
             while i < n:
                 xi = xMap.transform(x[i])

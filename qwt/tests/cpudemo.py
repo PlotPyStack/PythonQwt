@@ -284,6 +284,7 @@ class CpuCurve(QwtPlotCurve):
 
 class CpuPlot(QwtPlot):
     HISTORY = 60
+
     def __init__(self, *args, unattended=False):
         QwtPlot.__init__(self, *args)
 

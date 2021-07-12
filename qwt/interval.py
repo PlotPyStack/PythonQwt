@@ -19,11 +19,11 @@ class QwtInterval(object):
     A class representing an interval
 
     The interval is represented by 2 doubles, the lower and the upper limit.
-    
+
     .. py:class:: QwtInterval(minValue=0., maxValue=-1., borderFlags=None)
-    
+
         Build an interval with from min/max values
-        
+
         :param float minValue: Minimum value
         :param float maxValue: Maximum value
         :param int borderFlags: Include/Exclude borders
@@ -46,7 +46,7 @@ class QwtInterval(object):
     def setInterval(self, minValue, maxValue, borderFlags=None):
         """
         Assign the limits of the interval
-        
+
         :param float minValue: Minimum value
         :param float maxValue: Maximum value
         :param int borderFlags: Include/Exclude borders
@@ -61,11 +61,11 @@ class QwtInterval(object):
     def setBorderFlags(self, borderFlags):
         """
         Change the border flags
-        
+
         :param int borderFlags: Include/Exclude borders
 
         .. seealso::
-        
+
             :py:meth:`borderFlags()`
         """
         self.__borderFlags = borderFlags
@@ -75,7 +75,7 @@ class QwtInterval(object):
         :return: Border flags
 
         .. seealso::
-        
+
             :py:meth:`setBorderFlags()`
         """
         return self.__borderFlags
@@ -83,7 +83,7 @@ class QwtInterval(object):
     def setMinValue(self, minValue):
         """
         Assign the lower limit of the interval
-                
+
         :param float minValue: Minimum value
         """
         self.__minValue = float(minValue)  # avoid overflows with NumPy scalars
@@ -91,7 +91,7 @@ class QwtInterval(object):
     def setMaxValue(self, maxValue):
         """
         Assign the upper limit of the interval
-                
+
         :param float maxValue: Maximum value
         """
         self.__maxValue = float(maxValue)  # avoid overflows with NumPy scalars
@@ -171,7 +171,7 @@ class QwtInterval(object):
         The limits are set to interval [0.0, -1.0]
 
         .. seealso::
-        
+
             :py:meth:`isValid()`
         """
         self.__minValue = 0.0
@@ -180,13 +180,13 @@ class QwtInterval(object):
     def normalized(self):
         """
         Normalize the limits of the interval
-        
+
         If maxValue() < minValue() the limits will be inverted.
-        
+
         :return: Normalized interval
 
         .. seealso::
-        
+
             :py:meth:`isValid()`, :py:meth:`inverted()`
         """
         if self.__minValue > self.__maxValue:
@@ -202,11 +202,11 @@ class QwtInterval(object):
     def inverted(self):
         """
         Invert the limits of the interval
-        
+
         :return: Inverted interval
 
         .. seealso::
-        
+
             :py:meth:`normalized()`
         """
         borderFlags = self.IncludeBorders
@@ -219,7 +219,7 @@ class QwtInterval(object):
     def contains(self, value):
         """
         Test if a value is inside an interval
-        
+
         :param float value: Value
         :return: true, if value >= minValue() && value <= maxValue()
         """
@@ -237,7 +237,7 @@ class QwtInterval(object):
     def unite(self, other):
         """
         Unite two intervals
-        
+
         :param qwt.interval.QwtInterval other: other interval to united with
         :return: united interval
         """
@@ -280,7 +280,7 @@ class QwtInterval(object):
     def intersect(self, other):
         """
         Intersect two intervals
-        
+
         :param qwt.interval.QwtInterval other: other interval to intersect with
         :return: intersected interval
         """
@@ -328,7 +328,7 @@ class QwtInterval(object):
     def intersects(self, other):
         """
         Test if two intervals overlap
-        
+
         :param qwt.interval.QwtInterval other: other interval
         :return: True, when the intervals are intersecting
         """
@@ -356,7 +356,7 @@ class QwtInterval(object):
         """
         Adjust the limit that is closer to value, so that value becomes
         the center of the interval.
-        
+
         :param float value: Center
         :return: Interval with value as center
         """
@@ -368,7 +368,7 @@ class QwtInterval(object):
     def limited(self, lowerBound, upperBound):
         """
         Limit the interval, keeping the border modes
-        
+
         :param float lowerBound: Lower limit
         :param float upperBound: Upper limit
         :return: Limited interval
@@ -389,11 +389,10 @@ class QwtInterval(object):
         If value is above maxValue(), value becomes the upper limit.
 
         extend() has no effect for invalid intervals
-        
+
         :param float value: Value
         :return: extended interval
         """
         if not self.isValid():
             return self
         return QwtInterval(min([value, self.__minValue]), max([value, self.__maxValue]))
-

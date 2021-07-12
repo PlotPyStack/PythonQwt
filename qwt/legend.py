@@ -42,22 +42,22 @@ from qwt.painter import QwtPainter
 class QwtLegendData(object):
     """
     Attributes of an entry on a legend
-    
+
     `QwtLegendData` is an abstract container ( like `QAbstractModel` )
-    to exchange attributes, that are only known between to 
-    the plot item and the legend. 
-      
+    to exchange attributes, that are only known between to
+    the plot item and the legend.
+
     By overloading `QwtPlotItem.legendData()` any other set of attributes
-    could be used, that can be handled by a modified ( or completely 
+    could be used, that can be handled by a modified ( or completely
     different ) implementation of a legend.
-    
+
     .. seealso::
-    
+
         :py:class:`qwt.legend.QwtLegend`
-    
+
     .. note::
-    
-        The stockchart example implements a legend as a tree 
+
+        The stockchart example implements a legend as a tree
         with checkable items
     """
 
@@ -74,11 +74,11 @@ class QwtLegendData(object):
     def setValues(self, map_):
         """
         Set the legend attributes
-        
+
         :param dict map_: Values
 
         .. seealso::
-        
+
             :py:meth:`values()`
         """
         self.__map = map_
@@ -88,7 +88,7 @@ class QwtLegendData(object):
         :return: Legend attributes
 
         .. seealso::
-        
+
             :py:meth:`setValues()`
         """
         return self.__map
@@ -103,12 +103,12 @@ class QwtLegendData(object):
     def setValue(self, role, data):
         """
         Set an attribute value
-        
+
         :param int role: Attribute role
         :param QVariant data: Attribute value
 
         .. seealso::
-        
+
             :py:meth:`value()`
         """
         self.__map[role] = data
@@ -119,7 +119,7 @@ class QwtLegendData(object):
         :return: Attribute value for a specific role
 
         .. seealso::
-        
+
             :py:meth:`setValue()`
         """
         return self.__map.get(role)
@@ -195,11 +195,11 @@ class QwtLegendLabel(QwtTextLabel):
     def setData(self, legendData):
         """
         Set the attributes of the legend label
-        
+
         :param QwtLegendData legendData: Attributes of the label
 
         .. seealso::
-        
+
             :py:meth:`data()`
         """
         self.__data.legendData = legendData
@@ -220,7 +220,7 @@ class QwtLegendLabel(QwtTextLabel):
         :return: Attributes of the label
 
         .. seealso::
-        
+
             :py:meth:`setData()`, :py:meth:`qwt.plot.QwtPlotItem.legendData()`
         """
         return self.__data.legendData
@@ -228,11 +228,11 @@ class QwtLegendLabel(QwtTextLabel):
     def setText(self, text):
         """
         Set the text to the legend item
-        
+
         :param qwt.text.QwtText text: Text label
 
         .. seealso::
-        
+
             :py:meth:`text()`
         """
         flags = Qt.AlignLeft | Qt.AlignVCenter | Qt.TextExpandTabs | Qt.TextWordWrap
@@ -243,11 +243,11 @@ class QwtLegendLabel(QwtTextLabel):
         """
         Set the item mode.
         The default is `QwtLegendData.ReadOnly`.
-        
+
         :param int mode: Item mode
 
         .. seealso::
-        
+
             :py:meth:`itemMode()`
         """
         if mode != self.__data.itemMode:
@@ -264,7 +264,7 @@ class QwtLegendLabel(QwtTextLabel):
         :return: Item mode
 
         .. seealso::
-        
+
             :py:meth:`setItemMode()`
         """
         return self.__data.itemMode
@@ -272,11 +272,11 @@ class QwtLegendLabel(QwtTextLabel):
     def setIcon(self, icon):
         """
         Assign the icon
-        
+
         :param QPixmap icon: Pixmap representing a plot item
 
         .. seealso::
-        
+
             :py:meth:`icon()`, :py:meth:`qwt.plot.QwtPlotItem.legendIcon()`
         """
         self.__data.icon = icon
@@ -290,7 +290,7 @@ class QwtLegendLabel(QwtTextLabel):
         :return: Pixmap representing a plot item
 
         .. seealso::
-        
+
             :py:meth:`setIcon()`
         """
         return self.__data.icon
@@ -298,11 +298,11 @@ class QwtLegendLabel(QwtTextLabel):
     def setSpacing(self, spacing):
         """
         Change the spacing between icon and text
-        
+
         :param int spacing: Spacing
 
         .. seealso::
-        
+
             :py:meth:`spacing()`, :py:meth:`qwt.text.QwtTextLabel.margin()`
         """
         spacing = max([spacing, 0])
@@ -318,7 +318,7 @@ class QwtLegendLabel(QwtTextLabel):
         :return: Spacing between icon and text
 
         .. seealso::
-        
+
             :py:meth:`setSpacing()`
         """
         return self.__data.spacing
@@ -326,11 +326,11 @@ class QwtLegendLabel(QwtTextLabel):
     def setChecked(self, on):
         """
         Check/Uncheck a the item
-        
+
         :param bool on: check/uncheck
 
         .. seealso::
-        
+
             :py:meth:`isChecked()`, :py:meth:`setItemMode()`
         """
         if self.__data.itemMode == QwtLegendData.Checkable:
@@ -344,7 +344,7 @@ class QwtLegendLabel(QwtTextLabel):
         :return: true, if the item is checked
 
         .. seealso::
-        
+
             :py:meth:`setChecked()`
         """
         return self.__data.itemMode == QwtLegendData.Checkable and self.isDown()
@@ -352,11 +352,11 @@ class QwtLegendLabel(QwtTextLabel):
     def setDown(self, down):
         """
         Set the item being down
-        
+
         :param bool on: true, if the item is down
 
         .. seealso::
-        
+
             :py:meth:`isDown()`
         """
         if down == self.__data.isDown:
@@ -377,7 +377,7 @@ class QwtLegendLabel(QwtTextLabel):
         :return: true, if the item is down
 
         .. seealso::
-        
+
             :py:meth:`setDown()`
         """
         return self.__data.isDown
@@ -602,15 +602,15 @@ class QwtLegend(QwtAbstractLegend):
     a QwtLegendLabel.
 
     .. seealso ::
-    
-        :py:class`qwt.legend.QwtLegendLabel`, 
-        :py:class`qwt.plot.QwtPlotItem`, 
+
+        :py:class`qwt.legend.QwtLegendLabel`,
+        :py:class`qwt.plot.QwtPlotItem`,
         :py:class`qwt.plot.QwtPlot`
-        
+
     .. py:class:: QwtLegend([parent=None])
-    
+
         Constructor
-        
+
         :param QWidget parent: Parent widget
 
     .. py:data:: clicked
@@ -620,22 +620,22 @@ class QwtLegend(QwtAbstractLegend):
 
         :param itemInfo: Info for the item item of the selected legend item
         :param index: Index of the legend label in the list of widgets that are associated with the plot item
-        
+
         .. note::
-            
+
             Clicks are disabled as default
 
     .. py:data:: checked
-    
+
         A signal which is emitted when the user has clicked on
         a legend label, which is in `QwtLegendData.Checkable` mode
 
         :param itemInfo: Info for the item of the selected legend label
         :param index: Index of the legend label in the list of widgets that are associated with the plot item
         :param on: True when the legend label is checked
-        
+
         .. note::
-            
+
             Clicks are disabled as default
     """
 
@@ -663,12 +663,12 @@ class QwtLegend(QwtAbstractLegend):
 
         F.e when the maximum is set to 1 all items are aligned
         vertically. 0 means unlimited
-        
+
         :param int numColumns: Maximum number of entries in a row
 
         .. seealso::
-        
-            :py:meth:`maxColumns()`, 
+
+            :py:meth:`maxColumns()`,
             :py:meth:`QwtDynGridLayout.setMaxColumns()`
         """
         tl = self.__data.view.gridLayout
@@ -681,8 +681,8 @@ class QwtLegend(QwtAbstractLegend):
         :return: Maximum number of entries in a row
 
         .. seealso::
-        
-            :py:meth:`setMaxColumns()`, 
+
+            :py:meth:`setMaxColumns()`,
             :py:meth:`QwtDynGridLayout.maxColumns()`
         """
         tl = self.__data.view.gridLayout
@@ -698,17 +698,17 @@ class QwtLegend(QwtAbstractLegend):
         attributes in a `QwtLegendData` object. When it doesn't
         contain a value for the `QwtLegendData.ModeRole` the
         label will be initialized with the default mode of the legend.
-        
+
         :param int mode: Default item mode
 
         .. seealso::
-        
-            :py:meth:`itemMode()`, 
-            :py:meth:`QwtLegendData.value()`, 
+
+            :py:meth:`itemMode()`,
+            :py:meth:`QwtLegendData.value()`,
             :py:meth:`QwtPlotItem::legendData()`
-        
+
         ... note::
-        
+
             Changing the mode doesn't have any effect on existing labels.
         """
         self.__data.itemMode = mode
@@ -718,17 +718,17 @@ class QwtLegend(QwtAbstractLegend):
         :return: Default item mode
 
         .. seealso::
-        
+
             :py:meth:`setDefaultItemMode()`
         """
         return self.__data.itemMode
 
     def contentsWidget(self):
         """
-        The contents widget is the only child of the viewport of 
-        the internal `QScrollArea` and the parent widget of all legend 
+        The contents widget is the only child of the viewport of
+        the internal `QScrollArea` and the parent widget of all legend
         items.
-  
+
         :return: Container widget of the legend items
         """
         return self.__data.view.contentsWidget
@@ -738,7 +738,7 @@ class QwtLegend(QwtAbstractLegend):
         :return: Horizontal scrollbar
 
         .. seealso::
-        
+
             :py:meth:`verticalScrollBar()`
         """
         return self.__data.view.horizontalScrollBar()
@@ -748,7 +748,7 @@ class QwtLegend(QwtAbstractLegend):
         :return: Vertical scrollbar
 
         .. seealso::
-        
+
             :py:meth:`horizontalScrollBar()`
         """
         return self.__data.view.verticalScrollBar()
@@ -756,7 +756,7 @@ class QwtLegend(QwtAbstractLegend):
     def updateLegend(self, itemInfo, data):
         """
         Update the entries for an item
-        
+
         :param QVariant itemInfo: Info for an item
         :param list data: Default item mode
         """
@@ -788,12 +788,12 @@ class QwtLegend(QwtAbstractLegend):
         Create a widget to be inserted into the legend
 
         The default implementation returns a `QwtLegendLabel`.
-        
+
         :param QwtLegendData data: Attributes of the legend entry
         :return: Widget representing data on the legend
-        
+
         ... note::
-        
+
             updateWidget() will called soon after createWidget()
             with the same attributes.
         """
@@ -806,16 +806,16 @@ class QwtLegend(QwtAbstractLegend):
     def updateWidget(self, widget, data):
         """
         Update the widget
-        
+
         :param QWidget widget: Usually a QwtLegendLabel
         :param QwtLegendData data: Attributes to be displayed
 
         .. seealso::
-        
+
             :py:meth:`createWidget()`
-        
+
         ... note::
-        
+
             When widget is no QwtLegendLabel updateWidget() does nothing.
         """
         label = widget  # TODO: cast to QwtLegendLabel!
@@ -853,7 +853,7 @@ class QwtLegend(QwtAbstractLegend):
 
     def eventFilter(self, object_, event):
         """
-        Handle QEvent.ChildRemoved andQEvent.LayoutRequest events 
+        Handle QEvent.ChildRemoved andQEvent.LayoutRequest events
         for the contentsWidget().
 
         :param QObject object: Object to be filtered

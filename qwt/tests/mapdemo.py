@@ -20,7 +20,7 @@ from qwt import QwtPlot, QwtSymbol, QwtPlotCurve
 
 def standard_map(x, y, kappa):
     """provide one interate of the inital conditions (x, y)
-       for the standard map with parameter kappa."""
+    for the standard map with parameter kappa."""
     y_new = y - kappa * np.sin(2.0 * np.pi * x)
     x_new = x + y_new
     # bring back to [0,1.0]^2

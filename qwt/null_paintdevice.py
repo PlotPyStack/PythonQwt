@@ -166,28 +166,28 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
 class QwtNullPaintDevice(QPaintDevice):
     """
     A null paint device doing nothing
-    
-    Sometimes important layout/rendering geometries are not 
-    available or changeable from the public Qt class interface. 
+
+    Sometimes important layout/rendering geometries are not
+    available or changeable from the public Qt class interface.
     ( f.e hidden in the style implementation ).
-    
-    `QwtNullPaintDevice` can be used to manipulate or filter out 
+
+    `QwtNullPaintDevice` can be used to manipulate or filter out
     this information by analyzing the stream of paint primitives.
-    
+
     F.e. `QwtNullPaintDevice` is used by `QwtPlotCanvas` to identify
     styled backgrounds with rounded corners.
-    
+
     Modes:
-    
+
         * `NormalMode`:
-        
+
            All vector graphic primitives are painted by
            the corresponding draw methods
-        
+
         * `PolygonPathMode`:
 
-           Vector graphic primitives ( beside polygons ) are mapped to a 
-           `QPainterPath` and are painted by `drawPath`. In `PolygonPathMode` 
+           Vector graphic primitives ( beside polygons ) are mapped to a
+           `QPainterPath` and are painted by `drawPath`. In `PolygonPathMode`
            mode only a few draw methods are called:
 
                - `drawPath()`
@@ -196,7 +196,7 @@ class QwtNullPaintDevice(QPaintDevice):
                - `drawPolygon()`
 
         * `PathMode`:
-    
+
            Vector graphic primitives are mapped to a `QPainterPath`
            and are painted by `drawPath`. In `PathMode` mode
            only a few draw methods are called:
@@ -217,11 +217,11 @@ class QwtNullPaintDevice(QPaintDevice):
     def setMode(self, mode):
         """
         Set the render mode
-        
+
         :param int mode: New mode
 
         .. seealso::
-        
+
             :py:meth:`mode()`
         """
         self.__data.mode = mode
@@ -231,7 +231,7 @@ class QwtNullPaintDevice(QPaintDevice):
         :return: Render mode
 
         .. seealso::
-        
+
             :py:meth:`setMode()`
         """
         return self.__data.mode
@@ -305,4 +305,3 @@ class QwtNullPaintDevice(QPaintDevice):
 
     def updateState(self, state):
         pass
-

@@ -18,9 +18,9 @@ import time
 
 def run_script(filename, args=None, wait=True):
     """Run Python script"""
-    os.environ['PYTHONPATH'] = os.pathsep.join(sys.path)
-    
-    command = [sys.executable, '"'+filename+'"']
+    os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
+
+    command = [sys.executable, '"' + filename + '"']
     if args is not None:
         command.append(args)
     proc = subprocess.Popen(" ".join(command), shell=True)
@@ -29,15 +29,17 @@ def run_script(filename, args=None, wait=True):
 
 
 def main():
-    for name in ('CurveBenchmark.py', 'CurveStyles.py',):
-        for args in (None, 'only_lines'):
-            for value in ('', '1'):
-                os.environ['USE_PYQWT5'] = value
+    for name in (
+        "CurveBenchmark.py",
+        "CurveStyles.py",
+    ):
+        for args in (None, "only_lines"):
+            for value in ("", "1"):
+                os.environ["USE_PYQWT5"] = value
                 filename = osp.join(osp.dirname(osp.abspath(__file__)), name)
                 run_script(filename, wait=False, args=args)
                 time.sleep(4)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
-    

@@ -15,7 +15,7 @@ from qwt import QwtPlot, QwtScaleDraw, QwtPlotGrid, QwtPlotCurve, QwtPlotItem
 
 
 class CartesianAxis(QwtPlotItem):
-    """Supports a coordinate system similar to 
+    """Supports a coordinate system similar to
     http://en.wikipedia.org/wiki/Image:Cartesian-coordinate-system.svg"""
 
     def __init__(self, masterAxis, slaveAxis):
@@ -53,7 +53,7 @@ class CartesianAxis(QwtPlotItem):
 
 
 class CartesianPlot(QwtPlot):
-    """Creates a coordinate system similar system 
+    """Creates a coordinate system similar system
     http://en.wikipedia.org/wiki/Image:Cartesian-coordinate-system.svg"""
 
     def __init__(self, *args):

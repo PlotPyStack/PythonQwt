@@ -149,11 +149,11 @@ class QwtColorMap(object):
         * `QImage.Format_ARGB32`
 
     .. py:class:: QwtColorMap(format_)
-    
+
         :param int format_: Preferred format of the color map (:py:data:`QwtColorMap.RGB` or :py:data:`QwtColorMap.Indexed`)
 
     .. seealso ::
-        
+
         :py:data:`qwt.QwtScaleWidget`
     """
 
@@ -168,15 +168,15 @@ class QwtColorMap(object):
     def color(self, interval, value):
         """
         Map a value into a color
-        
+
         :param qwt.interval.QwtInterval interval: valid interval for value
         :param float value: value
         :return: the color corresponding to value
-        
+
         .. warning ::
-            
-            This method is slow for Indexed color maps. If it is necessary to 
-            map many values, its better to get the color table once and find 
+
+            This method is slow for Indexed color maps. If it is necessary to
+            map many values, its better to get the color table once and find
             the color using `colorIndex()`.
         """
         if self.__format == self.RGB:
@@ -191,7 +191,7 @@ class QwtColorMap(object):
     def colorTable(self, interval):
         """
         Build and return a color map of 256 colors
-        
+
         :param qwt.interval.QwtInterval interval: range for the values
         :return: a color table, that can be used for a `QImage`
 
@@ -223,19 +223,19 @@ class QwtLinearColorMap_PrivateData(object):
 class QwtLinearColorMap(QwtColorMap):
     """
     Build a linear color map with two stops.
-    
+
     .. py:class:: QwtLinearColorMap(format_)
-    
+
         Build a color map with two stops at 0.0 and 1.0.
         The color at 0.0 is `Qt.blue`, at 1.0 it is `Qt.yellow`.
-    
+
         :param int format_: Preferred format of the color map (:py:data:`QwtColorMap.RGB` or :py:data:`QwtColorMap.Indexed`)
-    
+
     .. py:class:: QwtLinearColorMap(color1, color2, [format_=QwtColorMap.RGB]):
         :noindex:
-        
+
         Build a color map with two stops at 0.0 and 1.0.
-        
+
         :param QColor color1: color at 0.
         :param QColor color2: color at 1.
         :param int format_: Preferred format of the color map (:py:data:`QwtColorMap.RGB` or :py:data:`QwtColorMap.Indexed`)
@@ -266,11 +266,11 @@ class QwtLinearColorMap(QwtColorMap):
     def setMode(self, mode):
         """
         Set the mode of the color map
-        
+
         :param int mode: :py:data:`QwtLinearColorMap.FixedColors` or :py:data:`QwtLinearColorMap.ScaledColors`
 
-        `FixedColors` means the color is calculated from the next lower color 
-        stop. `ScaledColors` means the color is calculated by interpolating 
+        `FixedColors` means the color is calculated from the next lower color
+        stop. `ScaledColors` means the color is calculated by interpolating
         the colors of the adjacent stops.
         """
         self.__data.mode = mode
@@ -278,9 +278,9 @@ class QwtLinearColorMap(QwtColorMap):
     def mode(self):
         """
         :return: the mode of the color map
-        
+
         .. seealso ::
-            
+
             :py:meth:`QwtLinearColorMap.setMode`
         """
         return self.__data.mode
@@ -335,11 +335,11 @@ class QwtAlphaColorMap_PrivateData(object):
 class QwtAlphaColorMap(QwtColorMap):
     """
     QwtAlphaColorMap varies the alpha value of a color
-    
+
     .. py:class:: QwtAlphaColorMap(color)
-    
+
         Build a color map varying the alpha value of a color.
-    
+
         :param QColor color: color of the map
     """
 
@@ -351,7 +351,7 @@ class QwtAlphaColorMap(QwtColorMap):
     def setColor(self, color):
         """
         Set the color of the map
-        
+
         :param QColor color: color of the map
         """
         self.__data.color = color
@@ -361,9 +361,9 @@ class QwtAlphaColorMap(QwtColorMap):
     def color(self):
         """
         :return: the color of the map
-        
+
         .. seealso ::
-            
+
             :py:meth:`QwtAlphaColorMap.setColor`
         """
         return self.__data.color

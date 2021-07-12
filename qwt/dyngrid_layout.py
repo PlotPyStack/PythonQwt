@@ -39,28 +39,28 @@ class QwtDynGridLayout(QLayout):
     The `QwtDynGridLayout` class lays out widgets in a grid,
     adjusting the number of columns and rows to the current size.
 
-	`QwtDynGridLayout` takes the space it gets, divides it up into rows and
-	columns, and puts each of the widgets it manages into the correct cell(s).
-	It lays out as many number of columns as possible (limited by 
+        `QwtDynGridLayout` takes the space it gets, divides it up into rows and
+        columns, and puts each of the widgets it manages into the correct cell(s).
+        It lays out as many number of columns as possible (limited by
     :py:meth:`maxColumns()`).
 
     .. py:class:: QwtDynGridLayout(parent, margin, [spacing=-1])
-    
+
         :param QWidget parent: parent widget
-		:param int margin: margin
-		:param int spacing: spacing
+                :param int margin: margin
+                :param int spacing: spacing
 
     .. py:class:: QwtDynGridLayout(spacing)
         :noindex:
-    
-		:param int spacing: spacing
+
+                :param int spacing: spacing
 
     .. py:class:: QwtDynGridLayout()
         :noindex:
-    
-		Initialize the layout with default values.
-	
-		:param int spacing: spacing
+
+                Initialize the layout with default values.
+
+                :param int spacing: spacing
     """
 
     def __init__(self, *args):
@@ -133,8 +133,8 @@ class QwtDynGridLayout(QLayout):
     def setExpandingDirections(self, expanding):
         """
         Set whether this layout can make use of more space than sizeHint().
-        A value of Qt.Vertical or Qt.Horizontal means that it wants to grow in 
-        only one dimension, while Qt.Vertical | Qt.Horizontal means that it 
+        A value of Qt.Vertical or Qt.Horizontal means that it wants to grow in
+        only one dimension, while Qt.Vertical | Qt.Horizontal means that it
         wants to grow in both dimensions. The default value is 0.
         """
         self.__data.expanding = expanding
@@ -142,15 +142,15 @@ class QwtDynGridLayout(QLayout):
     def expandingDirections(self):
         """
         Returns whether this layout can make use of more space than sizeHint().
-        A value of Qt.Vertical or Qt.Horizontal means that it wants to grow in 
-        only one dimension, while Qt.Vertical | Qt.Horizontal means that it 
+        A value of Qt.Vertical or Qt.Horizontal means that it wants to grow in
+        only one dimension, while Qt.Vertical | Qt.Horizontal means that it
         wants to grow in both dimensions.
         """
         return self.__data.expanding
 
     def setGeometry(self, rect):
         """
-        Reorganizes columns and rows and resizes managed items within a 
+        Reorganizes columns and rows and resizes managed items within a
         rectangle.
         """
         QLayout.setGeometry(self, rect)
@@ -166,9 +166,9 @@ class QwtDynGridLayout(QLayout):
 
     def columnsForWidth(self, width):
         """
-        Calculate the number of columns for a given width. 
+        Calculate the number of columns for a given width.
 
-        The calculation tries to use as many columns as possible 
+        The calculation tries to use as many columns as possible
         ( limited by maxColumns() )
         """
         if self.isEmpty():

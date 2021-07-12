@@ -189,8 +189,7 @@ class ImagePlot(QwtPlot):
         self.replot()
 
     def toggleVisibility(self, plotItem, idx):
-        """Toggle the visibility of a plot item
-        """
+        """Toggle the visibility of a plot item"""
         plotItem.setVisible(not plotItem.isVisible())
         self.replot()
 

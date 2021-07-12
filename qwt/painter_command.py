@@ -56,50 +56,50 @@ class QwtPainterCommand(object):
     """
     `QwtPainterCommand` represents the attributes of a paint operation
     how it is used between `QPainter` and `QPaintDevice`
-    
-    It is used by :py:class:`qwt.graphic.QwtGraphic` to record and replay 
+
+    It is used by :py:class:`qwt.graphic.QwtGraphic` to record and replay
     paint operations
-    
+
     .. seealso::
-    
+
         :py:meth:`qwt.graphic.QwtGraphic.commands()`
 
-        
+
     .. py:class:: QwtPainterCommand()
-    
+
         Construct an invalid command
-        
+
     .. py:class:: QwtPainterCommand(path)
         :noindex:
-    
+
         Copy constructor
-        
+
         :param QPainterPath path: Source
-        
+
     .. py:class:: QwtPainterCommand(rect, pixmap, subRect)
         :noindex:
-    
+
         Constructor for Pixmap paint operation
-        
+
         :param QRectF rect: Target rectangle
         :param QPixmap pixmap: Pixmap
         :param QRectF subRect: Rectangle inside the pixmap
-        
+
     .. py:class:: QwtPainterCommand(rect, image, subRect, flags)
         :noindex:
-    
+
         Constructor for Image paint operation
-        
+
         :param QRectF rect: Target rectangle
         :param QImage image: Image
         :param QRectF subRect: Rectangle inside the image
         :param Qt.ImageConversionFlags flags: Conversion flags
-        
+
     .. py:class:: QwtPainterCommand(state)
         :noindex:
-    
+
         Constructor for State paint operation
-        
+
         :param QPaintEngineState state: Paint engine state
     """
 

@@ -165,4 +165,3 @@ class QwtColumnRect(object):
         if self.direction in (self.LeftToRight, self.RightToLeft):
             return Qt.Horizontal
         return Qt.Vertical
-

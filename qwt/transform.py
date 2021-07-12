@@ -54,7 +54,7 @@ class QwtTransform(object):
     When p1, p2 are the boundaries of the paint device coordinates
     and s1, s2 the boundaries of the scale, QwtScaleMap uses the
     following calculations::
-    
+
         p = p1 + (p2 - p1) * ( T(s) - T(s1) / (T(s2) - T(s1)) )
         s = invT( T(s1) + ( T(s2) - T(s1) ) * (p - p1) / (p2 - p1) )
     """
@@ -75,9 +75,9 @@ class QwtTransform(object):
 
         :param float value: Value
         :return: Modified value
-        
+
         .. seealso::
-        
+
             :py:meth:`invTransform()`
         """
         raise NotImplementedError
@@ -88,9 +88,9 @@ class QwtTransform(object):
 
         :param float value: Value
         :return: Modified value
-        
+
         .. seealso::
-        
+
             :py:meth:`transform()`
         """
         raise NotImplementedError
@@ -98,7 +98,7 @@ class QwtTransform(object):
     def copy(self):
         """
         :return: Clone of the transformation
-        
+
         The default implementation does nothing.
         """
         raise NotImplementedError
@@ -111,9 +111,9 @@ class QwtNullTransform(QwtTransform):
 
         :param float value: Value
         :return: Modified value
-        
+
         .. seealso::
-        
+
             :py:meth:`invTransform()`
         """
         return value
@@ -124,9 +124,9 @@ class QwtNullTransform(QwtTransform):
 
         :param float value: Value
         :return: Modified value
-        
+
         .. seealso::
-        
+
             :py:meth:`transform()`
         """
         return value
@@ -142,20 +142,20 @@ class QwtLogTransform(QwtTransform):
     """
     Logarithmic transformation
 
-    `QwtLogTransform` modifies the values using `numpy.log()` and 
+    `QwtLogTransform` modifies the values using `numpy.log()` and
     `numpy.exp()`.
 
     .. note::
-    
+
         In the calculations of `QwtScaleMap` the base of the log function
-        has no effect on the mapping. So `QwtLogTransform` can be used 
+        has no effect on the mapping. So `QwtLogTransform` can be used
         for logarithmic scale in base 2 or base 10 or any other base.
-    
+
     Extremum values:
-    
-        * `QwtLogTransform.LogMin`: Smallest allowed value for logarithmic 
+
+        * `QwtLogTransform.LogMin`: Smallest allowed value for logarithmic
           scales: 1.0e-150
-        * `QwtLogTransform.LogMax`: Largest allowed value for logarithmic 
+        * `QwtLogTransform.LogMax`: Largest allowed value for logarithmic
           scales: 1.0e150
     """
 
@@ -165,7 +165,7 @@ class QwtLogTransform(QwtTransform):
     def bounded(self, value):
         """
         Modify value to be a valid value for the transformation.
-        
+
         :param float value: Value to be bounded
         :return: Value modified
         """
@@ -177,9 +177,9 @@ class QwtLogTransform(QwtTransform):
 
         :param float value: Value
         :return: Modified value
-        
+
         .. seealso::
-        
+
             :py:meth:`invTransform()`
         """
         return np.log(self.bounded(value))
@@ -190,9 +190,9 @@ class QwtLogTransform(QwtTransform):
 
         :param float value: Value
         :return: Modified value
-        
+
         .. seealso::
-        
+
             :py:meth:`transform()`
         """
         return np.exp(value)
@@ -208,7 +208,7 @@ class QwtPowerTransform(QwtTransform):
     """
     A transformation using `numpy.pow()`
 
-    `QwtPowerTransform` preserves the sign of a value. 
+    `QwtPowerTransform` preserves the sign of a value.
     F.e. a transformation with a factor of 2
     transforms a value of -3 to -9 and v.v. Thus `QwtPowerTransform`
     can be used for scales including negative values.
@@ -224,9 +224,9 @@ class QwtPowerTransform(QwtTransform):
 
         :param float value: Value
         :return: Modified value
-        
+
         .. seealso::
-        
+
             :py:meth:`invTransform()`
         """
         if value < 0.0:
@@ -240,9 +240,9 @@ class QwtPowerTransform(QwtTransform):
 
         :param float value: Value
         :return: Modified value
-        
+
         .. seealso::
-        
+
             :py:meth:`transform()`
         """
         if value < 0.0:

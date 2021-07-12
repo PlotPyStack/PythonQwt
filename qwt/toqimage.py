@@ -18,7 +18,7 @@ import numpy as np
 def array_to_qimage(arr, copy=False):
     """
     Convert NumPy array to QImage object
-    
+
     :param numpy.array arr: NumPy array
     :param bool copy: if True, make a copy of the array
     :return: QImage object

@@ -69,7 +69,7 @@ class QwtPlotSeriesItem(QwtPlotItem):
         int `QwtPlotCurve.Steps` or `QwtPlotCurve.Sticks` style.
 
         .. seealso::
-        
+
             :py:meth`orientation()`
         """
         if self.__data.orientation != orientation:
@@ -82,7 +82,7 @@ class QwtPlotSeriesItem(QwtPlotItem):
         :return: Orientation of the plot item
 
         .. seealso::
-        
+
             :py:meth`setOrientation()`
         """
         return self.__data.orientation
@@ -101,16 +101,16 @@ class QwtPlotSeriesItem(QwtPlotItem):
     def drawSeries(self, painter, xMap, yMap, canvasRect, from_, to):
         """
         Draw a subset of the samples
-        
+
         :param QPainter painter: Painter
         :param qwt.scale_map.QwtScaleMap xMap: Maps x-values into pixel coordinates.
         :param qwt.scale_map.QwtScaleMap yMap: Maps y-values into pixel coordinates.
         :param QRectF canvasRect: Contents rectangle of the canvas
         :param int from_: Index of the first point to be painted
         :param int to: Index of the last point to be painted. If to < 0 the curve will be painted to its last point.
-        
+
         .. seealso::
-        
+
             This method is implemented in `qwt.plot_curve.QwtPlotCurve`
         """
         raise NotImplementedError
@@ -142,10 +142,10 @@ class QwtSeriesData(object):
     needs to be displayed, without having to copy it, it is recommended
     to implement an individual data access.
 
-    A subclass of `QwtSeriesData` must implement: 
+    A subclass of `QwtSeriesData` must implement:
 
       - size():
-        
+
         Should return number of data points.
 
      - sample()
@@ -156,9 +156,9 @@ class QwtSeriesData(object):
      - boundingRect()
 
         Should return the bounding rectangle of the data series.
-        It is used for autoscaling and might help certain algorithms for 
+        It is used for autoscaling and might help certain algorithms for
         displaying the data.
-        The member `_boundingRect` is intended for caching the calculated 
+        The member `_boundingRect` is intended for caching the calculated
         rectangle.
     """
 
@@ -174,7 +174,7 @@ class QwtSeriesData(object):
         It can be used to implement different levels of details.
 
         The default implementation does nothing.
-   
+
         :param QRectF rect: Rectangle of interest
         """
         pass
@@ -188,7 +188,7 @@ class QwtSeriesData(object):
     def sample(self, i):
         """
         Return a sample
-        
+
         :param int i: Index
         :return: Sample at position i
         """
@@ -209,9 +209,9 @@ class QwtSeriesData(object):
 class QwtPointArrayData(QwtSeriesData):
     """
     Interface for iterating over two array objects
-    
+
     .. py:class:: QwtCQwtPointArrayDataolorMap(x, y, [size=None])
-    
+
         :param x: Array of x values
         :type x: list or tuple or numpy.array
         :param y: Array of y values
@@ -239,8 +239,8 @@ class QwtPointArrayData(QwtSeriesData):
             y = np.resize(y, (size,))
         if len(x) != len(y):
             minlen = min(len(x), len(y))
-            x = np.resize(x, (minlen, ))
-            y = np.resize(y, (minlen, ))
+            x = np.resize(x, (minlen,))
+            y = np.resize(y, (minlen,))
         if finite if finite is not None else True:
             indexes = np.logical_and(np.isfinite(x), np.isfinite(y))
             self.__x = x[indexes]
@@ -294,7 +294,7 @@ class QwtSeriesStore(object):
     """
     Class storing a `QwtSeriesData` object
 
-    `QwtSeriesStore` and `QwtPlotSeriesItem` are intended as base classes for 
+    `QwtSeriesStore` and `QwtPlotSeriesItem` are intended as base classes for
     all plot items iterating over a series of samples.
     """
 
@@ -308,8 +308,8 @@ class QwtSeriesStore(object):
         :param qwt.plot_series.QwtSeriesData series: Data
 
         .. warning::
-        
-            The item takes ownership of the data object, deleting it 
+
+            The item takes ownership of the data object, deleting it
             when its not used anymore.
         """
         if self.__series != series:
@@ -338,10 +338,10 @@ class QwtSeriesStore(object):
     def dataSize(self):
         """
         :return: Number of samples of the series
-        
+
         .. seealso::
-        
-            :py:meth:`setData()`, 
+
+            :py:meth:`setData()`,
             :py:meth:`qwt.plot_series.QwtSeriesData.size()`
         """
         if self.__series is None:
@@ -351,9 +351,9 @@ class QwtSeriesStore(object):
     def dataRect(self):
         """
         :return: Bounding rectangle of the series or an invalid rectangle, when no series is stored
-        
+
         .. seealso::
-        
+
             :py:meth:`qwt.plot_series.QwtSeriesData.boundingRect()`
         """
         if self.__series is None or self.dataSize() == 0:
@@ -363,11 +363,11 @@ class QwtSeriesStore(object):
     def setRectOfInterest(self, rect):
         """
         Set a the "rect of interest" for the series
-        
+
         :param QRectF rect: Rectangle of interest
-        
+
         .. seealso::
-        
+
             :py:meth:`qwt.plot_series.QwtSeriesData.setRectOfInterest()`
         """
         if self.__series:
@@ -376,7 +376,7 @@ class QwtSeriesStore(object):
     def swapData(self, series):
         """
         Replace a series without deleting the previous one
-        
+
         :param qwt.plot_series.QwtSeriesData series: New series
         :return: Previously assigned series
         """
