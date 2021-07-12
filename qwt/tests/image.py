@@ -80,8 +80,8 @@ class PlotImage(QwtPlotItem):
         for i in range(0, 256):
             self.image.setColor(i, qRgb(i, 0, 255 - i))
 
-    def updateLegend(self, legend):
-        QwtPlotItem.updateLegend(self, legend)
+    def updateLegend(self, legend, data):
+        QwtPlotItem.updateLegend(self, legend, data)
         legend.find(self).setText(self.title())
 
     def draw(self, painter, xMap, yMap, rect):
