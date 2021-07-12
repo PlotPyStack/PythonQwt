@@ -104,6 +104,7 @@ class QwtScaleDiv(object):
                 mediumTicks,
                 majorTicks,
             ) = args
+            self.__ticks = [0] * self.NTickTypes
             self.__ticks[self.MinorTick] = minorTicks
             self.__ticks[self.MediumTick] = mediumTicks
             self.__ticks[self.MajorTick] = majorTicks
