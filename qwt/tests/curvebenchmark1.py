@@ -46,11 +46,16 @@ def get_curve_color():
     return colors[COLOR_INDEX]
 
 
+PLOT_ID = 0
+
+
 class BMPlot(QwtPlot):
     def __init__(self, title, xdata, ydata, style, symbol=None, *args):
         super(BMPlot, self).__init__(*args)
-        self.setMinimumSize(200, 200)
-        self.setTitle(title)
+        global PLOT_ID
+        self.setMinimumSize(200, 150)
+        PLOT_ID += 1
+        self.setTitle("%s (#%d)" % (title, PLOT_ID))
         self.setAxisTitle(QwtPlot.xBottom, "x")
         self.setAxisTitle(QwtPlot.yLeft, "y")
         self.curve_nb = 0
@@ -69,11 +74,11 @@ class BMPlot(QwtPlot):
 
 
 class BMWidget(QWidget):
-    def __init__(self, points, *args, **kwargs):
+    def __init__(self, nbcol, points, *args, **kwargs):
         super(BMWidget, self).__init__()
         self.plot_nb = 0
         self.curve_nb = 0
-        self.setup(points, *args, **kwargs)
+        self.setup(nbcol, points, *args, **kwargs)
 
     def params(self, *args, **kwargs):
         if kwargs.get("only_lines", False):
@@ -84,11 +89,11 @@ class BMWidget(QWidget):
                 ("Dots", None),
             )
 
-    def setup(self, points, *args, **kwargs):
+    def setup(self, nbcol, points, *args, **kwargs):
         x = np.linspace(0.001, 20.0, int(points))
         y = (np.sin(x) / x) * np.cos(20 * x)
         layout = QGridLayout()
-        nbcol, col, row = 2, 0, 0
+        col, row = 0, 0
         for style, symbol in self.params(*args, **kwargs):
             plot = BMPlot(style, x, y, getattr(QwtPlotCurve, style), symbol=symbol)
             layout.addWidget(plot, row, col)
@@ -102,7 +107,7 @@ class BMWidget(QWidget):
         self.text.setReadOnly(True)
         self.text.setAlignment(Qt.AlignCenter)
         self.text.setText("Rendering plot...")
-        layout.addWidget(self.text, row + 1, 0, 1, 2)
+        layout.addWidget(self.text, row + 1, 0, 1, nbcol)
         self.setLayout(layout)
 
 
@@ -171,7 +176,7 @@ class CurveBenchmark1(QMainWindow):
         for idx in range(4, -1, -1):
             points = int(max_n / 10 ** idx)
             t0 = time.time()
-            widget = BMWidget(points, **kwargs)
+            widget = BMWidget(2, points, **kwargs)
             title = "%d points" % points
             description = "%d plots with %d curves of %d points" % (
                 widget.plot_nb,

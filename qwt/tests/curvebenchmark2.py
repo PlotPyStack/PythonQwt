@@ -74,7 +74,7 @@ class CurveBenchmark2(cb.CurveBenchmark1):
         ):
             t0 = time.time()
             symtext = "with%s symbols" % ("" if symbols else "out")
-            widget = CSWidget(points, symbols, **kwargs)
+            widget = CSWidget(2, points, symbols, **kwargs)
             title = "%d points" % points
             description = "%d plots with %d curves of %d points, %s" % (
                 widget.plot_nb,
