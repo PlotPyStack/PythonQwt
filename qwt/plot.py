@@ -1022,12 +1022,11 @@ class QwtPlot(QFrame, QwtPlotDict):
                 canvas.show()
 
     def event(self, event):
-        ok = QFrame.event(self, event)
         if event.type() == QEvent.LayoutRequest:
             self.updateLayout()
         elif event.type() == QEvent.PolishRequest:
             self.replot()
-        return ok
+        return QFrame.event(self, event)
 
     def eventFilter(self, obj, event):
         if obj is self.__data.canvas:

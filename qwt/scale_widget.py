@@ -509,14 +509,22 @@ class QwtScaleWidget(QWidget):
 
         if update_geometry:
             self.updateGeometry()
-            #  for some reason updateGeometry does not send a LayoutRequest
-            #  event when the parent is not visible and has no layout
-            widget = self.parentWidget()
-            if widget and not widget.isVisible() and widget.layout() is None:
-                if widget.testAttribute(Qt.WA_WState_Polished):
-                    QApplication.postEvent(
-                        self.parentWidget(), QEvent(QEvent.LayoutRequest)
-                    )
+
+            # The following was removed because it caused a high CPU usage 
+            # in guiqwt.ImageWidget. The origin of these lines was an 
+            # attempt to transpose PythonQwt from Qwt 6.1.2 to Qwt 6.1.5.
+
+            #--> Begin of removed lines <--------------------------------------
+            # #  for some reason updateGeometry does not send a LayoutRequest
+            # #  event when the parent is not visible and has no layout
+            # widget = self.parentWidget()
+            # if widget and not widget.isVisible() and widget.layout() is None:
+            #     if widget.testAttribute(Qt.WA_WState_Polished):
+            #         QApplication.postEvent(
+            #             self.parentWidget(), QEvent(QEvent.LayoutRequest)
+            #         )
+            #--> End of removed lines <----------------------------------------
+
             self.update()
 
     def drawColorBar(self, painter, rect):
