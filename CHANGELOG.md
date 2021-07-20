@@ -1,5 +1,13 @@
 # PythonQwt Releases
 
+## Version 0.9.1
+
+- Added load test showing a large number of plots (eventually highlights performance issues)
+- Fixed event management in `QwtPlot` and removed unnecessary `QEvent.LayoutRequest` 
+  emission in `QwtScaleWidget` (caused high CPU usage with `guiqwt.ImageWidget`)
+- `QwtScaleDiv`: fixed ticks initialization when passing all arguments to constructor
+- tests/image.py: fixed overriden `updateLegend` signature
+
 ## Version 0.9.0
 
 - `QwtPlot`: set the `autoReplot` option at False by default, to avoid time consuming 
