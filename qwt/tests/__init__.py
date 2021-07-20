@@ -85,7 +85,7 @@ def run_all_tests(wait=True):
 class TestLauncher(QW.QMainWindow):
     """PythonQwt Test Launcher main window"""
 
-    ROWS = 5
+    COLUMNS = 5
 
     def __init__(self, parent=None):
         super(TestLauncher, self).__init__(parent)
@@ -136,8 +136,8 @@ class TestLauncher(QW.QMainWindow):
         if self.test_nb is None:
             self.test_nb = 0
         self.test_nb += 1
-        row = (self.test_nb - 1) % self.ROWS
-        column = (self.test_nb - 1) // self.ROWS
+        column = (self.test_nb - 1) % self.COLUMNS
+        row = (self.test_nb - 1) // self.COLUMNS
         bname = osp.basename(fname)
         button = QW.QToolButton(self)
         button.setToolButtonStyle(QC.Qt.ToolButtonTextUnderIcon)
