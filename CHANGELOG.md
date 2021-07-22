@@ -1,12 +1,16 @@
 # PythonQwt Releases
 
+## Version 0.9.2
+
+- Curve plotting: added support for `numpy.float32` data type.
+
 ## Version 0.9.1
 
-- Added load test showing a large number of plots (eventually highlights performance issues)
+- Added load test showing a large number of plots (eventually highlights performance issues).
 - Fixed event management in `QwtPlot` and removed unnecessary `QEvent.LayoutRequest` 
-  emission in `QwtScaleWidget` (caused high CPU usage with `guiqwt.ImageWidget`)
-- `QwtScaleDiv`: fixed ticks initialization when passing all arguments to constructor
-- tests/image.py: fixed overriden `updateLegend` signature
+  emission in `QwtScaleWidget` (caused high CPU usage with `guiqwt.ImageWidget`).
+- `QwtScaleDiv`: fixed ticks initialization when passing all arguments to constructor.
+- tests/image.py: fixed overriden `updateLegend` signature.
 
 ## Version 0.9.0
 

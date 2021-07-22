@@ -62,23 +62,19 @@ def qwtVerifyRange(size, i1, i2):
 
 def array2d_to_qpolygonf(xdata, ydata):
     """
-    Utility function to convert two 1D-NumPy arrays representing curve data
-    (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object).
+    Utility function to convert two 1D-NumPy arrays representing curve data 
+    (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object). 
     This feature is compatible with PyQt4, PyQt5 and PySide2 (requires QtPy).
-
-    License/copyright: MIT License © Pierre Raybaut 2020.
-
-    :param numpy.ndarray xdata: 1D-NumPy array (numpy.float64)
-    :param numpy.ndarray ydata: 1D-NumPy array (numpy.float64)
+    
+    License/copyright: MIT License © Pierre Raybaut 2020-2021.
+    
+    :param numpy.ndarray xdata: 1D-NumPy array
+    :param numpy.ndarray ydata: 1D-NumPy array
     :return: Polyline
     :rtype: QtGui.QPolygonF
     """
-    dtype = np.float64
-    if not (
-        xdata.size == ydata.size == xdata.shape[0] == ydata.shape[0]
-        and xdata.dtype == ydata.dtype == dtype
-    ):
-        raise ValueError("Arguments must be 1D, float64 NumPy arrays with same size")
+    if not (xdata.size == ydata.size == xdata.shape[0] == ydata.shape[0]):
+        raise ValueError("Arguments must be 1D NumPy arrays with same size")
     size = xdata.size
     polyline = QPolygonF(size)
     if PYSIDE2:  # PySide2 (obviously...)
@@ -86,10 +82,10 @@ def array2d_to_qpolygonf(xdata, ydata):
         buffer = (ctypes.c_double * 2 * size).from_address(address)
     else:  # PyQt4, PyQt5
         buffer = polyline.data()
-        buffer.setsize(2 * size * np.finfo(dtype).dtype.itemsize)
-    memory = np.frombuffer(buffer, dtype)
-    memory[: (size - 1) * 2 + 1 : 2] = xdata
-    memory[1 : (size - 1) * 2 + 2 : 2] = ydata
+        buffer.setsize(16 * size)  # 16 bytes per point: 8 bytes per X,Y value (float64)
+    memory = np.frombuffer(buffer, np.float64)
+    memory[: (size - 1) * 2 + 1 : 2] = np.array(xdata, dtype=np.float64, copy=False)
+    memory[1 : (size - 1) * 2 + 2 : 2] = np.array(ydata, dtype=np.float64, copy=False)
     return polyline
 
 
