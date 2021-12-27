@@ -43,6 +43,7 @@ QwtRichTextEngine
    :members:
 """
 
+import os
 import numpy as np
 import struct
 
@@ -62,12 +63,13 @@ from qtpy.QtGui import (
 )
 from qtpy.QtWidgets import QFrame, QWidget, QSizePolicy, QApplication
 from qtpy.QtCore import Qt, QSizeF, QSize, QRectF
-from qtpy import PYSIDE2
 
 from qwt.painter import QwtPainter
 from qwt.qthelpers import qcolor_from_str
 
 QWIDGETSIZE_MAX = (1 << 24) - 1
+
+QT_API = os.environ["QT_API"]
 
 
 def taggedRichText(text, flags):
@@ -194,10 +196,15 @@ ASCENTCACHE = {}
 def qwtScreenResolution():
     screenResolution = QSize()
     if not screenResolution.isValid():
-        desktop = QApplication.desktop()
-        if desktop is not None:
-            screenResolution.setWidth(desktop.logicalDpiX())
-            screenResolution.setHeight(desktop.logicalDpiY())
+        try:
+            desktop = QApplication.desktop()
+            if desktop is not None:
+                screenResolution.setWidth(desktop.logicalDpiX())
+                screenResolution.setHeight(desktop.logicalDpiY())
+        except AttributeError:
+            screen = QApplication.primaryScreen()
+            screenResolution.setWidth(screen.logicalDotsPerInchX())
+            screenResolution.setHeight(screen.logicalDotsPerInchY())
     return screenResolution
 
 
@@ -295,7 +302,7 @@ class QwtPlainTextEngine(QwtTextEngine):
         w = pm.width()
         linebytes = w * 4
         for row in range(img.height()):
-            if PYSIDE2:
+            if QT_API.startswith("pyside"):
                 line = bytes(img.scanLine(row))
             else:
                 line = img.scanLine(row).asstring(linebytes)
@@ -438,7 +445,10 @@ class QwtRichTextEngine(QwtTextEngine):
         :param str text: Text to be tested
         :return: True, if it can be rendered
         """
-        return PYSIDE2 or Qt.mightBeRichText(text)
+        try:
+            return Qt.mightBeRichText(text)
+        except AttributeError:
+            return True
 
     def textMargins(self, font):
         """
@@ -592,7 +602,6 @@ class QwtText(object):
     __map = {PlainText: QwtPlainTextEngine(), RichText: QwtRichTextEngine()}
 
     def __init__(self, text=None, textFormat=None, other=None):
-        self.__desktopwidget = None
         if text is None:
             text = ""
         if textFormat is None:
@@ -669,17 +678,6 @@ class QwtText(object):
         if brush is not None:
             item.setBackgroundBrush(brush)
         return item
-
-    @property
-    def _desktopwidget(self):
-        """
-        Property used to store the Application Desktop Widget to avoid calling
-        the `QApplication.desktop()" function more than necessary as its
-        calling time is not negligible.
-        """
-        if self.__desktopwidget is None:
-            self.__desktopwidget = QApplication.desktop()
-        return self.__desktopwidget
 
     def __eq__(self, other):
         return (
@@ -989,7 +987,7 @@ class QwtText(object):
         """
         if defaultFont is None:
             defaultFont = QFont()
-        font = QFont(self.usedFont(defaultFont), self._desktopwidget)
+        font = QFont(self.usedFont(defaultFont))
         h = 0
         if self.__data.layoutAttributes & self.MinimumLayout:
             (left, right, top, bottom) = self.__data.textEngine.textMargins(font)
@@ -1010,7 +1008,7 @@ class QwtText(object):
         :param QFont defaultFont Font, used for the calculation if the text has no font
         :return: Caluclated size
         """
-        font = QFont(self.usedFont(defaultFont), self._desktopwidget)
+        font = QFont(self.usedFont(defaultFont))
         if (
             not self.__layoutCache.textSize.isValid()
             or self.__layoutCache.font is not font
@@ -1056,7 +1054,7 @@ class QwtText(object):
                 painter.setPen(self.__data.color)
         expandedRect = rect
         if self.__data.layoutAttributes & self.MinimumLayout:
-            font = QFont(painter.font(), self._desktopwidget)
+            font = QFont(painter.font())
             (left, right, top, bottom) = self.__data.textEngine.textMargins(font)
             expandedRect.setTop(rect.top() - top)
             expandedRect.setBottom(rect.bottom() + bottom)

@@ -55,16 +55,16 @@ from qwt import tests
 tests.run()
 ```
 
-or from the command line (script name depends on Python major version number):
+or from the command line:
 
 ```bash
-PythonQwt-py3
+PythonQwt
 ```
 
 Tests may also be executed in unattended mode:
 
 ```bash
-PythonQwt-tests-py3 --mode unattended
+PythonQwt-tests --mode unattended
 ```
 
 ## Overview
@@ -87,64 +87,10 @@ for more details on API limitations when comparing to Qwt.
 
 ### Requirements
 
-- Python >=2.6 or Python >=3.2
-- PyQt4 >=4.4 or PyQt5 >= 5.5 (or PySide2, still experimental, see below)
+- Python >=3.4
+- PyQt4, PyQt5, PyQt6 or PySide6
 - QtPy >= 1.3
 - NumPy >= 1.5
-
-### Why PySide2 support is still experimental
-
-![PyQt5 vs PySide2](doc/images/pyqt5_vs_pyside2.png)
-
-Try running the `curvebenchmark1.py` test with PyQt5 and PySide: you will notice a
-huge performance issue with PySide2 (see screenshot above). This is due to the fact
-that `QPainter.drawPolyline` (the `QPainter.drawPolyline` method has already been 
-optimized thanks to Cristian Maureira-Fredes from Python-Qt development team, see 
-[this bug report](https://bugreports.qt.io/projects/PYSIDE/issues/PYSIDE-1366)) is 
-much more efficient in PyQt5 than it is in PySide2 (see 
-[this bug report](https://bugreports.qt.io/projects/PYSIDE/issues/PYSIDE-1540)).
-
-As a consequence, until this bug is fixed in PySide2, we still recommend using PyQt5
-instead of PySide2 when it comes to representing huge data sets (except if you do not
-use the "dots" style for drawing curves).
-
-However, PySide2 support was significatively improved betwen PythonQwt V0.8.0 and
-V0.8.1 thanks to the new `array2d_to_qpolygonf` function (see the part related to
-PySide2 in the code below).
-
-```python
-def array2d_to_qpolygonf(xdata, ydata):
-    """
-    Utility function to convert two 1D-NumPy arrays representing curve data
-    (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object).
-    This feature is compatible with PyQt4, PyQt5 and PySide2 (requires QtPy).
-
-    License/copyright: MIT License © Pierre Raybaut 2020.
-
-    :param numpy.ndarray xdata: 1D-NumPy array (numpy.float64)
-    :param numpy.ndarray ydata: 1D-NumPy array (numpy.float64)
-    :return: Polyline
-    :rtype: QtGui.QPolygonF
-    """
-    dtype = np.float64
-    if not (
-        xdata.size == ydata.size == xdata.shape[0] == ydata.shape[0]
-        and xdata.dtype == ydata.dtype == dtype
-    ):
-        raise ValueError("Arguments must be 1D, float64 NumPy arrays with same size")
-    size = xdata.size
-    polyline = QPolygonF(size)
-    if PYSIDE2:  # PySide2 (obviously...)
-        address = shiboken2.getCppPointer(polyline.data())[0]
-        buffer = (ctypes.c_double * 2 * size).from_address(address)
-    else:  # PyQt4, PyQt5
-        buffer = polyline.data()
-        buffer.setsize(2 * size * np.finfo(dtype).dtype.itemsize)
-    memory = np.frombuffer(buffer, dtype)
-    memory[: (size - 1) * 2 + 1 : 2] = xdata
-    memory[1 : (size - 1) * 2 + 2 : 2] = ydata
-    return polyline
-```
 
 ## Installation
 

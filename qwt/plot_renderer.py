@@ -358,7 +358,7 @@ class QwtPlotRenderer(QObject):
         invtrans, _ok = transform.inverted()
         layoutRect = invtrans.mapRect(plotRect)
         if not (self.__data.discardFlags & self.DiscardBackground):
-            left, top, right, bottom = plot.getContentsMargins()
+            left, top, right, bottom = plot.layout().getContentsMargins()
             layoutRect.adjust(left, top, -right, -bottom)
 
         layout = plot.plotLayout()

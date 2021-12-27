@@ -22,22 +22,19 @@ import inspect
 from qtpy import QtWidgets as QW
 from qtpy import QtGui as QG
 from qtpy import QtCore as QC
-from qtpy import PYQT5, PYSIDE2
 
 from qwt import QwtPlot
 
-if PYSIDE2:
-    import PySide2
+QT_API = os.environ["QT_API"]
 
-    PYTHON_QT_API = "PySide2 v" + PySide2.__version__
-elif PYQT5:
-    from PyQt5.QtCore import PYQT_VERSION_STR
+if QT_API.startswith("pyside"):
+    from qtpy import PYSIDE_VERSION
 
-    PYTHON_QT_API = "PyQt5 v" + PYQT_VERSION_STR
+    PYTHON_QT_API = "PySide v" + PYSIDE_VERSION
 else:
-    from PyQt4.QtCore import PYQT_VERSION_STR
+    from qtpy import PYQT_VERSION
 
-    PYTHON_QT_API = "PyQt4 v" + PYQT_VERSION_STR
+    PYTHON_QT_API = "PyQt v" + PYQT_VERSION
 
 
 TEST_PATH = osp.abspath(osp.dirname(__file__))
@@ -222,10 +219,10 @@ class TestCentralWidget(QW.QWidget):
 
 def take_screenshot(widget):
     """Take screenshot and save it to the data folder"""
-    if PYQT5:
-        pixmap = widget.grab()
-    else:
+    if QT_API in ("pyqt4", "pyside2"):
         pixmap = QG.QPixmap.grabWidget(widget)
+    else:
+        pixmap = widget.grab()
     bname = (widget.objectName().lower() + ".png").replace("window", "")
     bname = bname.replace("plot", "").replace("widget", "")
     pixmap.save(osp.join(TEST_PATH, "data", bname))
@@ -269,7 +266,10 @@ def test_widget(widget_class, size=None, title=None, options=True):
         QC.QTimer.singleShot(1000, lambda: take_screenshot(widget_of_interest))
     elif test_env.unattended:
         QC.QTimer.singleShot(0, QW.QApplication.instance().quit)
-    app.exec_()
+    if QT_API == "pyside6":
+        app.exec()
+    else:
+        app.exec_()
     return app
 
 
@@ -325,7 +325,10 @@ def run(wait=True):
     elif test_env.unattended:
         print("Running PythonQwt tests in unattended mode:")
         QC.QTimer.singleShot(0, QW.QApplication.instance().quit)
-    app.exec_()
+    if QT_API == "pyside6":
+        app.exec()
+    else:
+        app.exec_()
     launcher.close()
     if test_env.unattended:
         run_all_tests(wait=wait)

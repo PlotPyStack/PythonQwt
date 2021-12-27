@@ -421,7 +421,7 @@ class QwtAbstractScaleDraw(object):
         :param float value: Value
         :return: Label string
         """
-        return QLocale().toString(value)
+        return "%g" % value
 
     def tickLabel(self, font, value):
         """
@@ -1168,7 +1168,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if self.labelAutoSize():
             vmax = sorted(
                 [v for v in ticks if self.scaleDiv().contains(v)],
-                key=lambda obj: len(QLocale().toString(obj)),
+                key=lambda obj: len("%g" % obj),
             )[-1]
             return np.ceil(self.labelSize(font, vmax).width())
             ## Original implementation (closer to Qwt's C++ code, but slower):
@@ -1188,7 +1188,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if self.labelAutoSize():
             vmax = sorted(
                 [v for v in ticks if self.scaleDiv().contains(v)],
-                key=lambda obj: len(QLocale().toString(obj)),
+                key=lambda obj: len("%g" % obj),
             )[-1]
             return np.ceil(self.labelSize(font, vmax).height())
             ## Original implementation (closer to Qwt's C++ code, but slower):

@@ -16,10 +16,10 @@ The two lines above execute the ``PythonQwt`` test launcher:
 .. image:: /../qwt/tests/data/testlauncher.png
 
 GUI-based test launcher can be executed from the command line thanks to the 
-``PythonQwt-py3`` test script (or ``PythonQwt-py2`` for Python 2).
+``PythonQwt`` test script.
 
 Unit tests may be executed from the commande line thanks to the console-based script 
-``PythonQwt-tests-py3``: ``PythonQwt-tests-py3 --mode unattended``.
+``PythonQwt-tests``: ``PythonQwt-tests --mode unattended``.
 
 Tests
 -----

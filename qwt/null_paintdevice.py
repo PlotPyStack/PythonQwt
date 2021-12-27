@@ -13,8 +13,11 @@ QwtNullPaintDevice
    :members:
 """
 
+import os
+
 from qtpy.QtGui import QPaintEngine, QPainterPath, QPaintDevice
-from qtpy import PYSIDE2
+
+QT_API = os.environ["QT_API"]
 
 
 class QwtNullPaintDevice_PrivateData(object):
@@ -59,7 +62,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         device = self.nullDevice()
         if device is None:
             return
-        if device.mode() != QwtNullPaintDevice.NormalMode and not PYSIDE2:
+        if device.mode() != QwtNullPaintDevice.NormalMode and QT_API.startswith("pyqt"):
             try:
                 QPaintEngine.drawLines(lines, lineCount)
             except TypeError:

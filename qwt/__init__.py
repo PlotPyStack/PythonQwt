@@ -10,9 +10,7 @@ PythonQwt
 
 The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical 
 user interfaces for the Python programming language. It is compatible with 
-both ``PyQt4`` and ``PyQt5`` (``PySide`` is currently not supported but it
-could be in the near future as it would "only" requires testing to support 
-it as a stable alternative to PyQt).
+``PyQt4``, ``PyQt5``, ``PyQt6`` and ``PySide6``.
 
 It consists of a single Python package named `qwt` which is a pure Python 
 implementation of Qwt C++ library with some limitations.
@@ -28,7 +26,7 @@ External resources:
 .. _GitHubPage: http://pierreraybaut.github.io/PythonQwt
 .. _GitHub: https://github.com/PierreRaybaut/PythonQwt
 """
-__version__ = "0.9.2"
+__version__ = "0.10.0"
 QWT_VERSION_STR = "6.1.5"
 
 import warnings

@@ -25,8 +25,8 @@ from qwt import (
 
 
 class DataPlot(QwtPlot):
-    def __init__(self, *args, unattended=False):
-        QwtPlot.__init__(self, *args)
+    def __init__(self, unattended=False):
+        QwtPlot.__init__(self)
 
         self.setCanvasBackground(Qt.white)
         self.alignScales()

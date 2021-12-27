@@ -1437,10 +1437,6 @@ class QwtPlot(QFrame, QwtPlotDict):
                     QPainter.Antialiasing,
                     item.testRenderHint(QwtPlotItem.RenderAntialiased),
                 )
-                painter.setRenderHint(
-                    QPainter.HighQualityAntialiasing,
-                    item.testRenderHint(QwtPlotItem.RenderAntialiased),
-                )
                 item.draw(painter, maps[item.xAxis()], maps[item.yAxis()], canvasRect)
                 painter.restore()
 

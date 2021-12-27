@@ -1,5 +1,10 @@
 # PythonQwt Releases
 
+## Version 0.10.0
+
+- Added support for QtPy 2, PyQt6 and PySide6.
+- Dropped support for Python 2.
+
 ## Version 0.9.2
 
 - Curve plotting: added support for `numpy.float32` data type.

@@ -13,10 +13,11 @@ QwtPlotCanvas
    :members:
 """
 
+import os
+
 from qwt.null_paintdevice import QwtNullPaintDevice
 from qwt.painter import QwtPainter
 
-from qtpy import PYQT5
 from qtpy.QtGui import (
     QPaintEngine,
     QPen,
@@ -30,11 +31,20 @@ from qtpy.QtGui import (
     qAlpha,
     QPolygonF,
 )
-from qtpy.QtWidgets import QFrame, QStyleOption, QStyle, QStyleOptionFrame
+from qtpy.QtWidgets import QFrame, QStyleOption, QStyle
 from qtpy.QtCore import Qt, QSizeF, QEvent, QPointF, QRectF
 from qtpy import QtCore as QC
 
+
 QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
+QT_API = os.environ["QT_API"]
+
+if QT_API in ("pyqt", "pyqt4"):
+    from PyQt4.QtGui import QStyleOptionFrameV3 as QStyleOptionFrame
+elif QT_API == "pyside2":
+    from PySide2.QtWidgets import QStyleOptionFrame
+else:
+    from qtpy.QtWidgets import QStyleOptionFrame
 
 
 class Border(object):
@@ -126,7 +136,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
 def _rects_conv_PyQt5(rects):
     # PyQt5 compatibility: the conversion from QRect to QRectF should not
     # be necessary but it seems to be anyway... PyQt5 bug?
-    if PYQT5:
+    if QT_API == "pyqt5":
         return [QRectF(rect) for rect in rects]
     else:
         return rects
@@ -172,7 +182,13 @@ def qwtDrawBackground(painter, canvas):
     else:
         painter.setPen(Qt.NoPen)
         painter.setBrush(brush)
-        painter.drawRects(_rects_conv_PyQt5(painter.clipRegion().rects()))
+        clipregion = painter.clipRegion()
+        try:
+            rects = clipregion.rects()
+        except AttributeError:
+            # Qt6: no equivalent to 'rects' method...
+            rects = [clipregion.begin()]
+        painter.drawRects(_rects_conv_PyQt5(rects))
 
     painter.restore()
 
@@ -731,13 +747,6 @@ class QwtPlotCanvas(QFrame):
                     self.frameStyle(),
                 )
         else:
-            if PYQT5:
-                from qtpy.QtWidgets import QStyleOptionFrame
-            else:
-                try:
-                    from PyQt4.QtGui import QStyleOptionFrameV3 as QStyleOptionFrame
-                except ImportError:
-                    from PySide2.QtWidgets import QStyleOptionFrame
             opt = QStyleOptionFrame()
             opt.initFrom(self)
             frameShape = self.frameStyle() & QFrame.Shape_Mask

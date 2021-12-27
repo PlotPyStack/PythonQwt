@@ -173,10 +173,10 @@ def qwtDrawDiamondSymbols(painter, points, numPoints, symbol):
         x2 = x1 + size.width()
         y2 = y1 + size.height()
         polygon = QPolygonF()
-        polygon += QPointF(pos.x(), y1)
-        polygon += QPointF(x1, pos.y())
-        polygon += QPointF(pos.x(), y2)
-        polygon += QPointF(x2, pos.y())
+        polygon.append(QPointF(pos.x(), y1))
+        polygon.append(QPointF(x1, pos.y()))
+        polygon.append(QPointF(pos.x(), y2))
+        polygon.append(QPointF(x2, pos.y()))
         painter.drawPolygon(polygon)
 
 

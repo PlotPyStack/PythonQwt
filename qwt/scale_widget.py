@@ -510,11 +510,11 @@ class QwtScaleWidget(QWidget):
         if update_geometry:
             self.updateGeometry()
 
-            # The following was removed because it caused a high CPU usage 
-            # in guiqwt.ImageWidget. The origin of these lines was an 
+            # The following was removed because it caused a high CPU usage
+            # in guiqwt.ImageWidget. The origin of these lines was an
             # attempt to transpose PythonQwt from Qwt 6.1.2 to Qwt 6.1.5.
 
-            #--> Begin of removed lines <--------------------------------------
+            # --> Begin of removed lines <--------------------------------------
             # #  for some reason updateGeometry does not send a LayoutRequest
             # #  event when the parent is not visible and has no layout
             # widget = self.parentWidget()
@@ -523,7 +523,7 @@ class QwtScaleWidget(QWidget):
             #         QApplication.postEvent(
             #             self.parentWidget(), QEvent(QEvent.LayoutRequest)
             #         )
-            #--> End of removed lines <----------------------------------------
+            # --> End of removed lines <----------------------------------------
 
             self.update()
 
@@ -634,7 +634,10 @@ class QwtScaleWidget(QWidget):
         if o == Qt.Vertical:
             size.transpose()
 
-        left, right, top, bottom = self.getContentsMargins()
+        if self.layout() is None:
+            left, top, right, bottom = 0, 0, 0, 0
+        else:
+            left, top, right, bottom = self.layout().getContentsMargins()
         return size + QSize(left + right, top + bottom)
 
     def titleHeightForWidth(self, width):

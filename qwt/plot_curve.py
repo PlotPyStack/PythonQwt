@@ -13,6 +13,8 @@ QwtPlotCurve
    :members:
 """
 
+import os
+
 from qwt.text import QwtText
 from qwt.plot import QwtPlot, QwtPlotItem, QwtPlotItem_PrivateData
 from qwt._math import qwtSqr
@@ -27,12 +29,16 @@ from qwt.symbol import QwtSymbol
 from qwt.plot_directpainter import QwtPlotDirectPainter
 from qwt.qthelpers import qcolor_from_str
 
-from qtpy import PYSIDE2
 from qtpy.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
 from qtpy.QtCore import QSize, Qt, QRectF, QPointF
 
-if PYSIDE2:
-    import shiboken2
+QT_API = os.environ["QT_API"]
+
+if QT_API == "pyside2":
+    import shiboken2 as shiboken
+    import ctypes
+elif QT_API == "pyside6":
+    import shiboken6 as shiboken
     import ctypes
 
 import numpy as np
@@ -62,12 +68,12 @@ def qwtVerifyRange(size, i1, i2):
 
 def array2d_to_qpolygonf(xdata, ydata):
     """
-    Utility function to convert two 1D-NumPy arrays representing curve data 
-    (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object). 
+    Utility function to convert two 1D-NumPy arrays representing curve data
+    (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object).
     This feature is compatible with PyQt4, PyQt5 and PySide2 (requires QtPy).
-    
+
     License/copyright: MIT License © Pierre Raybaut 2020-2021.
-    
+
     :param numpy.ndarray xdata: 1D-NumPy array
     :param numpy.ndarray ydata: 1D-NumPy array
     :return: Polyline
@@ -76,11 +82,16 @@ def array2d_to_qpolygonf(xdata, ydata):
     if not (xdata.size == ydata.size == xdata.shape[0] == ydata.shape[0]):
         raise ValueError("Arguments must be 1D NumPy arrays with same size")
     size = xdata.size
-    polyline = QPolygonF(size)
-    if PYSIDE2:  # PySide2 (obviously...)
-        address = shiboken2.getCppPointer(polyline.data())[0]
+    if QT_API.startswith("pyside"):  # PySide (obviously...)
+        if QT_API == "pyside2":
+            polyline = QPolygonF(size)
+        else:
+            polyline = QPolygonF()
+            polyline.resize(size)
+        address = shiboken.getCppPointer(polyline.data())[0]
         buffer = (ctypes.c_double * 2 * size).from_address(address)
     else:  # PyQt4, PyQt5
+        polyline = QPolygonF(size)
         buffer = polyline.data()
         buffer.setsize(16 * size)  # 16 bytes per point: 8 bytes per X,Y value (float64)
     memory = np.frombuffer(buffer, np.float64)
@@ -685,7 +696,12 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             :py:meth:`draw()`, :py:meth:`drawSticks()`,
             :py:meth:`drawDots()`, :py:meth:`drawLines()`
         """
-        polygon = QPolygonF(2 * (to - from_) + 1)
+        size = 2 * (to - from_) + 1
+        if QT_API == "pyside6":
+            polygon = QPolygonF()
+            polygon.resize(size)
+        else:
+            polygon = QPolygonF(size)
         inverted = self.orientation() == Qt.Vertical
         if self.__data.attributes & self.Inverted:
             inverted = not inverted
@@ -787,14 +803,14 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             if yMap.transformation():
                 baseline = yMap.transformation().bounded(baseline)
             refY = yMap.transform(baseline)
-            polygon += QPointF(polygon.last().x(), refY)
-            polygon += QPointF(polygon.first().x(), refY)
+            polygon.append(QPointF(polygon.last().x(), refY))
+            polygon.append(QPointF(polygon.first().x(), refY))
         else:
             if xMap.transformation():
                 baseline = xMap.transformation().bounded(baseline)
             refX = xMap.transform(baseline)
-            polygon += QPointF(refX, polygon.last().y())
-            polygon += QPointF(refX, polygon.first().y())
+            polygon.append(QPointF(refX, polygon.last().y()))
+            polygon.append(QPointF(refX, polygon.first().y()))
 
     def drawSymbols(self, painter, symbol, xMap, yMap, canvasRect, from_, to):
         """

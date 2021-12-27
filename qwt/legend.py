@@ -390,7 +390,6 @@ class QwtLegendLabel(QwtTextLabel):
         sz.setHeight(max([sz.height(), self.__data.icon.height() + 4]))
         if self.__data.itemMode != QwtLegendData.ReadOnly:
             sz += buttonShift(self)
-            sz = sz.expandedTo(QApplication.globalStrut())
         return sz
 
     def paintEvent(self, e):
@@ -912,7 +911,7 @@ class QwtLegend(QwtAbstractLegend):
         legendLayout = self.__data.view.contentsWidget.layout()
         if legendLayout is None:
             return
-        left, right, top, bottom = self.getContentsMargins()
+        left, right, top, bottom = self.layout().getContentsMargins()
         layoutRect = QRect()
         layoutRect.setLeft(math.ceil(rect.left()) + left)
         layoutRect.setTop(math.ceil(rect.top()) + top)

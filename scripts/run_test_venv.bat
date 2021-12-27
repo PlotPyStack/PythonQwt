@@ -28,6 +28,6 @@ call %VENVPATH%\Scripts\activate
 python -m pip install --upgrade pip
 pip install %~1
 for %%f IN ("%SCRIPTPATH%\..\dist\%LIBNAME%-*.whl") DO ( pip install %%f )
-call %VENVPATH%\Scripts\%LIBNAME%-tests-py3 --mode unattended
+call %VENVPATH%\Scripts\%LIBNAME%-tests --mode unattended
 call %VENVPATH%\Scripts\deactivate
 exit /B 0

@@ -33,8 +33,7 @@ PythonQwt: Qt plotting widgets for Python
 
 The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical 
 user interfaces for the Python programming language. It is compatible with 
-both ``PyQt4``, ``PyQt5`` and ``PySide2`` (see documentation for more information 
-on a performance issue due to PySide2 itself when plotting huge data sets).
+``PyQt4``, ``PyQt5``, ``PyQt6`` and ``PySide6``.
 
 The ``PythonQwt`` project was initiated to solve -at least temporarily- the 
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
@@ -118,10 +117,10 @@ setup(
     },
     entry_points={
         "gui_scripts": [
-            "PythonQwt-py%d = qwt.tests:run [Tests]" % sys.version_info.major,
+            "PythonQwt = qwt.tests:run [Tests]",
         ],
         "console_scripts": [
-            "PythonQwt-tests-py%d = qwt.tests:run [Tests]" % sys.version_info.major,
+            "PythonQwt-tests = qwt.tests:run [Tests]",
         ],
     },
     author="Pierre Raybaut",
@@ -139,8 +138,6 @@ setup(
         "Operating System :: OS Independent",
         "Operating System :: POSIX",
         "Operating System :: Unix",
-        "Programming Language :: Python :: 2.6",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3",
     ],
 )

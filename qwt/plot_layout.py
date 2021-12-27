@@ -132,7 +132,9 @@ class QwtPlotLayout_LayoutData(object):
                 self.scale[axis].baseLineOffset = 0
                 self.scale[axis].tickOffset = 0.0
                 self.scale[axis].dimWithoutTitle = 0
-        self.canvas.contentsMargins = plot.canvas().getContentsMargins()
+        layout = plot.canvas().layout()
+        if layout is not None:
+            self.canvas.contentsMargins = layout.getContentsMargins()
 
 
 class QwtPlotLayout_PrivateData(object):
@@ -564,7 +566,11 @@ class QwtPlotLayout(object):
 
         scaleData = [_ScaleData() for _i in QwtPlot.AXES]
         canvasBorder = [0 for _i in QwtPlot.AXES]
-        fw, _, _, _ = plot.canvas().getContentsMargins()
+        layout = plot.canvas().layout()
+        if layout is None:
+            left, top, right, bottom = 0, 0, 0, 0
+        else:
+            left, top, right, bottom = layout.getContentsMargins()
         for axis in QwtPlot.AXES:
             if plot.axisEnabled(axis):
                 scl = plot.axisWidget(axis)
@@ -576,7 +582,7 @@ class QwtPlotLayout(object):
                 sd.tickOffset = scl.margin()
                 if scl.scaleDraw().hasComponent(QwtAbstractScaleDraw.Ticks):
                     sd.tickOffset += np.ceil(scl.scaleDraw().maxTickLength())
-            canvasBorder[axis] = fw + self.__data.canvasMargin[axis] + 1
+            canvasBorder[axis] = left + self.__data.canvasMargin[axis] + 1
         for axis in QwtPlot.AXES:
             sd = scaleData[axis]
             if sd.w and axis in (QwtPlot.xBottom, QwtPlot.xTop):
@@ -614,7 +620,6 @@ class QwtPlotLayout(object):
                         shiftTop = scaleData[QwtPlot.xTop].tickOffset
                     sd.h -= shiftTop
         canvas = plot.canvas()
-        left, top, right, bottom = canvas.getContentsMargins()
         minCanvasSize = canvas.minimumSize()
         w = scaleData[QwtPlot.yLeft].w + scaleData[QwtPlot.yRight].w
         cw = (
