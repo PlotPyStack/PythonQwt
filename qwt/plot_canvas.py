@@ -157,7 +157,12 @@ def qwtDrawBackground(painter, canvas):
         if brush.gradient().coordinateMode() == QGradient.ObjectBoundingMode:
             rects += [canvas.rect()]
         else:
-            rects += [painter.clipRegion().rects()]
+            clipregion = painter.clipRegion()
+            try:
+                rects += [clipregion.rects()]
+            except AttributeError:
+                # Qt6: no equivalent to 'rects' method...
+                rects += [clipregion.begin()]
         useRaster = False
         if painter.paintEngine().type() == QPaintEngine.X11:
             useRaster = True
