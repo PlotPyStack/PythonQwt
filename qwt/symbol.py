@@ -1177,7 +1177,7 @@ class QwtSymbol(object):
             pw = 0.0
             if self.__data.pen.style() != Qt.NoPen:
                 pw = max([self.__data.pen.widthF(), 1.0])
-            rect.setSize(self.__data.size + QSizeF(pw, pw))
+            rect.setSize(QSizeF(self.__data.size) + QSizeF(pw, pw))
             rect.moveCenter(QPointF(0.0, 0.0))
         elif self.__data.style in (
             QwtSymbol.XCross,
