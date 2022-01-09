@@ -1,8 +1,12 @@
 # PythonQwt Releases
 
+## Version 0.10.1
+
+- Added support for PyQt6.
+
 ## Version 0.10.0
 
-- Added support for QtPy 2, PyQt6 and PySide6.
+- Added support for QtPy 2 and PySide6.
 - Dropped support for Python 2.
 
 ## Version 0.9.2
@@ -12,18 +16,18 @@
 ## Version 0.9.1
 
 - Added load test showing a large number of plots (eventually highlights performance issues).
-- Fixed event management in `QwtPlot` and removed unnecessary `QEvent.LayoutRequest` 
+- Fixed event management in `QwtPlot` and removed unnecessary `QEvent.LayoutRequest`
   emission in `QwtScaleWidget` (caused high CPU usage with `guiqwt.ImageWidget`).
 - `QwtScaleDiv`: fixed ticks initialization when passing all arguments to constructor.
 - tests/image.py: fixed overriden `updateLegend` signature.
 
 ## Version 0.9.0
 
-- `QwtPlot`: set the `autoReplot` option at False by default, to avoid time consuming 
+- `QwtPlot`: set the `autoReplot` option at False by default, to avoid time consuming
   implicit plot updates.
-- Added `QwtPlotItem.setIcon` and `QwtPlotItem.icon` method for setting and getting the 
-  icon associated to the plot item (as of today, this feature is not strictly needed in 
-  PythonQwt: this has been implemented for several use cases in higher level libraries 
+- Added `QwtPlotItem.setIcon` and `QwtPlotItem.icon` method for setting and getting the
+  icon associated to the plot item (as of today, this feature is not strictly needed in
+  PythonQwt: this has been implemented for several use cases in higher level libraries
   (see PR #61).
 - Removed unused `QwtPlotItem.defaultIcon` method.
 - Added various minor optimizations for axes/ticks drawing features.
@@ -53,7 +57,7 @@
 
 - Added PySide2 support: PythonQwt is now compatible with Python 2.7, Python 3.4+,
   PyQt4, PyQt5 and PySide2!
-  
+
 ## Version 0.7.1
 
 - Changed QwtPlotItem.detachItems signature: removed unnecessary "autoDelete" argument,

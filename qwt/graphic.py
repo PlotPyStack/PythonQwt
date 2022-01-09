@@ -13,6 +13,7 @@ QwtGraphic
    :members:
 """
 
+import math
 from qwt.null_paintdevice import QwtNullPaintDevice
 from qwt.painter_command import QwtPainterCommand
 
@@ -25,8 +26,6 @@ from qtpy.QtGui import (
     QImage,
 )
 from qtpy.QtCore import Qt, QRectF, QSizeF, QSize, QPointF, QRect
-
-import numpy as np
 
 
 def qwtHasScalablePen(painter):
@@ -115,8 +114,6 @@ def qwtExecCommand(painter, cmd, renderHints, transform, initialTransform):
                 QPainter.Antialiasing,
                 QPainter.TextAntialiasing,
                 QPainter.SmoothPixmapTransform,
-                QPainter.HighQualityAntialiasing,
-                QPainter.NonCosmeticDefaultPen,
             ):
                 painter.setRenderHint(hint, bool(data.renderHints & hint))
         if data.flags & QPaintEngine.DirtyCompositionMode:
@@ -383,7 +380,7 @@ class QwtGraphic(QwtNullPaintDevice):
     def sizeMetrics(self):
         """Return Ceiled :py:meth:`defaultSize()`"""
         sz = self.defaultSize()
-        return QSize(np.ceil(sz.width()), np.ceil(sz.height()))
+        return QSize(math.ceil(sz.width()), math.ceil(sz.height()))
 
     def setDefaultSize(self, size):
         """
@@ -579,8 +576,8 @@ class QwtGraphic(QwtNullPaintDevice):
             if self.isNull():
                 return QPixmap()
             sz = self.defaultSize()
-            w = np.ceil(sz.width())
-            h = np.ceil(sz.height())
+            w = math.ceil(sz.width())
+            h = math.ceil(sz.height())
             pixmap = QPixmap(w, h)
             pixmap.fill(Qt.transparent)
             r = QRectF(0.0, 0.0, sz.width(), sz.height())
@@ -640,8 +637,8 @@ class QwtGraphic(QwtNullPaintDevice):
             if self.isNull():
                 return QImage()
             sz = self.defaultSize()
-            w = np.ceil(sz.width())
-            h = np.ceil(sz.height())
+            w = math.ceil(sz.width())
+            h = math.ceil(sz.height())
             image = QImage(w, h, QImage.Format_ARGB32)
             image.fill(0)
             r = QRect(0, 0, sz.width(), sz.height())

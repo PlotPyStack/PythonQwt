@@ -19,16 +19,15 @@ QwtScaleDraw
    :members:
 """
 
+import math
+
 from qwt.scale_div import QwtScaleDiv
 from qwt.scale_map import QwtScaleMap
 from qwt.text import QwtText
 from qwt._math import qwtRadians
 
 from qtpy.QtGui import QPalette, QFontMetrics, QTransform
-from qtpy.QtCore import Qt, qFuzzyCompare, QLocale, QRectF, QPointF, QRect, QPoint
-
-from math import ceil
-import numpy as np
+from qtpy.QtCore import Qt, qFuzzyCompare, QLineF, QRectF, QPointF, QRect, QPoint
 
 
 class QwtAbstractScaleDraw_PrivateData(object):
@@ -610,7 +609,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             e = self.labelRect(font, maxTick).right()
             e -= abs(maxPos - self.scaleMap().p2())
 
-        return max(ceil(s), 0), max(ceil(e), 0)
+        return max(math.ceil(s), 0), max(math.ceil(e), 0)
 
     def minLabelDist(self, font):
         """
@@ -658,15 +657,15 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
 
         angle = qwtRadians(self.labelRotation())
         if vertical:
-            angle += np.pi / 2
+            angle += math.pi / 2
 
-        sinA = np.sin(angle)
+        sinA = math.sin(angle)
         if qFuzzyCompare(sinA + 1.0, 1.0):
-            return np.ceil(maxDist)
+            return math.ceil(maxDist)
 
         fmHeight = fm.ascent() - 2
 
-        labelDist = fmHeight / np.sin(angle) * np.cos(angle)
+        labelDist = fmHeight / math.sin(angle) * math.cos(angle)
         if labelDist < 0:
             labelDist = -labelDist
 
@@ -676,7 +675,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if labelDist < fmHeight:
             labelDist = fmHeight
 
-        return np.ceil(labelDist)
+        return math.ceil(labelDist)
 
     def extent(self, font):
         """
@@ -732,7 +731,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         lengthForTicks = 0
         if self.hasComponent(QwtAbstractScaleDraw.Ticks):
             pw = max([1, self.penWidth()])
-            lengthForTicks = np.ceil((majorCount + minorCount) * (pw + 1.0))
+            lengthForTicks = math.ceil((majorCount + minorCount) * (pw + 1.0))
         return startDist + endDist + max([lengthForLabels, lengthForTicks])
 
     def labelPosition(self, value):
@@ -790,19 +789,19 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if self.alignment() == self.LeftScale:
             x1 = pos.x() + a
             x2 = pos.x() + a - pw - len_
-            painter.drawLine(x1, tval, x2, tval)
+            painter.drawLine(QLineF(x1, tval, x2, tval))
         elif self.alignment() == self.RightScale:
             x1 = pos.x()
             x2 = pos.x() + pw + len_
-            painter.drawLine(x1, tval, x2, tval)
+            painter.drawLine(QLineF(x1, tval, x2, tval))
         elif self.alignment() == self.BottomScale:
             y1 = pos.y()
             y2 = pos.y() + pw + len_
-            painter.drawLine(tval, y1, tval, y2)
+            painter.drawLine(QLineF(tval, y1, tval, y2))
         elif self.alignment() == self.TopScale:
             y1 = pos.y() + a
             y2 = pos.y() - pw - len_ + a
-            painter.drawLine(tval, y1, tval, y2)
+            painter.drawLine(QLineF(tval, y1, tval, y2))
 
     def drawBackbone(self, painter):
         """
@@ -819,16 +818,16 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         off = 0.5 * self.penWidth()
         if self.alignment() == self.LeftScale:
             x = pos.x() - off
-            painter.drawLine(x, pos.y(), x, pos.y() + len_)
+            painter.drawLine(QLineF(x, pos.y(), x, pos.y() + len_))
         elif self.alignment() == self.RightScale:
             x = pos.x() + off
-            painter.drawLine(x, pos.y(), x, pos.y() + len_)
+            painter.drawLine(QLineF(x, pos.y(), x, pos.y() + len_))
         elif self.alignment() == self.TopScale:
             y = pos.y() - off
-            painter.drawLine(pos.x(), y, pos.x() + len_, y)
+            painter.drawLine(QLineF(pos.x(), y, pos.x() + len_, y))
         elif self.alignment() == self.BottomScale:
             y = pos.y() + off
-            painter.drawLine(pos.x(), y, pos.x() + len_, y)
+            painter.drawLine(QLineF(pos.x(), y, pos.x() + len_, y))
 
     def move(self, *args):
         """
@@ -1151,8 +1150,8 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         size = self._max_label_sizes.get(key)
         if size is None:
             size = self.labelSize(font, -999999)  # -999999 is the biggest label
-            size.setWidth(np.ceil(size.width()))
-            size.setHeight(np.ceil(size.height()))
+            size.setWidth(math.ceil(size.width()))
+            size.setHeight(math.ceil(size.height()))
             return self._max_label_sizes.setdefault(key, size)
         else:
             return size
@@ -1170,9 +1169,9 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
                 [v for v in ticks if self.scaleDiv().contains(v)],
                 key=lambda obj: len("%g" % obj),
             )[-1]
-            return np.ceil(self.labelSize(font, vmax).width())
+            return math.ceil(self.labelSize(font, vmax).width())
             ## Original implementation (closer to Qwt's C++ code, but slower):
-            # return np.ceil(max([self.labelSize(font, v).width()
+            # return math.ceil(max([self.labelSize(font, v).width()
             #                for v in ticks if self.scaleDiv().contains(v)]))
         else:
             return self._get_max_label_size(font).width()
@@ -1190,9 +1189,9 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
                 [v for v in ticks if self.scaleDiv().contains(v)],
                 key=lambda obj: len("%g" % obj),
             )[-1]
-            return np.ceil(self.labelSize(font, vmax).height())
+            return math.ceil(self.labelSize(font, vmax).height())
             ## Original implementation (closer to Qwt's C++ code, but slower):
-            # return np.ceil(max([self.labelSize(font, v).height()
+            # return math.ceil(max([self.labelSize(font, v).height()
             #                for v in ticks if self.scaleDiv().contains(v)]))
         else:
             return self._get_max_label_size(font).height()

@@ -13,6 +13,8 @@ QwtScaleWidget
    :members:
 """
 
+import math
+
 from qwt.scale_draw import QwtScaleDraw
 from qwt.scale_engine import QwtLinearScaleEngine
 from qwt.color_map import QwtLinearColorMap
@@ -24,8 +26,6 @@ from qwt.color_map import QwtColorMap
 from qtpy.QtGui import QPainter, QPalette
 from qtpy.QtWidgets import QWidget, QSizePolicy, QStyleOption, QStyle, QApplication
 from qtpy.QtCore import Qt, QRectF, QSize, Signal, QEvent
-
-import numpy as np
 
 
 class ColorBar(object):
@@ -502,7 +502,7 @@ class QwtScaleWidget(QWidget):
         self.__data.scaleDraw.move(x, y)
         self.__data.scaleDraw.setLength(length)
 
-        extent = np.ceil(self.__data.scaleDraw.extent(self.font()))
+        extent = math.ceil(self.__data.scaleDraw.extent(self.font()))
         self.__data.titleOffset = (
             self.__data.margin + self.__data.spacing + colorBarWidth + extent
         )
@@ -647,7 +647,7 @@ class QwtScaleWidget(QWidget):
         :param int width: Width
         :return: Height
         """
-        return np.ceil(self.__data.title.heightForWidth(width, self.font()))
+        return math.ceil(self.__data.title.heightForWidth(width, self.font()))
 
     def dimForLength(self, length, scaleFont):
         """
@@ -658,7 +658,7 @@ class QwtScaleWidget(QWidget):
         :param QFont scaleFont: Font of the scale
         :return: height for horizontal, width for vertical scales
         """
-        extent = np.ceil(self.__data.scaleDraw.extent(scaleFont))
+        extent = math.ceil(self.__data.scaleDraw.extent(scaleFont))
         dim = self.__data.margin + extent + 1
         if not self.__data.title.isEmpty():
             dim += self.titleHeightForWidth(length) + self.__data.spacing

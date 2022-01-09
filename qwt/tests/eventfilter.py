@@ -174,19 +174,17 @@ class Plot(QwtPlot):
         self.setAxisScale(QwtPlot.yLeft, value, value + 100)
         self.replot()
 
-    def eventFilter(self, object, event):
+    def eventFilter(self, obj, event):
         if event.type() == QEvent.Resize:
             size = event.size()
-            if object == self.axisWidget(QwtPlot.yLeft):
+            if obj == self.axisWidget(QwtPlot.yLeft):
                 margin = 2
-                x = size.width() - object.margin() + margin
-                w = object.margin() - 2 * margin
-                y = int(object.startBorderDist())
-                h = int(
-                    size.height() - object.startBorderDist() - object.endBorderDist()
-                )
+                x = size.width() - obj.margin() + margin
+                w = obj.margin() - 2 * margin
+                y = int(obj.startBorderDist())
+                h = int(size.height() - obj.startBorderDist() - obj.endBorderDist())
                 self.__colorBar.setGeometry(x, y, w, h)
-        return QwtPlot.eventFilter(self, object, event)
+        return QwtPlot.eventFilter(self, obj, event)
 
     def insertCurve(self, axis, base):
         if axis == QwtPlot.yLeft or axis == QwtPlot.yRight:
@@ -250,10 +248,10 @@ class CanvasPicker(QObject):
         if event.type() == QEvent.Paint:
             QApplication.postEvent(self, QEvent(QEvent.User))
         elif event.type() == QEvent.MouseButtonPress:
-            self.__select(event.pos())
+            self.__select(event.position())
             return True
         elif event.type() == QEvent.MouseMove:
-            self.__move(event.pos())
+            self.__move(event.position())
             return True
         if event.type() == QEvent.KeyPress:
             delta = 5
@@ -403,7 +401,7 @@ class ScalePicker(QObject):
 
     def eventFilter(self, object, event):
         if event.type() == QEvent.MouseButtonPress:
-            self.__mouseClicked(object, event.pos())
+            self.__mouseClicked(object, event.position())
             return True
         return QObject.eventFilter(self, object, event)
 

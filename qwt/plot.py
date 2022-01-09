@@ -19,6 +19,8 @@ QwtPlotItem
    :members:
 """
 
+import math
+
 from qtpy.QtWidgets import (
     QWidget,
     QSizePolicy,
@@ -1388,7 +1390,7 @@ class QwtPlot(QFrame, QwtPlotDict):
 
         for axisId in self.AXES:
             if margins[axisId] >= 0.0:
-                m = np.ceil(margins[axisId])
+                m = math.ceil(margins[axisId])
                 self.plotLayout().setCanvasMargin(m, axisId)
                 doUpdate = True
 
@@ -1520,7 +1522,7 @@ class QwtPlot(QFrame, QwtPlotDict):
 
             :py:meth:`setCanvasBackground()`
         """
-        return self.canvas().palette().brush(QPalette.Normal, QPalette.Window)
+        return self.canvas().palette().brush(QPalette.Active, QPalette.Window)
 
     def axisValid(self, axis_id):
         """

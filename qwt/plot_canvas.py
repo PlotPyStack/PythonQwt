@@ -133,15 +133,6 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
                 r.setBottom(rect.bottom())
 
 
-def _rects_conv_PyQt5(rects):
-    # PyQt5 compatibility: the conversion from QRect to QRectF should not
-    # be necessary but it seems to be anyway... PyQt5 bug?
-    if QT_API == "pyqt5":
-        return [QRectF(rect) for rect in rects]
-    else:
-        return rects
-
-
 def qwtDrawBackground(painter, canvas):
     painter.save()
     borderClip = canvas.borderPath(canvas.rect())
@@ -157,12 +148,7 @@ def qwtDrawBackground(painter, canvas):
         if brush.gradient().coordinateMode() == QGradient.ObjectBoundingMode:
             rects += [canvas.rect()]
         else:
-            clipregion = painter.clipRegion()
-            try:
-                rects += [clipregion.rects()]
-            except AttributeError:
-                # Qt6: no equivalent to 'rects' method...
-                rects += [clipregion.begin()]
+            rects += [painter.clipRegion().boundingRect()]
         useRaster = False
         if painter.paintEngine().type() == QPaintEngine.X11:
             useRaster = True
@@ -174,26 +160,22 @@ def qwtDrawBackground(painter, canvas):
                     format_ = QImage.Format_ARGB32
                     break
             image = QImage(canvas.size(), format_)
-            p = QPainter(image)
-            p.setPen(Qt.NoPen)
-            p.setBrush(brush)
-            p.drawRects(_rects_conv_PyQt5(rects))
-            p.end()
+            pntr = QPainter(image)
+            pntr.setPen(Qt.NoPen)
+            pntr.setBrush(brush)
+            for rect in rects:
+                pntr.drawRect(rect)
+            pntr.end()
             painter.drawImage(0, 0, image)
         else:
             painter.setPen(Qt.NoPen)
             painter.setBrush(brush)
-            painter.drawRects(_rects_conv_PyQt5(rects))
+            for rect in rects:
+                painter.drawRect(rect)
     else:
         painter.setPen(Qt.NoPen)
         painter.setBrush(brush)
-        clipregion = painter.clipRegion()
-        try:
-            rects = clipregion.rects()
-        except AttributeError:
-            # Qt6: no equivalent to 'rects' method...
-            rects = [clipregion.begin()]
-        painter.drawRects(_rects_conv_PyQt5(rects))
+        painter.drawRect(painter.clipRegion().boundingRect())
 
     painter.restore()
 
@@ -754,8 +736,14 @@ class QwtPlotCanvas(QFrame):
         else:
             opt = QStyleOptionFrame()
             opt.initFrom(self)
-            frameShape = self.frameStyle() & QFrame.Shape_Mask
-            frameShadow = self.frameStyle() & QFrame.Shadow_Mask
+            try:
+                shape_mask = QFrame.Shape_Mask.value
+                shadow_mask = QFrame.Shadow_Mask.value
+            except AttributeError:
+                shape_mask = QFrame.Shape_Mask
+                shadow_mask = QFrame.Shadow_Mask
+            frameShape = self.frameStyle() & shape_mask
+            frameShadow = self.frameStyle() & shadow_mask
             opt.frameShape = QFrame.Shape(int(opt.frameShape) | frameShape)
             if frameShape in (
                 QFrame.Box,

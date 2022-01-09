@@ -13,6 +13,8 @@ QwtPlotLayout
    :members:
 """
 
+import math
+
 from qwt.text import QwtText
 from qwt.scale_widget import QwtScaleWidget
 from qwt.plot import QwtPlot
@@ -21,7 +23,6 @@ from qwt.scale_draw import QwtAbstractScaleDraw
 from qtpy.QtGui import QFont, QRegion
 from qtpy.QtCore import QSize, Qt, QRectF
 
-import numpy as np
 
 QWIDGETSIZE_MAX = (1 << 24) - 1
 
@@ -80,7 +81,7 @@ class QwtPlotLayout_LayoutData(object):
             self.legend.hScrollExtent = legend.scrollExtent(Qt.Horizontal)
             self.legend.vScrollExtent = legend.scrollExtent(Qt.Vertical)
             hint = legend.sizeHint()
-            w = min([hint.width(), np.floor(rect.width())])
+            w = min([hint.width(), math.floor(rect.width())])
             h = legend.heightForWidth(w)
             if h <= 0:
                 h = hint.height()
@@ -581,7 +582,7 @@ class QwtPlotLayout(object):
                 sd.minLeft, sd.minLeft = scl.getBorderDistHint()
                 sd.tickOffset = scl.margin()
                 if scl.scaleDraw().hasComponent(QwtAbstractScaleDraw.Ticks):
-                    sd.tickOffset += np.ceil(scl.scaleDraw().maxTickLength())
+                    sd.tickOffset += math.ceil(scl.scaleDraw().maxTickLength())
             canvasBorder[axis] = left + self.__data.canvasMargin[axis] + 1
         for axis in QwtPlot.AXES:
             sd = scaleData[axis]
@@ -770,7 +771,7 @@ class QwtPlotLayout(object):
                     != self.__data.layoutData.scale[QwtPlot.yRight].isEnabled
                 ):
                     w -= dimAxes[QwtPlot.yLeft] + dimAxes[QwtPlot.yRight]
-                d = np.ceil(self.__data.layoutData.title.text.heightForWidth(w))
+                d = math.ceil(self.__data.layoutData.title.text.heightForWidth(w))
                 if not (options & self.IgnoreFrames):
                     d += 2 * self.__data.layoutData.title.frameWidth
                 if d > dimTitle:
@@ -786,7 +787,7 @@ class QwtPlotLayout(object):
                     != self.__data.layoutData.scale[QwtPlot.yRight].isEnabled
                 ):
                     w -= dimAxes[QwtPlot.yLeft] + dimAxes[QwtPlot.yRight]
-                d = np.ceil(self.__data.layoutData.footer.text.heightForWidth(w))
+                d = math.ceil(self.__data.layoutData.footer.text.heightForWidth(w))
                 if not (options & self.IgnoreFrames):
                     d += 2 * self.__data.layoutData.footer.frameWidth
                 if d > dimFooter:
@@ -853,7 +854,9 @@ class QwtPlotLayout(object):
                             length -= dimTitle + self.__data.spacing
                     d = scaleData.dimWithoutTitle
                     if not scaleData.scaleWidget.title().isEmpty():
-                        d += scaleData.scaleWidget.titleHeightForWidth(np.floor(length))
+                        d += scaleData.scaleWidget.titleHeightForWidth(
+                            math.floor(length)
+                        )
                     if d > dimAxes[axis]:
                         dimAxes[axis] = d
                         done = False
@@ -1036,9 +1039,11 @@ class QwtPlotLayout(object):
         ):
             self.__data.legendRect = self.layoutLegend(options, rect)
             region = QRegion(rect.toRect())
-            rect = region.subtracted(
-                QRegion(self.__data.legendRect.toRect())
-            ).boundingRect()
+            rect = QRectF(
+                region.subtracted(
+                    QRegion(self.__data.legendRect.toRect())
+                ).boundingRect()
+            )
             if self.__data.legendPos == QwtPlot.LeftLegend:
                 rect.setLeft(rect.left() + self.__data.spacing)
             elif self.__data.legendPos == QwtPlot.RightLegend:

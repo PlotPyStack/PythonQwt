@@ -126,7 +126,7 @@ class BMText(QTextEdit):
             """\
 <b>%s:</b><br>
 (base plotting library: %s)<br><br>
-Click on each tab to test if plotting performance is acceptable in terms of 
+Click on each tab to test if plotting performance is acceptable in terms of
 GUI response time (switch between tabs, resize main windows, ...).<br>
 <br><br>
 <b>Benchmarks results:</b>
@@ -171,6 +171,7 @@ class CurveBenchmark1(QMainWindow):
         time_str = "Elapsed time: %d ms" % ((time.time() - t0) * 1000)
         widget.text.setText(time_str)
         self.text.append("<br><i>%s:</i><br>%s" % (description, time_str))
+        print("[%s] %s" % (tests.get_lib_versions(), time_str))
 
     def run_benchmark(self, max_n, **kwargs):
         for idx in range(4, -1, -1):

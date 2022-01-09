@@ -21,7 +21,7 @@ from qwt.symbol import QwtSymbol
 from qwt.qthelpers import qcolor_from_str
 
 from qtpy.QtGui import QPen, QPainter
-from qtpy.QtCore import Qt, QPointF, QRectF, QSizeF, QRect
+from qtpy.QtCore import Qt, QPointF, QRectF, QSizeF, QRect, QLineF
 
 
 class QwtPlotMarker_PrivateData(object):
@@ -265,10 +265,10 @@ class QwtPlotMarker(QwtPlotItem):
         painter.setPen(self.__data.pen)
         if self.__data.style in (QwtPlotMarker.HLine, QwtPlotMarker.Cross):
             y = pos.y()
-            painter.drawLine(canvasRect.left(), y, canvasRect.right() - 1.0, y)
+            painter.drawLine(QLineF(canvasRect.left(), y, canvasRect.right() - 1.0, y))
         if self.__data.style in (QwtPlotMarker.VLine, QwtPlotMarker.Cross):
             x = pos.x()
-            painter.drawLine(x, canvasRect.top(), x, canvasRect.bottom() - 1.0)
+            painter.drawLine(QLineF(x, canvasRect.top(), x, canvasRect.bottom() - 1.0))
 
     def drawLabel(self, painter, canvasRect, pos):
         """
@@ -285,7 +285,7 @@ class QwtPlotMarker(QwtPlotItem):
         """
         if self.__data.label.isEmpty():
             return
-        align = Qt.Alignment(self.__data.labelAlignment)
+        align = self.__data.labelAlignment
         alignPos = QPointF(pos)
         symbolOff = QSizeF(0, 0)
         if self.__data.style == QwtPlotMarker.VLine:
@@ -623,10 +623,10 @@ class QwtPlotMarker(QwtPlotItem):
             painter.setPen(self.__data.pen)
             if self.__data.style in (QwtPlotMarker.HLine, QwtPlotMarker.Cross):
                 y = 0.5 * size.height()
-                painter.drawLine(0.0, y, size.width(), y)
+                painter.drawLine(QLineF(0.0, y, size.width(), y))
             if self.__data.style in (QwtPlotMarker.VLine, QwtPlotMarker.Cross):
                 x = 0.5 * size.width()
-                painter.drawLine(x, 0.0, x, size.height())
+                painter.drawLine(QLineF(x, 0.0, x, size.height()))
         if self.__data.symbol:
             r = QRect(0, 0, size.width(), size.height())
             self.__data.symbol.drawSymbol(painter, r)

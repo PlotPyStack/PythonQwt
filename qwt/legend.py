@@ -308,7 +308,8 @@ class QwtLegendLabel(QwtTextLabel):
         spacing = max([spacing, 0])
         if spacing != self.__data.spacing:
             self.__data.spacing = spacing
-            indent = self.margin() + self.__data.spacing
+            margin = max(self.getContentsMargins())
+            indent = margin + self.__data.spacing
             if self.__data.icon.width() > 0:
                 indent += self.__data.icon.width() + self.__data.spacing
             self.setIndent(indent)
@@ -948,8 +949,9 @@ class QwtLegend(QwtAbstractLegend):
         if label is not None:
             icon = label.data().icon()
             sz = icon.defaultSize()
+            margin = max(label.getContentsMargins())
             iconRect = QRectF(
-                rect.x() + label.margin(),
+                rect.x() + margin,
                 rect.center().y() - 0.5 * sz.height(),
                 sz.width(),
                 sz.height(),

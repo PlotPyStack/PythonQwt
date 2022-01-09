@@ -13,6 +13,8 @@ QwtSymbol
    :members:
 """
 
+import math
+
 from qwt.graphic import QwtGraphic
 from qwt.painter import QwtPainter
 
@@ -25,10 +27,8 @@ from qtpy.QtGui import (
     QPainterPath,
     QBrush,
 )
-from qtpy.QtCore import QSize, QRect, QPointF, QRectF, QSizeF, Qt, QPoint
+from qtpy.QtCore import QSize, QRect, QPointF, QRectF, QSizeF, Qt, QPoint, QLineF
 from qtpy.QtSvg import QSvgRenderer
-
-import numpy as np
 
 
 class QwtTriangle(object):
@@ -223,11 +223,11 @@ def qwtDrawLineSymbols(painter, orientations, points, numPoints, symbol):
         if orientations & Qt.Horizontal:
             x = round(pos.x()) - sw2
             y = round(pos.y())
-            painter.drawLine(x, y, x + sw, y)
+            painter.drawLine(QLineF(x, y, x + sw, y))
         if orientations & Qt.Vertical:
             x = round(pos.x())
             y = round(pos.y()) - sh2
-            painter.drawLine(x, y, x, y + sh)
+            painter.drawLine(QLineF(x, y, x, y + sh))
 
 
 def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
@@ -245,23 +245,27 @@ def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
         x2 = x1 + sw
         y1 = pos.y() - sh2
         y2 = y1 + sh
-        painter.drawLine(x1, y1, x2, y2)
-        painter.drawLine(x2, y1, x1, y2)
+        painter.drawLine(QLineF(x1, y1, x2, y2))
+        painter.drawLine(QLineF(x2, y1, x1, y2))
 
 
 def qwtDrawStar1Symbols(painter, points, numPoints, symbol):
     size = symbol.size()
     painter.setPen(symbol.pen())
-    sqrt1_2 = np.sqrt(0.5)
+    sqrt1_2 = math.sqrt(0.5)
     r = QRectF(0, 0, size.width(), size.height())
     for pos in points:
         r.moveCenter(pos.toPoint())
         c = QPointF(r.center())
         d1 = r.width() / 2.0 * (1.0 - sqrt1_2)
-        painter.drawLine(r.left() + d1, r.top() + d1, r.right() - d1, r.bottom() - d1)
-        painter.drawLine(r.left() + d1, r.bottom() - d1, r.right() - d1, r.top() + d1)
-        painter.drawLine(c.x(), r.top(), c.x(), r.bottom())
-        painter.drawLine(r.left(), c.y(), r.right(), c.y())
+        painter.drawLine(
+            QLineF(r.left() + d1, r.top() + d1, r.right() - d1, r.bottom() - d1)
+        )
+        painter.drawLine(
+            QLineF(r.left() + d1, r.bottom() - d1, r.right() - d1, r.top() + d1)
+        )
+        painter.drawLine(QLineF(c.x(), r.top(), c.x(), r.bottom()))
+        painter.drawLine(QLineF(r.left(), c.y(), r.right(), c.y()))
 
 
 def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
@@ -271,7 +275,7 @@ def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
     pen.setJoinStyle(Qt.MiterJoin)
     painter.setPen(pen)
     painter.setBrush(symbol.brush())
-    cos30 = np.cos(30 * np.pi / 180.0)
+    cos30 = math.cos(30 * math.pi / 180.0)
     dy = 0.25 * symbol.size().height()
     dx = 0.5 * symbol.size().width() * cos30 / 3.0
     for pos in points:
@@ -309,7 +313,7 @@ def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
 def qwtDrawHexagonSymbols(painter, points, numPoints, symbol):
     painter.setBrush(symbol.brush())
     painter.setPen(symbol.pen())
-    cos30 = np.cos(30 * np.pi / 180.0)
+    cos30 = math.cos(30 * math.pi / 180.0)
     dx = 0.5 * (symbol.size().width() - cos30)
     dy = 0.25 * symbol.size().height()
     for pos in points:
@@ -1231,10 +1235,10 @@ class QwtSymbol(object):
                 pinPoint = rect.center() - self.__data.pinPoint
             rect.moveCenter(pinPoint)
         r = QRect()
-        r.setLeft(np.floor(rect.left()))
-        r.setTop(np.floor(rect.top()))
-        r.setRight(np.floor(rect.right()))
-        r.setBottom(np.floor(rect.bottom()))
+        r.setLeft(math.floor(rect.left()))
+        r.setTop(math.floor(rect.top()))
+        r.setRight(math.floor(rect.right()))
+        r.setBottom(math.floor(rect.bottom()))
         if self.__data.style != QwtSymbol.Pixmap:
             r.adjust(-1, -1, 1, 1)
         return r

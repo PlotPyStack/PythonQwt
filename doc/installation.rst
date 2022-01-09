@@ -5,7 +5,7 @@ Dependencies
 ------------
 
 Requirements:
-    * Python 3.x (x>=4)
+    * Python 3.x (x>=6)
     * PyQt4 4.x (x>=4), PyQt5 5.x (x>=5), PyQt6 or PySide6
     * QtPy >= 1.3
     * NumPy 1.x (x>=5)

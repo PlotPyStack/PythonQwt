@@ -14,6 +14,7 @@ QwtPlotCurve
 """
 
 import os
+import math
 
 from qwt.text import QwtText
 from qwt.plot import QwtPlot, QwtPlotItem, QwtPlotItem_PrivateData
@@ -30,7 +31,7 @@ from qwt.plot_directpainter import QwtPlotDirectPainter
 from qwt.qthelpers import qcolor_from_str
 
 from qtpy.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
-from qtpy.QtCore import QSize, Qt, QRectF, QPointF
+from qtpy.QtCore import QSize, Qt, QRectF, QPointF, QLineF
 
 QT_API = os.environ["QT_API"]
 
@@ -49,7 +50,7 @@ def qwtUpdateLegendIconSize(curve):
         sz = curve.symbol().boundingRect().size()
         sz += QSize(2, 2)
         if curve.testLegendAttribute(QwtPlotCurve.LegendShowLine):
-            w = np.ceil(1.5 * sz.width())
+            w = math.ceil(1.5 * sz.width())
             if w % 2:
                 w += 1
             sz.setWidth(max([8, w]))
@@ -91,7 +92,10 @@ def array2d_to_qpolygonf(xdata, ydata):
         address = shiboken.getCppPointer(polyline.data())[0]
         buffer = (ctypes.c_double * 2 * size).from_address(address)
     else:  # PyQt4, PyQt5
-        polyline = QPolygonF(size)
+        if QT_API == "pyqt6":
+            polyline = QPolygonF([QPointF(0, 0)] * size)
+        else:
+            polyline = QPolygonF(size)
         buffer = polyline.data()
         buffer.setsize(16 * size)  # 16 bytes per point: 8 bytes per X,Y value (float64)
     memory = np.frombuffer(buffer, np.float64)
@@ -650,9 +654,9 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             xi = xMap.transform(sample.x())
             yi = yMap.transform(sample.y())
             if o == Qt.Horizontal:
-                painter.drawLine(xi, y0, xi, yi)
+                painter.drawLine(QLineF(xi, y0, xi, yi))
             else:
-                painter.drawLine(x0, yi, xi, yi)
+                painter.drawLine(QLineF(x0, yi, xi, yi))
         painter.restore()
 
     def drawDots(self, painter, xMap, yMap, canvasRect, from_, to):
@@ -700,6 +704,8 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
         if QT_API == "pyside6":
             polygon = QPolygonF()
             polygon.resize(size)
+        elif QT_API == "pyqt6":
+            polygon = QPolygonF([QPointF(0, 0)] * size)
         else:
             polygon = QPolygonF(size)
         inverted = self.orientation() == Qt.Vertical
@@ -903,7 +909,7 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
             if f < dmin:
                 index = i
                 dmin = f
-        dist = np.sqrt(dmin)
+        dist = math.sqrt(dmin)
         return index, dist
 
     def legendIcon(self, index, size):
@@ -943,11 +949,9 @@ class QwtPlotCurve(QwtPlotSeriesItem, QwtSeriesStore):
                 painter.fillRect(r, brush)
         if self.__data.legendAttributes & QwtPlotCurve.LegendShowLine:
             if self.pen() != Qt.NoPen:
-                pn = self.pen()
-                #                pn.setCapStyle(Qt.FlatCap)
-                painter.setPen(pn)
-                y = 0.5 * size.height()
-                painter.drawLine(0.0, y, size.width(), y)
+                painter.setPen(self.pen())
+                y = size.height() // 2
+                painter.drawLine(QLineF(0, y, size.width(), y))
         if self.__data.legendAttributes & QwtPlotCurve.LegendShowSymbol:
             if self.__data.symbol:
                 r = QRectF(0, 0, size.width(), size.height())

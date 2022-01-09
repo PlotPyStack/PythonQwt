@@ -14,7 +14,6 @@ Qt plotting widgets for Python
 from __future__ import print_function
 
 import os
-import sys
 import os.path as osp
 
 import setuptools  # analysis:ignore
@@ -31,23 +30,23 @@ PythonQwt: Qt plotting widgets for Python
 
 .. image:: https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/qwt/tests/data/testlauncher.png
 
-The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical 
-user interfaces for the Python programming language. It is compatible with 
+The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical
+user interfaces for the Python programming language. It is compatible with
 ``PyQt4``, ``PyQt5``, ``PyQt6`` and ``PySide6``.
 
-The ``PythonQwt`` project was initiated to solve -at least temporarily- the 
-obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is 
-no longer maintained. The idea was to translate the original Qwt C++ code to 
-Python and then to optimize some parts of the code by writing new modules 
+The ``PythonQwt`` project was initiated to solve -at least temporarily- the
+obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is
+no longer maintained. The idea was to translate the original Qwt C++ code to
+Python and then to optimize some parts of the code by writing new modules
 based on NumPy and other libraries.
 
-The ``PythonQwt`` package consists of a single Python package named `qwt` 
-which is a pure Python implementation of Qwt C++ library with some 
-limitations: efforts were concentrated on basic plotting features, leaving 
+The ``PythonQwt`` package consists of a single Python package named `qwt`
+which is a pure Python implementation of Qwt C++ library with some
+limitations: efforts were concentrated on basic plotting features, leaving
 higher level features to the `guiqwt` library.
 
 See `README`_ and documentation (`online`_ or `PDF`_) for more details on the library and `changelog`_ for recent history of changes.
-    
+
 The following example is a good starting point to see how to set up a simple plot widget::
 
     from qtpy import QtWidgets as QW
@@ -63,7 +62,7 @@ The following example is a good starting point to see how to set up a simple plo
     plot.resize(600, 300)
     plot.show()
     app.exec_()
-    
+
 .. image:: https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/QwtPlot_example.png
 
 .. _README: https://github.com/PierreRaybaut/PythonQwt/blob/master/README.md

@@ -8,18 +8,18 @@
 from qwt.interval import QwtInterval
 
 from qtpy.QtGui import QPolygonF, QPalette
-from qtpy.QtCore import QRectF, Qt
+from qtpy.QtCore import QRectF, Qt, QLineF
 
 
 def qwtDrawBox(p, rect, pal, lw):
     if lw > 0.0:
         if rect.width() == 0.0:
             p.setPen(pal.dark().color())
-            p.drawLine(rect.topLeft(), rect.bottomLeft())
+            p.drawLine(QLineF(rect.topLeft(), rect.bottomLeft()))
             return
         if rect.height() == 0.0:
             p.setPen(pal.dark().color())
-            p.drawLine(rect.topLeft(), rect.topRight())
+            p.drawLine(QLineF(rect.topLeft(), rect.topRight()))
             return
         lw = min([lw, rect.height() / 2.0 - 1.0])
         lw = min([lw, rect.width() / 2.0 - 1.0])
@@ -40,11 +40,11 @@ def qwtDrawPanel(painter, rect, pal, lw):
     if lw > 0.0:
         if rect.width() == 0.0:
             painter.setPen(pal.window().color())
-            painter.drawLine(rect.topLeft(), rect.bottomLeft())
+            painter.drawLine(QLineF(rect.topLeft(), rect.bottomLeft()))
             return
         if rect.height() == 0.0:
             painter.setPen(pal.window().color())
-            painter.drawLine(rect.topLeft(), rect.topRight())
+            painter.drawLine(QLineF(rect.topLeft(), rect.topRight()))
             return
         lw = min([lw, rect.height() / 2.0 - 1.0])
         lw = min([lw, rect.width() / 2.0 - 1.0])

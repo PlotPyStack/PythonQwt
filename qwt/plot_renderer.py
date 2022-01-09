@@ -369,7 +369,7 @@ class QwtPlotRenderer(QObject):
             if self.__data.layoutFlags & self.FrameWithScales:
                 scaleWidget = plot.axisWidget(axisId)
                 if scaleWidget:
-                    baseLineDists[axisId] = scaleWidget.margin()
+                    baseLineDists[axisId] = max(scaleWidget.getContentsMargins())
                     scaleWidget.setMargin(0)
                 if not plot.axisEnabled(axisId):
                     #  When we have a scale the frame is painted on
@@ -432,7 +432,7 @@ class QwtPlotRenderer(QObject):
         for axisId in QwtPlot.AXES:
             scaleWidget = plot.axisWidget(axisId)
             if scaleWidget:
-                baseDist = scaleWidget.margin()
+                baseDist = max(scaleWidget.getContentsMargins())
                 startDist, endDist = scaleWidget.getBorderDistHint()
                 self.renderScale(
                     plot,

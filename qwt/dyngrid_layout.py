@@ -25,7 +25,7 @@ class QwtDynGridLayout_PrivateData(object):
         self.maxColumns = 0
         self.numRows = 0
         self.numColumns = 0
-        self.expanding = Qt.Orientations()
+        self.expanding = Qt.Horizontal
         self.itemSizeHints = []
         self.itemList = []
 
@@ -220,8 +220,8 @@ class QwtDynGridLayout(QLayout):
         rowHeight = [0] * numRows
         colWidth = [0] * numColumns
         self.layoutGrid(numColumns, rowHeight, colWidth)
-        expandH = self.expandingDirections() & Qt.Horizontal
-        expandV = self.expandingDirections() & Qt.Vertical
+        expandH = self.expandingDirections() == Qt.Horizontal
+        expandV = self.expandingDirections() == Qt.Vertical
         if expandH or expandV:
             self.stretchGrid(rect, numColumns, rowHeight, colWidth)
         maxColumns = self.__data.maxColumns
@@ -299,27 +299,26 @@ class QwtDynGridLayout(QLayout):
             return
         expandH = self.expandingDirections() & Qt.Horizontal
         expandV = self.expandingDirections() & Qt.Vertical
+        mleft, mtop, mright, mbottom = self.getContentsMargins()
         if expandH:
-            xDelta = (
-                rect.width() - 2 * self.margin() - (numColumns - 1) * self.spacing()
-            )
+            xDelta = rect.width() - (mleft + mright) - (numColumns - 1) * self.spacing()
             for col in range(numColumns):
                 xDelta -= colWidth[col]
             if xDelta > 0:
                 for col in range(numColumns):
-                    space = xDelta / (numColumns - col)
+                    space = xDelta // (numColumns - col)
                     colWidth[col] += space
                     xDelta -= space
         if expandV:
             numRows = self.itemCount() / numColumns
             if self.itemCount() % numColumns:
                 numRows += 1
-            yDelta = rect.height() - 2 * self.margin() - (numRows - 1) * self.spacing()
+            yDelta = rect.height() - (mtop + mbottom) - (numRows - 1) * self.spacing()
             for row in range(numRows):
                 yDelta -= rowHeight[row]
             if yDelta > 0:
                 for row in range(numRows):
-                    space = yDelta / (numRows - row)
+                    space = yDelta // (numRows - row)
                     rowHeight[row] += space
                     yDelta -= space
 

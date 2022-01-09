@@ -79,6 +79,18 @@ def run_all_tests(wait=True):
         run_test(fname, wait=wait)
 
 
+def get_lib_versions():
+    """Return string containing Python-Qt versions"""
+    from qtpy.QtCore import __version__ as qt_version
+
+    return "Python %s, Qt %s, %s on %s" % (
+        platform.python_version(),
+        qt_version,
+        PYTHON_QT_API,
+        platform.system(),
+    )
+
+
 class TestLauncher(QW.QMainWindow):
     """PythonQwt Test Launcher main window"""
 
@@ -151,21 +163,13 @@ class TestLauncher(QW.QMainWindow):
 
     def about(self):
         """About test launcher"""
-        from qtpy.QtCore import __version__ as qt_version
-
         QW.QMessageBox.about(
             self,
             "About " + self.windowTitle(),
             """<b>%s</b><p>Developped by Pierre Raybaut
               <br>Copyright &copy; 2020 Pierre Raybaut
-              <p>Python %s, Qt %s, %s on %s"""
-            % (
-                self.windowTitle(),
-                platform.python_version(),
-                qt_version,
-                PYTHON_QT_API,
-                platform.system(),
-            ),
+              <p>%s"""
+            % (self.windowTitle(), get_lib_versions()),
         )
 
 

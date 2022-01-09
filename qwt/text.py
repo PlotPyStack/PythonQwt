@@ -14,7 +14,7 @@ QwtText
 
 .. autoclass:: QwtText
    :members:
-   
+
 QwtTextLabel
 ~~~~~~~~~~~~
 
@@ -32,19 +32,19 @@ QwtTextEngine
 
 QwtPlainTextEngine
 ~~~~~~~~~~~~~~~~~~
-   
+
 .. autoclass:: QwtPlainTextEngine
    :members:
 
 QwtRichTextEngine
 ~~~~~~~~~~~~~~~~~
-   
+
 .. autoclass:: QwtRichTextEngine
    :members:
 """
 
+import math
 import os
-import numpy as np
 import struct
 
 from qtpy.QtGui import (
@@ -193,30 +193,22 @@ class QwtTextEngine(object):
 ASCENTCACHE = {}
 
 
-def qwtScreenResolution():
-    screenResolution = QSize()
-    if not screenResolution.isValid():
-        try:
-            desktop = QApplication.desktop()
-            if desktop is not None:
-                screenResolution.setWidth(desktop.logicalDpiX())
-                screenResolution.setHeight(desktop.logicalDpiY())
-        except AttributeError:
-            screen = QApplication.primaryScreen()
-            screenResolution.setWidth(screen.logicalDotsPerInchX())
-            screenResolution.setHeight(screen.logicalDotsPerInchY())
-    return screenResolution
+def get_screen_resolution():
+    """Return screen resolution: tuple of floats (DPIx, DPIy)"""
+    try:
+        desktop = QApplication.desktop()
+        return (desktop.logicalDpiX(), desktop.logicalDpiY())
+    except AttributeError:
+        screen = QApplication.primaryScreen()
+        return (screen.logicalDotsPerInchX(), screen.logicalDotsPerInchY())
 
 
 def qwtUnscaleFont(painter):
     if painter.font().pixelSize() >= 0:
         return
-    screenResolution = qwtScreenResolution()
+    dpix, dpiy = get_screen_resolution()
     pd = painter.device()
-    if (
-        pd.logicalDpiX() != screenResolution.width()
-        or pd.logicalDpiY() != screenResolution.height()
-    ):
+    if pd.logicalDpiX() != dpix or pd.logicalDpiY() != dpiy:
         pixelFont = QFont(painter.font(), QApplication.desktop())
         pixelFont.setPixelSize(QFontInfo(pixelFont).pixelSize())
         painter.setFont(pixelFont)
@@ -289,7 +281,8 @@ class QwtPlainTextEngine(QwtTextEngine):
         white = QColor(Qt.white)
 
         fm = self.fontmetrics(font)
-        pm = QPixmap(fm.width(dummy), fm.height())
+        boundingr = fm.boundingRect(dummy)
+        pm = QPixmap(boundingr.width(), boundingr.height())
         pm.fill(white)
 
         p = QPainter(pm)
@@ -324,8 +317,8 @@ class QwtPlainTextEngine(QwtTextEngine):
         :param QFont font: Font of the text
         :return: tuple (left, right, top, bottom) representing margins
         """
-        left = right = top = 0
-        fm = self.fontmetrics_f(font)
+        left = right = 0
+        fm = self.fontmetrics(font)
         top = fm.ascent() - self.effectiveAscent(font)
         bottom = fm.descent()
         return left, right, top, bottom
@@ -409,13 +402,12 @@ class QwtRichTextEngine(QwtTextEngine):
         painter.save()
         unscaledRect = QRectF(rect)
         if painter.font().pixelSize() < 0:
-            res = qwtScreenResolution()
+            dpix, dpiy = get_screen_resolution()
             pd = painter.device()
-            if pd.logicalDpiX() != res.width() or pd.logicalDpiY() != res.height():
+            if pd.logicalDpiX() != dpix or pd.logicalDpiY() != dpiy:
                 transform = QTransform()
                 transform.scale(
-                    res.width() / float(pd.logicalDpiX()),
-                    res.height() / float(pd.logicalDpiY()),
+                    dpix / float(pd.logicalDpiX()), dpiy / float(pd.logicalDpiY())
                 )
                 painter.setWorldTransform(transform, True)
                 invtrans, _ok = transform.inverted()
@@ -1308,7 +1300,7 @@ class QwtTextLabel(QFrame):
             elif align & Qt.AlignTop or align & Qt.AlignBottom:
                 mh += self.__data.indent
         sz += QSizeF(mw, mh)
-        return QSize(np.ceil(sz.width()), np.ceil(sz.height()))
+        return QSize(math.ceil(sz.width()), math.ceil(sz.height()))
 
     def heightForWidth(self, width):
         """
@@ -1322,7 +1314,7 @@ class QwtTextLabel(QFrame):
         width -= 2 * self.frameWidth()
         if renderFlags & Qt.AlignLeft or renderFlags & Qt.AlignRight:
             width -= indent
-        height = np.ceil(self.__data.text.heightForWidth(width, self.font()))
+        height = math.ceil(self.__data.text.heightForWidth(width, self.font()))
         if renderFlags & Qt.AlignTop or renderFlags & Qt.AlignBottom:
             height += indent
         height += 2 * self.frameWidth()
@@ -1401,4 +1393,4 @@ class QwtTextLabel(QFrame):
             fnt = self.__data.text.font()
         else:
             fnt = self.font()
-        return QFontMetrics(fnt).width("x") / 2
+        return QFontMetrics(fnt).boundingRect("x").width() / 2

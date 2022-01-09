@@ -29,7 +29,7 @@ from qtpy.QtGui import (
     QColor,
 )
 from qtpy.QtWidgets import QFrame, QStyle, QStyleOptionFocusRect, QStyleOption
-from qtpy.QtCore import Qt, QRect, QPoint, QRectF
+from qtpy.QtCore import Qt, QRect, QPoint, QRectF, QLineF
 from qtpy import QtCore as QC
 
 QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
@@ -384,7 +384,7 @@ class QwtPainterClass(object):
                 else:
                     c = colorTable[colorMap.colorIndex(interval, value)]
                 pmPainter.setPen(c)
-                pmPainter.drawLine(x, devRect.top(), x, devRect.bottom())
+                pmPainter.drawLine(QLineF(x, devRect.top(), x, devRect.bottom()))
         else:
             sMap = QwtScaleMap(scaleMap)
             sMap.setPaintInterval(rect.bottom(), rect.top())
@@ -395,7 +395,7 @@ class QwtPainterClass(object):
                 else:
                     c = colorTable[colorMap.colorIndex(interval, value)]
                 pmPainter.setPen(c)
-                pmPainter.drawLine(devRect.left(), y, devRect.right(), y)
+                pmPainter.drawLine(QLineF(devRect.left(), y, devRect.right(), y))
         pmPainter.end()
         self.drawPixmap(painter, rect, pixmap)
 
