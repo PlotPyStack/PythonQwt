@@ -238,9 +238,10 @@ class QwtPlotMarker(QwtPlotItem):
         )
         self.drawLines(painter, canvasRect, pos)
         if self.__data.symbol and self.__data.symbol.style() != QwtSymbol.NoSymbol:
-            sz = self.__data.symbol.size().toSize()
+            sz = self.__data.symbol.size()
+            width, height = int(sz.width()), int(sz.height())
             clipRect = QRectF(
-                canvasRect.adjusted(-sz.width(), -sz.height(), sz.width(), sz.height())
+                canvasRect.adjusted(-width, -height, width, height)
             )
             if clipRect.contains(pos):
                 self.__data.symbol.drawSymbols(painter, [pos])
