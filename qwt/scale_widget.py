@@ -423,7 +423,7 @@ class QwtScaleWidget(QWidget):
         ):
             self.drawColorBar(painter, self.colorBarRect(self.contentsRect()))
 
-        r = self.contentsRect()
+        r = QRectF(self.contentsRect())
         if self.__data.scaleDraw.orientation() == Qt.Horizontal:
             r.setLeft(r.left() + self.__data.borderDist[0])
             r.setWidth(r.width() - self.__data.borderDist[1])

@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.10.2
+
+- Fixed type mismatch issues on Linux
+
 ## Version 0.10.1
 
 - Added support for PyQt6.

@@ -15,7 +15,6 @@ QwtPlotMarker
 
 from qwt.plot import QwtPlot, QwtPlotItem
 from qwt.text import QwtText
-from qwt.painter import QwtPainter
 from qwt.graphic import QwtGraphic
 from qwt.symbol import QwtSymbol
 from qwt.qthelpers import qcolor_from_str
@@ -239,7 +238,7 @@ class QwtPlotMarker(QwtPlotItem):
         )
         self.drawLines(painter, canvasRect, pos)
         if self.__data.symbol and self.__data.symbol.style() != QwtSymbol.NoSymbol:
-            sz = self.__data.symbol.size()
+            sz = self.__data.symbol.size().toSize()
             clipRect = QRectF(
                 canvasRect.adjusted(-sz.width(), -sz.height(), sz.width(), sz.height())
             )
