@@ -32,7 +32,7 @@ from qtpy.QtGui import (
     QPolygonF,
 )
 from qtpy.QtWidgets import QFrame, QStyleOption, QStyle
-from qtpy.QtCore import Qt, QSizeF, QEvent, QPointF, QRectF
+from qtpy.QtCore import Qt, QSizeF, QEvent, QPointF, QRect, QRectF
 from qtpy import QtCore as QC
 
 
@@ -82,7 +82,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
 
     def drawRects(self, rects, count):
         for i in range(count):
-            self.border.rectList += [rects[i]]
+            self.border.rectList += [rects[i] if isinstance(rect, (QRectF, QRect)) else rects.getRect().index(i)]
 
     def drawPath(self, path):
         rect = QRectF(QPointF(0.0, 0.0), self.__size)
