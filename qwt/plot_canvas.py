@@ -82,7 +82,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
 
     def drawRects(self, rects, count):
         for i in range(count):
-            self.border.rectList += [rects.getRect().index(i) if isinstance(rect, (QRectF, QRect)) else rects[i]]
+            self.border.rectList += [rects.getRect().index(i) if isinstance(rects, (QRectF, QRect)) else rects[i]]
 
     def drawPath(self, path):
         rect = QRectF(QPointF(0.0, 0.0), self.__size)
