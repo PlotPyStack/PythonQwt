@@ -110,7 +110,7 @@ class QwtPlotDict(object):
         :py:meth:`QwtPlotItem.z()`
     """
 
-    def __init__(self):
+    def __init__(self, *_):
         self.__data = QwtPlotDict_PrivateData()
 
     def setAutoDelete(self, autoDelete):
@@ -300,8 +300,7 @@ class QwtPlot(QFrame, QwtPlotDict):
                 "%s() takes 0, 1 or 2 argument(s) (%s given)"
                 % (self.__class__.__name__, len(args))
             )
-        QwtPlotDict.__init__(self)
-        QFrame.__init__(self, parent)
+        super().__init__(parent)
 
         self.__layout_state = None
 
