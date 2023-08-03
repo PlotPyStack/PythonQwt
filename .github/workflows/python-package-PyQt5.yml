@@ -35,7 +35,7 @@ jobs:
         /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -screen 0 1920x1200x24 -ac +extension GLX
         python -m pip install --upgrade pip
         python -m pip install flake8 pytest
-        pip install PyQt5 qtpy numpy
+        pip install PyQt5 qtpy numpy wheel
         python setup.py sdist bdist_wheel --universal
     - name: Lint with flake8
       run: |
