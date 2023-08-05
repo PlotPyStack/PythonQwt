@@ -1,5 +1,11 @@
 # PythonQwt Releases
 
+## Version 0.10.3
+
+- [Issue #76](https://github.com/PierreRaybaut/PythonQwt/issues/76) - [PySide] AttributeError: 'QwtPlotCanvas' object has no attribute 'Sunken'
+
+- [Issue #63](https://github.com/PierreRaybaut/PythonQwt/issues/71) - TypeError: 'PySide2.QtCore.QRect' object is not subscriptable
+
 ## Version 0.10.2
 
 - Fixed type mismatch issues on Linux
