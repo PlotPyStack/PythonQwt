@@ -585,7 +585,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`qwt.scale_engine.QwtScaleEngine.divideScale()`
         """
         if self.axisValid(axisId):
-            return self.axisWidget(axisId).maxMajor
+            return self.__axisData[axisId].maxMajor
         else:
             return 0
 
@@ -600,7 +600,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`qwt.scale_engine.QwtScaleEngine.divideScale()`
         """
         if self.axisValid(axisId):
-            return self.axisWidget(axisId).maxMinor
+            return self.__axisData[axisId].maxMinor
         else:
             return 0
 
@@ -641,7 +641,7 @@ class QwtPlot(QFrame, QwtPlotDict):
             :py:meth:`qwt.scale_engine.QwtScaleEngine.divideScale()`
         """
         if self.axisValid(axisId):
-            return self.axisWidget(axisId).stepSize
+            return self.__axisData[axisId].stepSize
         else:
             return 0
 

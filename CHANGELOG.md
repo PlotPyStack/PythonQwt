@@ -2,6 +2,8 @@
 
 ## Version 0.10.3
 
+- [Issue #72](https://github.com/PierreRaybaut/PythonQwt/issues/72) - AttributeError: 'QwtScaleWidget' object has no attribute 'maxMajor' / 'maxMinor' / 'stepSize'
+
 - [Issue #76](https://github.com/PierreRaybaut/PythonQwt/issues/76) - [PySide] AttributeError: 'QwtPlotCanvas' object has no attribute 'Sunken'
 
 - [Issue #63](https://github.com/PierreRaybaut/PythonQwt/issues/71) - TypeError: 'PySide2.QtCore.QRect' object is not subscriptable
