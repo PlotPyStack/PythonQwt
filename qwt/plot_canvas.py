@@ -765,9 +765,9 @@ class QwtPlotCanvas(QFrame):
                 opt.midLineWidth = self.midLineWidth()
             else:
                 opt.lineWidth = self.frameWidth()
-            if frameShadow == self.Sunken:
+            if frameShadow == QFrame.Sunken:
                 opt.state |= QStyle.State_Sunken
-            elif frameShadow == self.Raised:
+            elif frameShadow == QFrame.Raised:
                 opt.state |= QStyle.State_Raised
             self.style().drawControl(QStyle.CE_ShapedFrame, opt, painter, self)
 
