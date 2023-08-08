@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=PythonQwt-tests
+GenericName=PythonQwt Test launcher
+Comment=The PythonQwt library provides Qt plotting widgets for Python
+TryExec=PythonQwt-tests
+Exec=PythonQwt-tests
+Icon=PythonQwt.svg
+Categories=Education;Science;Physics;
