@@ -27,7 +27,7 @@ python -m venv %VENVPATH%
 call %VENVPATH%\Scripts\activate
 python -m pip install --upgrade pip
 pip install %~1
-for %%f IN ("%SCRIPTPATH%\..\dist\%LIBNAME%-*.whl") DO ( pip install %%f )
-call %VENVPATH%\Scripts\%LIBNAME%-tests --mode unattended
+for %%f IN ("%SCRIPTPATH%\..\dist\%LIBNAME%-*.whl") DO ( pip install %%f[test] )
+pytest
 call %VENVPATH%\Scripts\deactivate
 exit /B 0

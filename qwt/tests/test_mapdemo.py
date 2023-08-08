@@ -15,7 +15,9 @@ import numpy as np
 from qtpy.QtWidgets import QMainWindow, QToolBar
 from qtpy.QtGui import QPen, QBrush
 from qtpy.QtCore import QSize, Qt
+
 from qwt import QwtPlot, QwtSymbol, QwtPlotCurve
+from qwt.tests import utils
 
 
 def standard_map(x, y, kappa):
@@ -95,7 +97,10 @@ class MapDemo(QMainWindow):
         self.plot.replot()
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_mapdemo():
+    """Map demo"""
+    utils.test_widget(MapDemo, size=(600, 600))
 
-    tests.test_widget(MapDemo, size=(600, 600))
+
+if __name__ == "__main__":
+    test_mapdemo()

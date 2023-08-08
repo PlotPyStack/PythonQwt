@@ -11,7 +11,9 @@ SHOW = True  # Show test in GUI-based test launcher
 import numpy as np
 
 from qtpy.QtCore import Qt
+
 from qwt import QwtPlot, QwtScaleDraw, QwtPlotGrid, QwtPlotCurve, QwtPlotItem
+from qwt.tests import utils
 
 
 class CartesianAxis(QwtPlotItem):
@@ -99,7 +101,10 @@ class CartesianPlot(QwtPlot):
         self.replot()
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_cartesian():
+    """Cartesian plot test"""
+    utils.test_widget(CartesianPlot, (800, 480))
 
-    tests.test_widget(CartesianPlot, (800, 480))
+
+if __name__ == "__main__":
+    test_cartesian()

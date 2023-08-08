@@ -21,7 +21,7 @@ from qtpy.QtWidgets import (
     QLineEdit,
 )
 from qtpy.QtCore import Qt
-from qwt import tests
+from qwt.tests import utils
 
 import os
 
@@ -159,7 +159,7 @@ class CurveBenchmark1(QMainWindow):
         self.run_benchmark(max_n, **kwargs)
         dt = time.time() - t0g
         self.text.append("<br><br><u>Total elapsed time</u>: %d ms" % (dt * 1e3))
-        self.tabs.setCurrentIndex(0 if unattended else 1)
+        self.tabs.setCurrentIndex(1 if unattended else 0)
 
     def process_iteration(self, title, description, widget, t0):
         self.tabs.addTab(widget, title)
@@ -171,7 +171,7 @@ class CurveBenchmark1(QMainWindow):
         time_str = "Elapsed time: %d ms" % ((time.time() - t0) * 1000)
         widget.text.setText(time_str)
         self.text.append("<br><i>%s:</i><br>%s" % (description, time_str))
-        print("[%s] %s" % (tests.get_lib_versions(), time_str))
+        print("[%s] %s" % (utils.get_lib_versions(), time_str))
 
     def run_benchmark(self, max_n, **kwargs):
         for idx in range(4, -1, -1):
@@ -187,7 +187,10 @@ class CurveBenchmark1(QMainWindow):
             self.process_iteration(title, description, widget, t0)
 
 
-if __name__ == "__main__":
-    from qwt.tests import test_widget
+def test_curvebenchmark1():
+    """Curve benchmark example"""
+    utils.test_widget(CurveBenchmark1, options=False)
 
-    app = test_widget(CurveBenchmark1, options=False)
+
+if __name__ == "__main__":
+    test_curvebenchmark1()

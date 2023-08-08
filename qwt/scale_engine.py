@@ -25,8 +25,6 @@ QwtLogScaleEngine
    :members:
 """
 
-from __future__ import division
-
 from qwt.interval import QwtInterval
 from qwt.scale_div import QwtScaleDiv
 from qwt.transform import QwtLogTransform
@@ -466,7 +464,7 @@ class QwtScaleEngine(object):
 
 
 class QwtLinearScaleEngine(QwtScaleEngine):
-    """
+    r"""
     A scale engine for linear scales
 
     The step size will fit into the pattern

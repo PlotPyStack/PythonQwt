@@ -12,7 +12,8 @@ import time
 
 from qtpy.QtCore import Qt
 
-from qwt.tests import curvebenchmark1 as cb
+from qwt.tests import test_curvebenchmark1 as cb
+from qwt.tests import utils
 
 if cb.USE_PYQWT5:
     from PyQt4.Qwt5 import QwtSymbol
@@ -85,7 +86,10 @@ class CurveBenchmark2(cb.CurveBenchmark1):
             self.process_iteration(title, description, widget, t0)
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_curvebenchmark2():
+    """Curve styles benchmark example"""
+    utils.test_widget(CurveBenchmark2, options=False)
 
-    tests.test_widget(CurveBenchmark2, options=False)
+
+if __name__ == "__main__":
+    test_curvebenchmark2()

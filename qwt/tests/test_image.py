@@ -12,6 +12,7 @@ import numpy as np
 
 from qtpy.QtGui import QPen, qRgb
 from qtpy.QtCore import Qt
+
 from qwt import (
     QwtPlot,
     QwtPlotMarker,
@@ -25,6 +26,7 @@ from qwt import (
     QwtScaleMap,
     toQImage,
 )
+from qwt.tests import utils
 
 
 def bytescale(data, cmin=None, cmax=None, high=255, low=0):
@@ -194,7 +196,10 @@ class ImagePlot(QwtPlot):
         self.replot()
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_image():
+    """Image plot test"""
+    utils.test_widget(ImagePlot, size=(600, 400))
 
-    tests.test_widget(ImagePlot, size=(600, 400))
+
+if __name__ == "__main__":
+    test_image()

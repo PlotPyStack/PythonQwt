@@ -12,7 +12,9 @@ import numpy as np
 
 from qtpy.QtGui import QPen, QBrush
 from qtpy.QtCore import QSize, QRectF, QLineF, Qt
+
 from qwt import QwtPlot, QwtSymbol, QwtPlotGrid, QwtPlotCurve
+from qwt.tests import utils
 
 
 class ErrorBarPlotCurve(QwtPlotCurve):
@@ -311,7 +313,10 @@ class ErrorBarPlot(QwtPlot):
         curve.attach(self)
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_errorbar():
+    """Errorbar plot example"""
+    utils.test_widget(ErrorBarPlot, size=(640, 480))
 
-    tests.test_widget(ErrorBarPlot, size=(640, 480))
+
+if __name__ == "__main__":
+    test_errorbar()

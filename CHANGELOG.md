@@ -1,6 +1,6 @@
 # PythonQwt Releases
 
-## Version 0.10.3
+## Version 0.11.0
 
 - [Issue #72](https://github.com/PierreRaybaut/PythonQwt/issues/72) - AttributeError: 'QwtScaleWidget' object has no attribute 'maxMajor' / 'maxMinor' / 'stepSize'
 

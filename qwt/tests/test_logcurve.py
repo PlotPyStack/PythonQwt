@@ -13,7 +13,9 @@ import numpy as np
 np.seterr(all="raise")
 
 from qtpy.QtCore import Qt
+
 from qwt import QwtPlot, QwtPlotCurve, QwtLogScaleEngine
+from qwt.tests import utils
 
 
 class LogCurvePlot(QwtPlot):
@@ -29,7 +31,10 @@ class LogCurvePlot(QwtPlot):
         self.replot()
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_logcurve():
+    """Log curve demo"""
+    utils.test_widget(LogCurvePlot, size=(800, 500))
 
-    tests.test_widget(LogCurvePlot, size=(800, 500))
+
+if __name__ == "__main__":
+    test_logcurve()

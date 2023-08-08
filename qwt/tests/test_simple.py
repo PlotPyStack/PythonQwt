@@ -11,7 +11,9 @@ SHOW = True  # Show test in GUI-based test launcher
 import numpy as np
 
 from qtpy.QtCore import Qt
+
 import qwt
+from qwt.tests import utils
 
 
 class SimplePlot(qwt.QwtPlot):
@@ -51,7 +53,10 @@ class SimplePlot(qwt.QwtPlot):
         )
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_simple():
+    """Simple plot example"""
+    utils.test_widget(SimplePlot, size=(600, 400))
 
-    tests.test_widget(SimplePlot, size=(600, 400))
+
+if __name__ == "__main__":
+    test_simple()

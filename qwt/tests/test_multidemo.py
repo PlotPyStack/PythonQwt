@@ -13,7 +13,9 @@ import numpy as np
 from qtpy.QtWidgets import QGridLayout, QWidget
 from qtpy.QtGui import QPen
 from qtpy.QtCore import Qt
+
 from qwt import QwtPlot, QwtPlotCurve
+from qwt.tests import utils
 
 
 def drange(start, stop, step):
@@ -69,7 +71,10 @@ class MultiDemo(QWidget):
         list_plot.replot()
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_multidemo():
+    """Multiple plot demo"""
+    utils.test_widget(MultiDemo, size=(400, 300))
 
-    tests.test_widget(MultiDemo, size=(400, 300))
+
+if __name__ == "__main__":
+    test_multidemo()

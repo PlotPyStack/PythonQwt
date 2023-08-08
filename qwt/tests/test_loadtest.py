@@ -12,7 +12,8 @@ import time
 import os
 
 # Local imports
-from qwt.tests import curvebenchmark1 as cb
+from qwt.tests import test_curvebenchmark1 as cb
+from qwt.tests import utils
 
 
 if os.environ.get("USE_PYQWT5", False):
@@ -57,7 +58,10 @@ class LoadTest(cb.CurveBenchmark1):
             self.process_iteration(title, description, widget, t0)
 
 
-if __name__ == "__main__":
-    from qwt.tests import test_widget
+def test_loadtest():
+    """Load test"""
+    utils.test_widget(LoadTest, options=False)
 
-    app = test_widget(LoadTest, options=False)
+
+if __name__ == "__main__":
+    test_loadtest()

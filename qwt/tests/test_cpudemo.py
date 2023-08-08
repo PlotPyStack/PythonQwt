@@ -14,6 +14,7 @@ import numpy as np
 from qtpy.QtWidgets import QWidget, QVBoxLayout, QLabel
 from qtpy.QtGui import QColor, QBrush
 from qtpy.QtCore import QRect, QTime, Qt
+
 from qwt import (
     QwtPlot,
     QwtPlotMarker,
@@ -24,6 +25,7 @@ from qwt import (
     QwtLegendData,
     QwtText,
 )
+from qwt.tests import utils
 
 
 class CpuStat:
@@ -389,7 +391,10 @@ class CpuDemo(QWidget):
         layout.addWidget(label)
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_cpudemo():
+    """CPU demo"""
+    utils.test_widget(CpuDemo, (600, 400))
 
-    app = tests.test_widget(CpuDemo, (600, 400))
+
+if __name__ == "__main__":
+    test_cpudemo()

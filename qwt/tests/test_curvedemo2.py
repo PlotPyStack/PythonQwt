@@ -14,7 +14,9 @@ from qtpy.QtWidgets import QFrame
 from qtpy.QtGui import QPen, QBrush, QColor, QPainter, QPalette
 from qtpy.QtCore import QSize
 from qtpy.QtCore import Qt
+
 from qwt import QwtScaleMap, QwtSymbol, QwtPlotCurve
+from qwt.tests import utils
 
 Size = 15
 USize = 13
@@ -118,7 +120,10 @@ class CurveDemo2(QFrame):
             self.phase = 0.0
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_curvedemo2():
+    """Curve demo 2"""
+    utils.test_widget(CurveDemo2, options=False)
 
-    tests.test_widget(CurveDemo2, options=False)
+
+if __name__ == "__main__":
+    test_curvedemo2()

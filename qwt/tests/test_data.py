@@ -14,6 +14,7 @@ import numpy as np
 from qtpy.QtWidgets import QFrame
 from qtpy.QtGui import QPen, QBrush
 from qtpy.QtCore import QSize, Qt
+
 from qwt import (
     QwtPlot,
     QwtPlotMarker,
@@ -22,6 +23,7 @@ from qwt import (
     QwtPlotCurve,
     QwtAbstractScaleDraw,
 )
+from qwt.tests import utils
 
 
 class DataPlot(QwtPlot):
@@ -95,7 +97,10 @@ class DataPlot(QwtPlot):
         self.phase += np.pi * 0.02
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_data():
+    """Data Test"""
+    utils.test_widget(DataPlot, size=(500, 300))
 
-    app = tests.test_widget(DataPlot, size=(500, 300))
+
+if __name__ == "__main__":
+    test_data()

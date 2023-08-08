@@ -6,6 +6,7 @@ import numpy as np
 from qtpy.QtCore import Qt
 
 import qwt
+from qwt.tests import utils
 
 
 class StyleSheetPlot(qwt.QwtPlot):
@@ -18,7 +19,10 @@ class StyleSheetPlot(qwt.QwtPlot):
         qwt.QwtPlotCurve.make(x, np.sinc(x), "y = sinc(x)", self, linecolor="green")
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_stylesheet():
+    """Stylesheet test"""
+    utils.test_widget(StyleSheetPlot, size=(600, 400))
 
-    tests.test_widget(StyleSheetPlot, size=(600, 400))
+
+if __name__ == "__main__":
+    test_stylesheet()

@@ -5,8 +5,6 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
-from __future__ import division
-
 from qtpy.QtCore import qFuzzyCompare
 
 import math

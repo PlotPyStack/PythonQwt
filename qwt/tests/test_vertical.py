@@ -15,6 +15,8 @@ from qtpy.QtCore import Qt
 
 import os
 
+from qwt.tests import utils
+
 if os.environ.get("USE_PYQWT5", False):
     USE_PYQWT5 = True
     from PyQt4.Qwt5 import QwtPlot, QwtPlotCurve, QwtPlotMarker, QwtText
@@ -96,7 +98,10 @@ class VerticalPlot(QwtPlot):
         self.marker.setLabel(QwtText.make(text, family="Courier New", color=Qt.blue))
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_vertical():
+    """Vertical plot example"""
+    utils.test_widget(VerticalPlot, size=(300, 650))
 
-    tests.test_widget(VerticalPlot, size=(300, 650))
+
+if __name__ == "__main__":
+    test_vertical()

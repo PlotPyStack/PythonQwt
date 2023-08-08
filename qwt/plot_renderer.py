@@ -13,8 +13,6 @@ QwtPlotRenderer
    :members:
 """
 
-from __future__ import division
-
 from qwt.painter import QwtPainter
 from qwt.plot import QwtPlot
 from qwt.plot_layout import QwtPlotLayout

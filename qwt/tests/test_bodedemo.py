@@ -6,8 +6,6 @@
 # developments (e.g. ported to PythonQwt API)
 # (see LICENSE file for more details)
 
-from __future__ import unicode_literals
-
 SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
@@ -24,6 +22,7 @@ from qtpy.QtWidgets import (
 from qtpy.QtGui import QPen, QFont, QIcon, QPixmap
 from qtpy.QtPrintSupport import QPrinter, QPrintDialog
 from qtpy.QtCore import Qt
+
 from qwt import (
     QwtPlot,
     QwtPlotMarker,
@@ -31,11 +30,11 @@ from qwt import (
     QwtLegend,
     QwtPlotGrid,
     QwtPlotCurve,
-    QwtPlotItem,
     QwtLogScaleEngine,
     QwtText,
     QwtPlotRenderer,
 )
+from qwt.tests import utils
 
 
 print_xpm = [
@@ -278,7 +277,10 @@ class BodeDemo(QMainWindow):
         self.showInfo()
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_bodedemo():
+    """Bode demo"""
+    utils.test_widget(BodeDemo, (640, 480))
 
-    tests.test_widget(BodeDemo, (640, 480))
+
+if __name__ == "__main__":
+    test_bodedemo()

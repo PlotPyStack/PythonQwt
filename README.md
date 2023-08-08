@@ -92,6 +92,11 @@ for more details on API limitations when comparing to Qwt.
 - QtPy >= 1.3
 - NumPy >= 1.5
 
+### Optional dependencies
+
+- pytest, pytest-qt (for unit tests)
+- sphinx (for documentation generation)
+
 ## Installation
 
 From the source package:

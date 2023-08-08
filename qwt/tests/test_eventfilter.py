@@ -14,6 +14,7 @@ import numpy as np
 from qtpy.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar, QWhatsThis
 from qtpy.QtGui import QPen, QBrush, QColor, QPainter, QPixmap
 from qtpy.QtCore import QSize, QEvent, Signal, QRect, QObject, Qt, QPoint
+
 from qwt import (
     QwtPlot,
     QwtScaleDraw,
@@ -23,6 +24,7 @@ from qwt import (
     QwtPlotCanvas,
     QwtScaleDiv,
 )
+from qwt.tests import utils
 
 QT_API = os.environ["QT_API"]
 
@@ -471,7 +473,10 @@ class EventFilterWindow(QMainWindow):
         scalePicker.clicked.connect(plot.insertCurve)
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_eventfilter():
+    """Event filter example"""
+    utils.test_widget(EventFilterWindow, size=(540, 400))
 
-    tests.test_widget(EventFilterWindow, size=(540, 400))
+
+if __name__ == "__main__":
+    test_eventfilter()

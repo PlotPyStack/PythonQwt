@@ -11,8 +11,6 @@ PythonQwt
 Qt plotting widgets for Python
 """
 
-from __future__ import print_function
-
 import os
 import os.path as osp
 
@@ -112,7 +110,8 @@ setup(
     },
     install_requires=["NumPy>=1.5", "QtPy>=1.3"],
     extras_require={
-        "Doc": ["Sphinx>=1.1"],
+        "doc": ["Sphinx>=1.1"],
+        "test": ["pytest", "pytest-qt"]
     },
     entry_points={
         "gui_scripts": [

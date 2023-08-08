@@ -34,6 +34,6 @@ if exist %ENV% (
     @echo ************************** Testing with %~1 **************************
     @echo:
     call %ENV%
-    python -m qwt.tests.__init__ --mode unattended
+    pytest
     )
 exit /B 0

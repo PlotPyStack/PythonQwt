@@ -13,7 +13,9 @@ import numpy as np
 from qtpy.QtWidgets import QFrame
 from qtpy.QtGui import QPen, QBrush, QFont, QPainter
 from qtpy.QtCore import QSize, Qt
+
 from qwt import QwtSymbol, QwtPlotCurve, QwtPlotItem, QwtScaleMap
+from qwt.tests import utils
 
 
 class CurveDemo1(QFrame):
@@ -118,7 +120,10 @@ class CurveDemo1(QFrame):
             self.shiftDown(r, dy)
 
 
-if __name__ == "__main__":
-    from qwt import tests
+def test_curvedemo1():
+    """Curve demo 1"""
+    utils.test_widget(CurveDemo1, size=(300, 600), options=False)
 
-    tests.test_widget(CurveDemo1, size=(300, 600), options=False)
+
+if __name__ == "__main__":
+    test_curvedemo1()
