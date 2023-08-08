@@ -137,7 +137,8 @@ class TestLauncher(QW.QMainWindow):
     def __init__(self, parent=None):
         super(TestLauncher, self).__init__(parent)
         self.setObjectName("TestLauncher")
-        self.setWindowIcon(self.get_std_icon("FileDialogListView"))
+        icon = QG.QIcon(osp.join(TEST_PATH, "data", "PythonQwt.svg"))
+        self.setWindowIcon(icon)
         self.setWindowTitle("PythonQwt %s - Test Launcher" % qwt.__version__)
         self.setCentralWidget(QW.QWidget())
         self.grid_layout = QW.QGridLayout()
