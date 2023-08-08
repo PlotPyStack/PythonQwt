@@ -120,9 +120,6 @@ class QwtTextEngine(object):
 
     `QwtPlainTextEngine` and `QwtRichTextEngine` are part of the
     `PythonQwt` library.
-    The implementation of `QwtMathMLTextEngine` uses code from the
-    `Qt` solution package. Because of license implications it is built into
-    a separate library.
 
     .. seealso::
 
@@ -535,21 +532,6 @@ class QwtText(object):
 
         Use the Scribe framework (Qt Rich Text) to render the text.
 
-      * `QwtText.MathMLText`:
-
-        Use a MathML (http://en.wikipedia.org/wiki/MathML) render engine
-        to display the text. The Qwt MathML extension offers such an engine
-        based on the MathML renderer of the Qt solutions package.
-        To enable MathML support the following code needs to be added to the
-        application::
-
-            QwtText.setTextEngine(QwtText.MathMLText, QwtMathMLTextEngine())
-
-      * `QwtText.TeXText`:
-
-        Use a TeX (http://en.wikipedia.org/wiki/TeX) render engine
-        to display the text ( not implemented yet ).
-
       * `QwtText.OtherFormat`:
 
         The number of text formats can be extended using `setTextEngine`.
@@ -578,7 +560,7 @@ class QwtText(object):
     """
 
     # enum TextFormat
-    AutoText, PlainText, RichText, MathMLText, TeXText = list(range(5))
+    AutoText, PlainText, RichText = list(range(3))
     OtherFormat = 100
 
     # enum PaintAttribute
