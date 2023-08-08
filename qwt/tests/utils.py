@@ -65,7 +65,7 @@ class TestEnvironment:
             choices=[self.UNATTENDED_ARG, self.SCREENSHOTS_ARG],
             required=False,
         )
-        args = parser.parse_args()
+        args, _unknown = parser.parse_known_args()
         if args.mode is not None:
             self.set_env_from_args(args)
 

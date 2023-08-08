@@ -111,7 +111,7 @@ setup(
     install_requires=["NumPy>=1.5", "QtPy>=1.3"],
     extras_require={
         "doc": ["Sphinx>=1.1"],
-        "test": ["pytest", "pytest-qt"]
+        "test": ["coverage", "pytest", "pytest-qt", "pytest-cov"],
     },
     entry_points={
         "gui_scripts": [

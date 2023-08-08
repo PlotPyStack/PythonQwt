@@ -94,7 +94,7 @@ for more details on API limitations when comparing to Qwt.
 
 ### Optional dependencies
 
-- pytest, pytest-qt (for unit tests)
+- coverage, pytest, pytest-qt, pytest-cov (for unit tests)
 - sphinx (for documentation generation)
 
 ## Installation
