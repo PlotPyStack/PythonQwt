@@ -991,8 +991,8 @@ class QwtPlot(QFrame, QwtPlotDict):
             # Otherwise, when tick labels are large enough, the ticks
             # may not be aligned with canvas grid.
             # See the following issues for more details:
-            # https://github.com/PierreRaybaut/guiqwt/issues/57
-            # https://github.com/PierreRaybaut/PythonQwt/issues/30
+            # https://github.com/PlotPyStack/guiqwt/issues/57
+            # https://github.com/PlotPyStack/PythonQwt/issues/30
             startDist, endDist = scaleWidget.getBorderDistHint()
             scaleWidget.setBorderDist(startDist, endDist)
 

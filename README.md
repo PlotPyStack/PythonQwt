@@ -2,10 +2,12 @@
 
 [![license](https://img.shields.io/pypi/l/PythonQwt.svg)](./LICENSE)
 [![pypi version](https://img.shields.io/pypi/v/PythonQwt.svg)](https://pypi.org/project/PythonQwt/)
-[![PyPI status](https://img.shields.io/pypi/status/PythonQwt.svg)](https://github.com/PierreRaybaut/PythonQwt)
+[![PyPI status](https://img.shields.io/pypi/status/PythonQwt.svg)](https://github.com/PlotPyStack/PythonQwt)
 [![PyPI pyversions](https://img.shields.io/pypi/pyversions/PythonQwt.svg)](https://pypi.python.org/pypi/PythonQwt/)
 [![download count](https://img.shields.io/conda/dn/conda-forge/PythonQwt.svg)](https://www.anaconda.com/download/)
 [![Documentation Status](https://readthedocs.org/projects/pythonqwt/badge/?version=latest)](https://pythonqwt.readthedocs.io/en/latest/?badge=latest)
+
+ℹ️ Created in 2014 by Pierre Raybaut and maintained by the [PlotPyStack](https://github.com/PlotPyStack) organization.
 
 ![PythonQwt Test Launcher](qwt/tests/data/testlauncher.png)
 

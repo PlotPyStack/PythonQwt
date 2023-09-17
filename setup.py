@@ -63,10 +63,10 @@ The following example is a good starting point to see how to set up a simple plo
 
 .. image:: https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/QwtPlot_example.png
 
-.. _README: https://github.com/PierreRaybaut/PythonQwt/blob/master/README.md
+.. _README: https://github.com/PlotPyStack/PythonQwt/blob/master/README.md
 .. _online: https://pythonqwt.readthedocs.io/en/latest/
 .. _PDF: https://pythonqwt.readthedocs.io/_/downloads/en/latest/pdf/
-.. _changelog: https://github.com/PierreRaybaut/PythonQwt/blob/master/CHANGELOG.md
+.. _changelog: https://github.com/PlotPyStack/PythonQwt/blob/master/CHANGELOG.md
 """
 KEYWORDS = ""
 CLASSIFIERS = []
@@ -123,7 +123,7 @@ setup(
     },
     author="Pierre Raybaut",
     author_email="pierre.raybaut@gmail.com",
-    url="https://github.com/PierreRaybaut/%s" % LIBNAME,
+    url="https://github.com/PlotPyStack/%s" % LIBNAME,
     platforms="Any",
     classifiers=CLASSIFIERS
     + [

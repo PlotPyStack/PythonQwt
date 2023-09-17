@@ -24,7 +24,7 @@ External resources:
 
 .. _PyPI: https://pypi.python.org/pypi/PythonQwt
 .. _GitHubPage: http://pierreraybaut.github.io/PythonQwt
-.. _GitHub: https://github.com/PierreRaybaut/PythonQwt
+.. _GitHub: https://github.com/PlotPyStack/PythonQwt
 """
 
 __version__ = "0.11.0"
