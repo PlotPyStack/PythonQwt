@@ -1,6 +1,6 @@
 # PythonQwt Releases
 
-## Version 0.11.0
+## Version 0.10.3
 
 - Moved project to the [PlotPyStack](https://github.com/PlotPyStack) organization.
 
