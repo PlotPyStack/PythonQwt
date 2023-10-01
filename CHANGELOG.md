@@ -4,6 +4,8 @@
 
 - Moved project to the [PlotPyStack](https://github.com/PlotPyStack) organization.
 
+- Unit tests: added support for ``pytest`` and ``coverage`` (60% coverage as of today)
+
 - [Issue #72](https://github.com/PlotPyStack/PythonQwt/issues/72) - AttributeError: 'QwtScaleWidget' object has no attribute 'maxMajor' / 'maxMinor' / 'stepSize'
 
 - [Issue #76](https://github.com/PlotPyStack/PythonQwt/issues/76) - [PySide] AttributeError: 'QwtPlotCanvas' object has no attribute 'Sunken'
