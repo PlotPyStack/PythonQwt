@@ -361,17 +361,6 @@ class QwtPlot(QFrame, QwtPlotDict):
 
         qwtEnableLegendItems(self, True)
 
-    def __del__(self):
-        self.setAutoReplot(False)
-        # XXX Is is really necessary in Python? (pure transcription of C++)
-        # The following line have been commented to avoid crashing Python
-        # when exiting interpreter (Python 3 only)
-
-    #        self.detachItems(QwtPlotItem.Rtti_PlotItem, self.autoDelete())
-    #        self.__data.layout = None
-    #        self.deleteAxesData()
-    #        self.__data = None
-
     def setFlatStyle(self, state):
         """
         Set or reset the flatStyle option
