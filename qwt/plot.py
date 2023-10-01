@@ -217,7 +217,7 @@ class AxisData(object):
         self.scaleWidget = None  # QwtScaleWidget
 
 
-class QwtPlot(QFrame, QwtPlotDict):
+class QwtPlot(QwtPlotDict, QFrame):
     """
     A 2-D plotting widget
 

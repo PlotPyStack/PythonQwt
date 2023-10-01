@@ -6,6 +6,8 @@
 
 - Unit tests: added support for ``pytest`` and ``coverage`` (60% coverage as of today)
 
+- [Issue #74](https://github.com/PlotPyStack/PythonQwt/issues/74) - TypeError: QwtPlotDict.__init__() [...] with PySide 6.5.0
+
 - [Issue #77](https://github.com/PlotPyStack/PythonQwt/issues/77) - AttributeError: 'XXX' object has no attribute '_QwtPlot__data'
 
 - [Issue #72](https://github.com/PlotPyStack/PythonQwt/issues/72) - AttributeError: 'QwtScaleWidget' object has no attribute 'maxMajor' / 'maxMinor' / 'stepSize'
