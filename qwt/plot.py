@@ -249,7 +249,7 @@ class QwtPlot(QFrame, QwtPlotDict):
         plot.resize(600, 300)
         plot.show()
 
-    .. image:: /images/QwtPlot_example.png
+    .. image:: /_static/QwtPlot_example.png
 
     .. py:class:: QwtPlot([title=""], [parent=None])
 

@@ -46,7 +46,7 @@ plot.show()
 app.exec_()
 ```
 
-![Simple plot example](doc/images/QwtPlot_example.png)
+![Simple plot example](doc/_static/QwtPlot_example.png)
 
 ## Examples (tests)
 

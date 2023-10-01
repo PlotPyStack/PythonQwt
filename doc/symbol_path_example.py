@@ -4,6 +4,7 @@ from qtpy import QtCore as QC
 import qwt
 import numpy as np
 import os.path as osp
+from qwt import qthelpers as qth
 
 app = QW.QApplication([])
 
@@ -43,12 +44,6 @@ curve.setData(x, np.sin(x))
 
 plot = qwt.QwtPlot()
 curve.attach(plot)
-plot.resize(600, 300)
 plot.replot()
-plot.show()
 
-plot.grab().save(
-    osp.join(osp.abspath(osp.dirname(__file__)), "images", "symbol_path_example.png")
-)
-
-app.exec_()
+qth.take_screenshot(plot, osp.join(osp.abspath(osp.dirname(__file__)), "_static", "symbol_path_example.png"), size=(600, 300))

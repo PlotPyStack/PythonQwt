@@ -3,5 +3,5 @@ Error bar demo
 
 .. image:: /../qwt/tests/data/errorbar.png
 
-.. literalinclude:: /../qwt/tests/errorbar.py
+.. literalinclude:: /../qwt/tests/test_errorbar.py
    :start-after: SHOW

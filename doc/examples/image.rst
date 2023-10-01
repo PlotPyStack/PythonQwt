@@ -3,5 +3,5 @@ Image plot demo
 
 .. image:: /../qwt/tests/data/image.png
 
-.. literalinclude:: /../qwt/tests/image.py
+.. literalinclude:: /../qwt/tests/test_image.py
    :start-after: SHOW

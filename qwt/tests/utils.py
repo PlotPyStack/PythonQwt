@@ -22,6 +22,7 @@ from qtpy import QtGui as QG
 from qtpy import QtCore as QC
 
 import qwt
+from qwt import qthelpers as qth
 from qwt import QwtPlot
 
 
@@ -258,14 +259,9 @@ class TestCentralWidget(QW.QWidget):
 
 def take_screenshot(widget):
     """Take screenshot and save it to the data folder"""
-    if QT_API in ("pyqt4", "pyside2"):
-        pixmap = QG.QPixmap.grabWidget(widget)
-    else:
-        pixmap = widget.grab()
     bname = (widget.objectName().lower() + ".png").replace("window", "")
     bname = bname.replace("plot", "").replace("widget", "")
-    pixmap.save(osp.join(TEST_PATH, "data", bname))
-    QC.QTimer.singleShot(0, QW.QApplication.instance().quit)
+    qth.take_screenshot(widget, osp.join(TEST_PATH, "data", bname), quit=True)
 
 
 def test_widget(widget_class, size=None, title=None, options=True):

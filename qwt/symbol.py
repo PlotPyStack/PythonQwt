@@ -693,7 +693,7 @@ class QwtSymbol(object):
 
             app.exec_()
 
-        .. image:: /images/symbol_path_example.png
+        .. image:: /_static/symbol_path_example.png
 
         :param QPainterPath path: Painter path
 

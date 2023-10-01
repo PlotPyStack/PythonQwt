@@ -12,4 +12,6 @@ call %FUNC% SetPythonPath
 call %FUNC% UseWinPython
 cd %SCRIPTPATH%\..\
 python qwt/tests/__init__.py --mode screenshots
+python doc/plot_example.py
+python doc/symbol_path_example.py
 call %FUNC% EndOfScript

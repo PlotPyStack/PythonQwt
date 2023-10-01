@@ -6,8 +6,15 @@
 
 """Qt helpers"""
 
+import os.path as osp
+import os
+
 from qtpy import QtGui as QG
-from qtpy.QtCore import Qt
+from qtpy import QtWidgets as QW
+from qtpy import QtCore as QC
+
+
+QT_API = os.environ["QT_API"]
 
 
 def qcolor_from_str(color, default):
@@ -25,7 +32,7 @@ def qcolor_from_str(color, default):
         return default
     elif isinstance(color, str):
         try:
-            return getattr(Qt, color)
+            return getattr(QC.Qt, color)
         except AttributeError:
             raise ValueError("Unknown Qt color %r" % color)
     else:
@@ -33,3 +40,18 @@ def qcolor_from_str(color, default):
             return QG.QColor(color)
         except TypeError:
             raise TypeError("Invalid color %r" % color)
+
+
+def take_screenshot(widget, path, size=None, quit=True):
+    """Take screenshot of widget"""
+    if size is not None:
+        widget.resize(*size)
+    widget.show()
+    QW.QApplication.processEvents()
+    if QT_API in ("pyqt4", "pyside2"):
+        pixmap = QG.QPixmap.grabWidget(widget)
+    else:
+        pixmap = widget.grab()
+    pixmap.save(path)
+    if quit:
+        QC.QTimer.singleShot(0, QW.QApplication.instance().quit)

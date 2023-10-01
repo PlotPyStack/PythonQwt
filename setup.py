@@ -61,7 +61,7 @@ The following example is a good starting point to see how to set up a simple plo
     plot.show()
     app.exec_()
 
-.. image:: https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/images/QwtPlot_example.png
+.. image:: https://raw.githubusercontent.com/PierreRaybaut/PythonQwt/master/doc/_static/QwtPlot_example.png
 
 .. _README: https://github.com/PlotPyStack/PythonQwt/blob/master/README.md
 .. _online: https://pythonqwt.readthedocs.io/en/latest/
