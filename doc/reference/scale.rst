@@ -1,6 +1,8 @@
 Scales
 ------
 
+.. automodule:: qwt.scale_map
+
 .. automodule:: qwt.scale_widget
 
 .. automodule:: qwt.scale_div
