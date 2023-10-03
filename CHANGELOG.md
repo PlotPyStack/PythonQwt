@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.10.4
+
+- [Issue #79](https://github.com/PlotPyStack/PythonQwt/issues/79) - TypeError: unexpected type 'QSize' (thanks to @luc-j-bourhis)
+
 ## Version 0.10.3
 
 - Moved project to the [PlotPyStack](https://github.com/PlotPyStack) organization.

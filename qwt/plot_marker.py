@@ -316,7 +316,7 @@ class QwtPlotMarker(QwtPlotItem):
                 alignPos.setX(canvasRect.center().x())
         else:
             if self.__data.symbol and self.__data.symbol.style() != QwtSymbol.NoSymbol:
-                symbolOff = self.__data.symbol.size() + QSizeF(1, 1)
+                symbolOff = QSizeF(self.__data.symbol.size()) + QSizeF(1, 1)
                 symbolOff /= 2
         pw2 = self.__data.pen.widthF() / 2.0
         if pw2 == 0.0:

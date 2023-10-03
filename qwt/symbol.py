@@ -1208,9 +1208,9 @@ class QwtSymbol(object):
             pinPointTranslation = True
         elif self.__data.style == QwtSymbol.Pixmap:
             if self.__data.size.isEmpty():
-                rect.setSize(self.__data.pixmap.pixmap.size())
+                rect.setSize(QSizeF(self.__data.pixmap.pixmap.size()))
             else:
-                rect.setSize(self.__data.size)
+                rect.setSize(QSizeF(self.__data.size))
             pinPointTranslation = True
         elif self.__data.style == QwtSymbol.Graphic:
             rect = qwtScaleBoundingRect(self.__data.graphic.graphic, self.__data.size)
@@ -1227,7 +1227,7 @@ class QwtSymbol(object):
                 rect = transform.mapRect(rect)
             pinPointTranslation = True
         else:
-            rect.setSize(self.__data.size)
+            rect.setSize(QSizeF(self.__data.size))
             rect.moveCenter(QPointF(0.0, 0.0))
         if pinPointTranslation:
             pinPoint = QPointF(0.0, 0.0)
