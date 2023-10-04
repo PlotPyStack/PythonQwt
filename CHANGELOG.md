@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.10.4
+
+- [Issue #80](https://github.com/PlotPyStack/PythonQwt/issues/80) - Print to PDF: AttributeError: 'NoneType' object has no attribute 'getContentsMargins'
+
 ## Version 0.10.3
 
 - [Issue #79](https://github.com/PlotPyStack/PythonQwt/issues/79) - TypeError: unexpected type 'QSize' (thanks to @luc-j-bourhis)
