@@ -22,6 +22,18 @@ for %%I in (.) do set %1=%%~nxI
 popd
 goto:eof
 
+:GetModName
+pushd %~dp0..
+for /D %%I in (*) DO (
+    if exist %%I\__init__.py (
+        set %1=%%I
+        goto :found_module
+    )
+)
+:found_module
+popd
+goto:eof
+
 :SetPythonPath
 set PYTHONPATH=%~dp0..
 goto:eof

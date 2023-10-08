@@ -8,7 +8,8 @@ REM (see LICENSE file for more details)
 REM ======================================================
 call %~dp0utils GetScriptPath SCRIPTPATH
 set UNATTENDED=1
-call %SCRIPTPATH%\build_doc.bat
+call %SCRIPTPATH%\clean_up.bat
+@REM call %SCRIPTPATH%\build_doc.bat
 call %SCRIPTPATH%\build_dist.bat
 @echo:
 @echo ==============================================================================
