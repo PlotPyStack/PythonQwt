@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.10.5
+
+- [Issue #81](https://github.com/PlotPyStack/PythonQwt/issues/81) - Signal disconnection issue with PySide 6.5.3
+
 ## Version 0.10.4
 
 - [Issue #80](https://github.com/PlotPyStack/PythonQwt/issues/80) - Print to PDF: AttributeError: 'NoneType' object has no attribute 'getContentsMargins'

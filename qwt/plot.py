@@ -44,13 +44,6 @@ from qwt.interval import QwtInterval
 import numpy as np
 
 
-def qwtEnableLegendItems(plot, on):
-    if on:
-        plot.legendDataChanged.connect(plot.updateLegendItems)
-    else:
-        plot.legendDataChanged.disconnect(plot.updateLegendItems)
-
-
 def qwtSetTabOrder(first, second, with_children):
     tab_chain = [first, second]
     if with_children:
@@ -88,111 +81,10 @@ class ItemList(list):
         self.sortItems()
 
 
-class QwtPlotDict_PrivateData(object):
-    def __init__(self):
-        self.itemList = ItemList()
-        self.autoDelete = True
-
-
-class QwtPlotDict(object):
-    """
-    A dictionary for plot items
-
-    `QwtPlotDict` organizes plot items in increasing z-order.
-    If `autoDelete()` is enabled, all attached items will be deleted
-    in the destructor of the dictionary.
-    `QwtPlotDict` can be used to get access to all `QwtPlotItem` items - or
-    all items of a specific type -  that are currently on the plot.
-
-    .. seealso::
-
-        :py:meth:`QwtPlotItem.attach()`, :py:meth:`QwtPlotItem.detach()`,
-        :py:meth:`QwtPlotItem.z()`
-    """
-
-    def __init__(self):
-        self.__data = QwtPlotDict_PrivateData()
-
-    def setAutoDelete(self, autoDelete):
-        """
-        En/Disable Auto deletion
-
-        If Auto deletion is on all attached plot items will be deleted
-        in the destructor of `QwtPlotDict`. The default value is on.
-
-        :param bool autoDelete: enable/disable
-
-        .. seealso::
-
-            :py:meth:`autoDelete()`, :py:meth:`insertItem()`
-        """
-        self.__data.autoDelete = autoDelete
-
-    def autoDelete(self):
-        """
-        :return: true if auto deletion is enabled
-
-        .. seealso::
-
-            :py:meth:`setAutoDelete()`, :py:meth:`insertItem()`
-        """
-        return self.__data.autoDelete
-
-    def insertItem(self, item):
-        """
-        Insert a plot item
-
-        :param qwt.plot.QwtPlotItem item: PlotItem
-
-        .. seealso::
-
-            :py:meth:`removeItem()`
-        """
-        self.__data.itemList.insertItem(item)
-
-    def removeItem(self, item):
-        """
-        Remove a plot item
-
-        :param qwt.plot.QwtPlotItem item: PlotItem
-
-        .. seealso::
-
-            :py:meth:`insertItem()`
-        """
-        self.__data.itemList.removeItem(item)
-
-    def detachItems(self, rtti=None):
-        """
-        Detach items from the dictionary
-
-        :param rtti: In case of `QwtPlotItem.Rtti_PlotItem` or None (default) detach all items otherwise only those items of the type rtti.
-        :type rtti: int or None
-        """
-        for item in self.__data.itemList[:]:
-            if rtti in (None, QwtPlotItem.Rtti_PlotItem) or item.rtti() == rtti:
-                item.attach(None)
-
-    def itemList(self, rtti=None):
-        """
-        A list of attached plot items.
-
-        Use caution when iterating these lists, as removing/detaching an
-        item will invalidate the iterator. Instead you can place pointers
-        to objects to be removed in a removal list, and traverse that list
-        later.
-
-        :param int rtti: In case of `QwtPlotItem.Rtti_PlotItem` detach all items otherwise only those items of the type rtti.
-        :return: List of all attached plot items of a specific type. If rtti is None, return a list of all attached plot items.
-        """
-        if rtti is None or rtti == QwtPlotItem.Rtti_PlotItem:
-            return self.__data.itemList
-        return [item for item in self.__data.itemList if item.rtti() == rtti]
-
-
-class QwtPlot_PrivateData(QwtPlotDict_PrivateData):
+class QwtPlot_PrivateData(object):
     def __init__(self):
         super(QwtPlot_PrivateData, self).__init__()
+        self.itemList = ItemList()
         self.titleLabel = None
         self.footerLabel = None
         self.canvas = None
@@ -217,7 +109,7 @@ class AxisData(object):
         self.scaleWidget = None  # QwtScaleWidget
 
 
-class QwtPlot(QwtPlotDict, QFrame):
+class QwtPlot(QFrame):
     """
     A 2-D plotting widget
 
@@ -300,7 +192,6 @@ class QwtPlot(QwtPlotDict, QFrame):
                 "%s() takes 0, 1 or 2 argument(s) (%s given)"
                 % (self.__class__.__name__, len(args))
             )
-        QwtPlotDict.__init__(self)
         QFrame.__init__(self, parent)
 
         self.__layout_state = None
@@ -359,7 +250,74 @@ class QwtPlot(QwtPlotDict, QFrame):
         for idx in range(len(focusChain) - 1):
             qwtSetTabOrder(focusChain[idx], focusChain[idx + 1], False)
 
-        qwtEnableLegendItems(self, True)
+        self.legendDataChanged.connect(self.updateLegendItems)
+
+    def insertItem(self, item):
+        """
+        Insert a plot item
+
+        :param qwt.plot.QwtPlotItem item: PlotItem
+
+        .. seealso::
+
+            :py:meth:`removeItem()`
+
+        .. note::
+
+            This was a member of QwtPlotDict in older versions.
+        """
+        self.__data.itemList.insertItem(item)
+
+    def removeItem(self, item):
+        """
+        Remove a plot item
+
+        :param qwt.plot.QwtPlotItem item: PlotItem
+
+        .. seealso::
+
+            :py:meth:`insertItem()`
+
+        .. note::
+
+            This was a member of QwtPlotDict in older versions.
+        """
+        self.__data.itemList.removeItem(item)
+
+    def detachItems(self, rtti=None):
+        """
+        Detach items from the dictionary
+
+        :param rtti: In case of `QwtPlotItem.Rtti_PlotItem` or None (default) detach all items otherwise only those items of the type rtti.
+        :type rtti: int or None
+
+        .. note::
+
+            This was a member of QwtPlotDict in older versions.
+        """
+        for item in self.__data.itemList[:]:
+            if rtti in (None, QwtPlotItem.Rtti_PlotItem) or item.rtti() == rtti:
+                item.attach(None)
+
+    def itemList(self, rtti=None):
+        """
+        A list of attached plot items.
+
+        Use caution when iterating these lists, as removing/detaching an
+        item will invalidate the iterator. Instead you can place pointers
+        to objects to be removed in a removal list, and traverse that list
+        later.
+
+        :param int rtti: In case of `QwtPlotItem.Rtti_PlotItem` detach all items otherwise only those items of the type rtti.
+        :return: List of all attached plot items of a specific type. If rtti is None, return a list of all attached plot items.
+
+        .. note::
+
+            This was a member of QwtPlotDict in older versions.
+        """
+        if rtti is None or rtti == QwtPlotItem.Rtti_PlotItem:
+            return self.__data.itemList
+        return [item for item in self.__data.itemList if item.rtti() == rtti]
 
     def setFlatStyle(self, state):
         """
@@ -1573,9 +1531,9 @@ class QwtPlot(QwtPlotDict, QFrame):
                 if self.__data.legend.parent() is not self:
                     self.__data.legend.setParent(self)
 
-                qwtEnableLegendItems(self, False)
+                self.blockSignals(True)
                 self.updateLegend()
-                qwtEnableLegendItems(self, True)
+                self.blockSignals(False)
 
                 lpos = self.__data.layout.legendPosition()
 
