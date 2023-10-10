@@ -356,8 +356,8 @@ class QwtPlotRenderer(QObject):
         invtrans, _ok = transform.inverted()
         layoutRect = invtrans.mapRect(plotRect)
         if not (self.__data.discardFlags & self.DiscardBackground):
-            left, top, right, bottom = plot.getContentsMargins()
-            layoutRect.adjust(left, top, -right, -bottom)
+            mg = plot.contentsMargins()
+            layoutRect.adjust(mg.left(), mg.top(), -mg.right(), -mg.bottom())
 
         layout = plot.plotLayout()
         baseLineDists = canvasMargins = [None] * len(QwtPlot.AXES)
@@ -367,7 +367,10 @@ class QwtPlotRenderer(QObject):
             if self.__data.layoutFlags & self.FrameWithScales:
                 scaleWidget = plot.axisWidget(axisId)
                 if scaleWidget:
-                    baseLineDists[axisId] = max(scaleWidget.getContentsMargins())
+                    mgn = scaleWidget.contentsMargins()
+                    baseLineDists[axisId] = max([
+                        mgn.left(), mgn.top(), mgn.right(), mgn.bottom()
+                    ])
                     scaleWidget.setMargin(0)
                 if not plot.axisEnabled(axisId):
                     #  When we have a scale the frame is painted on
@@ -430,7 +433,10 @@ class QwtPlotRenderer(QObject):
         for axisId in QwtPlot.AXES:
             scaleWidget = plot.axisWidget(axisId)
             if scaleWidget:
-                baseDist = max(scaleWidget.getContentsMargins())
+                mgn = scaleWidget.contentsMargins()
+                baseDist = max([
+                    mgn.left(), mgn.top(), mgn.right(), mgn.bottom()
+                ])
                 startDist, endDist = scaleWidget.getBorderDistHint()
                 self.renderScale(
                     plot,

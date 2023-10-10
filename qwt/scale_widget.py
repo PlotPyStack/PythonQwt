@@ -637,7 +637,10 @@ class QwtScaleWidget(QWidget):
         if self.layout() is None:
             left, top, right, bottom = 0, 0, 0, 0
         else:
-            left, top, right, bottom = self.layout().getContentsMargins()
+            mgn = self.layout().contentsMargins()
+            left, top, right, bottom = (
+                mgn.left(), mgn.top(), mgn.right(), mgn.bottom()
+            )
         return size + QSize(left + right, top + bottom)
 
     def titleHeightForWidth(self, width):

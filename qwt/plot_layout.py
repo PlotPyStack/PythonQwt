@@ -135,7 +135,10 @@ class QwtPlotLayout_LayoutData(object):
                 self.scale[axis].dimWithoutTitle = 0
         layout = plot.canvas().layout()
         if layout is not None:
-            self.canvas.contentsMargins = layout.getContentsMargins()
+            mgn = layout.contentsMargins()
+            self.canvas.contentsMargins = [
+                mgn.left(), mgn.top(), mgn.right(), mgn.bottom()
+            ]
 
 
 class QwtPlotLayout_PrivateData(object):
@@ -571,7 +574,10 @@ class QwtPlotLayout(object):
         if layout is None:
             left, top, right, bottom = 0, 0, 0, 0
         else:
-            left, top, right, bottom = layout.getContentsMargins()
+            mgn = layout.contentsMargins()
+            left, top, right, bottom = (
+                mgn.left(), mgn.top(), mgn.right(), mgn.bottom()
+            )
         for axis in QwtPlot.AXES:
             if plot.axisEnabled(axis):
                 scl = plot.axisWidget(axis)

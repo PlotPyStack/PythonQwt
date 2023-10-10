@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.10.6
+
+- Handled all occurences of deprecated ``QWidget.getContentsMargins`` method.
+
 ## Version 0.10.5
 
 - [Issue #81](https://github.com/PlotPyStack/PythonQwt/issues/81) - Signal disconnection issue with PySide 6.5.3

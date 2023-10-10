@@ -308,7 +308,8 @@ class QwtLegendLabel(QwtTextLabel):
         spacing = max([spacing, 0])
         if spacing != self.__data.spacing:
             self.__data.spacing = spacing
-            margin = max(self.getContentsMargins())
+            mgn = self.contentsMargins()
+            margin = max([mgn.left(), mgn.top(), mgn.right(), mgn.bottom()])
             indent = margin + self.__data.spacing
             if self.__data.icon.width() > 0:
                 indent += self.__data.icon.width() + self.__data.spacing
@@ -912,12 +913,12 @@ class QwtLegend(QwtAbstractLegend):
         legendLayout = self.__data.view.contentsWidget.layout()
         if legendLayout is None:
             return
-        left, right, top, bottom = self.layout().getContentsMargins()
+        margins = self.layout().contentsMargins()
         layoutRect = QRect()
-        layoutRect.setLeft(math.ceil(rect.left()) + left)
-        layoutRect.setTop(math.ceil(rect.top()) + top)
-        layoutRect.setRight(math.ceil(rect.right()) - right)
-        layoutRect.setBottom(math.ceil(rect.bottom()) - bottom)
+        layoutRect.setLeft(math.ceil(rect.left()) + margins.left())
+        layoutRect.setTop(math.ceil(rect.top()) + margins.top())
+        layoutRect.setRight(math.ceil(rect.right()) - margins.right())
+        layoutRect.setBottom(math.ceil(rect.bottom()) - margins.bottom())
         numCols = legendLayout.columnsForWidth(layoutRect.width())
         itemRects = legendLayout.layoutItems(layoutRect, numCols)
         index = 0
@@ -949,7 +950,8 @@ class QwtLegend(QwtAbstractLegend):
         if label is not None:
             icon = label.data().icon()
             sz = icon.defaultSize()
-            margin = max(label.getContentsMargins())
+            mgn = label.contentsMargins()
+            margin = max([mgn.left(), mgn.top(), mgn.right(), mgn.bottom()])
             iconRect = QRectF(
                 rect.x() + margin,
                 rect.center().y() - 0.5 * sz.height(),

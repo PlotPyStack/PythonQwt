@@ -299,9 +299,11 @@ class QwtDynGridLayout(QLayout):
             return
         expandH = self.expandingDirections() & Qt.Horizontal
         expandV = self.expandingDirections() & Qt.Vertical
-        mleft, mtop, mright, mbottom = self.getContentsMargins()
+        margins = self.contentsMargins()
+        wmargins = margins.left() + margins.right()
+        hmargins = margins.top() + margins.bottom()
         if expandH:
-            xDelta = rect.width() - (mleft + mright) - (numColumns - 1) * self.spacing()
+            xDelta = rect.width() - wmargins - (numColumns - 1) * self.spacing()
             for col in range(numColumns):
                 xDelta -= colWidth[col]
             if xDelta > 0:
@@ -313,7 +315,7 @@ class QwtDynGridLayout(QLayout):
             numRows = self.itemCount() / numColumns
             if self.itemCount() % numColumns:
                 numRows += 1
-            yDelta = rect.height() - (mtop + mbottom) - (numRows - 1) * self.spacing()
+            yDelta = rect.height() - hmargins - (numRows - 1) * self.spacing()
             for row in range(numRows):
                 yDelta -= rowHeight[row]
             if yDelta > 0:
