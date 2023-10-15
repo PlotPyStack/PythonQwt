@@ -1,5 +1,6 @@
 [run]
 parallel = True
+concurrency = multiprocessing,thread
 omit =
     */qwt/tests/*
 

@@ -13,24 +13,24 @@ QwtPainterClass
    :members:
 """
 
-from qwt.color_map import QwtColorMap
-from qwt.scale_map import QwtScaleMap
-
+from qtpy import QtCore as QC
+from qtpy.QtCore import QLineF, QPoint, QRect, QRectF, Qt
 from qtpy.QtGui import (
+    QBrush,
+    QColor,
+    QLinearGradient,
     QPaintEngine,
-    QPixmap,
     QPainter,
+    QPainterPath,
     QPalette,
     QPen,
-    QBrush,
+    QPixmap,
     QRegion,
-    QLinearGradient,
-    QPainterPath,
-    QColor,
 )
-from qtpy.QtWidgets import QFrame, QStyle, QStyleOptionFocusRect, QStyleOption
-from qtpy.QtCore import Qt, QRect, QPoint, QRectF, QLineF
-from qtpy import QtCore as QC
+from qtpy.QtWidgets import QFrame, QStyle, QStyleOption, QStyleOptionFocusRect
+
+from qwt.color_map import QwtColorMap
+from qwt.scale_map import QwtScaleMap
 
 QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
 
@@ -64,26 +64,10 @@ class QwtPainterClass(object):
     """A collection of `QPainter` workarounds"""
 
     def drawImage(self, painter, rect, image):
-        alignedRect = rect.toAlignedRect()
-        if alignedRect != rect:
-            clipRect = rect.adjusted(0.0, 0.0, -1.0, -1.0)
-            painter.save()
-            painter.setClipRect(clipRect, Qt.IntersectClip)
-            painter.drawImage(alignedRect, image)
-            painter.restore()
-        else:
-            painter.drawImage(alignedRect, image)
+        painter.drawImage(rect, image)
 
     def drawPixmap(self, painter, rect, pixmap):
-        alignedRect = rect.toAlignedRect()
-        if alignedRect != rect:
-            clipRect = rect.adjusted(0.0, 0.0, -1.0, -1.0)
-            painter.save()
-            painter.setClipRect(clipRect, Qt.IntersectClip)
-            painter.drawPixmap(alignedRect, pixmap)
-            painter.restore()
-        else:
-            painter.drawPixmap(alignedRect, pixmap)
+        painter.drawPixmap(rect, pixmap)
 
     def drawFocusRect(self, *args):
         if len(args) == 2:
@@ -397,7 +381,7 @@ class QwtPainterClass(object):
                 pmPainter.setPen(c)
                 pmPainter.drawLine(QLineF(devRect.left(), y, devRect.right(), y))
         pmPainter.end()
-        self.drawPixmap(painter, rect, pixmap)
+        self.drawPixmap(painter, devRect, pixmap)
 
     def fillPixmap(self, widget, pixmap, offset=None):
         """
@@ -447,7 +431,7 @@ class QwtPainterClass(object):
         if widget.testAttribute(Qt.WA_StyledBackground):
             opt = QStyleOption()
             opt.initFrom(widget)
-            opt.rect = QRectF(rect).toAlignedRect()
+            opt.rect = rect
             widget.style().drawPrimitive(QStyle.PE_Widget, opt, painter, widget)
         else:
             brush = widget.palette().brush(widget.backgroundRole())

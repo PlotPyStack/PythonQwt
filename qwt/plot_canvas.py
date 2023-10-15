@@ -15,26 +15,25 @@ QwtPlotCanvas
 
 import os
 
+from qtpy import QtCore as QC
+from qtpy.QtCore import QEvent, QPointF, QRect, QRectF, QSizeF, Qt
+from qtpy.QtGui import (
+    QBrush,
+    QGradient,
+    QImage,
+    QPaintEngine,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QPixmap,
+    QPolygonF,
+    QRegion,
+    qAlpha,
+)
+from qtpy.QtWidgets import QFrame, QStyle, QStyleOption
+
 from qwt.null_paintdevice import QwtNullPaintDevice
 from qwt.painter import QwtPainter
-
-from qtpy.QtGui import (
-    QPaintEngine,
-    QPen,
-    QBrush,
-    QRegion,
-    QImage,
-    QPainterPath,
-    QPixmap,
-    QGradient,
-    QPainter,
-    qAlpha,
-    QPolygonF,
-)
-from qtpy.QtWidgets import QFrame, QStyleOption, QStyle
-from qtpy.QtCore import Qt, QSizeF, QEvent, QPointF, QRectF, QRect
-from qtpy import QtCore as QC
-
 
 QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
 QT_API = os.environ["QT_API"]
@@ -310,8 +309,7 @@ def qwtFillBackground(*args):
         else:
             clipRegion = widget.contentsRect()
         bgWidget = qwtBackgroundWidget(widget.parentWidget())
-        for fillRect in fillRects:
-            rect = QRectF(fillRect).toAlignedRect()
+        for rect in fillRects:
             if clipRegion.intersects(rect):
                 pm = QPixmap(rect.size())
                 QwtPainter.fillPixmap(

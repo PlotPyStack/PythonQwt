@@ -15,24 +15,23 @@ QwtSymbol
 
 import math
 
+from qtpy.QtCore import QLineF, QPoint, QPointF, QRect, QRectF, QSize, QSizeF, Qt
+from qtpy.QtGui import (
+    QBrush,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QPixmap,
+    QPolygonF,
+    QTransform,
+)
+from qtpy.QtSvg import QSvgRenderer
+
 from qwt.graphic import QwtGraphic
 from qwt.painter import QwtPainter
 
-from qtpy.QtGui import (
-    QPainter,
-    QTransform,
-    QPixmap,
-    QPen,
-    QPolygonF,
-    QPainterPath,
-    QBrush,
-)
-from qtpy.QtCore import QSize, QRect, QPointF, QRectF, QSizeF, Qt, QPoint, QLineF
-from qtpy.QtSvg import QSvgRenderer
-
 
 class QwtTriangle(object):
-
     # enum Type
     Left, Right, Up, Down = list(range(4))
 
@@ -357,7 +356,7 @@ class QwtSymbol_PrivateData(object):
             def __init__(self):
                 self.pixmap = QPixmap()
 
-        self.pixmap = None  # Pixmap()
+        self.pixmap = Pixmap()
 
         class Graphic(object):
             def __init__(self):

@@ -10,7 +10,7 @@ setlocal
 call %~dp0utils GetScriptPath SCRIPTPATH
 call %FUNC% SetPythonPath
 call %FUNC% UsePython
-cd %SCRIPTPATH%\..\
-pytest --cov=qwt --cov-report=html
+set COVERAGE_PROCESS_START=%SCRIPTPATH%\..\.coveragerc
+pytest -v --cov --cov-report=html %MODNAME%
 start htmlcov\index.html
 call %FUNC% EndOfScript
