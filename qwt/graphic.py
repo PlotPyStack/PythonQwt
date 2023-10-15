@@ -14,18 +14,19 @@ QwtGraphic
 """
 
 import math
-from qwt.null_paintdevice import QwtNullPaintDevice
-from qwt.painter_command import QwtPainterCommand
 
+from qtpy.QtCore import QPointF, QRect, QRectF, QSize, QSizeF, Qt
 from qtpy.QtGui import (
+    QImage,
+    QPaintEngine,
     QPainter,
     QPainterPathStroker,
-    QPaintEngine,
     QPixmap,
     QTransform,
-    QImage,
 )
-from qtpy.QtCore import Qt, QRectF, QSizeF, QSize, QPointF, QRect
+
+from qwt.null_paintdevice import QwtNullPaintDevice
+from qwt.painter_command import QwtPainterCommand
 
 
 def qwtHasScalablePen(painter):
@@ -33,10 +34,6 @@ def qwtHasScalablePen(painter):
     scalablePen = False
     if pen.style() != Qt.NoPen and pen.brush().style() != Qt.NoBrush:
         scalablePen = not pen.isCosmetic()
-        if not scalablePen and pen.widthF() == 0.0:
-            hints = painter.renderHints()
-            if hints & QPainter.NonCosmeticDefaultPen:
-                scalablePen = True
     return scalablePen
 
 
@@ -65,10 +62,6 @@ def qwtExecCommand(painter, cmd, renderHints, transform, initialTransform):
             and painter.transform().isScaling()
         ):
             isCosmetic = painter.pen().isCosmetic()
-            if isCosmetic and painter.pen().widthF() == 0.0:
-                hints = painter.renderHints()
-                if hints & QPainter.NonCosmeticDefaultPen:
-                    isCosmetic = False
             doMap = not isCosmetic
         if doMap:
             tr = painter.transform()
