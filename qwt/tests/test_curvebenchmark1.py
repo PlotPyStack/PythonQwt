@@ -8,22 +8,22 @@
 
 SHOW = True  # Show test in GUI-based test launcher
 
+import os
 import time
-import numpy as np
 
+import numpy as np
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import (
     QApplication,
-    QMainWindow,
     QGridLayout,
-    QTabWidget,
-    QWidget,
-    QTextEdit,
     QLineEdit,
+    QMainWindow,
+    QTabWidget,
+    QTextEdit,
+    QWidget,
 )
-from qtpy.QtCore import Qt
-from qwt.tests import utils
 
-import os
+from qwt.tests import utils
 
 if os.environ.get("USE_PYQWT5", False):
     USE_PYQWT5 = True
@@ -156,7 +156,7 @@ class CurveBenchmark1(QMainWindow):
         QApplication.processEvents()
 
         t0g = time.time()
-        self.run_benchmark(max_n, **kwargs)
+        self.run_benchmark(max_n, unattended, **kwargs)
         dt = time.time() - t0g
         self.text.append("<br><br><u>Total elapsed time</u>: %d ms" % (dt * 1e3))
         self.tabs.setCurrentIndex(1 if unattended else 0)
@@ -173,8 +173,10 @@ class CurveBenchmark1(QMainWindow):
         self.text.append("<br><i>%s:</i><br>%s" % (description, time_str))
         print("[%s] %s" % (utils.get_lib_versions(), time_str))
 
-    def run_benchmark(self, max_n, **kwargs):
-        for idx in range(4, -1, -1):
+    def run_benchmark(self, max_n, unattended, **kwargs):
+        max_n = 1000 if unattended else max_n
+        iterations = 0 if unattended else 4
+        for idx in range(iterations, -1, -1):
             points = int(max_n / 10 ** idx)
             t0 = time.time()
             widget = BMWidget(2, points, **kwargs)

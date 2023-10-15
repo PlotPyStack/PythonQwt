@@ -69,7 +69,7 @@ class CurveBenchmark2(cb.CurveBenchmark1):
             max_n=max_n, parent=parent, unattended=unattended, **kwargs
         )
 
-    def run_benchmark(self, max_n, **kwargs):
+    def run_benchmark(self, max_n, unattended, **kwargs):
         for points, symbols in zip(
             (max_n / 10, max_n / 10, max_n, max_n), (True, False) * 2
         ):

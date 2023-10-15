@@ -8,13 +8,12 @@
 
 SHOW = True  # Show test in GUI-based test launcher
 
-import time
 import os
+import time
 
 # Local imports
 from qwt.tests import test_curvebenchmark1 as cb
 from qwt.tests import utils
-
 
 if os.environ.get("USE_PYQWT5", False):
     USE_PYQWT5 = True
@@ -42,9 +41,10 @@ class LoadTest(cb.CurveBenchmark1):
             max_n=max_n, parent=parent, unattended=unattended, **kwargs
         )
 
-    def run_benchmark(self, max_n, **kwargs):
+    def run_benchmark(self, max_n, unattended, **kwargs):
         points, symbols = 100, False
-        for _i_page in range(int(NPLOTS / (NCOLS * NROWS))):
+        iterator = range(0, 1) if unattended else range(int(NPLOTS / (NCOLS * NROWS)))
+        for _i_page in iterator:
             t0 = time.time()
             symtext = "with%s symbols" % ("" if symbols else "out")
             widget = LTWidget(NCOLS, points, symbols, **kwargs)
