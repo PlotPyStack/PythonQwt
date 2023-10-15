@@ -45,4 +45,6 @@
         "qwt"
     ],
     "python.analysis.autoFormatStrings": true,
+    "editor.defaultFoldingRangeProvider": "ms-python.black-formatter",
+    "editor.defaultFormatter": "ms-python.black-formatter",
 }
