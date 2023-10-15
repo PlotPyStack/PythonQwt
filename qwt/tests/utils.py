@@ -14,17 +14,16 @@ import inspect
 import os
 import os.path as osp
 import platform
-import sys
 import subprocess
+import sys
 
-from qtpy import QtWidgets as QW
-from qtpy import QtGui as QG
 from qtpy import QtCore as QC
+from qtpy import QtGui as QG
+from qtpy import QtWidgets as QW
 
 import qwt
-from qwt import qthelpers as qth
 from qwt import QwtPlot
-
+from qwt import qthelpers as qth
 
 QT_API = os.environ["QT_API"]
 
@@ -186,7 +185,9 @@ class TestLauncher(QW.QMainWindow):
         bname = osp.basename(fname)
         button = QW.QToolButton(self)
         button.setToolButtonStyle(QC.Qt.ToolButtonTextUnderIcon)
-        shot = osp.join(TEST_PATH, "data", bname.replace(".py", ".png").replace("test_", ""))
+        shot = osp.join(
+            TEST_PATH, "data", bname.replace(".py", ".png").replace("test_", "")
+        )
         if osp.isfile(shot):
             button.setIcon(QG.QIcon(shot))
         else:
@@ -264,6 +265,14 @@ def take_screenshot(widget):
     qth.take_screenshot(widget, osp.join(TEST_PATH, "data", bname), quit=True)
 
 
+def close_widgets_and_quit() -> None:
+    """Close Qt top level widgets and quit Qt event loop"""
+    QW.QApplication.processEvents()
+    for widget in QW.QApplication.instance().topLevelWidgets():
+        assert widget.close()
+    QC.QTimer.singleShot(0, QW.QApplication.instance().quit)
+
+
 def test_widget(widget_class, size=None, title=None, options=True):
     """Test widget"""
     widget_name = widget_class.__name__
@@ -300,7 +309,7 @@ def test_widget(widget_class, size=None, title=None, options=True):
     if test_env.screenshots:
         QC.QTimer.singleShot(1000, lambda: take_screenshot(widget_of_interest))
     elif test_env.unattended:
-        QC.QTimer.singleShot(0, QW.QApplication.instance().quit)
+        QC.QTimer.singleShot(0, close_widgets_and_quit)
     if QT_API == "pyside6":
         app.exec()
     else:
