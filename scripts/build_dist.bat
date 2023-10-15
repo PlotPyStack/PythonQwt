@@ -8,10 +8,9 @@ REM (see LICENSE file for more details)
 REM ======================================================
 call %~dp0utils GetScriptPath SCRIPTPATH
 call %FUNC% GetLibName LIBNAME
-cd %SCRIPTPATH%\..\
-if exist MANIFEST ( del /q MANIFEST )
 call %FUNC% SetPythonPath
-call %FUNC% UseWinPython
+call %FUNC% UsePython
+if exist MANIFEST ( del /q MANIFEST )
 python setup.py sdist bdist_wheel --universal
 python setup.py build sdist
 rmdir /s /q %LIBNAME%.egg-info

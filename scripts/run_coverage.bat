@@ -9,7 +9,7 @@ REM ======================================================
 setlocal
 call %~dp0utils GetScriptPath SCRIPTPATH
 call %FUNC% SetPythonPath
-call %FUNC% UseWinPython
+call %FUNC% UsePython
 cd %SCRIPTPATH%\..\
 pytest --cov=qwt --cov-report=html
 start htmlcov\index.html

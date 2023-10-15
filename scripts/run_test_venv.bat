@@ -11,7 +11,7 @@ call %~dp0utils GetScriptPath SCRIPTPATH
 set UNATTENDED=1
 call %SCRIPTPATH%\build_dist
 set PYTHONPATH=
-call %FUNC% UseWinPython
+call %FUNC% UsePython
 call :TestEnv PyQt5
 call :TestEnv PySide2
 set UNATTENDED=

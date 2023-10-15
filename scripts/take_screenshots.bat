@@ -9,7 +9,7 @@ REM ======================================================
 setlocal
 call %~dp0utils GetScriptPath SCRIPTPATH
 call %FUNC% SetPythonPath
-call %FUNC% UseWinPython
+call %FUNC% UsePython
 cd %SCRIPTPATH%\..\
 python qwt/tests/__init__.py --mode screenshots
 python doc/plot_example.py

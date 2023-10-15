@@ -10,7 +10,7 @@ call %~dp0utils GetScriptPath SCRIPTPATH
 call %FUNC% GetLibName LIBNAME
 call %FUNC% GetModName MODNAME
 call %FUNC% SetPythonPath
-call %FUNC% UseWinPython
+call %FUNC% UsePython
 set PATH=C:\Program Files\7-Zip;C:\Program Files (x86)\7-Zip;C:\Program Files\HTML Help Workshop;C:\Program Files (x86)\HTML Help Workshop;%PATH%
 cd %SCRIPTPATH%\..\
 if exist build\doc ( rmdir /s /q build\doc )
