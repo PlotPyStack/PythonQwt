@@ -4,6 +4,8 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import os.path as osp
 
+import numpy as np
+from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
@@ -20,14 +22,69 @@ class BaseSymbolPlot(qwt.QwtPlot):
         self.setTitle(self.TITLE)
         self.setAxisScale(self.yLeft, -20, 20)
         self.setAxisScale(self.xBottom, -20, 20)
+        self.setup_plot()
 
-        curve = qwt.QwtPlotCurve("Pixmap Points")
-        curve.setSymbol(self.SYMBOL_CLASS())
-        curve.setPen(QG.QPen(QG.QColor("blue")))
-        curve.setSamples([-15, 0, 15, -15], [0, 15, 0, 0])
-        curve.attach(self)
-
+    def setup_plot(self):
+        samples = ([-15, 0, 15, -15], [0, 15, 0, 0])
+        self.add_curve(self.TITLE, samples, self.SYMBOL_CLASS())
         self.resize(400, 400)
+
+    def add_curve(self, title, samples, symbol=None):
+        """Add a curve to the plot"""
+        curve = qwt.QwtPlotCurve(title)
+        curve.setSamples(*samples)
+        if symbol is not None:
+            curve.setSymbol(symbol)
+        curve.attach(self)
+        self.replot()
+
+
+class BuiltinSymbolPlot(BaseSymbolPlot):
+    TITLE = "Built-in Symbol Example"
+
+    def setup_plot(self):
+        colors = (QC.Qt.red, QC.Qt.green, QC.Qt.blue, QC.Qt.yellow, QC.Qt.magenta)
+        for index, symbol_name in enumerate(
+            (
+                "Ellipse",
+                "Rect",
+                "Diamond",
+                "Triangle",
+                "DTriangle",
+                "UTriangle",
+                "LTriangle",
+                "RTriangle",
+                "Cross",
+                "XCross",
+                "HLine",
+                "VLine",
+                "Star1",
+                "Star2",
+                "Hexagon",
+            )
+        ):
+            symbol = qwt.symbol.QwtSymbol(getattr(qwt.QwtSymbol, symbol_name))
+            symbol.setSize(7, 7)
+            symbol.setPen(QG.QPen(colors[index % 3]))
+            symbol.setBrush(QG.QBrush(QG.QColor(colors[index % 3]).lighter(150)))
+            x = np.linspace(-10, 10, 100)
+            y = np.sin(x + index * np.pi / 10)
+            samples = (x, y)
+            qwt.plot_marker.QwtPlotMarker.make(
+                xvalue=index * 2 - 10,
+                yvalue=index * 2 - 10,
+                label=qwt.text.QwtText.make(
+                    "Marker",
+                    color=QC.Qt.black,
+                    borderradius=2,
+                    brush=QC.Qt.lightGray,
+                ),
+                symbol=symbol,
+                plot=self,
+            )
+            self.add_curve(symbol_name, samples, symbol)
+        self.setAxisAutoScale(self.yLeft, True)
+        self.setAxisAutoScale(self.xBottom, True)
 
 
 class CustomGraphicSymbol(qwt.QwtSymbol):
@@ -110,6 +167,11 @@ def test_base():
     utils.test_widget(BaseSymbolPlot, size=(600, 400))
 
 
+def test_builtin():
+    """Built-in symbol test"""
+    utils.test_widget(BuiltinSymbolPlot, size=(600, 400))
+
+
 def test_graphic():
     """Graphic symbol test"""
     utils.test_widget(GraphicPlot, size=(600, 400))
@@ -132,6 +194,7 @@ def test_svg():
 
 if __name__ == "__main__":
     test_base()
+    test_builtin()
     test_graphic()
     test_pixmap()
     test_path()
