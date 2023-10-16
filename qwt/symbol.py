@@ -352,11 +352,7 @@ class QwtSymbol_PrivateData(object):
 
         self.path = Path()
 
-        class Pixmap(object):
-            def __init__(self):
-                self.pixmap = QPixmap()
-
-        self.pixmap = Pixmap()
+        self.pixmap = None
 
         class Graphic(object):
             def __init__(self):
@@ -733,7 +729,7 @@ class QwtSymbol(object):
             `brush()` and `pen()` have no effect
         """
         self.__data.style = QwtSymbol.Pixmap
-        self.__data.pixmap.pixmap = pixmap
+        self.__data.pixmap = pixmap
 
     def pixmap(self):
         """
@@ -743,7 +739,9 @@ class QwtSymbol(object):
 
             :py:meth:`setPixmap()`
         """
-        return self.__data.pixmap.pixmap
+        if self.__data.pixmap is None:
+            return QPixmap()
+        return self.__data.pixmap
 
     def setGraphic(self, graphic):
         """
@@ -1207,7 +1205,7 @@ class QwtSymbol(object):
             pinPointTranslation = True
         elif self.__data.style == QwtSymbol.Pixmap:
             if self.__data.size.isEmpty():
-                rect.setSize(QSizeF(self.__data.pixmap.pixmap.size()))
+                rect.setSize(QSizeF(self.pixmap().size()))
             else:
                 rect.setSize(QSizeF(self.__data.size))
             pinPointTranslation = True
