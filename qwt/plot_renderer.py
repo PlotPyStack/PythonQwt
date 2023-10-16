@@ -249,7 +249,11 @@ class QwtPlotRenderer(QObject):
                     printer.setPrinterName("")
             else:
                 printer.setOutputFormat(QPrinter.PostScriptFormat)
-            printer.setColorMode(QPrinter.Color)
+            try:
+                printer.setColorMode(QPrinter.Color)
+            except AttributeError:
+                # PyQt6 on Linux
+                pass
             printer.setFullPage(True)
             printer.setPageSize(QPageSize(sizeMM, QPageSize.Millimeter))
             printer.setDocName(title)
