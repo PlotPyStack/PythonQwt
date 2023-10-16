@@ -252,7 +252,10 @@ class BodeDemo(QMainWindow):
 
         printer.setCreator("Bode example")
         printer.setPageOrientation(QPageLayout.Landscape)
-        printer.setColorMode(QPrinter.Color)
+        try:
+            printer.setColorMode(QPrinter.Color)
+        except AttributeError:
+            pass
 
         docName = str(self.plot.title().text())
         if not docName:

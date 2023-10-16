@@ -22,6 +22,7 @@ from qtpy.QtGui import (
     QColor,
     QImage,
     QImageWriter,
+    QPageSize,
     QPaintDevice,
     QPainter,
     QPainterPath,
@@ -246,7 +247,7 @@ class QwtPlotRenderer(QObject):
                 printer.setOutputFormat(QPrinter.PostScriptFormat)
             printer.setColorMode(QPrinter.Color)
             printer.setFullPage(True)
-            printer.setPaperSize(sizeMM, QPrinter.Millimeter)
+            printer.setPageSize(QPageSize(sizeMM, QPageSize.Millimeter))
             printer.setDocName(title)
             printer.setOutputFileName(filename)
             printer.setResolution(resolution)
@@ -724,4 +725,5 @@ class QwtPlotRenderer(QObject):
         if not filename:
             return False
         self.renderDocument(plot, filename, sizeMM, resolution)
+        return True
         return True
