@@ -21,27 +21,21 @@ QwtPlotItem
 
 import math
 
-from qtpy.QtWidgets import (
-    QWidget,
-    QSizePolicy,
-    QFrame,
-    QApplication,
-)
-from qtpy.QtGui import QFont, QPainter, QPalette, QColor, QBrush
-from qtpy.QtCore import Qt, Signal, QEvent, QSize, QRectF
+import numpy as np
+from qtpy.QtCore import QEvent, QRectF, QSize, Qt, Signal
+from qtpy.QtGui import QBrush, QColor, QFont, QPainter, QPalette
+from qtpy.QtWidgets import QApplication, QFrame, QSizePolicy, QWidget
 
-from qwt.text import QwtText, QwtTextLabel
-from qwt.scale_widget import QwtScaleWidget
-from qwt.scale_draw import QwtScaleDraw
-from qwt.scale_engine import QwtLinearScaleEngine
+from qwt.graphic import QwtGraphic
+from qwt.interval import QwtInterval
+from qwt.legend import QwtLegendData
 from qwt.plot_canvas import QwtPlotCanvas
 from qwt.scale_div import QwtScaleDiv
+from qwt.scale_draw import QwtScaleDraw
+from qwt.scale_engine import QwtLinearScaleEngine
 from qwt.scale_map import QwtScaleMap
-from qwt.graphic import QwtGraphic
-from qwt.legend import QwtLegendData
-from qwt.interval import QwtInterval
-
-import numpy as np
+from qwt.scale_widget import QwtScaleWidget
+from qwt.text import QwtText, QwtTextLabel
 
 
 def qwtSetTabOrder(first, second, with_children):
@@ -1644,7 +1638,7 @@ class QwtPlot(QFrame):
         renderer.renderTo(self, printer)
 
     def exportTo(
-        self, filename, size=(800, 600), size_mm=None, resolution=72.0, format_=None
+        self, filename, size=(800, 600), size_mm=None, resolution=85, format_=None
     ):
         """
         Export plot to PDF or image file (SVG, PNG, ...)
@@ -1652,7 +1646,7 @@ class QwtPlot(QFrame):
         :param str filename: Filename
         :param tuple size: (width, height) size in pixels
         :param tuple size_mm: (width, height) size in millimeters
-        :param float resolution: Image resolution
+        :param int resolution: Resolution in dots per Inch (dpi)
         :param str format_: File format (PDF, SVG, PNG, ...)
         """
         if size_mm is None:

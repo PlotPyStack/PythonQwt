@@ -13,31 +13,31 @@ QwtPlotRenderer
    :members:
 """
 
+import math
+import os.path as osp
+
+from qtpy.compat import getsavefilename
+from qtpy.QtCore import QObject, QRect, QRectF, QSizeF, Qt
+from qtpy.QtGui import (
+    QColor,
+    QImage,
+    QImageWriter,
+    QPaintDevice,
+    QPainter,
+    QPainterPath,
+    QPalette,
+    QPen,
+    QTransform,
+)
+from qtpy.QtPrintSupport import QPrinter
+from qtpy.QtSvg import QSvgGenerator
+from qtpy.QtWidgets import QFileDialog
+
 from qwt.painter import QwtPainter
 from qwt.plot import QwtPlot
 from qwt.plot_layout import QwtPlotLayout
 from qwt.scale_draw import QwtScaleDraw
 from qwt.scale_map import QwtScaleMap
-
-from qtpy.QtGui import (
-    QPainter,
-    QImageWriter,
-    QImage,
-    QColor,
-    QPaintDevice,
-    QTransform,
-    QPalette,
-    QPainterPath,
-    QPen,
-)
-from qtpy.QtWidgets import QFileDialog
-from qtpy.QtPrintSupport import QPrinter
-from qtpy.QtCore import Qt, QRect, QRectF, QObject, QSizeF
-from qtpy.QtSvg import QSvgGenerator
-from qtpy.compat import getsavefilename
-
-import math
-import os.path as osp
 
 
 def qwtCanvasClip(canvas, canvasRect):
@@ -368,9 +368,9 @@ class QwtPlotRenderer(QObject):
                 scaleWidget = plot.axisWidget(axisId)
                 if scaleWidget:
                     mgn = scaleWidget.contentsMargins()
-                    baseLineDists[axisId] = max([
-                        mgn.left(), mgn.top(), mgn.right(), mgn.bottom()
-                    ])
+                    baseLineDists[axisId] = max(
+                        [mgn.left(), mgn.top(), mgn.right(), mgn.bottom()]
+                    )
                     scaleWidget.setMargin(0)
                 if not plot.axisEnabled(axisId):
                     #  When we have a scale the frame is painted on
@@ -434,9 +434,7 @@ class QwtPlotRenderer(QObject):
             scaleWidget = plot.axisWidget(axisId)
             if scaleWidget:
                 mgn = scaleWidget.contentsMargins()
-                baseDist = max([
-                    mgn.left(), mgn.top(), mgn.right(), mgn.bottom()
-                ])
+                baseDist = max([mgn.left(), mgn.top(), mgn.right(), mgn.bottom()])
                 startDist, endDist = scaleWidget.getBorderDistHint()
                 self.renderScale(
                     plot,
@@ -558,8 +556,8 @@ class QwtPlotRenderer(QObject):
 
         :param qwt.plot.QwtPlot plot: Plot widget
         :param QPainter painter: Painter
-        :param qwt.scale_map.QwtScaleMap maps: mapping between plot and paint device coordinates
         :param QRectF rect: Bounding rectangle
+        :param qwt.scale_map.QwtScaleMap maps: mapping between plot and paint device coordinates
         """
         canvas = plot.canvas()
         r = canvasRect.adjusted(0.0, 0.0, -1.0, 1.0)

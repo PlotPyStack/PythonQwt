@@ -8,12 +8,15 @@
 
 SHOW = True  # Show test in GUI-based test launcher
 
-import numpy as np
+import os
 
-from qtpy.QtCore import Qt
+import numpy as np
+from qtpy.QtCore import Qt, QTimer
 
 import qwt
 from qwt.tests import utils
+
+FNAMES = ("test_simple.svg", "test_simple.pdf", "test_simple.png")
 
 
 class SimplePlot(qwt.QwtPlot):
@@ -52,10 +55,20 @@ class SimplePlot(qwt.QwtPlot):
             plot=self,
         )
 
+        if utils.TestEnvironment().unattended:
+            QTimer.singleShot(0, self.export_to_different_formats)
+
+    def export_to_different_formats(self):
+        for fname in FNAMES:
+            self.exportTo(fname)
+
 
 def test_simple():
     """Simple plot example"""
     utils.test_widget(SimplePlot, size=(600, 400))
+    for fname in FNAMES:
+        if os.path.isfile(fname):
+            os.remove(fname)
 
 
 if __name__ == "__main__":

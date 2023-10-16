@@ -8,34 +8,34 @@
 
 SHOW = True  # Show test in GUI-based test launcher
 
-import numpy as np
+import os
 
+import numpy as np
+from qtpy.QtCore import Qt
+from qtpy.QtGui import QFont, QIcon, QPen, QPixmap
+from qtpy.QtPrintSupport import QPrintDialog, QPrinter
 from qtpy.QtWidgets import (
     QFrame,
-    QWidget,
-    QMainWindow,
-    QToolButton,
-    QToolBar,
     QHBoxLayout,
     QLabel,
+    QMainWindow,
+    QToolBar,
+    QToolButton,
+    QWidget,
 )
-from qtpy.QtGui import QPen, QFont, QIcon, QPixmap
-from qtpy.QtPrintSupport import QPrinter, QPrintDialog
-from qtpy.QtCore import Qt
 
 from qwt import (
-    QwtPlot,
-    QwtPlotMarker,
-    QwtSymbol,
     QwtLegend,
-    QwtPlotGrid,
-    QwtPlotCurve,
     QwtLogScaleEngine,
-    QwtText,
+    QwtPlot,
+    QwtPlotCurve,
+    QwtPlotGrid,
+    QwtPlotMarker,
     QwtPlotRenderer,
+    QwtSymbol,
+    QwtText,
 )
 from qwt.tests import utils
-
 
 print_xpm = [
     "32 32 12 1",
@@ -193,6 +193,9 @@ class BodePlot(QwtPlot):
         self.replot()
 
 
+FNAME_PDF = "bode.pdf"
+
+
 class BodeDemo(QMainWindow):
     def __init__(self, *args):
         QMainWindow.__init__(self, *args)
@@ -236,7 +239,10 @@ class BodeDemo(QMainWindow):
 
         self.showInfo()
 
-    def print_(self):
+        if utils.TestEnvironment().unattended:
+            self.print_(unattended=True)
+
+    def print_(self, unattended=False):
         printer = QPrinter(QPrinter.HighResolution)
 
         printer.setCreator("Bode example")
@@ -249,7 +255,15 @@ class BodeDemo(QMainWindow):
             printer.setDocName(docName)
 
         dialog = QPrintDialog(printer)
-        if dialog.exec_():
+        if unattended:
+            # Configure QPrinter object to print to PDF file
+            printer.setOutputFormat(QPrinter.PdfFormat)
+            printer.setOutputFileName(FNAME_PDF)
+            dialog.accept()
+            ok = True
+        else:
+            ok = dialog.exec_()
+        if ok:
             renderer = QwtPlotRenderer()
             if QPrinter.GrayScale == printer.colorMode():
                 renderer.setDiscardFlag(QwtPlotRenderer.DiscardBackground)
@@ -280,6 +294,8 @@ class BodeDemo(QMainWindow):
 def test_bodedemo():
     """Bode demo"""
     utils.test_widget(BodeDemo, (640, 480))
+    if os.path.isfile(FNAME_PDF):
+        os.remove(FNAME_PDF)
 
 
 if __name__ == "__main__":
