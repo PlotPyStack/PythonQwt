@@ -243,7 +243,12 @@ class BodeDemo(QMainWindow):
             self.print_(unattended=True)
 
     def print_(self, unattended=False):
-        printer = QPrinter(QPrinter.HighResolution)
+        try:
+            mode = QPrinter.HighResolution
+        except AttributeError:
+            # Some PySide6 / PyQt6 versions do not have this attribute on Linux
+            mode = QPrinter.ScreenResolution
+        printer = QPrinter(mode)
 
         printer.setCreator("Bode example")
         printer.setOrientation(QPrinter.Landscape)
