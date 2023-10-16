@@ -13,9 +13,9 @@ Qt plotting widgets for Python
 
 import os
 import os.path as osp
+from distutils.core import setup
 
 import setuptools  # analysis:ignore
-from distutils.core import setup
 
 LIBNAME = "PythonQwt"
 PACKAGE_NAME = "qwt"
@@ -106,7 +106,7 @@ setup(
     long_description=LONG_DESCRIPTION,
     packages=get_subpackages(PACKAGE_NAME),
     package_data={
-        PACKAGE_NAME: get_package_data(PACKAGE_NAME, (".png", ".svg", ".mo", ".chm"))
+        PACKAGE_NAME: get_package_data(PACKAGE_NAME, (".png", ".svg", ".mo"))
     },
     install_requires=["NumPy>=1.5", "QtPy>=1.3"],
     extras_require={
