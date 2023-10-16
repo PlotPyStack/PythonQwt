@@ -265,7 +265,7 @@ class BodeDemo(QMainWindow):
         dialog = QPrintDialog(printer)
         if unattended:
             # Configure QPrinter object to print to PDF file
-            printer.setOutputFormat(QPrinter.PdfFormat)
+            printer.setPrinterName("")
             printer.setOutputFileName(FNAME_PDF)
             dialog.accept()
             ok = True
@@ -273,11 +273,6 @@ class BodeDemo(QMainWindow):
             ok = dialog.exec_()
         if ok:
             renderer = QwtPlotRenderer()
-            if QPrinter.GrayScale == printer.colorMode():
-                renderer.setDiscardFlag(QwtPlotRenderer.DiscardBackground)
-                renderer.setDiscardFlag(QwtPlotRenderer.DiscardCanvasBackground)
-                renderer.setDiscardFlag(QwtPlotRenderer.DiscardCanvasFrame)
-                renderer.setLayoutFlag(QwtPlotRenderer.FrameWithScales)
             renderer.renderTo(self.plot, printer)
 
     def exportDocument(self):

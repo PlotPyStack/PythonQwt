@@ -242,7 +242,11 @@ class QwtPlotRenderer(QObject):
         if fmt in ("pdf", "ps"):
             printer = QPrinter()
             if fmt == "pdf":
-                printer.setOutputFormat(QPrinter.PdfFormat)
+                try:
+                    printer.setOutputFormat(QPrinter.PdfFormat)
+                except AttributeError:
+                    # PyQt6 on Linux
+                    printer.setPrinterName("")
             else:
                 printer.setOutputFormat(QPrinter.PostScriptFormat)
             printer.setColorMode(QPrinter.Color)
