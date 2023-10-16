@@ -254,7 +254,7 @@ def qwtDrawStar1Symbols(painter, points, numPoints, symbol):
     sqrt1_2 = math.sqrt(0.5)
     r = QRectF(0, 0, size.width(), size.height())
     for pos in points:
-        r.moveCenter(pos.toPoint())
+        r.moveCenter(pos)
         c = QPointF(r.center())
         d1 = r.width() / 2.0 * (1.0 - sqrt1_2)
         painter.drawLine(
