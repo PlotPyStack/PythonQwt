@@ -47,22 +47,22 @@ import math
 import os
 import struct
 
+from qtpy.QtCore import QRectF, QSize, QSizeF, Qt
 from qtpy.QtGui import (
+    QAbstractTextDocumentLayout,
+    QColor,
+    QFont,
+    QFontInfo,
+    QFontMetrics,
+    QFontMetricsF,
     QPainter,
     QPalette,
-    QFont,
-    QFontMetrics,
-    QColor,
+    QPixmap,
     QTextDocument,
     QTextOption,
-    QFontMetricsF,
-    QPixmap,
-    QFontInfo,
     QTransform,
-    QAbstractTextDocumentLayout,
 )
-from qtpy.QtWidgets import QFrame, QWidget, QSizePolicy, QApplication
-from qtpy.QtCore import Qt, QSizeF, QSize, QRectF
+from qtpy.QtWidgets import QApplication, QFrame, QSizePolicy, QWidget
 
 from qwt.painter import QwtPainter
 from qwt.qthelpers import qcolor_from_str
@@ -206,7 +206,10 @@ def qwtUnscaleFont(painter):
     dpix, dpiy = get_screen_resolution()
     pd = painter.device()
     if pd.logicalDpiX() != dpix or pd.logicalDpiY() != dpiy:
-        pixelFont = QFont(painter.font(), QApplication.desktop())
+        try:
+            pixelFont = QFont(painter.font(), QApplication.desktop())
+        except AttributeError:
+            pixelFont = QFont(painter.font())
         pixelFont.setPixelSize(QFontInfo(pixelFont).pixelSize())
         painter.setFont(pixelFont)
 
