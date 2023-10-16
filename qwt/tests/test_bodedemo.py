@@ -12,7 +12,7 @@ import os
 
 import numpy as np
 from qtpy.QtCore import Qt
-from qtpy.QtGui import QFont, QIcon, QPen, QPixmap
+from qtpy.QtGui import QFont, QIcon, QPageLayout, QPen, QPixmap
 from qtpy.QtPrintSupport import QPrintDialog, QPrinter
 from qtpy.QtWidgets import (
     QFrame,
@@ -251,7 +251,7 @@ class BodeDemo(QMainWindow):
         printer = QPrinter(mode)
 
         printer.setCreator("Bode example")
-        printer.setPageOrientation(QPrinter.Landscape)
+        printer.setPageOrientation(QPageLayout.Landscape)
         printer.setColorMode(QPrinter.Color)
 
         docName = str(self.plot.title().text())
