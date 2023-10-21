@@ -85,6 +85,15 @@ plot items needed by `guiqwt`): `QwtPlotItem` (base class), `QwtPlotItem`,
 See "Overview" section in [documentation](https://pythonqwt.readthedocs.io/en/latest/)
 for more details on API limitations when comparing to Qwt.
 
+## Roadmap
+
+The `qwt` package short-term roadmap is the following:
+
+- [ ] Drop support for PyQt4 and PySide2
+- [ ] Drop support for Python < 3.8
+- [ ] Replace `setup.py` by `pyproject.toml`, using `setuptools` (e.g. see `guidata`)
+- [ ] Add more unit tests: the ultimate goal is to reach 90% code coverage
+
 ## Dependencies
 
 ### Requirements
