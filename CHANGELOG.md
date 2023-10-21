@@ -2,7 +2,21 @@
 
 ## Version 0.10.6
 
-- Handled all occurences of deprecated ``QWidget.getContentsMargins`` method.
+- Qt6 support:
+  - Handled all occurences of deprecated ``QWidget.getContentsMargins`` method.
+  - Removed references to NonCosmeticDefaultPen
+  - Fixed `QApplication.desktop` `AttributeError`
+  - Fixed `QPrinter.HighResolution` `AttributeError` on Linux
+  - Fixed `QPrinter.setColorMode` `AttributeError` on PyQt6/Linux
+  - Fixed `QPrinter.setOrientation` deprecation issue
+  - Fixed `QPrinter.setPaperSize` deprecation issue
+- Improved unit tests:
+  - Ensure that tests are entirely executed before quitting (in unattended mode)
+  - Added more tests on `qwt.symbols`
+  - Added tests on `qwt.plot_renderer`
+- `qwt.plot_renderer`: fixed resolution type
+- `qwt.symbols`: fixed `QPointF` type mismatch
+- Removed CHM help file generation (obsolete)
 
 ## Version 0.10.5
 
