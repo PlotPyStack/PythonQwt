@@ -1,6 +1,10 @@
 # PythonQwt Releases
 
-## Version 0.11.1 (work in progress)
+## Version 0.11.2 (work in progress)
+
+- ...
+
+## Version 0.11.1
 
 - Fixed remaining `QwtPainter.drawPixmap` call
 
