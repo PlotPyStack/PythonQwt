@@ -33,7 +33,9 @@ def qwtRenderItem(painter, canvasRect, seriesItem, from_, to):
 
 def qwtHasBackingStore(canvas):
     return (
-        canvas.testPaintAttribute(QwtPlotCanvas.BackingStore) and canvas.backingStore()
+        canvas.testPaintAttribute(QwtPlotCanvas.BackingStore)
+        and canvas.backingStore() is not None
+        and not canvas.backingStore().isNull()
     )
 
 
@@ -207,17 +209,14 @@ class QwtPlotDirectPainter(QObject):
             return
         canvas = seriesItem.plot().canvas()
         canvasRect = canvas.contentsRect()
-        plotCanvas = canvas  # XXX: cast to QwtPlotCanvas
-        if plotCanvas and qwtHasBackingStore(plotCanvas):
-            painter = QPainter(
-                plotCanvas.backingStore()
-            )  # XXX: cast plotCanvas.backingStore() to QPixmap
+        if canvas and qwtHasBackingStore(canvas):
+            painter = QPainter(canvas.backingStore())
             if self.__data.hasClipping:
                 painter.setClipRegion(self.__data.clipRegion)
             qwtRenderItem(painter, canvasRect, seriesItem, from_, to)
             painter.end()
             if self.testAttribute(self.FullRepaint):
-                plotCanvas.repaint()
+                canvas.repaint()
                 return
         if canvas.testAttribute(Qt.WA_WState_InPaintEvent):
             if not self.__data.painter.isActive():

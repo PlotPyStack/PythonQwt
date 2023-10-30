@@ -13,8 +13,7 @@ QwtPainterClass
    :members:
 """
 
-from qtpy import QtCore as QC
-from qtpy.QtCore import QLineF, QPoint, QRect, QRectF, Qt
+from qtpy.QtCore import QLineF, QPoint, QRect, Qt
 from qtpy.QtGui import (
     QBrush,
     QColor,
@@ -27,7 +26,13 @@ from qtpy.QtGui import (
     QPixmap,
     QRegion,
 )
-from qtpy.QtWidgets import QFrame, QStyle, QStyleOption, QStyleOptionFocusRect
+from qtpy.QtWidgets import (
+    QApplication,
+    QFrame,
+    QStyle,
+    QStyleOption,
+    QStyleOptionFocusRect,
+)
 
 from qwt.color_map import QwtColorMap
 from qwt.scale_map import QwtScaleMap
@@ -445,13 +450,8 @@ class QwtPainterClass(object):
         if widget and widget.windowHandle():
             pixelRatio = widget.windowHandle().devicePixelRatio()
         else:
-            from qtpy.QtGui import qApp
-
-            if qApp is not None:
-                try:
-                    pixelRatio = qApp.devicePixelRatio()
-                except RuntimeError:
-                    pass
+            qapp = QApplication.instance()
+            pixelRatio = qapp.devicePixelRatio()
         pm = QPixmap(size * pixelRatio)
         pm.setDevicePixelRatio(pixelRatio)
         return pm

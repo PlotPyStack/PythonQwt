@@ -20,6 +20,8 @@ FNAMES = ("test_simple.svg", "test_simple.pdf", "test_simple.png")
 
 
 class SimplePlot(qwt.QwtPlot):
+    TEST_EXPORT = True
+
     def __init__(self):
         qwt.QwtPlot.__init__(self)
         self.setTitle("Really simple demo")
@@ -28,6 +30,8 @@ class SimplePlot(qwt.QwtPlot):
         self.setAxisTitle(qwt.QwtPlot.yLeft, "Y-axis")
         self.enableAxis(self.xBottom)
         self.setCanvasBackground(Qt.white)
+        canvas = self.canvas()
+        canvas.setBorderRadius(50)
 
         qwt.QwtPlotGrid.make(self, color=Qt.lightGray, width=0, style=Qt.DotLine)
 
@@ -55,7 +59,7 @@ class SimplePlot(qwt.QwtPlot):
             plot=self,
         )
 
-        if utils.TestEnvironment().unattended:
+        if self.TEST_EXPORT and utils.TestEnvironment().unattended:
             QTimer.singleShot(0, self.export_to_different_formats)
 
     def export_to_different_formats(self):

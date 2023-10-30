@@ -15,7 +15,7 @@ QwtPlotCanvas
 
 import os
 
-from qtpy.QtCore import QEvent, QPointF, QRect, QRectF, QSizeF, Qt
+from qtpy.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt
 from qtpy.QtGui import (
     QBrush,
     QGradient,
@@ -280,12 +280,12 @@ def qwtFillBackground(*args):
             r = canvas.rect()
             radius = canvas.borderRadius()
             if radius > 0.0:
-                sz = QSizeF(radius, radius)
+                sz = QSize(radius, radius)
                 rects += [
-                    QRectF(r.topLeft(), sz),
-                    QRectF(r.topRight() - QPointF(radius, 0), sz),
-                    QRectF(r.bottomRight() - QPointF(radius, radius), sz),
-                    QRectF(r.bottomLeft() - QPointF(0, radius), sz),
+                    QRect(r.topLeft(), sz),
+                    QRect(r.topRight() - QPoint(radius, 0), sz),
+                    QRect(r.bottomRight() - QPoint(radius, radius), sz),
+                    QRect(r.bottomLeft() - QPoint(0, radius), sz),
                 ]
 
         qwtFillBackground(painter, canvas, rects)
@@ -586,6 +586,7 @@ class QwtPlotCanvas(QFrame):
         if (
             self.testPaintAttribute(self.BackingStore)
             and self.__data.backingStore is not None
+            and not self.__data.backingStore.isNull()
         ):
             bs = self.__data.backingStore
             pixelRatio = bs.devicePixelRatio()

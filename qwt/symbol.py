@@ -103,7 +103,7 @@ def qwtDrawSvgSymbols(painter, points, renderer, symbol):
         renderer.render(painter, QRectF(x, y, sz.width(), sz.height()))
 
 
-def qwtDrawGraphicSymbols(painter, points, numPoint, graphic, symbol):
+def qwtDrawGraphicSymbols(painter, points, graphic, symbol):
     pointRect = QRectF(graphic.controlPointRect())
     if pointRect.isEmpty():
         return
@@ -179,7 +179,7 @@ def qwtDrawDiamondSymbols(painter, points, symbol):
         painter.drawPolygon(polygon)
 
 
-def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
+def qwtDrawTriangleSymbols(painter, type, points, symbol):
     size = symbol.size()
     pen = QPen(symbol.pen())
     pen.setJoinStyle(Qt.MiterJoin)
