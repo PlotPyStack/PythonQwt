@@ -13,11 +13,8 @@ QwtPlotDirectPainter
    :members:
 """
 
+from qtpy.QtCore import QEvent, QObject, Qt
 from qtpy.QtGui import QPainter, QRegion
-from qtpy.QtCore import QObject, Qt, QEvent
-from qtpy import QtCore as QC
-
-QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
 
 from qwt.plot import QwtPlotItem
 from qwt.plot_canvas import QwtPlotCanvas
@@ -222,13 +219,7 @@ class QwtPlotDirectPainter(QObject):
             if self.testAttribute(self.FullRepaint):
                 plotCanvas.repaint()
                 return
-        immediatePaint = True
-        if not canvas.testAttribute(Qt.WA_WState_InPaintEvent):
-            if QT_MAJOR_VERSION >= 5 or not canvas.testAttribute(
-                Qt.WA_PaintOutsidePaintEvent
-            ):
-                immediatePaint = False
-        if immediatePaint:
+        if canvas.testAttribute(Qt.WA_WState_InPaintEvent):
             if not self.__data.painter.isActive():
                 self.reset()
                 self.__data.painter.begin(canvas)

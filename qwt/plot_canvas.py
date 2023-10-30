@@ -15,7 +15,6 @@ QwtPlotCanvas
 
 import os
 
-from qtpy import QtCore as QC
 from qtpy.QtCore import QEvent, QPointF, QRect, QRectF, QSizeF, Qt
 from qtpy.QtGui import (
     QBrush,
@@ -35,7 +34,6 @@ from qtpy.QtWidgets import QFrame, QStyle, QStyleOption, QStyleOptionFrame
 from qwt.null_paintdevice import QwtNullPaintDevice
 from qwt.painter import QwtPainter
 
-QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
 QT_API = os.environ["QT_API"]
 
 
@@ -491,10 +489,7 @@ class QwtPlotCanvas(QFrame):
                 if self.__data.backingStore is None:
                     self.__data.backingStore = QPixmap()
                 if self.isVisible():
-                    if QT_MAJOR_VERSION >= 5:
-                        self.__data.backingStore = self.grab(self.rect())
-                    else:
-                        self.__data.backingStore = QPixmap.grabWidget(self, self.rect())
+                    self.__data.backingStore = self.grab(self.rect())
             else:
                 self.__data.backingStore = None
         elif attribute == self.Opaque:
@@ -593,10 +588,7 @@ class QwtPlotCanvas(QFrame):
             and self.__data.backingStore is not None
         ):
             bs = self.__data.backingStore
-            if QT_MAJOR_VERSION >= 5:
-                pixelRatio = bs.devicePixelRatio()
-            else:
-                pixelRatio = 1.0
+            pixelRatio = bs.devicePixelRatio()
             if bs.size() != self.size() * pixelRatio:
                 bs = QwtPainter.backingStore(self, self.size())
                 if self.testAttribute(Qt.WA_StyledBackground):

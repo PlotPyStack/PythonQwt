@@ -9,20 +9,20 @@
 SHOW = True  # Show test in GUI-based test launcher
 
 import os
-import numpy as np
 
-from qtpy.QtWidgets import QApplication, QWidget, QMainWindow, QToolBar, QWhatsThis
-from qtpy.QtGui import QPen, QBrush, QColor, QPainter, QPixmap
-from qtpy.QtCore import QSize, QEvent, Signal, QRect, QObject, Qt, QPoint
+import numpy as np
+from qtpy.QtCore import QEvent, QObject, QPoint, QRect, QSize, Qt, Signal
+from qtpy.QtGui import QBrush, QColor, QPainter, QPen, QPixmap
+from qtpy.QtWidgets import QApplication, QMainWindow, QToolBar, QWhatsThis, QWidget
 
 from qwt import (
     QwtPlot,
+    QwtPlotCanvas,
+    QwtPlotCurve,
+    QwtPlotGrid,
+    QwtScaleDiv,
     QwtScaleDraw,
     QwtSymbol,
-    QwtPlotGrid,
-    QwtPlotCurve,
-    QwtPlotCanvas,
-    QwtScaleDiv,
 )
 from qwt.tests import utils
 
@@ -67,10 +67,7 @@ class ColorBar(QWidget):
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
-            if QT_API in ("pyqt4", "pyside2"):
-                pm = QPixmap.grabWidget(self)
-            else:
-                pm = self.grab()
+            pm = self.grab()
             color = QColor()
             color.setRgb(pm.toImage().pixel(event.x(), event.y()))
             self.colorSelected.emit(color)

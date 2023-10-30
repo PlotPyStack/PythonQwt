@@ -6,13 +6,12 @@
 
 """Qt helpers"""
 
-import os.path as osp
 import os
+import os.path as osp
 
+from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
-from qtpy import QtCore as QC
-
 
 QT_API = os.environ["QT_API"]
 
@@ -48,10 +47,7 @@ def take_screenshot(widget, path, size=None, quit=True):
         widget.resize(*size)
     widget.show()
     QW.QApplication.processEvents()
-    if QT_API in ("pyqt4", "pyside2"):
-        pixmap = QG.QPixmap.grabWidget(widget)
-    else:
-        pixmap = widget.grab()
+    pixmap = widget.grab()
     pixmap.save(path)
     if quit:
         QC.QTimer.singleShot(0, QW.QApplication.instance().quit)

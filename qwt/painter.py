@@ -32,8 +32,6 @@ from qtpy.QtWidgets import QFrame, QStyle, QStyleOption, QStyleOptionFocusRect
 from qwt.color_map import QwtColorMap
 from qwt.scale_map import QwtScaleMap
 
-QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
-
 QWIDGETSIZE_MAX = (1 << 24) - 1
 
 
@@ -443,25 +441,19 @@ class QwtPainterClass(object):
         :param QSize size: Size of the pixmap
         :return: A pixmap that can be used as backing store
         """
-        if QT_MAJOR_VERSION >= 5:
-            pixelRatio = 1.0
-            if widget and widget.windowHandle():
-                pixelRatio = widget.windowHandle().devicePixelRatio()
-            else:
-                from qtpy.QtGui import qApp
-
-                if qApp is not None:
-                    try:
-                        pixelRatio = qApp.devicePixelRatio()
-                    except RuntimeError:
-                        pass
-            pm = QPixmap(size * pixelRatio)
-            pm.setDevicePixelRatio(pixelRatio)
+        pixelRatio = 1.0
+        if widget and widget.windowHandle():
+            pixelRatio = widget.windowHandle().devicePixelRatio()
         else:
-            pm = QPixmap(size)
-        if QT_MAJOR_VERSION < 5 and widget and isX11GraphicsSystem():
-            if pm.x11Info().screen() != widget.x11Info().screen():
-                pm.x11SetScreen(widget.x11Info().screen())
+            from qtpy.QtGui import qApp
+
+            if qApp is not None:
+                try:
+                    pixelRatio = qApp.devicePixelRatio()
+                except RuntimeError:
+                    pass
+        pm = QPixmap(size * pixelRatio)
+        pm.setDevicePixelRatio(pixelRatio)
         return pm
 
 
