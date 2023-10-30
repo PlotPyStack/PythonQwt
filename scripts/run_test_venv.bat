@@ -13,7 +13,8 @@ call %SCRIPTPATH%\build_dist
 set PYTHONPATH=
 call %FUNC% UsePython
 call :TestEnv PyQt5
-call :TestEnv PySide2
+call :TestEnv PyQt6
+call :TestEnv PySide6
 set UNATTENDED=
 call %FUNC% EndOfScript
 exit /B %ERRORLEVEL%

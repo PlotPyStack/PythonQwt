@@ -8,20 +8,11 @@
 
 SHOW = True  # Show test in GUI-based test launcher
 
-import os
 import time
 
 # Local imports
 from qwt.tests import test_curvebenchmark1 as cb
 from qwt.tests import utils
-
-if os.environ.get("USE_PYQWT5", False):
-    USE_PYQWT5 = True
-    from PyQt4.Qwt5 import QwtPlot, QwtPlotCurve
-else:
-    USE_PYQWT5 = False
-    from qwt import QwtPlot, QwtPlotCurve  # analysis:ignore
-
 
 NCOLS, NROWS = 6, 5
 NPLOTS = NCOLS * NROWS * 5 * 3

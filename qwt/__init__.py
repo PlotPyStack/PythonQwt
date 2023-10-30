@@ -4,13 +4,13 @@
 # Copyright (c) 2002 Uwe Rathmann, for the original C++ code
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
+
 """
 PythonQwt
 =========
 
 The ``PythonQwt`` package is a 2D-data plotting library using Qt graphical
-user interfaces for the Python programming language. It is compatible with
-``PyQt4``, ``PyQt5``, ``PyQt6`` and ``PySide6``.
+user interfaces for the Python programming language.
 
 It consists of a single Python package named `qwt` which is a pure Python
 implementation of Qwt C++ library with some limitations.
@@ -27,42 +27,36 @@ External resources:
 .. _GitHub: https://github.com/PlotPyStack/PythonQwt
 """
 
-__version__ = "0.10.6"
+__version__ = "0.11.0"
 QWT_VERSION_STR = "6.1.5"
 
 import warnings
 
+from qwt.color_map import QwtLinearColorMap
+from qwt.interval import QwtInterval
+from qwt.legend import QwtLegend, QwtLegendData, QwtLegendLabel
+from qwt.painter import QwtPainter
 from qwt.plot import QwtPlot
-from qwt.symbol import QwtSymbol as QSbl  # see deprecated section
-from qwt.scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine
-from qwt.text import QwtText
 from qwt.plot_canvas import QwtPlotCanvas
 from qwt.plot_curve import QwtPlotCurve as QPC  # see deprecated section
 from qwt.plot_curve import QwtPlotItem
-from qwt.scale_map import QwtScaleMap
-from qwt.interval import QwtInterval
-from qwt.legend import QwtLegend, QwtLegendData, QwtLegendLabel
-from qwt.plot_marker import QwtPlotMarker
-from qwt.plot_grid import QwtPlotGrid as QPG  # see deprecated section
-from qwt.color_map import QwtLinearColorMap
-
-from qwt.toqimage import array_to_qimage as toQImage
-
-from qwt.scale_div import QwtScaleDiv
-from qwt.scale_draw import QwtScaleDraw
-from qwt.scale_draw import QwtAbstractScaleDraw
-from qwt.painter import QwtPainter
-
-from qwt.plot_series import (
-    QwtSeriesData,
-    QwtPointArrayData,
-    QwtSeriesStore,
-    QwtPlotSeriesItem,
-)
-
-from qwt.plot_renderer import QwtPlotRenderer
-
 from qwt.plot_directpainter import QwtPlotDirectPainter
+from qwt.plot_grid import QwtPlotGrid as QPG  # see deprecated section
+from qwt.plot_marker import QwtPlotMarker
+from qwt.plot_renderer import QwtPlotRenderer
+from qwt.plot_series import (
+    QwtPlotSeriesItem,
+    QwtPointArrayData,
+    QwtSeriesData,
+    QwtSeriesStore,
+)
+from qwt.scale_div import QwtScaleDiv
+from qwt.scale_draw import QwtAbstractScaleDraw, QwtScaleDraw
+from qwt.scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine
+from qwt.scale_map import QwtScaleMap
+from qwt.symbol import QwtSymbol as QSbl  # see deprecated section
+from qwt.text import QwtText
+from qwt.toqimage import array_to_qimage as toQImage
 
 
 ## ============================================================================

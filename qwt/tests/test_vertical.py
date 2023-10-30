@@ -9,51 +9,28 @@
 SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
-
-from qtpy.QtGui import QPen, QPalette, QColor
 from qtpy.QtCore import Qt
+from qtpy.QtGui import QColor, QPalette, QPen
 
-import os
-
+from qwt import QwtPlot, QwtPlotCurve, QwtPlotMarker, QwtText
 from qwt.tests import utils
-
-if os.environ.get("USE_PYQWT5", False):
-    USE_PYQWT5 = True
-    from PyQt4.Qwt5 import QwtPlot, QwtPlotCurve, QwtPlotMarker, QwtText
-else:
-    USE_PYQWT5 = False
-    from qwt import QwtPlot, QwtPlotCurve, QwtPlotMarker, QwtText  # analysis:ignore
 
 
 class VerticalPlot(QwtPlot):
     def __init__(self, parent=None):
         super(VerticalPlot, self).__init__(parent)
-        self.setWindowTitle("PyQwt" if USE_PYQWT5 else "PythonQwt")
+        self.setWindowTitle("PythonQwt")
         self.enableAxis(self.xTop, True)
         self.enableAxis(self.yRight, True)
         y = np.linspace(0, 10, 500)
         curve1 = QwtPlotCurve.make(np.sin(y), y, title="Test Curve 1")
-        curve2 = QwtPlotCurve.make(y ** 3, y, title="Test Curve 2")
-        if USE_PYQWT5:
-            # PyQwt
-            curve2.setAxis(self.xTop, self.yRight)
-            self.canvas().setFrameStyle(0)
-            self.plotLayout().setCanvasMargin(0)
-            self.axisWidget(QwtPlot.yLeft).setMargin(0)
-            self.axisWidget(QwtPlot.xTop).setMargin(0)
-            self.axisWidget(QwtPlot.yRight).setMargin(0)
-            self.axisWidget(QwtPlot.xBottom).setMargin(0)
-        else:
-            # PythonQwt
-            curve2.setAxes(self.xTop, self.yRight)
+        curve2 = QwtPlotCurve.make(y**3, y, title="Test Curve 2")
+        curve2.setAxes(self.xTop, self.yRight)
 
         for item, col, xa, ya in (
             (curve1, Qt.green, self.xBottom, self.yLeft),
             (curve2, Qt.red, self.xTop, self.yRight),
         ):
-            if not USE_PYQWT5:
-                # PythonQwt
-                item.setOrientation(Qt.Vertical)
             item.attach(self)
             item.setPen(QPen(col))
             for axis_id in xa, ya:

@@ -5,11 +5,11 @@ Dependencies
 ------------
 
 Requirements:
-    * Python 3.x (x>=6)
-    * PyQt4 4.x (x>=4), PyQt5 5.x (x>=5), PyQt6 or PySide6
-    * QtPy >= 1.3
-    * NumPy 1.x (x>=5)
-    * Sphinx 1.x (x>=1) for documentation generation
+    * Python 3.8 or higher
+    * PyQt5 5.15, PyQt6 or PySide6
+    * QtPy 1.9 or higher
+    * NumPy 1.21 or higher
+    * Sphinx for documentation generation
     * pytest, pytest-cov, pytest-qt, coverage for unit testing
 
 Installation
@@ -17,7 +17,7 @@ Installation
 
 From the source package:
 
-    `python setup.py install`
+    `python -m build`
 
 Help and support
 ----------------

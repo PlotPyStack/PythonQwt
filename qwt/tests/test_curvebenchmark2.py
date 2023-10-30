@@ -12,13 +12,9 @@ import time
 
 from qtpy.QtCore import Qt
 
+from qwt import QwtSymbol
 from qwt.tests import test_curvebenchmark1 as cb
 from qwt.tests import utils
-
-if cb.USE_PYQWT5:
-    from PyQt4.Qwt5 import QwtSymbol
-else:
-    from qwt import QwtSymbol  # analysis:ignore
 
 
 class CSWidget(cb.BMWidget):

@@ -89,17 +89,17 @@ for more details on API limitations when comparing to Qwt.
 
 The `qwt` package short-term roadmap is the following:
 
-- [ ] Drop support for PyQt4 and PySide2
-- [ ] Drop support for Python < 3.8
-- [ ] Replace `setup.py` by `pyproject.toml`, using `setuptools` (e.g. see `guidata`)
+- [X] Drop support for PyQt4 and PySide2
+- [X] Drop support for Python < 3.8
+- [X] Replace `setup.py` by `pyproject.toml`, using `setuptools` (e.g. see `guidata`)
 - [ ] Add more unit tests: the ultimate goal is to reach 90% code coverage
 
 ## Dependencies
 
 ### Requirements
 
-- Python >=3.4
-- PyQt4, PyQt5, PyQt6 or PySide6
+- Python >=3.8
+- PyQt5, PyQt6 or PySide6
 - QtPy >= 1.3
 - NumPy >= 1.5
 
@@ -113,7 +113,7 @@ The `qwt` package short-term roadmap is the following:
 From the source package:
 
 ```bash
-python setup.py install
+python -m build
 ```
 
 ## Copyrights

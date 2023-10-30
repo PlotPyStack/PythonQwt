@@ -8,7 +8,6 @@
 
 SHOW = True  # Show test in GUI-based test launcher
 
-import os
 import time
 
 import numpy as np
@@ -23,15 +22,8 @@ from qtpy.QtWidgets import (
     QWidget,
 )
 
+from qwt import QwtPlot, QwtPlotCurve
 from qwt.tests import utils
-
-if os.environ.get("USE_PYQWT5", False):
-    USE_PYQWT5 = True
-    from PyQt4.Qwt5 import QwtPlot, QwtPlotCurve
-else:
-    USE_PYQWT5 = False
-    from qwt import QwtPlot, QwtPlotCurve  # analysis:ignore
-
 
 COLOR_INDEX = None
 
@@ -115,7 +107,7 @@ class BMText(QTextEdit):
     def __init__(self, parent=None, title=None):
         super(BMText, self).__init__(parent)
         self.setReadOnly(True)
-        library = "PyQwt5" if USE_PYQWT5 else "PythonQwt"
+        library = "PythonQwt"
         wintitle = self.parent().windowTitle()
         if not wintitle:
             wintitle = "Benchmark"
@@ -177,7 +169,7 @@ class CurveBenchmark1(QMainWindow):
         max_n = 1000 if unattended else max_n
         iterations = 0 if unattended else 4
         for idx in range(iterations, -1, -1):
-            points = int(max_n / 10 ** idx)
+            points = int(max_n / 10**idx)
             t0 = time.time()
             widget = BMWidget(2, points, **kwargs)
             title = "%d points" % points

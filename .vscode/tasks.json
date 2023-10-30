@@ -201,9 +201,36 @@
             "dependsOrder": "sequence",
             "dependsOn": [
                 "Clean Up",
-                "Take screenshots",
-                "Build documentation"
             ]
+        },
+        {
+            "label": "Run test venv",
+            "type": "shell",
+            "command": "cmd",
+            "options": {
+                "cwd": "scripts",
+                "env": {
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "UNATTENDED": "1"
+                }
+            },
+            "args": [
+                "/c",
+                "run_test_venv.bat"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
         },
     ]
 }

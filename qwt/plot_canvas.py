@@ -30,20 +30,13 @@ from qtpy.QtGui import (
     QRegion,
     qAlpha,
 )
-from qtpy.QtWidgets import QFrame, QStyle, QStyleOption
+from qtpy.QtWidgets import QFrame, QStyle, QStyleOption, QStyleOptionFrame
 
 from qwt.null_paintdevice import QwtNullPaintDevice
 from qwt.painter import QwtPainter
 
 QT_MAJOR_VERSION = int(QC.__version__.split(".")[0])
 QT_API = os.environ["QT_API"]
-
-if QT_API in ("pyqt", "pyqt4"):
-    from PyQt4.QtGui import QStyleOptionFrameV3 as QStyleOptionFrame
-elif QT_API == "pyside2":
-    from PySide2.QtWidgets import QStyleOptionFrame
-else:
-    from qtpy.QtWidgets import QStyleOptionFrame
 
 
 class Border(object):

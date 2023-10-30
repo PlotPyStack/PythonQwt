@@ -1,5 +1,10 @@
 # PythonQwt Releases
 
+## Version 0.11.0
+
+- Dropped support for Python 3.7 and earlier.
+- Dropped support for PyQt4 and PySide2.
+
 ## Version 0.10.6
 
 - Qt6 support:

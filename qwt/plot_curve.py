@@ -13,32 +13,29 @@ QwtPlotCurve
    :members:
 """
 
-import os
 import math
+import os
 
-from qwt.text import QwtText
-from qwt.plot import QwtPlot, QwtPlotItem, QwtPlotItem_PrivateData
+from qtpy.QtCore import QLineF, QPointF, QRectF, QSize, Qt
+from qtpy.QtGui import QBrush, QColor, QPainter, QPen, QPolygonF
+
 from qwt._math import qwtSqr
 from qwt.graphic import QwtGraphic
+from qwt.plot import QwtPlot, QwtPlotItem, QwtPlotItem_PrivateData
+from qwt.plot_directpainter import QwtPlotDirectPainter
 from qwt.plot_series import (
     QwtPlotSeriesItem,
-    QwtSeriesStore,
-    QwtSeriesData,
     QwtPointArrayData,
+    QwtSeriesData,
+    QwtSeriesStore,
 )
-from qwt.symbol import QwtSymbol
-from qwt.plot_directpainter import QwtPlotDirectPainter
 from qwt.qthelpers import qcolor_from_str
-
-from qtpy.QtGui import QPen, QBrush, QPainter, QPolygonF, QColor
-from qtpy.QtCore import QSize, Qt, QRectF, QPointF, QLineF
+from qwt.symbol import QwtSymbol
+from qwt.text import QwtText
 
 QT_API = os.environ["QT_API"]
 
-if QT_API == "pyside2":
-    import shiboken2 as shiboken
-    import ctypes
-elif QT_API == "pyside6":
+if QT_API == "pyside6":
     import shiboken6 as shiboken
     import ctypes
 
@@ -71,7 +68,7 @@ def array2d_to_qpolygonf(xdata, ydata):
     """
     Utility function to convert two 1D-NumPy arrays representing curve data
     (X-axis, Y-axis data) into a single polyline (QtGui.PolygonF object).
-    This feature is compatible with PyQt4, PyQt5 and PySide2 (requires QtPy).
+    This feature is compatible with PyQt5 and PySide6 (requires QtPy).
 
     License/copyright: MIT License © Pierre Raybaut 2020-2021.
 
@@ -84,14 +81,11 @@ def array2d_to_qpolygonf(xdata, ydata):
         raise ValueError("Arguments must be 1D NumPy arrays with same size")
     size = xdata.size
     if QT_API.startswith("pyside"):  # PySide (obviously...)
-        if QT_API == "pyside2":
-            polyline = QPolygonF(size)
-        else:
-            polyline = QPolygonF()
-            polyline.resize(size)
+        polyline = QPolygonF()
+        polyline.resize(size)
         address = shiboken.getCppPointer(polyline.data())[0]
         buffer = (ctypes.c_double * 2 * size).from_address(address)
-    else:  # PyQt4, PyQt5
+    else:  # PyQt
         if QT_API == "pyqt6":
             polyline = QPolygonF([QPointF(0, 0)] * size)
         else:

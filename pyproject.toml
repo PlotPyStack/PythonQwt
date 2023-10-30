@@ -1,0 +1,56 @@
+# PythonQwt setup configuration file
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PythonQwt"
+authors = [{ name = "Pierre Raybaut", email = "pierre.raybaut@gmail.com" }]
+description = "Qt plotting widgets for Python"
+readme = "README.md"
+license = { file = "LICENSE" }
+classifiers = [
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Software Development :: Widget Sets",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Utilities",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
+    "Topic :: Software Development :: User Interfaces",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: OS Independent",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+requires-python = ">=3.8, <4"
+dependencies = ["NumPy>=1.21", "QtPy>=1.9"]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/PlotPyStack/PythonQwt/"
+Documentation = "https://PythonQwt.readthedocs.io/en/latest/"
+
+[project.gui-scripts]
+PythonQwt-tests = "qwt.tests:run"
+
+[project.optional-dependencies]
+dev = ["black", "isort", "pylint", "Coverage"]
+doc = ["PyQt5", "sphinx>6", "python-docs-theme"]
+test = ["pytest", "pytest-cov", "pytest-qt", "pytest-xvfb"]
+
+[tool.setuptools.packages.find]
+include = ["qwt*"]
+
+[tool.setuptools.package-data]
+"*" = ["*.png", "*.svg", "*.mo", "*.cfg", "*.toml"]
+
+[tool.setuptools.dynamic]
+version = { attr = "qwt.__version__" }
