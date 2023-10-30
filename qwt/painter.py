@@ -66,12 +66,6 @@ def qwtFillRect(widget, painter, rect, brush):
 class QwtPainterClass(object):
     """A collection of `QPainter` workarounds"""
 
-    def drawImage(self, painter, rect, image):
-        painter.drawImage(rect, image)
-
-    def drawPixmap(self, painter, rect, pixmap):
-        painter.drawPixmap(rect, pixmap)
-
     def drawFocusRect(self, *args):
         if len(args) == 2:
             painter, widget = args
@@ -90,40 +84,6 @@ class QwtPainterClass(object):
                 "QwtPainter.drawFocusRect() takes 2 or 3 argument"
                 "(s) (%s given)" % len(args)
             )
-
-    def drawRoundFrame(self, painter, rect, palette, lineWidth, frameStyle):
-        """
-        Draw a round frame
-
-        :param QPainter painter: Painter
-        :param QRectF rect: Target rectangle
-        :param QPalette palette: `QPalette.WindowText` is used for plain borders, `QPalette.Dark` and `QPalette.Light` for raised or sunken borders
-        :param int lineWidth: Line width
-        :param int frameStyle: bitwise OR´ed value of `QFrame.Shape` and `QFrame.Shadow`
-        """
-        Plain, Sunken, Raised = list(range(3))
-        style = Plain
-        if (frameStyle & QFrame.Sunken) == QFrame.Sunken:
-            style = Sunken
-        elif (frameStyle & QFrame.Raised) == QFrame.Raised:
-            style = Raised
-        lw2 = 0.5 * lineWidth
-        r = rect.adjusted(lw2, lw2, -lw2, -lw2)
-        if style != Plain:
-            c1 = palette.color(QPalette.Light)
-            c2 = palette.color(QPalette.Dark)
-            if style == Sunken:
-                c1, c2 = c2, c1
-            gradient = QLinearGradient(r.topLeft(), r.bottomRight())
-            gradient.setColorAt(0.0, c1)
-            gradient.setColorAt(1.0, c2)
-            brush = QBrush(gradient)
-        else:
-            brush = palette.brush(QPalette.WindowText)
-        painter.save()
-        painter.setPen(QPen(brush, lineWidth))
-        painter.drawEllipse(r)
-        painter.restore()
 
     def drawFrame(
         self,

@@ -28,7 +28,6 @@ from qtpy.QtGui import (
 from qtpy.QtSvg import QSvgRenderer
 
 from qwt.graphic import QwtGraphic
-from qwt.painter import QwtPainter
 
 
 class QwtTriangle(object):
@@ -78,7 +77,7 @@ def qwtDrawPixmapSymbols(painter, points, symbol):
     painter.resetTransform()
     for pos in points:
         pos = QPointF(transform.map(pos)) - pinPoint
-        QwtPainter.drawPixmap(painter, QRect(pos.toPoint(), pm.size()), pm)
+        painter.drawPixmap(QRect(pos.toPoint(), pm.size()), pm)
 
 
 def qwtDrawSvgSymbols(painter, points, renderer, symbol):

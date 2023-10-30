@@ -221,6 +221,7 @@ and [ImagePlotDemo.py](qwt/tests/ImagePlotDemo.py)
 implemented (fitting, rounding, weeding out points, clipping, etc.)
 - Added `QwtScaleDraw.setLabelAutoSize`/`labelAutoSize` methods to set the new
 auto size option (see [documentation](http://pythonhosted.org/PythonQwt/))
+- `QwtPainter`: removed unused methods `drawRoundFrame`, `drawImage` and `drawPixmap`
 
 ## Version 0.4.0
 
