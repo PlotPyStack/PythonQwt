@@ -344,7 +344,7 @@ class QwtPainterClass(object):
                 pmPainter.setPen(c)
                 pmPainter.drawLine(QLineF(devRect.left(), y, devRect.right(), y))
         pmPainter.end()
-        self.drawPixmap(painter, devRect, pixmap)
+        painter.drawPixmap(devRect, pixmap)
 
     def fillPixmap(self, widget, pixmap, offset=None):
         """

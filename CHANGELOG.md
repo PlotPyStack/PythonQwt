@@ -2,7 +2,7 @@
 
 ## Version 0.11.1 (work in progress)
 
-- ...
+- Fixed remaining `QwtPainter.drawPixmap` call
 
 ## Version 0.11.0
 
