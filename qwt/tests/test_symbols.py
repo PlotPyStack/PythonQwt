@@ -193,9 +193,9 @@ def test_svg():
 
 
 if __name__ == "__main__":
-    test_base()
+    # test_base()
     test_builtin()
-    test_graphic()
-    test_pixmap()
-    test_path()
-    test_svg()
+    # test_graphic()
+    # test_pixmap()
+    # test_path()
+    # test_svg()
