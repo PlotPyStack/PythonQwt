@@ -2,8 +2,9 @@
 
 ## Version 0.11.0
 
-- Dropped support for Python 3.7 and earlier.
-- Dropped support for PyQt4 and PySide2.
+- Dropped support for Python 3.7 and earlier
+- Dropped support for PyQt4 and PySide2
+- Removed unnecessary argument `numPoints` in `QwtSymbol.drawSymbols` and `QwtSymbol.renderSymbols` methods
 
 ## Version 0.10.6
 

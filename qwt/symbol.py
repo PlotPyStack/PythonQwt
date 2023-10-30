@@ -61,7 +61,7 @@ def qwtScaleBoundingRect(graphic, size):
     return graphic.scaledBoundingRect(sx, sy)
 
 
-def qwtDrawPixmapSymbols(painter, points, numPoints, symbol):
+def qwtDrawPixmapSymbols(painter, points, symbol):
     size = symbol.size()
     if size.isEmpty():
         size = symbol.pixmap().size()
@@ -81,7 +81,7 @@ def qwtDrawPixmapSymbols(painter, points, numPoints, symbol):
         QwtPainter.drawPixmap(painter, QRect(pos.toPoint(), pm.size()), pm)
 
 
-def qwtDrawSvgSymbols(painter, points, numPoints, renderer, symbol):
+def qwtDrawSvgSymbols(painter, points, renderer, symbol):
     if renderer is None or not renderer.isValid():
         return
     viewBox = QRectF(renderer.viewBoxF())
@@ -127,7 +127,7 @@ def qwtDrawGraphicSymbols(painter, points, numPoint, graphic, symbol):
     painter.setTransform(transform)
 
 
-def qwtDrawEllipseSymbols(painter, points, numPoints, symbol):
+def qwtDrawEllipseSymbols(painter, points, symbol):
     painter.setBrush(symbol.brush())
     painter.setPen(symbol.pen())
     size = symbol.size()
@@ -142,7 +142,7 @@ def qwtDrawEllipseSymbols(painter, points, numPoints, symbol):
         painter.drawEllipse(r)
 
 
-def qwtDrawRectSymbols(painter, points, numPoints, symbol):
+def qwtDrawRectSymbols(painter, points, symbol):
     size = symbol.size()
     pen = QPen(symbol.pen())
     pen.setJoinStyle(Qt.MiterJoin)
@@ -160,7 +160,7 @@ def qwtDrawRectSymbols(painter, points, numPoints, symbol):
         painter.drawRect(r)
 
 
-def qwtDrawDiamondSymbols(painter, points, numPoints, symbol):
+def qwtDrawDiamondSymbols(painter, points, symbol):
     size = symbol.size()
     pen = QPen(symbol.pen())
     pen.setJoinStyle(Qt.MiterJoin)
@@ -207,7 +207,7 @@ def qwtDrawTriangleSymbols(painter, type, points, numPoint, symbol):
         painter.drawPolygon(QPolygonF(triangle))
 
 
-def qwtDrawLineSymbols(painter, orientations, points, numPoints, symbol):
+def qwtDrawLineSymbols(painter, orientations, points, symbol):
     size = symbol.size()
     pen = QPen(symbol.pen())
     if pen.width() > 1:
@@ -229,7 +229,7 @@ def qwtDrawLineSymbols(painter, orientations, points, numPoints, symbol):
             painter.drawLine(QLineF(x, y, x, y + sh))
 
 
-def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
+def qwtDrawXCrossSymbols(painter, points, symbol):
     size = symbol.size()
     pen = QPen(symbol.pen())
     if pen.width() > 1:
@@ -248,7 +248,7 @@ def qwtDrawXCrossSymbols(painter, points, numPoints, symbol):
         painter.drawLine(QLineF(x2, y1, x1, y2))
 
 
-def qwtDrawStar1Symbols(painter, points, numPoints, symbol):
+def qwtDrawStar1Symbols(painter, points, symbol):
     size = symbol.size()
     painter.setPen(symbol.pen())
     sqrt1_2 = math.sqrt(0.5)
@@ -267,7 +267,7 @@ def qwtDrawStar1Symbols(painter, points, numPoints, symbol):
         painter.drawLine(QLineF(r.left(), c.y(), r.right(), c.y()))
 
 
-def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
+def qwtDrawStar2Symbols(painter, points, symbol):
     pen = QPen(symbol.pen())
     if pen.width() > 1:
         pen.setCapStyle(Qt.FlatCap)
@@ -309,7 +309,7 @@ def qwtDrawStar2Symbols(painter, points, numPoints, symbol):
         painter.drawPolygon(QPolygonF(star))
 
 
-def qwtDrawHexagonSymbols(painter, points, numPoints, symbol):
+def qwtDrawHexagonSymbols(painter, points, symbol):
     painter.setBrush(symbol.brush())
     painter.setPen(symbol.pen())
     cos30 = math.cos(30 * math.pi / 180.0)
@@ -1030,7 +1030,7 @@ class QwtSymbol(object):
         """
         return self.__data.isPinPointEnabled
 
-    def drawSymbols(self, painter, points, numPoints=None):
+    def drawSymbols(self, painter, points):
         """
         Render an array of symbols
 
@@ -1041,11 +1041,8 @@ class QwtSymbol(object):
         :param QPainter painter: Painter
         :param QPolygonF points: Positions of the symbols in screen coordinates
         """
-        # TODO: remove argument numPoints (not necessary in `PythonQwt`)
-        if numPoints is not None and numPoints <= 0:
-            return
         painter.save()
-        self.renderSymbols(painter, points, numPoints)
+        self.renderSymbols(painter, points)
         painter.restore()
 
     def drawSymbol(self, painter, point_or_rect):
@@ -1103,68 +1100,53 @@ class QwtSymbol(object):
             self.__data.isPinPointEnabled = isPinPointEnabled
             painter.restore()
 
-    def renderSymbols(self, painter, points, numPoints=None):
+    def renderSymbols(self, painter, points):
         """
         Render the symbol to series of points
 
         :param QPainter painter: Painter
         :param point_or_rect: Positions of the symbols
         """
-        # TODO: remove argument numPoints (not necessary in `PythonQwt`)
-        try:
-            assert numPoints is None
-        except AssertionError:
-            raise RuntimeError(
-                "argument numPoints is not implemented " "in `PythonQwt`"
-            )
         if self.__data.style == QwtSymbol.Ellipse:
-            qwtDrawEllipseSymbols(painter, points, numPoints, self)
+            qwtDrawEllipseSymbols(painter, points, self)
         elif self.__data.style == QwtSymbol.Rect:
-            qwtDrawRectSymbols(painter, points, numPoints, self)
+            qwtDrawRectSymbols(painter, points, self)
         elif self.__data.style == QwtSymbol.Diamond:
-            qwtDrawDiamondSymbols(painter, points, numPoints, self)
+            qwtDrawDiamondSymbols(painter, points, self)
         elif self.__data.style == QwtSymbol.Cross:
-            qwtDrawLineSymbols(
-                painter, Qt.Horizontal | Qt.Vertical, points, numPoints, self
-            )
+            qwtDrawLineSymbols(painter, Qt.Horizontal | Qt.Vertical, points, self)
         elif self.__data.style == QwtSymbol.XCross:
-            qwtDrawXCrossSymbols(painter, points, numPoints, self)
+            qwtDrawXCrossSymbols(painter, points, self)
         elif self.__data.style in (QwtSymbol.Triangle, QwtSymbol.UTriangle):
-            qwtDrawTriangleSymbols(painter, QwtTriangle.Up, points, numPoints, self)
+            qwtDrawTriangleSymbols(painter, QwtTriangle.Up, points, self)
         elif self.__data.style == QwtSymbol.DTriangle:
-            qwtDrawTriangleSymbols(painter, QwtTriangle.Down, points, numPoints, self)
+            qwtDrawTriangleSymbols(painter, QwtTriangle.Down, points, self)
         elif self.__data.style == QwtSymbol.RTriangle:
-            qwtDrawTriangleSymbols(painter, QwtTriangle.Right, points, numPoints, self)
+            qwtDrawTriangleSymbols(painter, QwtTriangle.Right, points, self)
         elif self.__data.style == QwtSymbol.LTriangle:
-            qwtDrawTriangleSymbols(painter, QwtTriangle.Left, points, numPoints, self)
+            qwtDrawTriangleSymbols(painter, QwtTriangle.Left, points, self)
         elif self.__data.style == QwtSymbol.HLine:
-            qwtDrawLineSymbols(painter, Qt.Horizontal, points, numPoints, self)
+            qwtDrawLineSymbols(painter, Qt.Horizontal, points, self)
         elif self.__data.style == QwtSymbol.VLine:
-            qwtDrawLineSymbols(painter, Qt.Vertical, points, numPoints, self)
+            qwtDrawLineSymbols(painter, Qt.Vertical, points, self)
         elif self.__data.style == QwtSymbol.Star1:
-            qwtDrawStar1Symbols(painter, points, numPoints, self)
+            qwtDrawStar1Symbols(painter, points, self)
         elif self.__data.style == QwtSymbol.Star2:
-            qwtDrawStar2Symbols(painter, points, numPoints, self)
+            qwtDrawStar2Symbols(painter, points, self)
         elif self.__data.style == QwtSymbol.Hexagon:
-            qwtDrawHexagonSymbols(painter, points, numPoints, self)
+            qwtDrawHexagonSymbols(painter, points, self)
         elif self.__data.style == QwtSymbol.Path:
             if self.__data.path.graphic.isNull():
                 self.__data.path.graphic = qwtPathGraphic(
                     self.__data.path.path, self.__data.pen, self.__data.brush
                 )
-            qwtDrawGraphicSymbols(
-                painter, points, numPoints, self.__data.path.graphic, self
-            )
+            qwtDrawGraphicSymbols(painter, points, self.__data.path.graphic, self)
         elif self.__data.style == QwtSymbol.Pixmap:
-            qwtDrawPixmapSymbols(painter, points, numPoints, self)
+            qwtDrawPixmapSymbols(painter, points, self)
         elif self.__data.style == QwtSymbol.Graphic:
-            qwtDrawGraphicSymbols(
-                painter, points, numPoints, self.__data.graphic.graphic, self
-            )
+            qwtDrawGraphicSymbols(painter, points, self.__data.graphic.graphic, self)
         elif self.__data.style == QwtSymbol.SvgDocument:
-            qwtDrawSvgSymbols(
-                painter, points, numPoints, self.__data.svg.renderer, self
-            )
+            qwtDrawSvgSymbols(painter, points, self.__data.svg.renderer, self)
 
     def boundingRect(self):
         """
