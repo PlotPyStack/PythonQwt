@@ -28,13 +28,6 @@
         },
         "editor.defaultFormatter": "ms-python.black-formatter"
     },
-    "python.linting.pycodestyleArgs": [
-        "--max-line-length=88",
-        "--ignore=E203,W503"
-    ],
-    "python.linting.pycodestyleEnabled": true,
-    "python.formatting.provider": "none",
-    "esbonio.sphinx.confDir": "",
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.testing.pytestPath": "pytest",
