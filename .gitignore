@@ -5,6 +5,9 @@ qwt/tests/demo.png
 doc.zip
 doctmp/
 
+# Visual Studio Code
+.env
+
 # Created by https://www.gitignore.io/api/python
 
 ### Python ###
