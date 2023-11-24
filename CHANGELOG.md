@@ -1,8 +1,8 @@
 # PythonQwt Releases
 
-## Version 0.11.2 (work in progress)
+## Version 0.11.2
 
-- ...
+- Fixed `TypeError` on `QwtPlotLayout.minimumSizeHint`
 
 ## Version 0.11.1
 
