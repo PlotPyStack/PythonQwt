@@ -15,14 +15,13 @@ QwtPlotLayout
 
 import math
 
-from qwt.text import QwtText
-from qwt.scale_widget import QwtScaleWidget
+from qtpy.QtCore import QRectF, QSize, Qt
+from qtpy.QtGui import QFont, QRegion
+
 from qwt.plot import QwtPlot
 from qwt.scale_draw import QwtAbstractScaleDraw
-
-from qtpy.QtGui import QFont, QRegion
-from qtpy.QtCore import QSize, Qt, QRectF
-
+from qwt.scale_widget import QwtScaleWidget
+from qwt.text import QwtText
 
 QWIDGETSIZE_MAX = (1 << 24) - 1
 
@@ -681,7 +680,7 @@ class QwtPlotLayout(object):
                 if self.__data.legendRatio < 1.0:
                     legendH = min([legendH, int(h / (1.0 - self.__data.legendRatio))])
                 h += legendH + self.__data.spacing
-        return QSize(w, h)
+        return QSize(int(w), int(h))
 
     def layoutLegend(self, options, rect):
         """
