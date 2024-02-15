@@ -396,3 +396,18 @@ class QwtInterval(object):
         if not self.isValid():
             return self
         return QwtInterval(min([value, self.__minValue]), max([value, self.__maxValue]))
+
+    def extend_fraction(self, value):
+        """
+        Extend the interval by a fraction of its width
+
+        :param float value: Fraction
+        :return: extended interval
+        """
+        if not self.isValid():
+            return self
+        return QwtInterval(
+            self.__minValue - value * self.width(),
+            self.__maxValue + value * self.width(),
+            self.__borderFlags,
+        )

@@ -1,5 +1,12 @@
 # PythonQwt Releases
 
+## Version 0.12.0
+
+- Added support for margins in `QwtPlot` (see Issue #82):
+  - Default margins are set to 0.05 (5% of the plot area) at each side of the plot
+  - Margins are adjustable for each plot axis using `QwtPlot.setAxisMargin` (and
+    `QwtPlot.axisMargin` to get the current value)
+
 ## Version 0.11.2
 
 - Fixed `TypeError` on `QwtPlotLayout.minimumSizeHint`

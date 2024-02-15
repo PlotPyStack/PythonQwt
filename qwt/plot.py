@@ -101,6 +101,7 @@ class AxisData(object):
         self.scaleDiv = None  # QwtScaleDiv
         self.scaleEngine = None  # QwtScaleEngine
         self.scaleWidget = None  # QwtScaleWidget
+        self.margin = None  # Margin (float) in %
 
 
 class QwtPlot(QFrame):
@@ -431,6 +432,7 @@ class QwtPlot(QFrame):
             d.scaleWidget.setTitle(text)
 
             d.doAutoScale = True
+            d.margin = 0.05
             d.minValue = 0.0
             d.maxValue = 1000.0
             d.stepSize = 0.0
@@ -585,6 +587,19 @@ class QwtPlot(QFrame):
             return self.__axisData[axisId].stepSize
         else:
             return 0
+
+    def axisMargin(self, axisId):
+        """
+        :param int axisId: Axis index
+        :return: Margin in % of the canvas size
+
+        .. seealso::
+
+            :py:meth:`setAxisMargin()`
+        """
+        if self.axisValid(axisId):
+            return self.__axisData[axisId].margin
+        return 0.0
 
     def axisInterval(self, axisId):
         """
@@ -857,6 +872,24 @@ class QwtPlot(QFrame):
                 d.isValid = False
                 self.autoRefresh()
 
+    def setAxisMargin(self, axisId, margin):
+        """
+        Set the margin of the scale widget
+
+        :param int axisId: Axis index
+        :param float margin: Margin in % of the canvas size
+
+        .. seealso::
+
+            :py:meth:`axisMargin()`
+        """
+        if self.axisValid(axisId):
+            d = self.__axisData[axisId]
+            if margin != d.margin:
+                d.margin = margin
+                d.isValid = False
+                self.autoRefresh()
+
     def setAxisTitle(self, axisId, title):
         """
         Change the title of a specified axis
@@ -910,15 +943,20 @@ class QwtPlot(QFrame):
                     intv[item.xAxis()] |= QwtInterval(rect.left(), rect.right())
                 if rect.height() >= 0.0:
                     intv[item.yAxis()] |= QwtInterval(rect.top(), rect.bottom())
+
         for axisId in self.AXES:
             d = self.__axisData[axisId]
             minValue = d.minValue
             maxValue = d.maxValue
             stepSize = d.stepSize
-            if d.doAutoScale and intv[axisId].isValid():
+            if d.margin is not None:
+                intv_i = intv[axisId].extend_fraction(d.margin)
+            else:
+                intv_i = intv[axisId]
+            if d.doAutoScale and intv_i.isValid():
                 d.isValid = False
-                minValue = intv[axisId].minValue()
-                maxValue = intv[axisId].maxValue()
+                minValue = intv_i.minValue()
+                maxValue = intv_i.maxValue()
                 d.scaleEngine.autoScale(d.maxMajor, minValue, maxValue, stepSize)
             if not d.isValid:
                 d.scaleDiv = d.scaleEngine.divideScale(

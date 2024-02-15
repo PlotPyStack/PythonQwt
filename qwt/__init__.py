@@ -27,7 +27,7 @@ External resources:
 .. _GitHub: https://github.com/PlotPyStack/PythonQwt
 """
 
-__version__ = "0.11.2"
+__version__ = "0.12.0"
 QWT_VERSION_STR = "6.1.5"
 
 import warnings
