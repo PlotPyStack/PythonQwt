@@ -6,6 +6,8 @@
   - Default margins are set to 0.05 (5% of the plot area) at each side of the plot
   - Margins are adjustable for each plot axis using `QwtPlot.setAxisMargin` (and
     `QwtPlot.axisMargin` to get the current value)
+- Added an additional margin to the left of ticks labels: this margin is set to one
+  character width, to avoid the labels to be truncated while keeping a tight layout
 
 ## Version 0.11.2
 

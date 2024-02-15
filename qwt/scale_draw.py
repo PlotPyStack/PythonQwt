@@ -420,7 +420,10 @@ class QwtAbstractScaleDraw(object):
         :param float value: Value
         :return: Label string
         """
-        return "%g" % value
+        # Adding a space before the value is a way to add a margin on the left
+        # of the scale. This helps to avoid truncating the first digit of the
+        # tick labels while keeping a tight layout.
+        return " %g" % value
 
     def tickLabel(self, font, value):
         """
