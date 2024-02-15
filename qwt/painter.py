@@ -261,7 +261,7 @@ class QwtPainterClass(object):
             c2 = QColor(palette.color(QPalette.Light))
             if style == Raised:
                 c1, c2 = c2, c1
-            for i in range(5):
+            for i in range(4):
                 r = pathList[2 * i].controlPointRect()
                 arcPen = QPen()
                 arcPen.setCapStyle(Qt.FlatCap)
