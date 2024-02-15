@@ -2,6 +2,10 @@
 
 ## Version 0.12.0
 
+- 30% performance improvement (measured by `qwt.tests.test_loadtest`) by optimizing
+  the `QwtAbstractScaleDraw.tickLabel` method:
+  - Suppressed an unnecessary call to `QFont.textSize` (which can be quite slow)
+  - Cached the text size with the label `QwtText` object
 - Added support for margins in `QwtPlot` (see Issue #82):
   - Default margins are set to 0.05 (5% of the plot area) at each side of the plot
   - Margins are adjustable for each plot axis using `QwtPlot.setAxisMargin` (and

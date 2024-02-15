@@ -21,13 +21,13 @@ QwtScaleDraw
 
 import math
 
+from qtpy.QtCore import QLineF, QPoint, QPointF, QRect, QRectF, Qt, qFuzzyCompare
+from qtpy.QtGui import QFontMetrics, QPalette, QTransform
+
+from qwt._math import qwtRadians
 from qwt.scale_div import QwtScaleDiv
 from qwt.scale_map import QwtScaleMap
 from qwt.text import QwtText
-from qwt._math import qwtRadians
-
-from qtpy.QtGui import QPalette, QFontMetrics, QTransform
-from qtpy.QtCore import Qt, qFuzzyCompare, QLineF, QRectF, QPointF, QRect, QPoint
 
 
 class QwtAbstractScaleDraw_PrivateData(object):
@@ -181,7 +181,7 @@ class QwtAbstractScaleDraw(object):
         """
         self.__data.scaleDiv = scaleDiv
         self.__data.map.setScaleInterval(scaleDiv.lowerBound(), scaleDiv.upperBound())
-        self.__data.labelCache.clear()
+        self.invalidateCache()
 
     def setTransformation(self, transformation):
         """
@@ -436,16 +436,16 @@ class QwtAbstractScaleDraw(object):
 
         :param QFont font: Font
         :param float value: Value
-        :return: Tick label
+        :return: Tuple (tick label, text size)
         """
-        lbl = self.__data.labelCache.get(value)
+        lbl, tsize = self.__data.labelCache.get(value, (None, None))
         if lbl is None:
             lbl = QwtText(self.label(value))
             lbl.setRenderFlags(0)
             lbl.setLayoutAttribute(QwtText.MinimumLayout)
-            lbl.textSize(font)
-            self.__data.labelCache[value] = lbl
-        return lbl
+            tsize = lbl.textSize(font)
+            self.__data.labelCache[value] = lbl, tsize
+        return lbl, tsize
 
     def invalidateCache(self):
         """
@@ -941,11 +941,10 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             :py:meth:`drawTick()`, :py:meth:`drawBackbone()`,
             :py:meth:`boundingLabelRect()`
         """
-        lbl = self.tickLabel(painter.font(), value)
+        lbl, labelSize = self.tickLabel(painter.font(), value)
         if lbl is None or lbl.isEmpty():
             return
         pos = self.labelPosition(value)
-        labelSize = lbl.textSize(painter.font())
         transform = self.labelTransformation(pos, labelSize)
         painter.save()
         painter.setWorldTransform(transform, True)
@@ -967,11 +966,10 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
 
             :py:meth:`labelRect()`
         """
-        lbl = self.tickLabel(font, value)
+        lbl, labelSize = self.tickLabel(font, value)
         if lbl.isEmpty():
             return QRect()
         pos = self.labelPosition(value)
-        labelSize = lbl.textSize(font)
         transform = self.labelTransformation(pos, labelSize)
         return transform.mapRect(QRect(QPoint(0, 0), labelSize.toSize()))
 
@@ -1024,11 +1022,10 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         :param float value: Value
         :return: Bounding rectangle that is needed to draw a label
         """
-        lbl = self.tickLabel(font, value)
+        lbl, labelSize = self.tickLabel(font, value)
         if not lbl or lbl.isEmpty():
             return QRectF(0.0, 0.0, 0.0, 0.0)
         pos = self.labelPosition(value)
-        labelSize = lbl.textSize(font)
         transform = self.labelTransformation(pos, labelSize)
         br = transform.mapRect(QRectF(QPointF(0, 0), labelSize))
         br.translate(-pos.x(), -pos.y())
