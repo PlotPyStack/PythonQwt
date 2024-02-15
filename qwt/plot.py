@@ -341,13 +341,9 @@ class QwtPlot(QFrame):
 
         if state:
             # New PythonQwt-exclusive flat style
-            plot_title_font = make_font(
-                family="Helvetica", delta_size=4, weight=QFont.Bold
-            )
-            axis_title_font = make_font(
-                family="Helvetica", delta_size=2, weight=QFont.Bold
-            )
-            axis_label_font = make_font(family="Helvetica", delta_size=0)
+            plot_title_font = make_font(size=12)
+            axis_title_font = make_font(size=11)
+            axis_label_font = make_font(size=10)
             tick_lighter_factors = (150, 125, 100)
             scale_margin = scale_spacing = 0
             canvas_frame_style = QFrame.NoFrame
