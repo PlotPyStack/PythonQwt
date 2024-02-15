@@ -13,6 +13,8 @@
 - Added an additional margin to the left of ticks labels: this margin is set to one
   character width, to avoid the labels to be truncated while keeping a tight layout
 - Slighly improved the new flat style (see V0.7.0) by selecting default fonts
+- API breaking change: `QwtLinearColorMap.colorStops` now returns a list of `ColorStop`
+  objects instead of the list of stop values
 
 ## Version 0.11.2
 

@@ -28,8 +28,8 @@ QwtAlphaColorMap
    :members:
 """
 
-from qtpy.QtGui import QColor, qRed, qGreen, qBlue, qRgb, qRgba, qAlpha
 from qtpy.QtCore import Qt, qIsNaN
+from qtpy.QtGui import QColor, qAlpha, qBlue, qGreen, qRed, qRgb, qRgba
 
 
 class ColorStop(object):
@@ -92,7 +92,7 @@ class ColorStops(object):
 
     def stops(self):
         if self.__stops:
-            return [stop.pos for stop in self.__stops]
+            return [stop for stop in self.__stops]
         else:
             return []
 
