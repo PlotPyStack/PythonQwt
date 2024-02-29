@@ -9,7 +9,7 @@
 
 ℹ️ Created in 2014 by Pierre Raybaut and maintained by the [PlotPyStack](https://github.com/PlotPyStack) organization.
 
-![PythonQwt Test Launcher](qwt/tests/data/testlauncher.png)
+![PythonQwt Test Launcher](https://raw.githubusercontent.com/PlotPyStack/PythonQwt/master/qwt/tests/data/testlauncher.png)
 
 The `PythonQwt` project was initiated to solve -at least temporarily- the
 obsolescence issue of `PyQwt` (the Python-Qwt C++ bindings library) which is
