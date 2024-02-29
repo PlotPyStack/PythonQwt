@@ -91,10 +91,7 @@ class ColorStops(object):
             self.__stops[index].updateSteps(self.__stops[index + 1])
 
     def stops(self):
-        if self.__stops:
-            return [stop for stop in self.__stops]
-        else:
-            return []
+        return self.__stops
 
     def findUpper(self, pos):
         index = 0

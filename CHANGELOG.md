@@ -1,5 +1,10 @@
 # PythonQwt Releases
 
+## Version 0.12.1
+
+- Fixed `ColorStops.stops` method (was returning a copy of the list of stops instead
+  of the list itself)
+
 ## Version 0.12.0
 
 - 30% performance improvement (measured by `qwt.tests.test_loadtest`) by optimizing
