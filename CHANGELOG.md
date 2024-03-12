@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.12.2
+
+- Removed unnecessary dependencies (pytest-qt, pytest-cov)
+
 ## Version 0.12.1
 
 - Fixed `ColorStops.stops` method (was returning a copy of the list of stops instead
