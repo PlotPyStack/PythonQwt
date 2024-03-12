@@ -2,6 +2,8 @@
 
 ## Version 0.12.2
 
+For this release, test coverage is 72%.
+
 - Removed unnecessary dependencies (pytest-qt, pytest-cov)
 
 ## Version 0.12.1
