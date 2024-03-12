@@ -44,7 +44,7 @@ PythonQwt-tests = "qwt.tests:run"
 [project.optional-dependencies]
 dev = ["black", "isort", "pylint", "Coverage"]
 doc = ["PyQt5", "sphinx>6", "python-docs-theme"]
-test = ["pytest", "pytest-cov", "pytest-qt", "pytest-xvfb"]
+test = ["pytest", "pytest-xvfb"]
 
 [tool.setuptools.packages.find]
 include = ["qwt*"]

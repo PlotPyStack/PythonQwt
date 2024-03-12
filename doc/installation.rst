@@ -10,7 +10,7 @@ Requirements:
     * QtPy 1.9 or higher
     * NumPy 1.21 or higher
     * Sphinx for documentation generation
-    * pytest, pytest-cov, pytest-qt, coverage for unit testing
+    * pytest, coverage for unit testing
 
 Installation
 ------------

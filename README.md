@@ -105,7 +105,7 @@ The `qwt` package short-term roadmap is the following:
 
 ### Optional dependencies
 
-- coverage, pytest, pytest-qt, pytest-cov (for unit tests)
+- coverage, pytest (for unit tests)
 - sphinx (for documentation generation)
 
 ## Installation
