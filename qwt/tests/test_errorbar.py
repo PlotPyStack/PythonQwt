@@ -9,11 +9,10 @@
 SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
+from qtpy.QtCore import QLineF, QRectF, QSize, Qt
+from qtpy.QtGui import QBrush, QPen
 
-from qtpy.QtGui import QPen, QBrush
-from qtpy.QtCore import QSize, QRectF, QLineF, Qt
-
-from qwt import QwtPlot, QwtSymbol, QwtPlotGrid, QwtPlotCurve
+from qwt import QwtPlot, QwtPlotCurve, QwtPlotGrid, QwtSymbol
 from qwt.tests import utils
 
 
@@ -199,7 +198,10 @@ class ErrorBarPlotCurve(QwtPlotCurve):
             if self.errorCap > 0:
                 # draw the caps
                 cap = self.errorCap / 2
-                n, i, = (
+                (
+                    n,
+                    i,
+                ) = (
                     len(y),
                     0,
                 )
@@ -235,7 +237,10 @@ class ErrorBarPlotCurve(QwtPlotCurve):
                 ymin = self.__y - self.__dy[0]
                 ymax = self.__y + self.__dy[1]
             x = self.__x
-            n, i, = (
+            (
+                n,
+                i,
+            ) = (
                 len(x),
                 0,
             )

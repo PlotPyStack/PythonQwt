@@ -9,20 +9,19 @@
 SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
-
-from qtpy.QtGui import QPen, qRgb
 from qtpy.QtCore import Qt
+from qtpy.QtGui import QPen, qRgb
 
 from qwt import (
-    QwtPlot,
-    QwtPlotMarker,
+    QwtInterval,
     QwtLegend,
-    QwtPlotGrid,
-    QwtPlotCurve,
-    QwtPlotItem,
     QwtLegendData,
     QwtLinearColorMap,
-    QwtInterval,
+    QwtPlot,
+    QwtPlotCurve,
+    QwtPlotGrid,
+    QwtPlotItem,
+    QwtPlotMarker,
     QwtScaleMap,
     toQImage,
 )

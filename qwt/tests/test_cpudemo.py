@@ -9,20 +9,20 @@
 SHOW = True  # Show test in GUI-based test launcher
 
 import os
-import numpy as np
 
-from qtpy.QtWidgets import QWidget, QVBoxLayout, QLabel
-from qtpy.QtGui import QColor, QBrush
-from qtpy.QtCore import QRect, QTime, Qt
+import numpy as np
+from qtpy.QtCore import QRect, Qt, QTime
+from qtpy.QtGui import QBrush, QColor
+from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from qwt import (
-    QwtPlot,
-    QwtPlotMarker,
-    QwtScaleDraw,
     QwtLegend,
+    QwtLegendData,
+    QwtPlot,
     QwtPlotCurve,
     QwtPlotItem,
-    QwtLegendData,
+    QwtPlotMarker,
+    QwtScaleDraw,
     QwtText,
 )
 from qwt.tests import utils

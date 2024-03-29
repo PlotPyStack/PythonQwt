@@ -21,7 +21,7 @@ import sys
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ["sphinx.ext.autodoc"]
 try:
-    import sphinx.ext.viewcode
+    import sphinx.ext.viewcode  # noqa: F401
 
     extensions.append("sphinx.ext.viewcode")
 except ImportError:

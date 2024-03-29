@@ -25,17 +25,16 @@ QwtLogScaleEngine
    :members:
 """
 
-from qwt.interval import QwtInterval
-from qwt.scale_div import QwtScaleDiv
-from qwt.transform import QwtLogTransform
-from qwt._math import qwtFuzzyCompare
-from qwt.transform import QwtTransform
+import math
+import sys
 
+import numpy as np
 from qtpy.QtCore import qFuzzyCompare
 
-import sys
-import math
-import numpy as np
+from qwt._math import qwtFuzzyCompare
+from qwt.interval import QwtInterval
+from qwt.scale_div import QwtScaleDiv
+from qwt.transform import QwtLogTransform, QwtTransform
 
 DBL_MAX = sys.float_info.max
 LOG_MIN = 1.0e-100

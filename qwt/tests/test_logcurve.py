@@ -14,7 +14,7 @@ np.seterr(all="raise")
 
 from qtpy.QtCore import Qt
 
-from qwt import QwtPlot, QwtPlotCurve, QwtLogScaleEngine
+from qwt import QwtLogScaleEngine, QwtPlot, QwtPlotCurve
 from qwt.tests import utils
 
 

@@ -15,8 +15,8 @@ The `dyngrid_layout` module provides the `QwtDynGridLayout` class.
    :members:
 """
 
+from qtpy.QtCore import QRect, QSize, Qt
 from qtpy.QtWidgets import QLayout
-from qtpy.QtCore import Qt, QRect, QSize
 
 
 class QwtDynGridLayout_PrivateData(object):

@@ -13,14 +13,14 @@ QwtPlotMarker
    :members:
 """
 
-from qwt.plot import QwtPlot, QwtPlotItem
-from qwt.text import QwtText
-from qwt.graphic import QwtGraphic
-from qwt.symbol import QwtSymbol
-from qwt.qthelpers import qcolor_from_str
+from qtpy.QtCore import QLineF, QPointF, QRect, QRectF, QSizeF, Qt
+from qtpy.QtGui import QPainter, QPen
 
-from qtpy.QtGui import QPen, QPainter
-from qtpy.QtCore import Qt, QPointF, QRectF, QSizeF, QRect, QLineF
+from qwt.graphic import QwtGraphic
+from qwt.plot import QwtPlot, QwtPlotItem
+from qwt.qthelpers import qcolor_from_str
+from qwt.symbol import QwtSymbol
+from qwt.text import QwtText
 
 
 class QwtPlotMarker_PrivateData(object):
@@ -240,9 +240,7 @@ class QwtPlotMarker(QwtPlotItem):
         if self.__data.symbol and self.__data.symbol.style() != QwtSymbol.NoSymbol:
             sz = self.__data.symbol.size()
             width, height = int(sz.width()), int(sz.height())
-            clipRect = QRectF(
-                canvasRect.adjusted(-width, -height, width, height)
-            )
+            clipRect = QRectF(canvasRect.adjusted(-width, -height, width, height))
             if clipRect.contains(pos):
                 self.__data.symbol.drawSymbols(painter, [pos])
         self.drawLabel(painter, canvasRect, pos)

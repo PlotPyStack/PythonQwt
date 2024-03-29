@@ -5,10 +5,10 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
-from qwt.interval import QwtInterval
+from qtpy.QtCore import QLineF, QRectF, Qt
+from qtpy.QtGui import QPalette, QPolygonF
 
-from qtpy.QtGui import QPolygonF, QPalette
-from qtpy.QtCore import QRectF, Qt, QLineF
+from qwt.interval import QwtInterval
 
 
 def qwtDrawBox(p, rect, pal, lw):
@@ -80,7 +80,6 @@ class QwtColumnSymbol_PrivateData(object):
 
 
 class QwtColumnSymbol(object):
-
     # enum Style
     NoStyle = -1
     Box = 0
@@ -134,7 +133,6 @@ class QwtColumnSymbol(object):
 
 
 class QwtColumnRect(object):
-
     # enum Direction
     LeftToRight, RightToLeft, BottomToTop, TopToBottom = list(range(4))
 

@@ -9,10 +9,16 @@ PythonQwt test package
 ======================
 """
 
-from qtpy import QtWidgets as QW
 from qtpy import QtCore as QC
+from qtpy import QtWidgets as QW
 
-from qwt.tests.utils import TestEnvironment, TestLauncher, take_screenshot, run_all_tests, QT_API
+from qwt.tests.utils import (
+    QT_API,
+    TestEnvironment,
+    TestLauncher,
+    run_all_tests,
+    take_screenshot,
+)
 
 
 def run(wait=True):

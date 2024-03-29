@@ -21,22 +21,23 @@ QwtLegend
 
 import math
 
+from qtpy.QtCore import QEvent, QPoint, QRect, QRectF, QSize, Qt, Signal
+
+# qDrawWinButton,
+from qtpy.QtGui import QPainter, QPalette, QPixmap
 from qtpy.QtWidgets import (
+    QApplication,
     QFrame,
     QScrollArea,
-    QWidget,
-    QVBoxLayout,
-    QApplication,
-    QStyleOption,
     QStyle,
-    # qDrawWinButton,
+    QStyleOption,
+    QVBoxLayout,
+    QWidget,
 )
-from qtpy.QtGui import QPalette, QPixmap, QPainter
-from qtpy.QtCore import Signal, QEvent, QSize, Qt, QRect, QRectF, QPoint
 
-from qwt.text import QwtText, QwtTextLabel
 from qwt.dyngrid_layout import QwtDynGridLayout
 from qwt.painter import QwtPainter
+from qwt.text import QwtText, QwtTextLabel
 
 
 class QwtLegendData(object):

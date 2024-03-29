@@ -20,7 +20,7 @@ QwtSeriesData
 
 .. autoclass:: QwtSeriesData
    :members:
-   
+
 QwtPointArrayData
 ~~~~~~~~~~~~~~~~~
 
@@ -35,11 +35,10 @@ QwtSeriesStore
 """
 
 import numpy as np
+from qtpy.QtCore import QPointF, QRectF, Qt
 
 from qwt.plot import QwtPlotItem, QwtPlotItem_PrivateData
 from qwt.text import QwtText
-
-from qtpy.QtCore import Qt, QRectF, QPointF
 
 
 class QwtPlotSeriesItem_PrivateData(QwtPlotItem_PrivateData):

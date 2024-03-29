@@ -11,8 +11,8 @@ PyQwt5 vs. PythonQwt
 
 import os
 import os.path as osp
-import sys
 import subprocess
+import sys
 import time
 
 

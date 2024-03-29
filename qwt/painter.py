@@ -15,7 +15,6 @@ QwtPainterClass
 
 from qtpy.QtCore import QLineF, QPoint, QRect, Qt
 from qtpy.QtGui import (
-    QBrush,
     QColor,
     QLinearGradient,
     QPaintEngine,

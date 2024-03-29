@@ -36,8 +36,9 @@ from qwt.text import QwtText
 QT_API = os.environ["QT_API"]
 
 if QT_API == "pyside6":
-    import shiboken6 as shiboken
     import ctypes
+
+    import shiboken6 as shiboken
 
 import numpy as np
 

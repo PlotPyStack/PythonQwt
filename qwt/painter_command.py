@@ -13,8 +13,9 @@ QwtPainterCommand
    :members:
 """
 
-from qtpy.QtGui import QPainterPath, QPaintEngine
 import copy
+
+from qtpy.QtGui import QPaintEngine, QPainterPath
 
 
 class PixmapData(object):

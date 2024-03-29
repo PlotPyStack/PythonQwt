@@ -14,7 +14,7 @@ QwtTransform
 
 .. autoclass:: QwtTransform
    :members:
-      
+
 QwtNullTransform
 ~~~~~~~~~~~~~~~~
 
@@ -26,7 +26,7 @@ QwtLogTransform
 
 .. autoclass:: QwtLogTransform
    :members:
-   
+
 QwtPowerTransform
 ~~~~~~~~~~~~~~~~~
 

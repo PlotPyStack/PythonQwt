@@ -15,7 +15,7 @@ QwtNullPaintDevice
 
 import os
 
-from qtpy.QtGui import QPaintEngine, QPainterPath, QPaintDevice
+from qtpy.QtGui import QPaintDevice, QPaintEngine, QPainterPath
 
 QT_API = os.environ["QT_API"]
 

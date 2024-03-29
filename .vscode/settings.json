@@ -18,25 +18,12 @@
     "files.trimTrailingWhitespace": true,
     "python.defaultInterpreterPath": "${env:PPSTACK_PYTHONEXE}",
     "editor.formatOnSave": true,
-    "isort.args": [
-        "--profile",
-        "black"
-    ],
-    "[python]": {
-        "editor.codeActionsOnSave": {
-            "source.organizeImports": "explicit"
-        },
-        "editor.defaultFormatter": "ms-python.black-formatter"
-    },
+    "python.analysis.autoFormatStrings": true,
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
     "python.testing.pytestPath": "pytest",
-    "python.testing.pytestArgs": [
-        "-v",
-        "--cov",
-        "--cov-report=html",
-    ],
-    "python.analysis.autoFormatStrings": true,
-    "editor.defaultFoldingRangeProvider": "ms-python.black-formatter",
-    "editor.defaultFormatter": "ms-python.black-formatter",
+    "python.testing.pytestArgs": [],
+    "[python]": {
+        "editor.defaultFormatter": "charliermarsh.ruff"
+    },
 }

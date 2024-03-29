@@ -13,9 +13,9 @@ QwtScaleDiv
    :members:
 """
 
-from qwt.interval import QwtInterval
-
 import copy
+
+from qwt.interval import QwtInterval
 
 
 class QwtScaleDiv(object):

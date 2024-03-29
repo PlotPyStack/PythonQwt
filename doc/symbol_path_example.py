@@ -1,9 +1,11 @@
-from qtpy import QtWidgets as QW
-from qtpy import QtGui as QG
-from qtpy import QtCore as QC
-import qwt
-import numpy as np
 import os.path as osp
+
+import numpy as np
+from qtpy import QtCore as QC
+from qtpy import QtGui as QG
+from qtpy import QtWidgets as QW
+
+import qwt
 from qwt import qthelpers as qth
 
 app = QW.QApplication([])
@@ -46,4 +48,8 @@ plot = qwt.QwtPlot()
 curve.attach(plot)
 plot.replot()
 
-qth.take_screenshot(plot, osp.join(osp.abspath(osp.dirname(__file__)), "_static", "symbol_path_example.png"), size=(600, 300))
+qth.take_screenshot(
+    plot,
+    osp.join(osp.abspath(osp.dirname(__file__)), "_static", "symbol_path_example.png"),
+    size=(600, 300),
+)

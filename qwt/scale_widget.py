@@ -15,17 +15,16 @@ QwtScaleWidget
 
 import math
 
+from qtpy.QtCore import QRectF, QSize, Qt, Signal
+from qtpy.QtGui import QPainter, QPalette
+from qtpy.QtWidgets import QSizePolicy, QStyle, QStyleOption, QWidget
+
+from qwt.color_map import QwtColorMap, QwtLinearColorMap
+from qwt.interval import QwtInterval
+from qwt.painter import QwtPainter
 from qwt.scale_draw import QwtScaleDraw
 from qwt.scale_engine import QwtLinearScaleEngine
-from qwt.color_map import QwtLinearColorMap
 from qwt.text import QwtText
-from qwt.painter import QwtPainter
-from qwt.interval import QwtInterval
-from qwt.color_map import QwtColorMap
-
-from qtpy.QtGui import QPainter, QPalette
-from qtpy.QtWidgets import QWidget, QSizePolicy, QStyleOption, QStyle, QApplication
-from qtpy.QtCore import Qt, QRectF, QSize, Signal, QEvent
 
 
 class ColorBar(object):
@@ -639,7 +638,10 @@ class QwtScaleWidget(QWidget):
         else:
             mgn = self.layout().contentsMargins()
             left, top, right, bottom = (
-                mgn.left(), mgn.top(), mgn.right(), mgn.bottom()
+                mgn.left(),
+                mgn.top(),
+                mgn.right(),
+                mgn.bottom(),
             )
         return size + QSize(left + right, top + bottom)
 

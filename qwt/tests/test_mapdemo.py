@@ -10,13 +10,13 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import random
 import time
+
 import numpy as np
-
-from qtpy.QtWidgets import QMainWindow, QToolBar
-from qtpy.QtGui import QPen, QBrush
 from qtpy.QtCore import QSize, Qt
+from qtpy.QtGui import QBrush, QPen
+from qtpy.QtWidgets import QMainWindow, QToolBar
 
-from qwt import QwtPlot, QwtSymbol, QwtPlotCurve
+from qwt import QwtPlot, QwtPlotCurve, QwtSymbol
 from qwt.tests import utils
 
 

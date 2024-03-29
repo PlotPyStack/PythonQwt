@@ -7,7 +7,6 @@
 """Qt helpers"""
 
 import os
-import os.path as osp
 
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG

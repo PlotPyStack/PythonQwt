@@ -5,9 +5,9 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
-from qtpy.QtCore import qFuzzyCompare
-
 import math
+
+from qtpy.QtCore import qFuzzyCompare
 
 
 def qwtFuzzyCompare(value1, value2, intervalSize):
@@ -38,16 +38,16 @@ def qwtSign(x):
 
 
 def qwtSqr(x):
-    return x ** 2
+    return x**2
 
 
 def qwtFastAtan(x):
     if x < -1.0:
-        return -0.5 * math.pi - x / (x ** 2 + 0.28)
+        return -0.5 * math.pi - x / (x**2 + 0.28)
     elif x > 1.0:
-        return 0.5 * math.pi - x / (x ** 2 + 0.28)
+        return 0.5 * math.pi - x / (x**2 + 0.28)
     else:
-        return x / (1.0 + x ** 2 * 0.28)
+        return x / (1.0 + x**2 * 0.28)
 
 
 def qwtFastAtan2(y, x):

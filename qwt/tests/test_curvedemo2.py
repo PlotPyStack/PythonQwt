@@ -9,13 +9,11 @@
 SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
-
+from qtpy.QtCore import QSize, Qt
+from qtpy.QtGui import QBrush, QColor, QPainter, QPalette, QPen
 from qtpy.QtWidgets import QFrame
-from qtpy.QtGui import QPen, QBrush, QColor, QPainter, QPalette
-from qtpy.QtCore import QSize
-from qtpy.QtCore import Qt
 
-from qwt import QwtScaleMap, QwtSymbol, QwtPlotCurve
+from qwt import QwtPlotCurve, QwtScaleMap, QwtSymbol
 from qwt.tests import utils
 
 Size = 15

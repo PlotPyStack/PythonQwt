@@ -12,7 +12,7 @@ import os
 
 import numpy as np
 from qtpy.QtCore import QEvent, QObject, QPoint, QRect, QSize, Qt, Signal
-from qtpy.QtGui import QBrush, QColor, QPainter, QPen, QPixmap
+from qtpy.QtGui import QBrush, QColor, QPainter, QPen
 from qtpy.QtWidgets import QApplication, QMainWindow, QToolBar, QWhatsThis, QWidget
 
 from qwt import (

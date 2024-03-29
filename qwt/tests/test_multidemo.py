@@ -9,10 +9,9 @@
 SHOW = True  # Show test in GUI-based test launcher
 
 import numpy as np
-
-from qtpy.QtWidgets import QGridLayout, QWidget
-from qtpy.QtGui import QPen
 from qtpy.QtCore import Qt
+from qtpy.QtGui import QPen
+from qtpy.QtWidgets import QGridLayout, QWidget
 
 from qwt import QwtPlot, QwtPlotCurve
 from qwt.tests import utils

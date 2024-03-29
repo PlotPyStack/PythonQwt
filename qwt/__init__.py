@@ -27,36 +27,36 @@ External resources:
 .. _GitHub: https://github.com/PlotPyStack/PythonQwt
 """
 
-__version__ = "0.12.2"
-QWT_VERSION_STR = "6.1.5"
-
 import warnings
 
-from qwt.color_map import QwtLinearColorMap
+from qwt.color_map import QwtLinearColorMap  # noqa: F401
 from qwt.interval import QwtInterval
-from qwt.legend import QwtLegend, QwtLegendData, QwtLegendLabel
-from qwt.painter import QwtPainter
-from qwt.plot import QwtPlot
-from qwt.plot_canvas import QwtPlotCanvas
+from qwt.legend import QwtLegend, QwtLegendData, QwtLegendLabel  # noqa: F401
+from qwt.painter import QwtPainter  # noqa: F401
+from qwt.plot import QwtPlot  # noqa: F401
+from qwt.plot_canvas import QwtPlotCanvas  # noqa: F401
 from qwt.plot_curve import QwtPlotCurve as QPC  # see deprecated section
-from qwt.plot_curve import QwtPlotItem
-from qwt.plot_directpainter import QwtPlotDirectPainter
+from qwt.plot_curve import QwtPlotItem  # noqa: F401
+from qwt.plot_directpainter import QwtPlotDirectPainter  # noqa: F401
 from qwt.plot_grid import QwtPlotGrid as QPG  # see deprecated section
-from qwt.plot_marker import QwtPlotMarker
-from qwt.plot_renderer import QwtPlotRenderer
-from qwt.plot_series import (
+from qwt.plot_marker import QwtPlotMarker  # noqa: F401
+from qwt.plot_renderer import QwtPlotRenderer  # noqa: F401
+from qwt.plot_series import (  # noqa: F401
     QwtPlotSeriesItem,
     QwtPointArrayData,
     QwtSeriesData,
     QwtSeriesStore,
 )
-from qwt.scale_div import QwtScaleDiv
-from qwt.scale_draw import QwtAbstractScaleDraw, QwtScaleDraw
-from qwt.scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine
-from qwt.scale_map import QwtScaleMap
+from qwt.scale_div import QwtScaleDiv  # noqa: F401
+from qwt.scale_draw import QwtAbstractScaleDraw, QwtScaleDraw  # noqa: F401
+from qwt.scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine  # noqa: F401
+from qwt.scale_map import QwtScaleMap  # noqa: F401
 from qwt.symbol import QwtSymbol as QSbl  # see deprecated section
-from qwt.text import QwtText
-from qwt.toqimage import array_to_qimage as toQImage
+from qwt.text import QwtText  # noqa: F401
+from qwt.toqimage import array_to_qimage as toQImage  # noqa: F401
+
+__version__ = "0.12.2"
+QWT_VERSION_STR = "6.1.5"
 
 
 ## ============================================================================

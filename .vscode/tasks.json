@@ -142,6 +142,34 @@
             }
         },
         {
+            "label": "Run Ruff",
+            "type": "shell",
+            "command": "cmd",
+            "args": [
+                "/c",
+                "run_ruff.bat",
+            ],
+            "options": {
+                "cwd": "scripts",
+                "env": {
+                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "UNATTENDED": "1"
+                }
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated",
+                "showReuseMessage": true,
+                "clear": true
+            }
+        },
+        {
             "label": "Build documentation",
             "type": "shell",
             "command": "cmd",

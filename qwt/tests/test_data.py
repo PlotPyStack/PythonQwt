@@ -9,19 +9,19 @@
 SHOW = True  # Show test in GUI-based test launcher
 
 import random
-import numpy as np
 
-from qtpy.QtWidgets import QFrame
-from qtpy.QtGui import QPen, QBrush
+import numpy as np
 from qtpy.QtCore import QSize, Qt
+from qtpy.QtGui import QBrush, QPen
+from qtpy.QtWidgets import QFrame
 
 from qwt import (
+    QwtAbstractScaleDraw,
+    QwtLegend,
     QwtPlot,
+    QwtPlotCurve,
     QwtPlotMarker,
     QwtSymbol,
-    QwtLegend,
-    QwtPlotCurve,
-    QwtAbstractScaleDraw,
 )
 from qwt.tests import utils
 
