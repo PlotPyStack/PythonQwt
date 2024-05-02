@@ -20,6 +20,7 @@ FNAMES = ("test_simple.svg", "test_simple.pdf", "test_simple.png")
 
 
 class SimplePlot(qwt.QwtPlot):
+    NUM_POINTS = 100
     TEST_EXPORT = True
 
     def __init__(self):
@@ -30,13 +31,11 @@ class SimplePlot(qwt.QwtPlot):
         self.setAxisTitle(qwt.QwtPlot.yLeft, "Y-axis")
         self.enableAxis(self.xBottom)
         self.setCanvasBackground(Qt.white)
-        canvas = self.canvas()
-        canvas.setBorderRadius(50)
 
         qwt.QwtPlotGrid.make(self, color=Qt.lightGray, width=0, style=Qt.DotLine)
 
         # insert a few curves
-        x = np.arange(0.0, 10.0, 0.1)
+        x = np.linspace(0.0, 10.0, self.NUM_POINTS)
         qwt.QwtPlotCurve.make(x, np.sin(x), "y = sin(x)", self, linecolor="red")
         qwt.QwtPlotCurve.make(x, np.cos(x), "y = cos(x)", self, linecolor="blue")
 
