@@ -15,11 +15,6 @@ import pytest
 from qwt.tests import utils
 from qwt.tests.test_simple import SimplePlot
 
-# Performance should be the same with "1" and "2" scale factors:
-# (as of today, this is not the case, but it has to be fixed in the future:
-#  https://github.com/PlotPyStack/PythonQwt/issues/83)
-os.environ["QT_SCALE_FACTOR"] = "2"
-
 
 class HighDPIPlot(SimplePlot):
     NUM_POINTS = 5000000  # 5 million points needed to test high DPI support
@@ -28,6 +23,12 @@ class HighDPIPlot(SimplePlot):
 @pytest.mark.skip(reason="This test is not relevant for the automated test suite")
 def test_highdpi():
     """Test high DPI support"""
+
+    # Performance should be the same with "1" and "2" scale factors:
+    # (as of today, this is not the case, but it has to be fixed in the future:
+    #  https://github.com/PlotPyStack/PythonQwt/issues/83)
+    os.environ["QT_SCALE_FACTOR"] = "2"
+
     utils.test_widget(HighDPIPlot, (800, 480))
 
 
