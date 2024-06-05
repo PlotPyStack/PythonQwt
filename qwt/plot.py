@@ -610,7 +610,7 @@ class QwtPlot(QFrame):
             :py:meth:`axisScaleDiv()`
         """
         if self.axisValid(axisId):
-            return self.axisWidget(axisId).scaleDiv.interval()
+            return self.axisScaleDiv(axisId).interval()
         else:
             return QwtInterval()
 
