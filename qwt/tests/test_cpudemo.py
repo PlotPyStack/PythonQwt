@@ -393,7 +393,7 @@ class CpuDemo(QWidget):
 
 def test_cpudemo():
     """CPU demo"""
-    return utils.test_widget(CpuDemo, (600, 400))
+    utils.test_widget(CpuDemo, (600, 400))
 
 
 if __name__ == "__main__":

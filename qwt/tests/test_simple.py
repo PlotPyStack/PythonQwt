@@ -68,11 +68,10 @@ class SimplePlot(qwt.QwtPlot):
 
 def test_simple():
     """Simple plot example"""
-    app = utils.test_widget(SimplePlot, size=(600, 400))
+    utils.test_widget(SimplePlot, size=(600, 400))
     for fname in FNAMES:
         if os.path.isfile(fname):
             os.remove(fname)
-    return app
 
 
 if __name__ == "__main__":

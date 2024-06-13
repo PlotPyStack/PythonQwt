@@ -120,7 +120,7 @@ class CurveDemo2(QFrame):
 
 def test_curvedemo2():
     """Curve demo 2"""
-    return utils.test_widget(CurveDemo2, options=False)
+    utils.test_widget(CurveDemo2, options=False)
 
 
 if __name__ == "__main__":

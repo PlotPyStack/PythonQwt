@@ -164,32 +164,32 @@ class SvgDocumentPlot(BaseSymbolPlot):
 
 def test_base():
     """Base symbol test"""
-    return utils.test_widget(BaseSymbolPlot, size=(600, 400))
+    utils.test_widget(BaseSymbolPlot, size=(600, 400))
 
 
 def test_builtin():
     """Built-in symbol test"""
-    return utils.test_widget(BuiltinSymbolPlot, size=(600, 400))
+    utils.test_widget(BuiltinSymbolPlot, size=(600, 400))
 
 
 def test_graphic():
     """Graphic symbol test"""
-    return utils.test_widget(GraphicPlot, size=(600, 400))
+    utils.test_widget(GraphicPlot, size=(600, 400))
 
 
 def test_pixmap():
     """Pixmap test"""
-    return utils.test_widget(PixmapPlot, size=(600, 400))
+    utils.test_widget(PixmapPlot, size=(600, 400))
 
 
 def test_path():
     """Path symbol test"""
-    return utils.test_widget(PathPlot, size=(600, 400))
+    utils.test_widget(PathPlot, size=(600, 400))
 
 
 def test_svg():
     """SVG test"""
-    return utils.test_widget(SvgDocumentPlot, size=(600, 400))
+    utils.test_widget(SvgDocumentPlot, size=(600, 400))
 
 
 if __name__ == "__main__":

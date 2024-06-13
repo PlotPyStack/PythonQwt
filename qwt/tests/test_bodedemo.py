@@ -296,10 +296,9 @@ class BodeDemo(QMainWindow):
 
 def test_bodedemo():
     """Bode demo"""
-    app = utils.test_widget(BodeDemo, (640, 480))
+    utils.test_widget(BodeDemo, (640, 480))
     if os.path.isfile(FNAME_PDF):
         os.remove(FNAME_PDF)
-    return app
 
 
 if __name__ == "__main__":

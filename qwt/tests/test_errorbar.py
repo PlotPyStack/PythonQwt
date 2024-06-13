@@ -320,7 +320,7 @@ class ErrorBarPlot(QwtPlot):
 
 def test_errorbar():
     """Errorbar plot example"""
-    return utils.test_widget(ErrorBarPlot, size=(640, 480))
+    utils.test_widget(ErrorBarPlot, size=(640, 480))
 
 
 if __name__ == "__main__":

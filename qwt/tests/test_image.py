@@ -197,7 +197,7 @@ class ImagePlot(QwtPlot):
 
 def test_image():
     """Image plot test"""
-    return utils.test_widget(ImagePlot, size=(600, 400))
+    utils.test_widget(ImagePlot, size=(600, 400))
 
 
 if __name__ == "__main__":

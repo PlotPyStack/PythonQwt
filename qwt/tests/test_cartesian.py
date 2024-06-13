@@ -102,7 +102,7 @@ class CartesianPlot(QwtPlot):
 
 def test_cartesian():
     """Cartesian plot test"""
-    return utils.test_widget(CartesianPlot, (800, 480))
+    utils.test_widget(CartesianPlot, (800, 480))
 
 
 if __name__ == "__main__":

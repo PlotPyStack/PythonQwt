@@ -30,7 +30,7 @@ class StyleSheetPlot(qwt.QwtPlot):
 )
 def test_stylesheet():
     """Stylesheet test"""
-    return utils.test_widget(StyleSheetPlot, size=(600, 400))
+    utils.test_widget(StyleSheetPlot, size=(600, 400))
 
 
 if __name__ == "__main__":

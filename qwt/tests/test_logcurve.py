@@ -33,7 +33,7 @@ class LogCurvePlot(QwtPlot):
 
 def test_logcurve():
     """Log curve demo"""
-    return utils.test_widget(LogCurvePlot, size=(800, 500))
+    utils.test_widget(LogCurvePlot, size=(800, 500))
 
 
 if __name__ == "__main__":

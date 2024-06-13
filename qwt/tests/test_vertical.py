@@ -77,7 +77,7 @@ class VerticalPlot(QwtPlot):
 
 def test_vertical():
     """Vertical plot example"""
-    return utils.test_widget(VerticalPlot, size=(300, 650))
+    utils.test_widget(VerticalPlot, size=(300, 650))
 
 
 if __name__ == "__main__":

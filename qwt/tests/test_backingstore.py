@@ -16,7 +16,7 @@ class BackingStorePlot(SimplePlot):
 
 def test_backingstore():
     """Test for backing store"""
-    return utils.test_widget(BackingStorePlot, size=(600, 400))
+    utils.test_widget(BackingStorePlot, size=(600, 400))
 
 
 if __name__ == "__main__":

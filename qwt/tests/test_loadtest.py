@@ -51,7 +51,7 @@ class LoadTest(cb.CurveBenchmark1):
 
 def test_loadtest():
     """Load test"""
-    return utils.test_widget(LoadTest, options=False)
+    utils.test_widget(LoadTest, options=False)
 
 
 if __name__ == "__main__":
