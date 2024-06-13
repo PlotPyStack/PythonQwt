@@ -472,7 +472,7 @@ class EventFilterWindow(QMainWindow):
 
 def test_eventfilter():
     """Event filter example"""
-    utils.test_widget(EventFilterWindow, size=(540, 400))
+    return utils.test_widget(EventFilterWindow, size=(540, 400))
 
 
 if __name__ == "__main__":

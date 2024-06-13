@@ -99,7 +99,7 @@ class DataPlot(QwtPlot):
 
 def test_data():
     """Data Test"""
-    utils.test_widget(DataPlot, size=(500, 300))
+    return utils.test_widget(DataPlot, size=(500, 300))
 
 
 if __name__ == "__main__":

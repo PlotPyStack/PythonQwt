@@ -29,7 +29,7 @@ def test_highdpi():
     #  https://github.com/PlotPyStack/PythonQwt/issues/83)
     os.environ["QT_SCALE_FACTOR"] = "2"
 
-    utils.test_widget(HighDPIPlot, (800, 480))
+    return utils.test_widget(HighDPIPlot, (800, 480))
 
 
 if __name__ == "__main__":

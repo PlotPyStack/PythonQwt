@@ -183,7 +183,7 @@ class CurveBenchmark1(QMainWindow):
 
 def test_curvebenchmark1():
     """Curve benchmark example"""
-    utils.test_widget(CurveBenchmark1, options=False)
+    return utils.test_widget(CurveBenchmark1, options=False)
 
 
 if __name__ == "__main__":

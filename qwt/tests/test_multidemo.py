@@ -72,7 +72,7 @@ class MultiDemo(QWidget):
 
 def test_multidemo():
     """Multiple plot demo"""
-    utils.test_widget(MultiDemo, size=(400, 300))
+    return utils.test_widget(MultiDemo, size=(400, 300))
 
 
 if __name__ == "__main__":

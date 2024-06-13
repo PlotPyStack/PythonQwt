@@ -84,7 +84,7 @@ class CurveBenchmark2(cb.CurveBenchmark1):
 
 def test_curvebenchmark2():
     """Curve styles benchmark example"""
-    utils.test_widget(CurveBenchmark2, options=False)
+    return utils.test_widget(CurveBenchmark2, options=False)
 
 
 if __name__ == "__main__":

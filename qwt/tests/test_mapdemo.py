@@ -99,7 +99,7 @@ class MapDemo(QMainWindow):
 
 def test_mapdemo():
     """Map demo"""
-    utils.test_widget(MapDemo, size=(600, 600))
+    return utils.test_widget(MapDemo, size=(600, 600))
 
 
 if __name__ == "__main__":
