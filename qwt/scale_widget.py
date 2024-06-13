@@ -15,7 +15,7 @@ QwtScaleWidget
 
 import math
 
-from qtpy.QtCore import QRectF, QSize, Qt, Signal
+from qtpy.QtCore import QRect, QRectF, QSize, Qt, Signal
 from qtpy.QtGui import QPainter, QPalette
 from qtpy.QtWidgets import QSizePolicy, QStyle, QStyleOption, QWidget
 
@@ -401,6 +401,10 @@ class QwtScaleWidget(QWidget):
         return self.__data.spacing
 
     def paintEvent(self, event):
+        # Workaround for a bug with PySide6 on Linux:
+        if isinstance(event, QRect):
+            return
+
         painter = QPainter(self)
         painter.setClipRegion(event.region())
         opt = QStyleOption()
