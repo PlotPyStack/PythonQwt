@@ -4,6 +4,8 @@
 
 For this release, test coverage is 72%.
 
+- Preparing for NumPy V2 compatibility: this is a work in progress, as NumPy V2 is not
+  yet released. In the meantime, requirements have been updated to exclude NumPy V2.
 - Fix `QwtPlot.axisInterval` (was raising `AttributeError`)
 - Removed unnecessary dependencies (pytest-qt, pytest-cov)
 - Moved `conftest.py` to project root
