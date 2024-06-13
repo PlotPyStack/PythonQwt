@@ -4,7 +4,10 @@
 
 For this release, test coverage is 72%.
 
+- Fix `QwtPlot.axisInterval` (was raising `AttributeError`)
 - Removed unnecessary dependencies (pytest-qt, pytest-cov)
+- Moved `conftest.py` to project root
+- Project code formatting: using `ruff` instead of `black` and `isort`
 
 ## Version 0.12.1
 
