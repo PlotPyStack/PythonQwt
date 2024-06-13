@@ -22,7 +22,7 @@ QwtPlotItem
 import math
 
 import numpy as np
-from qtpy.QtCore import QEvent, QRect, QRectF, QSize, Qt, Signal
+from qtpy.QtCore import QEvent, QRectF, QSize, Qt, Signal
 from qtpy.QtGui import QBrush, QColor, QFont, QPainter, QPalette
 from qtpy.QtWidgets import QApplication, QFrame, QSizePolicy, QWidget
 
@@ -999,10 +999,6 @@ class QwtPlot(QFrame):
                 canvas.show()
 
     def event(self, event):
-        # Workaround for a bug with PySide6 on Linux:
-        if isinstance(event, QRect):
-            return
-
         if event.type() == QEvent.LayoutRequest:
             self.updateLayout()
         elif event.type() == QEvent.PolishRequest:
