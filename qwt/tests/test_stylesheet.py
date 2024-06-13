@@ -24,7 +24,7 @@ class StyleSheetPlot(qwt.QwtPlot):
 
 
 # Skip the test for PySide6 on Linux
-@pytest.skipif(
+@pytest.mark.skipif(
     qtpy.API_NAME == "PySide6" and os.name == "posix",
     reason="Fails on Linux with PySide6 for unknown reasons",
 )
