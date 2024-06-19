@@ -438,14 +438,13 @@ class QwtAbstractScaleDraw(object):
         :param float value: Value
         :return: Tuple (tick label, text size)
         """
-        lbl, tsize = self.__data.labelCache.get(value, (None, None))
+        lbl = self.__data.labelCache.get(value)
         if lbl is None:
             lbl = QwtText(self.label(value))
             lbl.setRenderFlags(0)
             lbl.setLayoutAttribute(QwtText.MinimumLayout)
-            tsize = lbl.textSize(font)
-            self.__data.labelCache[value] = lbl, tsize
-        return lbl, tsize
+            self.__data.labelCache[value] = lbl
+        return lbl, lbl.textSize(font)
 
     def invalidateCache(self):
         """

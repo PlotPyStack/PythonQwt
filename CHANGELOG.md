@@ -1,5 +1,18 @@
 # PythonQwt Releases
 
+## Version 0.12.3
+
+- Fixed `Fatal Python error` issue reported in the `PlotPy` project:
+  - See [PlotPy's Issue #11](https://github.com/PlotPyStack/PlotPy/issues/11) for the
+    original issue, even if the problem is not directly pointed out in the issue
+    comments.
+  - The issue was caused by the `QwtAbstractScaleDraw` cache mechanism, which was
+    keeping references to `QSizeF` objects that were deleted by the garbage collector
+    at some point. This was causing a segmentation fault, but only on Linux, and
+    only when executing the `PlotPy` test suite in a specific order.
+  - Thanks to @yuzibo for helping to reproduce the issue and providing a test case,
+    that is the `PlotPy` Debian package build process.
+
 ## Version 0.12.2
 
 For this release, test coverage is 72%.
