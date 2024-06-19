@@ -55,7 +55,7 @@ from qwt.symbol import QwtSymbol as QSbl  # see deprecated section
 from qwt.text import QwtText  # noqa: F401
 from qwt.toqimage import array_to_qimage as toQImage  # noqa: F401
 
-__version__ = "0.12.3"
+__version__ = "0.12.4"
 QWT_VERSION_STR = "6.1.5"
 
 
