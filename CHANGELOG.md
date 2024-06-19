@@ -1,5 +1,14 @@
 # PythonQwt Releases
 
+## Version 0.12.4
+
+- Fixed segmentation fault issue reported in the `PlotPy` project:
+  - See [PlotPy's Issue #13](https://github.com/PlotPyStack/PlotPy/issues/13) for the
+    original issue.
+  - The issue was caused by the `QwtSymbol` class constructor, and more specifically
+    by its private data object, which instanciated an empty `QtPainterPath` object,
+    causing a segmentation fault on Linux, Python 3.12 and PyQt5.
+
 ## Version 0.12.3
 
 - Fixed `Fatal Python error` issue reported in the `PlotPy` project:

@@ -346,7 +346,7 @@ class QwtSymbol_PrivateData(object):
 
         class Path(object):
             def __init__(self):
-                self.path = QPainterPath()
+                self.path = None  # QPainterPath()
                 self.graphic = QwtGraphic()
 
         self.path = Path()
