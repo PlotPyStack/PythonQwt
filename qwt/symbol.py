@@ -19,7 +19,6 @@ from qtpy.QtCore import QLineF, QPoint, QPointF, QRect, QRectF, QSize, QSizeF, Q
 from qtpy.QtGui import (
     QBrush,
     QPainter,
-    QPainterPath,
     QPen,
     QPixmap,
     QPolygonF,

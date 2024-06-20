@@ -162,7 +162,10 @@ class TestLauncher(QW.QMainWindow):
         all_act.triggered.connect(lambda checked: run_all_tests(wait=False))
         folder_act = QW.QAction(self.get_std_icon("DirOpenIcon"), "", self)
         folder_act.setIconText("Open tests folder")
-        open_test_folder = lambda checked: os.startfile(TEST_PATH)
+
+        def open_test_folder(checked):
+            return os.startfile(TEST_PATH)
+
         folder_act.triggered.connect(open_test_folder)
         about_act = QW.QAction(self.get_std_icon("FileDialogInfoView"), "", self)
         about_act.setIconText("About")

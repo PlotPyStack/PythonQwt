@@ -255,7 +255,7 @@ class ErrorBarPlotCurve(QwtPlotCurve):
             # draw the caps
             if self.errorCap > 0:
                 cap = self.errorCap / 2
-                n, i, j = len(x), 0, 0
+                n, i, _j = len(x), 0, 0
                 lines = []
                 while i < n:
                     xi = xMap.transform(x[i])

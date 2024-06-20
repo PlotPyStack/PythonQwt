@@ -1,5 +1,10 @@
 # PythonQwt Releases
 
+## Version 0.12.5
+
+- Successfully tested with Python 3.12 and NumPy 2.0: requirements have been updated
+  to remove the NumPy version upper bound constraint.
+
 ## Version 0.12.4
 
 - Fixed segmentation fault issue reported in the `PlotPy` project:
