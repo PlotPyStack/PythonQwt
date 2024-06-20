@@ -94,8 +94,8 @@ def array2d_to_qpolygonf(xdata, ydata):
         buffer = polyline.data()
         buffer.setsize(16 * size)  # 16 bytes per point: 8 bytes per X,Y value (float64)
     memory = np.frombuffer(buffer, np.float64)
-    memory[: (size - 1) * 2 + 1 : 2] = np.array(xdata, dtype=np.float64, copy=False)
-    memory[1 : (size - 1) * 2 + 2 : 2] = np.array(ydata, dtype=np.float64, copy=False)
+    memory[: (size - 1) * 2 + 1 : 2] = np.asarray(xdata, dtype=np.float64)
+    memory[1 : (size - 1) * 2 + 2 : 2] = np.asarray(ydata, dtype=np.float64)
     return polyline
 
 
