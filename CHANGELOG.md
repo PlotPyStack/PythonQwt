@@ -2,8 +2,9 @@
 
 ## Version 0.12.5
 
-- Successfully tested with Python 3.12 and NumPy 2.0: requirements have been updated
-  to remove the NumPy version upper bound constraint.
+- Add support for NumPy 2.0:
+  - Use `numpy.asarray` instead of `numpy.array(..., copy=False)`
+  - Update requirements to remove the NumPy version upper bound constraint
 
 ## Version 0.12.4
 
