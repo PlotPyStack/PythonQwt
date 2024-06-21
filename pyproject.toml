@@ -55,6 +55,9 @@ include = ["qwt*"]
 [tool.setuptools.dynamic]
 version = { attr = "qwt.__version__" }
 
+[tool.pytest.ini_options]
+addopts = "qwt"
+
 [tool.ruff]
 exclude = [".git", ".vscode", "build", "dist"]
 line-length = 88                               # Same as Black.
