@@ -19,7 +19,7 @@ for /D %%d in ("%DIR0%*") do (
     set WINPYDIRBASE=%%d
     call !WINPYDIRBASE!\scripts\env.bat
     echo Running pytest from "%%d":
-    pytest --ff -q
+    pytest --ff -q %MODNAME%
     echo ----
 )
 call %FUNC% EndOfScript
