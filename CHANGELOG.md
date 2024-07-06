@@ -1,5 +1,14 @@
 # PythonQwt Releases
 
+## Version 0.12.6
+
+- Fixed random crashes (segfaults) on Linux related to Qt objects stored in cache data
+  structures (`QwtText` and `QwtSymbol`)
+
+- Test suite can simply be run with `pytest` and specific configuration (`conftest.py`)
+  will be taken into account (previously, the test suite has to be run with
+  `pytest qwt` in order to be successfully configured)
+
 ## Version 0.12.5
 
 - Add support for NumPy 2.0:

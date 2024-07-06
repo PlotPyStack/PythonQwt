@@ -341,7 +341,7 @@ class QwtSymbol_PrivateData(object):
         self.brush = br
         self.pen = pn
         self.isPinPointEnabled = False
-        self.pinPoint = QPointF()
+        self.pinPoint = None
 
         class Path(object):
             def __init__(self):
@@ -1235,7 +1235,7 @@ class QwtSymbol(object):
             :py:meth:`setCachePolicy()`, :py:meth:`drawSymbols()`
         """
         if self.__data.cache.pixmap is not None:
-            self.__data.cache.pixmap = QPixmap()
+            self.__data.cache.pixmap = None
 
     def setStyle(self, style):
         """

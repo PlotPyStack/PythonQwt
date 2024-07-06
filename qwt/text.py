@@ -474,11 +474,11 @@ class QwtText_PrivateData(object):
 
 class QwtText_LayoutCache(object):
     def __init__(self):
-        self.textSize = QSizeF()
+        self.textSize = None
         self.font = None
 
     def invalidate(self):
-        self.textSize = QSizeF()
+        self.textSize = None
 
 
 class QwtText(object):
@@ -987,7 +987,8 @@ class QwtText(object):
         """
         font = QFont(self.usedFont(defaultFont))
         if (
-            not self.__layoutCache.textSize.isValid()
+            self.__layoutCache.textSize is None
+            or not self.__layoutCache.textSize.isValid()
             or self.__layoutCache.font is not font
         ):
             self.__layoutCache.textSize = self.__data.textEngine.textSize(
