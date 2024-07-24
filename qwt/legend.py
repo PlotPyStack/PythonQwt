@@ -176,7 +176,7 @@ class QwtLegendLabel_PrivateData(object):
         self.isDown = False
         self.spacing = MARGIN
         self.legendData = QwtLegendData()
-        self.icon = QPixmap()
+        self.icon = None
 
 
 class QwtLegendLabel(QwtTextLabel):
@@ -294,7 +294,7 @@ class QwtLegendLabel(QwtTextLabel):
 
             :py:meth:`setIcon()`
         """
-        return self.__data.icon
+        return QPixmap() if self.__data.icon is None else self.__data.icon
 
     def setSpacing(self, spacing):
         """
@@ -312,7 +312,7 @@ class QwtLegendLabel(QwtTextLabel):
             mgn = self.contentsMargins()
             margin = max([mgn.left(), mgn.top(), mgn.right(), mgn.bottom()])
             indent = margin + self.__data.spacing
-            if self.__data.icon.width() > 0:
+            if self.__data.icon is not None:
                 indent += self.__data.icon.width() + self.__data.spacing
             self.setIndent(indent)
 
@@ -409,7 +409,7 @@ class QwtLegendLabel(QwtTextLabel):
             painter.translate(shiftSize.width(), shiftSize.height())
         painter.setClipRect(cr)
         self.drawContents(painter)
-        if not self.__data.icon.isNull():
+        if self.__data.icon is not None:
             iconRect = QRect(cr)
             iconRect.setX(iconRect.x() + self.margin())
             if self.__data.itemMode != QwtLegendData.ReadOnly:

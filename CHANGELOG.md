@@ -1,5 +1,10 @@
 # PythonQwt Releases
 
+## Version 0.12.7
+
+- Fixed other random crashes (segfaults) on Linux related to Qt objects stored in
+  private data structures (`QwtGraphic_PrivateData`, `QwtLegendLabel_PrivateData`)
+
 ## Version 0.12.6
 
 - Fixed random crashes (segfaults) on Linux related to Qt objects stored in cache data
