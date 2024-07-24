@@ -48,11 +48,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode:
-            try:
-                QPaintEngine.drawRects(self, rects, rectCount)
-            except TypeError:
-                # PyQt <=4.9
-                QPaintEngine.drawRects(self, rects)
+            QPaintEngine.drawRects(self, rects, rectCount)
             return
         device.drawRects(rects, rectCount)
 
@@ -63,11 +59,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode and QT_API.startswith("pyqt"):
-            try:
-                QPaintEngine.drawLines(lines, lineCount)
-            except TypeError:
-                # PyQt <=4.9
-                QPaintEngine.drawLines(self, lines)
+            QPaintEngine.drawLines(lines, lineCount)
             return
         device.drawLines(lines, lineCount)
 
@@ -93,11 +85,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode:
-            try:
-                QPaintEngine.drawPoints(points, pointCount)
-            except TypeError:
-                # PyQt <=4.9
-                QPaintEngine.drawPoints(self, points)
+            QPaintEngine.drawPoints(points, pointCount)
             return
         device.drawPoints(points, pointCount)
 
