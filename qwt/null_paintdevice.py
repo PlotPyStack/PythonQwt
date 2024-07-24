@@ -59,7 +59,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode and QT_API.startswith("pyqt"):
-            QPaintEngine.drawLines(lines, lineCount)
+            QPaintEngine.drawLines(self, lines, lineCount)
             return
         device.drawLines(lines, lineCount)
 
@@ -68,7 +68,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode:
-            QPaintEngine.drawEllipse(rect)
+            QPaintEngine.drawEllipse(self, rect)
             return
         device.drawEllipse(rect)
 
@@ -85,7 +85,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode:
-            QPaintEngine.drawPoints(points, pointCount)
+            QPaintEngine.drawPoints(self, points, pointCount)
             return
         device.drawPoints(points, pointCount)
 
@@ -123,7 +123,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode:
-            QPaintEngine.drawTextItem(pos, textItem)
+            QPaintEngine.drawTextItem(self, pos, textItem)
             return
         device.drawTextItem(pos, textItem)
 
@@ -132,7 +132,7 @@ class QwtNullPaintDevice_PaintEngine(QPaintEngine):
         if device is None:
             return
         if device.mode() != QwtNullPaintDevice.NormalMode:
-            QPaintEngine.drawTiledPixmap(rect, pixmap, subRect)
+            QPaintEngine.drawTiledPixmap(self, rect, pixmap, subRect)
             return
         device.drawTiledPixmap(rect, pixmap, subRect)
 
