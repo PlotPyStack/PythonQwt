@@ -187,10 +187,10 @@ class PathInfo(object):
 
 class QwtGraphic_PrivateData(object):
     def __init__(self):
-        self.boundingRect = None
-        self.pointRect = None
+        self.boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
+        self.pointRect = QRectF(0.0, 0.0, -1.0, -1.0)
         self.initialTransform = None
-        self.defaultSize = None
+        self.defaultSize = QSizeF()
         self.commands = []
         self.pathInfos = []
         self.renderHints = 0
@@ -286,9 +286,9 @@ class QwtGraphic(QwtNullPaintDevice):
         """Clear all stored commands"""
         self.__data.commands = []
         self.__data.pathInfos = []
-        self.__data.boundingRect = None
-        self.__data.pointRect = None
-        self.__data.defaultSize = None
+        self.__data.boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
+        self.__data.pointRect = QRectF(0.0, 0.0, -1.0, -1.0)
+        self.__data.defaultSize = QSizeF()
 
     def isNull(self):
         """Return True, when no painter commands have been stored"""
@@ -296,7 +296,7 @@ class QwtGraphic(QwtNullPaintDevice):
 
     def isEmpty(self):
         """Return True, when the bounding rectangle is empty"""
-        return self.__data.boundingRect is None or self.__data.boundingRect.isEmpty()
+        return self.__data.boundingRect.isEmpty()
 
     def setRenderHint(self, hint, on=True):
         """Toggle an render hint"""
@@ -321,7 +321,7 @@ class QwtGraphic(QwtNullPaintDevice):
 
             :py:meth:`controlPointRect`, :py:meth:`scaledBoundingRect`
         """
-        if self.__data.boundingRect is None or self.__data.boundingRect.width() < 0:
+        if self.__data.boundingRect.width() < 0:
             return QRectF()
         return self.__data.boundingRect
 
@@ -337,7 +337,7 @@ class QwtGraphic(QwtNullPaintDevice):
 
             :py:meth:`boundingRect()`, :py:meth:`scaledBoundingRect()`
         """
-        if self.__data.pointRect is None or self.__data.pointRect.width() < 0:
+        if self.__data.pointRect.width() < 0:
             return QRectF()
         return self.__data.pointRect
 
@@ -407,10 +407,7 @@ class QwtGraphic(QwtNullPaintDevice):
 
             :py:meth:`setDefaultSize()`, :py:meth:`boundingRect()`
         """
-        if (
-            self.__data.defaultSize is not None
-            and not self.__data.defaultSize.isEmpty()
-        ):
+        if not self.__data.defaultSize.isEmpty():
             return self.__data.defaultSize
         return self.boundingRect().size()
 
@@ -489,11 +486,10 @@ class QwtGraphic(QwtNullPaintDevice):
                 return
             sx = 1.0
             sy = 1.0
-            if self.__data.pointRect is not None:
-                if self.__data.pointRect.width() > 0.0:
-                    sx = rect.width() / self.__data.pointRect.width()
-                if self.__data.pointRect.height() > 0.0:
-                    sy = rect.height() / self.__data.pointRect.height()
+            if self.__data.pointRect.width() > 0.0:
+                sx = rect.width() / self.__data.pointRect.width()
+            if self.__data.pointRect.height() > 0.0:
+                sy = rect.height() / self.__data.pointRect.height()
             scalePens = not bool(self.__data.renderHints & self.RenderPensUnscaled)
             for info in self.__data.pathInfos:
                 ssx = info.scaleFactorX(self.__data.pointRect, rect, scalePens)
@@ -745,13 +741,13 @@ class QwtGraphic(QwtNullPaintDevice):
             cr = painter.clipRegion().boundingRect()
             cr = painter.transform().mapRect(cr)
             br &= cr
-        if self.__data.boundingRect is None and self.__data.boundingRect.width() < 0:
+        if self.__data.boundingRect.width() < 0:
             self.__data.boundingRect = br
         else:
             self.__data.boundingRect |= br
 
     def updateControlPointRect(self, rect):
-        if self.__data.pointRect is None and self.__data.pointRect.width() < 0.0:
+        if self.__data.pointRect.width() < 0.0:
             self.__data.pointRect = rect
         else:
             self.__data.pointRect |= rect
