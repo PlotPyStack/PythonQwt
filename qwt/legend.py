@@ -390,7 +390,8 @@ class QwtLegendLabel(QwtTextLabel):
         :return: a size hint
         """
         sz = QwtTextLabel.sizeHint(self)
-        sz.setHeight(max([sz.height(), self.__data.icon.height() + 4]))
+        icon_height = 0 if self.__data.icon is None else self.__data.icon.height()
+        sz.setHeight(max([sz.height(), icon_height + 4]))
         if self.__data.itemMode != QwtLegendData.ReadOnly:
             sz += buttonShift(self)
         return sz
