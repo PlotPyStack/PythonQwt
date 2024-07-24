@@ -321,7 +321,7 @@ class QwtGraphic(QwtNullPaintDevice):
 
             :py:meth:`controlPointRect`, :py:meth:`scaledBoundingRect`
         """
-        if self.__data.boundingRect is None:
+        if self.__data.boundingRect is None or self.__data.boundingRect.width() < 0:
             return QRectF()
         return self.__data.boundingRect
 
@@ -337,7 +337,7 @@ class QwtGraphic(QwtNullPaintDevice):
 
             :py:meth:`boundingRect()`, :py:meth:`scaledBoundingRect()`
         """
-        if self.__data.pointRect is None:
+        if self.__data.pointRect is None or self.__data.pointRect.width() < 0:
             return QRectF()
         return self.__data.pointRect
 
@@ -407,7 +407,10 @@ class QwtGraphic(QwtNullPaintDevice):
 
             :py:meth:`setDefaultSize()`, :py:meth:`boundingRect()`
         """
-        if self.__data.defaultSize is not None:
+        if (
+            self.__data.defaultSize is not None
+            and not self.__data.defaultSize.isEmpty()
+        ):
             return self.__data.defaultSize
         return self.boundingRect().size()
 
@@ -487,9 +490,10 @@ class QwtGraphic(QwtNullPaintDevice):
             sx = 1.0
             sy = 1.0
             if self.__data.pointRect is not None:
-                sx = rect.width() / self.__data.pointRect.width()
-            if self.__data.pointRect is not None:
-                sy = rect.height() / self.__data.pointRect.height()
+                if self.__data.pointRect.width() > 0.0:
+                    sx = rect.width() / self.__data.pointRect.width()
+                if self.__data.pointRect.height() > 0.0:
+                    sy = rect.height() / self.__data.pointRect.height()
             scalePens = not bool(self.__data.renderHints & self.RenderPensUnscaled)
             for info in self.__data.pathInfos:
                 ssx = info.scaleFactorX(self.__data.pointRect, rect, scalePens)
@@ -741,13 +745,13 @@ class QwtGraphic(QwtNullPaintDevice):
             cr = painter.clipRegion().boundingRect()
             cr = painter.transform().mapRect(cr)
             br &= cr
-        if self.__data.boundingRect is None:
+        if self.__data.boundingRect is None and self.__data.boundingRect.width() < 0:
             self.__data.boundingRect = br
         else:
             self.__data.boundingRect |= br
 
     def updateControlPointRect(self, rect):
-        if self.__data.pointRect is None:
+        if self.__data.pointRect is None and self.__data.pointRect.width() < 0.0:
             self.__data.pointRect = rect
         else:
             self.__data.pointRect |= rect
