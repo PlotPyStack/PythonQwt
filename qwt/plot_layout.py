@@ -15,7 +15,7 @@ QwtPlotLayout
 
 import math
 
-from qtpy.QtCore import QRectF, QSize, Qt
+from qtpy.QtCore import QObject, QRectF, QSize, Qt
 from qtpy.QtGui import QFont, QRegion
 
 from qwt.plot import QwtPlot
@@ -143,8 +143,10 @@ class QwtPlotLayout_LayoutData(object):
             ]
 
 
-class QwtPlotLayout_PrivateData(object):
+class QwtPlotLayout_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.spacing = 5
         self.titleRect = QRectF()
         self.footerRect = QRectF()

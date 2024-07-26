@@ -21,7 +21,16 @@ QwtScaleDraw
 
 import math
 
-from qtpy.QtCore import QLineF, QPoint, QPointF, QRect, QRectF, Qt, qFuzzyCompare
+from qtpy.QtCore import (
+    QLineF,
+    QObject,
+    QPoint,
+    QPointF,
+    QRect,
+    QRectF,
+    Qt,
+    qFuzzyCompare,
+)
 from qtpy.QtGui import QFontMetrics, QPalette, QTransform
 
 from qwt._math import qwtRadians
@@ -30,8 +39,10 @@ from qwt.scale_map import QwtScaleMap
 from qwt.text import QwtText
 
 
-class QwtAbstractScaleDraw_PrivateData(object):
+class QwtAbstractScaleDraw_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.spacing = 4
         self.penWidth = 0
         self.minExtent = 0.0
@@ -233,7 +244,8 @@ class QwtAbstractScaleDraw(object):
         Draw the scale
 
         :param QPainter painter: The painter
-        :param QPalette palette: Palette, text color is used for the labels, foreground color for ticks and backbone
+        :param QPalette palette: Palette, text color is used for the labels,
+         foreground color for ticks and backbone
         """
         painter.save()
 
@@ -457,8 +469,10 @@ class QwtAbstractScaleDraw(object):
         self.__data.labelCache.clear()
 
 
-class QwtScaleDraw_PrivateData(object):
+class QwtScaleDraw_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.len = 0
         self.alignment = QwtScaleDraw.BottomScale
         self.labelAlignment = 0
@@ -1048,7 +1062,8 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         adjust the label flags too. Finding a useful combination is
         often the result of try and error.
 
-        :param float rotation: Angle in degrees. When changing the label rotation, the label flags often needs to be adjusted too.
+        :param float rotation: Angle in degrees. When changing the label rotation, the
+         label flags often needs to be adjusted too.
 
         .. seealso::
 

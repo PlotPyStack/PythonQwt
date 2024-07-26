@@ -21,7 +21,7 @@ QwtLegend
 
 import math
 
-from qtpy.QtCore import QEvent, QPoint, QRect, QRectF, QSize, Qt, Signal
+from qtpy.QtCore import QEvent, QObject, QPoint, QRect, QRectF, QSize, Qt, Signal
 
 # qDrawWinButton,
 from qtpy.QtGui import QPainter, QPalette, QPixmap
@@ -170,8 +170,10 @@ def buttonShift(w):
     return QSize(ph, pv)
 
 
-class QwtLegendLabel_PrivateData(object):
+class QwtLegendLabel_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.itemMode = QwtLegendData.ReadOnly
         self.isDown = False
         self.spacing = MARGIN
@@ -588,8 +590,10 @@ class LegendView(QScrollArea):
         self.contentsWidget.resize(w, h)
 
 
-class QwtLegend_PrivateData(object):
+class QwtLegend_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.itemMode = QwtLegendData.ReadOnly
         self.view = QwtDynGridLayout()
         self.itemMap = QwtLegendMap()

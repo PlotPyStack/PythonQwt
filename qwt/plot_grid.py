@@ -13,7 +13,7 @@ QwtPlotGrid
    :members:
 """
 
-from qtpy.QtCore import QLineF, Qt
+from qtpy.QtCore import QLineF, QObject, Qt
 from qtpy.QtGui import QPen
 
 from qwt._math import qwtFuzzyGreaterOrEqual, qwtFuzzyLessOrEqual
@@ -22,8 +22,10 @@ from qwt.qthelpers import qcolor_from_str
 from qwt.scale_div import QwtScaleDiv
 
 
-class QwtPlotGrid_PrivateData(object):
+class QwtPlotGrid_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.xEnabled = True
         self.yEnabled = True
         self.xMinEnabled = False

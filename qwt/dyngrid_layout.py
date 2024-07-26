@@ -15,12 +15,14 @@ The `dyngrid_layout` module provides the `QwtDynGridLayout` class.
    :members:
 """
 
-from qtpy.QtCore import QRect, QSize, Qt
+from qtpy.QtCore import QObject, QRect, QSize, Qt
 from qtpy.QtWidgets import QLayout
 
 
-class QwtDynGridLayout_PrivateData(object):
+class QwtDynGridLayout_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.isDirty = True
         self.maxColumns = 0
         self.numRows = 0

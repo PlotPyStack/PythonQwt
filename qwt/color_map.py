@@ -28,7 +28,7 @@ QwtAlphaColorMap
    :members:
 """
 
-from qtpy.QtCore import Qt, qIsNaN
+from qtpy.QtCore import QObject, Qt, qIsNaN
 from qtpy.QtGui import QColor, qAlpha, qBlue, qGreen, qRed, qRgb, qRgba
 
 
@@ -211,8 +211,10 @@ class QwtColorMap(object):
         return 0
 
 
-class QwtLinearColorMap_PrivateData(object):
+class QwtLinearColorMap_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.colorStops = ColorStops()
         self.mode = None
 
@@ -322,8 +324,10 @@ class QwtLinearColorMap(QwtColorMap):
             return int(ratio * 255 + 0.5)
 
 
-class QwtAlphaColorMap_PrivateData(object):
+class QwtAlphaColorMap_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.color = QColor()
         self.rgb = QColor().rgb()
         self.rgbMax = QColor().rgb()

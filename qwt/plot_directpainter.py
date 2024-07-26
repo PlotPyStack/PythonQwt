@@ -39,8 +39,10 @@ def qwtHasBackingStore(canvas):
     )
 
 
-class QwtPlotDirectPainter_PrivateData(object):
+class QwtPlotDirectPainter_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.attributes = 0
         self.hasClipping = False
         self.seriesItem = None  # QwtPlotSeriesItem

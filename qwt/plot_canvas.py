@@ -15,7 +15,7 @@ QwtPlotCanvas
 
 import os
 
-from qtpy.QtCore import QEvent, QPoint, QPointF, QRect, QRectF, QSize, Qt
+from qtpy.QtCore import QEvent, QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt
 from qtpy.QtGui import (
     QBrush,
     QGradient,
@@ -329,8 +329,10 @@ class StyleSheet(object):
         self.background = StyleSheetBackground()
 
 
-class QwtPlotCanvas_PrivateData(object):
+class QwtPlotCanvas_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.focusIndicator = QwtPlotCanvas.NoFocusIndicator
         self.borderRadius = 0
         self.paintAttributes = 0

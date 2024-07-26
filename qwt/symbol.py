@@ -15,7 +15,17 @@ QwtSymbol
 
 import math
 
-from qtpy.QtCore import QLineF, QPoint, QPointF, QRect, QRectF, QSize, QSizeF, Qt
+from qtpy.QtCore import (
+    QLineF,
+    QObject,
+    QPoint,
+    QPointF,
+    QRect,
+    QRectF,
+    QSize,
+    QSizeF,
+    Qt,
+)
 from qtpy.QtGui import (
     QBrush,
     QPainter,
@@ -334,8 +344,9 @@ def qwtDrawHexagonSymbols(painter, points, symbol):
         painter.drawPolygon(QPolygonF(hexa))
 
 
-class QwtSymbol_PrivateData(object):
+class QwtSymbol_PrivateData(QObject):
     def __init__(self, st, br, pn, sz):
+        QObject.__init__(self)
         self.style = st
         self.size = sz
         self.brush = br

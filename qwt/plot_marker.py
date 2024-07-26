@@ -13,7 +13,7 @@ QwtPlotMarker
    :members:
 """
 
-from qtpy.QtCore import QLineF, QPointF, QRect, QRectF, QSizeF, Qt
+from qtpy.QtCore import QLineF, QObject, QPointF, QRect, QRectF, QSizeF, Qt
 from qtpy.QtGui import QPainter, QPen
 
 from qwt.graphic import QwtGraphic
@@ -23,8 +23,10 @@ from qwt.symbol import QwtSymbol
 from qwt.text import QwtText
 
 
-class QwtPlotMarker_PrivateData(object):
+class QwtPlotMarker_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.labelAlignment = Qt.AlignCenter
         self.labelOrientation = Qt.Horizontal
         self.spacing = 2

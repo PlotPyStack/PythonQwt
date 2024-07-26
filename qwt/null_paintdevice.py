@@ -15,13 +15,16 @@ QwtNullPaintDevice
 
 import os
 
+from qtpy.QtCore import QObject
 from qtpy.QtGui import QPaintDevice, QPaintEngine, QPainterPath
 
 QT_API = os.environ["QT_API"]
 
 
-class QwtNullPaintDevice_PrivateData(object):
+class QwtNullPaintDevice_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.mode = QwtNullPaintDevice.NormalMode
 
 

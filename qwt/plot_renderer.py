@@ -55,8 +55,10 @@ def qwtCanvasClip(canvas, canvasRect):
     return canvas.borderPath(r)
 
 
-class QwtPlotRenderer_PrivateData(object):
+class QwtPlotRenderer_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.discardFlags = QwtPlotRenderer.DiscardNone
         self.layoutFlags = QwtPlotRenderer.DefaultLayout
 

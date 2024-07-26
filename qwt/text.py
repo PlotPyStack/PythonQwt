@@ -47,7 +47,7 @@ import math
 import os
 import struct
 
-from qtpy.QtCore import QRectF, QSize, QSizeF, Qt
+from qtpy.QtCore import QObject, QRectF, QSize, QSizeF, Qt
 from qtpy.QtGui import (
     QAbstractTextDocumentLayout,
     QColor,
@@ -457,8 +457,10 @@ class QwtRichTextEngine(QwtTextEngine):
         return 0, 0, 0, 0
 
 
-class QwtText_PrivateData(object):
+class QwtText_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.renderFlags = Qt.AlignCenter
         self.borderRadius = 0
         self.borderPen = Qt.NoPen
@@ -1104,8 +1106,10 @@ class QwtText(object):
         self.__map.setdefault(format_, engine)
 
 
-class QwtTextLabel_PrivateData(object):
+class QwtTextLabel_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.indent = 4
         self.margin = 0
         self.text = QwtText()

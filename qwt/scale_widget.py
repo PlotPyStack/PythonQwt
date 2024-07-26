@@ -15,7 +15,7 @@ QwtScaleWidget
 
 import math
 
-from qtpy.QtCore import QRectF, QSize, Qt, Signal
+from qtpy.QtCore import QObject, QRectF, QSize, Qt, Signal
 from qtpy.QtGui import QPainter, QPalette
 from qtpy.QtWidgets import QSizePolicy, QStyle, QStyleOption, QWidget
 
@@ -35,8 +35,10 @@ class ColorBar(object):
         self.colorMap = QwtColorMap()
 
 
-class QwtScaleWidget_PrivateData(object):
+class QwtScaleWidget_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.scaleDraw = None
         self.borderDist = [None] * 2
         self.minBorderDist = [None] * 2

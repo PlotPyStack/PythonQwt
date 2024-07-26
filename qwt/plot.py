@@ -22,7 +22,7 @@ QwtPlotItem
 import math
 
 import numpy as np
-from qtpy.QtCore import QEvent, QRectF, QSize, Qt, Signal
+from qtpy.QtCore import QEvent, QObject, QRectF, QSize, Qt, Signal
 from qtpy.QtGui import QBrush, QColor, QFont, QPainter, QPalette
 from qtpy.QtWidgets import QApplication, QFrame, QSizePolicy, QWidget
 
@@ -75,9 +75,10 @@ class ItemList(list):
         self.sortItems()
 
 
-class QwtPlot_PrivateData(object):
+class QwtPlot_PrivateData(QObject):
     def __init__(self):
-        super(QwtPlot_PrivateData, self).__init__()
+        QObject.__init__(self)
+
         self.itemList = ItemList()
         self.titleLabel = None
         self.footerLabel = None
@@ -1691,8 +1692,10 @@ class QwtPlot(QFrame):
         renderer.renderDocument(self, filename, size_mm, resolution, format_)
 
 
-class QwtPlotItem_PrivateData(object):
+class QwtPlotItem_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.plot = None
         self.isVisible = True
         self.attributes = 0

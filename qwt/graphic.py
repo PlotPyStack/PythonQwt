@@ -15,7 +15,7 @@ QwtGraphic
 
 import math
 
-from qtpy.QtCore import QPointF, QRect, QRectF, QSize, QSizeF, Qt
+from qtpy.QtCore import QObject, QPointF, QRect, QRectF, QSize, QSizeF, Qt
 from qtpy.QtGui import (
     QImage,
     QPaintEngine,
@@ -185,8 +185,9 @@ class PathInfo(object):
         return sy
 
 
-class QwtGraphic_PrivateData(object):
+class QwtGraphic_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
         self.boundingRect = QRectF(0.0, 0.0, -1.0, -1.0)
         self.pointRect = QRectF(0.0, 0.0, -1.0, -1.0)
         self.initialTransform = None

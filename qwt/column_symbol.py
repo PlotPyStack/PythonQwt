@@ -5,7 +5,7 @@
 # Copyright (c) 2015 Pierre Raybaut, for the Python translation/optimization
 # (see LICENSE file for more details)
 
-from qtpy.QtCore import QLineF, QRectF, Qt
+from qtpy.QtCore import QLineF, QObject, QRectF, Qt
 from qtpy.QtGui import QPalette, QPolygonF
 
 from qwt.interval import QwtInterval
@@ -71,8 +71,10 @@ def qwtDrawPanel(painter, rect, pal, lw):
     painter.fillRect(rect.adjusted(lw, lw, -lw + 1, -lw + 1), pal.window())
 
 
-class QwtColumnSymbol_PrivateData(object):
+class QwtColumnSymbol_PrivateData(QObject):
     def __init__(self):
+        QObject.__init__(self)
+
         self.style = QwtColumnSymbol.Box
         self.frameStyle = QwtColumnSymbol.Raised
         self.lineWidth = 2
