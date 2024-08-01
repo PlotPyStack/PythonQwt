@@ -2,17 +2,35 @@
 
 ## Version 0.12.7
 
-- Fixed other random crashes (segfaults) on Linux related to Qt objects stored in
-  private data structures (`QwtGraphic_PrivateData`, `QwtLegendLabel_PrivateData`)
+- Fixed random crashes (segfaults) on Linux related to conflicts between Qt and Python reference counting mechanisms:
+  - This issue was only happening on Linux, and only with Python 3.12, probably due to changes in Python garbage collector behavior introduced in Python 3.12. Moreover, it was only triggered with an extensive test suite, such as the one provided by the `PlotPy` project.
+  - The solution was to derive all private classes containing Qt objects from `QObject` instead of `object`, in order to let Qt manage the reference counting of its objects.
+  - This change was applied to the following classes:
+    - `QwtLinearColorMap_PrivateData`
+    - `QwtColumnSymbol_PrivateData`
+    - `QwtDynGridLayout_PrivateData`
+    - `QwtGraphic_PrivateData`
+    - `QwtLegendLabel_PrivateData`
+    - `QwtNullPaintDevice_PrivateData`
+    - `QwtPlotCanvas_PrivateData`
+    - `QwtPlotDirectPainter_PrivateData`
+    - `QwtPlotGrid_PrivateData`
+    - `QwtPlotLayout_PrivateData`
+    - `QwtPlotMarker_PrivateData`
+    - `QwtPlotRenderer_PrivateData`
+    - `QwtPlot_PrivateData`
+    - `QwtAbstractScaleDraw_PrivateData`
+    - `QwtScaleDraw_PrivateData`
+    - `QwtScaleWidget_PrivateData`
+    - `QwtSymbol_PrivateData`
+    - `QwtText_PrivateData`
+- Removed deprecated code regarding PyQt4 compatibility
 
 ## Version 0.12.6
 
-- Fixed random crashes (segfaults) on Linux related to Qt objects stored in cache data
-  structures (`QwtText` and `QwtSymbol`)
+- Fixed random crashes (segfaults) on Linux related to Qt objects stored in cache data structures (`QwtText` and `QwtSymbol`)
 
-- Test suite can simply be run with `pytest` and specific configuration (`conftest.py`)
-  will be taken into account (previously, the test suite has to be run with
-  `pytest qwt` in order to be successfully configured)
+- Test suite can simply be run with `pytest` and specific configuration (`conftest.py`) will be taken into account (previously, the test suite has to be run with `pytest qwt` in order to be successfully configured)
 
 ## Version 0.12.5
 
@@ -23,31 +41,21 @@
 ## Version 0.12.4
 
 - Fixed segmentation fault issue reported in the `PlotPy` project:
-  - See [PlotPy's Issue #13](https://github.com/PlotPyStack/PlotPy/issues/13) for the
-    original issue.
-  - The issue was caused by the `QwtSymbol` class constructor, and more specifically
-    by its private data object, which instanciated an empty `QtPainterPath` object,
-    causing a segmentation fault on Linux, Python 3.12 and PyQt5.
+  - See [PlotPy's Issue #13](https://github.com/PlotPyStack/PlotPy/issues/13) for the original issue.
+  - The issue was caused by the `QwtSymbol` class constructor, and more specifically by its private data object, which instanciated an empty `QtPainterPath` object, causing a segmentation fault on Linux, Python 3.12 and PyQt5.
 
 ## Version 0.12.3
 
 - Fixed `Fatal Python error` issue reported in the `PlotPy` project:
-  - See [PlotPy's Issue #11](https://github.com/PlotPyStack/PlotPy/issues/11) for the
-    original issue, even if the problem is not directly pointed out in the issue
-    comments.
-  - The issue was caused by the `QwtAbstractScaleDraw` cache mechanism, which was
-    keeping references to `QSizeF` objects that were deleted by the garbage collector
-    at some point. This was causing a segmentation fault, but only on Linux, and
-    only when executing the `PlotPy` test suite in a specific order.
-  - Thanks to @yuzibo for helping to reproduce the issue and providing a test case,
-    that is the `PlotPy` Debian package build process.
+  - See [PlotPy's Issue #11](https://github.com/PlotPyStack/PlotPy/issues/11) for the original issue, even if the problem is not directly pointed out in the issue comments.
+  - The issue was caused by the `QwtAbstractScaleDraw` cache mechanism, which was keeping references to `QSizeF` objects that were deleted by the garbage collector at some point. This was causing a segmentation fault, but only on Linux, and only when executing the `PlotPy` test suite in a specific order.
+  - Thanks to @yuzibo for helping to reproduce the issue and providing a test case, that is the `PlotPy` Debian package build process.
 
 ## Version 0.12.2
 
 For this release, test coverage is 72%.
 
-- Preparing for NumPy V2 compatibility: this is a work in progress, as NumPy V2 is not
-  yet released. In the meantime, requirements have been updated to exclude NumPy V2.
+- Preparing for NumPy V2 compatibility: this is a work in progress, as NumPy V2 is not yet released. In the meantime, requirements have been updated to exclude NumPy V2.
 - Fix `QwtPlot.axisInterval` (was raising `AttributeError`)
 - Removed unnecessary dependencies (pytest-qt, pytest-cov)
 - Moved `conftest.py` to project root
@@ -55,24 +63,19 @@ For this release, test coverage is 72%.
 
 ## Version 0.12.1
 
-- Fixed `ColorStops.stops` method (was returning a copy of the list of stops instead
-  of the list itself)
+- Fixed `ColorStops.stops` method (was returning a copy of the list of stops instead of the list itself)
 
 ## Version 0.12.0
 
-- 30% performance improvement (measured by `qwt.tests.test_loadtest`) by optimizing
-  the `QwtAbstractScaleDraw.tickLabel` method:
+- 30% performance improvement (measured by `qwt.tests.test_loadtest`) by optimizing the `QwtAbstractScaleDraw.tickLabel` method:
   - Suppressed an unnecessary call to `QFont.textSize` (which can be quite slow)
   - Cached the text size with the label `QwtText` object
 - Added support for margins in `QwtPlot` (see Issue #82):
   - Default margins are set to 0.05 (5% of the plot area) at each side of the plot
-  - Margins are adjustable for each plot axis using `QwtPlot.setAxisMargin` (and
-    `QwtPlot.axisMargin` to get the current value)
-- Added an additional margin to the left of ticks labels: this margin is set to one
-  character width, to avoid the labels to be truncated while keeping a tight layout
+  - Margins are adjustable for each plot axis using `QwtPlot.setAxisMargin` (and `QwtPlot.axisMargin` to get the current value)
+- Added an additional margin to the left of ticks labels: this margin is set to one character width, to avoid the labels to be truncated while keeping a tight layout
 - Slighly improved the new flat style (see V0.7.0) by selecting default fonts
-- API breaking change: `QwtLinearColorMap.colorStops` now returns a list of `ColorStop`
-  objects instead of the list of stop values
+- API breaking change: `QwtLinearColorMap.colorStops` now returns a list of `ColorStop` objects instead of the list of stop values
 
 ## Version 0.11.2
 
@@ -153,19 +156,14 @@ For this release, test coverage is 72%.
 ## Version 0.9.1
 
 - Added load test showing a large number of plots (eventually highlights performance issues).
-- Fixed event management in `QwtPlot` and removed unnecessary `QEvent.LayoutRequest`
-  emission in `QwtScaleWidget` (caused high CPU usage with `guiqwt.ImageWidget`).
+- Fixed event management in `QwtPlot` and removed unnecessary `QEvent.LayoutRequest` emission in `QwtScaleWidget` (caused high CPU usage with `guiqwt.ImageWidget`).
 - `QwtScaleDiv`: fixed ticks initialization when passing all arguments to constructor.
 - tests/image.py: fixed overriden `updateLegend` signature.
 
 ## Version 0.9.0
 
-- `QwtPlot`: set the `autoReplot` option at False by default, to avoid time consuming
-  implicit plot updates.
-- Added `QwtPlotItem.setIcon` and `QwtPlotItem.icon` method for setting and getting the
-  icon associated to the plot item (as of today, this feature is not strictly needed in
-  PythonQwt: this has been implemented for several use cases in higher level libraries
-  (see PR #61).
+- `QwtPlot`: set the `autoReplot` option at False by default, to avoid time consuming implicit plot updates.
+- Added `QwtPlotItem.setIcon` and `QwtPlotItem.icon` method for setting and getting the icon associated to the plot item (as of today, this feature is not strictly needed in PythonQwt: this has been implemented for several use cases in higher level libraries (see PR #61).
 - Removed unused `QwtPlotItem.defaultIcon` method.
 - Added various minor optimizations for axes/ticks drawing features.
 - Fixed `QwtPlot.canvasMap` when `axisScaleDiv` returns None.
@@ -173,32 +171,25 @@ For this release, test coverage is 72%.
 
 ## Version 0.8.3
 
-- Fixed simple plot examples (setup.py & plot.py's doc page) following the introduction
-  of the new QtPy dependency (Qt compatibility layer) since V0.8.0.
+- Fixed simple plot examples (setup.py & plot.py's doc page) following the introduction of the new QtPy dependency (Qt compatibility layer) since V0.8.0.
 
 ## Version 0.8.2
 
 - Added new GUI-based test script `PythonQwt-py3` to run the test launcher.
-- Added command-line options to the `PythonQwt-tests-py3` script to run all the tests
-  simultenously in unattended mode (`--mode unattended`) or to update all the
-  screenshots (`--mode screenshots`).
-- Added internal scripts for automated test in virtual environments with both PyQt5 and
-  PySide2.
+- Added command-line options to the `PythonQwt-tests-py3` script to run all the tests simultenously in unattended mode (`--mode unattended`) or to update all the screenshots (`--mode screenshots`).
+- Added internal scripts for automated test in virtual environments with both PyQt5 and PySide2.
 
 ## Version 0.8.1
 
-- PySide2 support was significatively improved betwen PythonQwt V0.8.0 and
-  V0.8.1 thanks to the new `qwt.qwt_curve.array2d_to_qpolygonf` function.
+- PySide2 support was significatively improved betwen PythonQwt V0.8.0 and V0.8.1 thanks to the new `qwt.qwt_curve.array2d_to_qpolygonf` function.
 
 ## Version 0.8.0
 
-- Added PySide2 support: PythonQwt is now compatible with Python 2.7, Python 3.4+,
-  PyQt4, PyQt5 and PySide2!
+- Added PySide2 support: PythonQwt is now compatible with Python 2.7, Python 3.4+, PyQt4, PyQt5 and PySide2!
 
 ## Version 0.7.1
 
-- Changed QwtPlotItem.detachItems signature: removed unnecessary "autoDelete" argument,
-  initialiazing "rtti" argument to None (remove all items)
+- Changed QwtPlotItem.detachItems signature: removed unnecessary "autoDelete" argument, initialiazing "rtti" argument to None (remove all items)
 - Improved Qt universal support (PyQt5, ...)
 
 ## Version 0.7.0
@@ -214,12 +205,8 @@ For this release, test coverage is 72%.
 - Added new test launcher with screenshots (automatically generated)
 - Removed `guidata` dependency thanks to the new specific GUI-based test launcher
 - Updated documentation (added more examples, using automatically generated screenshots)
-- QwtPlot: added "flatStyle" option, a PythonQwt-exclusive feature improving
-  default plot style (without margin, more compact and flat look) -- option is
-  enabled by default
-- QwtAbstractScaleDraw: added option to set the tick color lighter factor for
-  each tick type (minor, medium, major) -- this feature is used with the new
-  flatStyle option
+- QwtPlot: added "flatStyle" option, a PythonQwt-exclusive feature improving default plot style (without margin, more compact and flat look) -- option is enabled by default
+- QwtAbstractScaleDraw: added option to set the tick color lighter factor for each tick type (minor, medium, major) -- this feature is used with the new flatStyle option
 - Fixed obvious errors (+ poor implementations) in untested code parts
 - Major code cleaning and formatting
 
@@ -241,8 +228,7 @@ For this release, test coverage is 72%.
 
 ## Version 0.6.1
 
-- Fixed rounding issue with PythonQwt scale engine (0...1000 is now divided
-  in 200-size steps, as in both Qwt and PyQwt)
+- Fixed rounding issue with PythonQwt scale engine (0...1000 is now divided in 200-size steps, as in both Qwt and PyQwt)
 - Removed unnecessary mask on scaleWidget (this closes #35)
 - CurveBenchmark.py: fixed TypeError with numpy.linspace (NumPy=1.18)
 
@@ -264,18 +250,13 @@ For this release, test coverage is 72%.
 
 ## Version 0.5.4
 
-Fixed an annoying bug which caused scale widget (axis ticks in particular)
-to be misaligned with canvas grid: the user was forced to resize the plot
-widget as a workaround
+Fixed an annoying bug which caused scale widget (axis ticks in particular) to be misaligned with canvas grid: the user was forced to resize the plot widget as a workaround
 
 ## Version 0.5.3
 
-- Better handling of infinity and `NaN` values in scales (removed `NumPy`
-warnings)
-- Now handling infinity and `NaN` values in series data: removing points that
-can't be drawn
-- Fixed logarithmic scale engine: presence of values <= 0 was slowing down
-series data plotting
+- Better handling of infinity and `NaN` values in scales (removed `NumPy` warnings)
+- Now handling infinity and `NaN` values in series data: removing points that can't be drawn
+- Fixed logarithmic scale engine: presence of values <= 0 was slowing down series data plotting
 
 ## Version 0.5.2
 
@@ -286,23 +267,19 @@ series data plotting
 
 ## Version 0.5.1
 
-- Fixed Issue #22: fixed scale issues in [CurveDemo2.py](qwt/tests/CurveDemo2.py)
-and [ImagePlotDemo.py](qwt/tests/ImagePlotDemo.py)
+- Fixed Issue #22: fixed scale issues in [CurveDemo2.py](qwt/tests/CurveDemo2.py) and [ImagePlotDemo.py](qwt/tests/ImagePlotDemo.py)
 - `QwtPlotCurve`: sticks were not drawn correctly depending on orientation
 - `QwtInterval`: avoid overflows with `NumPy` scalars
 - Fixed Issue #28: curve shading was broken since v0.5.0
 - setup.py: using setuptools "entry_points" instead of distutils "scripts"
-- Showing curves/plots number in benchmarks to avoid any misinterpretation
-(see Issue #26)
+- Showing curves/plots number in benchmarks to avoid any misinterpretation (see Issue #26)
 - Added Python2/Python3 scripts for running tests
 
 ## Version 0.5.0
 
 - Various optimizations
-- Major API simplification, taking into account the feature that won't be
-implemented (fitting, rounding, weeding out points, clipping, etc.)
-- Added `QwtScaleDraw.setLabelAutoSize`/`labelAutoSize` methods to set the new
-auto size option (see [documentation](http://pythonhosted.org/PythonQwt/))
+- Major API simplification, taking into account the feature that won't be implemented (fitting, rounding, weeding out points, clipping, etc.)
+- Added `QwtScaleDraw.setLabelAutoSize`/`labelAutoSize` methods to set the new auto size option (see [documentation](http://pythonhosted.org/PythonQwt/))
 - `QwtPainter`: removed unused methods `drawRoundFrame`, `drawImage` and `drawPixmap`
 
 ## Version 0.4.0
@@ -317,19 +294,15 @@ Renamed the project (python-qwt --> PythonQwt), for various reasons.
 
 ## Version 0.2.1
 
-Fixed Issue #23: "argument numPoints is not implemented" error was showing
-up when calling `QwtSymbol.drawSymbol(symbol, QPoint(x, y))`.
+Fixed Issue #23: "argument numPoints is not implemented" error was showing up when calling `QwtSymbol.drawSymbol(symbol, QPoint(x, y))`.
 
 ## Version 0.2.0
 
-Added docstrings in all Python modules and a complete documentation based on
-Sphinx. See the Overview section for API limitations when comparing to Qwt.
+Added docstrings in all Python modules and a complete documentation based on Sphinx. See the Overview section for API limitations when comparing to Qwt.
 
 ## Version 0.1.1
 
-Fixed Issue #21 (blocking issue *only* on non-Windows platforms when
-building the package): typo in "PythonQwt-tests" script name
-(in [setup script](setup.py))
+Fixed Issue #21 (blocking issue *only* on non-Windows platforms when building the package): typo in "PythonQwt-tests" script name (in [setup script](setup.py))
 
 ## Version 0.1.0
 
