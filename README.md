@@ -79,7 +79,7 @@ See "Overview" section in [documentation](https://pythonqwt.readthedocs.io/en/la
 The `qwt` package short-term roadmap is the following:
 
 - [X] Drop support for PyQt4 and PySide2
-- [X] Drop support for Python < 3.8
+- [X] Drop support for Python <= 3.8
 - [X] Replace `setup.py` by `pyproject.toml`, using `setuptools` (e.g. see `guidata`)
 - [ ] Add more unit tests: the ultimate goal is to reach 90% code coverage
 
@@ -98,7 +98,7 @@ Compatibility table:
 
 ### Requirements
 
-- Python >=3.8
+- Python >=3.9
 - QtPy >= 1.3 (and a Python-to-Qt binding library, see above)
 - NumPy >= 1.5
 

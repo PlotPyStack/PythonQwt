@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.14.0
+
+- Dropped support for Python 3.8
+
 ## Version 0.12.7
 
 - Fixed random crashes (segfaults) on Linux related to conflicts between Qt and Python reference counting mechanisms:
