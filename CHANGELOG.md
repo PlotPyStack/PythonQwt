@@ -1,5 +1,12 @@
 # PythonQwt Releases
 
+## Version 0.14.1
+
+- Handled `RuntimeError` when running `test_eventfilter.py` on Ubuntu 22.04 (Python 3.12, PyQt5)
+- Fixed `ResourceWarning: unclosed file` in `test_cpudemo.py` (purely test issue)
+- Fixed segmentation fault in `test_multidemo.py` (purely test issue, related to test utility module `qwt.tests.utils`)
+- Update GitHub actions to use the latest versions of actions/checkout, actions/setup-python, ...
+
 ## Version 0.14.0
 
 - Dropped support for Python 3.8
