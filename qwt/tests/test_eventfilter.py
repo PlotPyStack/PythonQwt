@@ -243,7 +243,10 @@ class CanvasPicker(QObject):
         if event.type() == QEvent.FocusIn:
             self.__showCursor(True)
         if event.type() == QEvent.FocusOut:
-            self.__showCursor(False)
+            try:
+                self.__showCursor(False)
+            except RuntimeError:
+                pass  # ignore error when closing the application
         if event.type() == QEvent.Paint:
             QApplication.postEvent(self, QEvent(QEvent.User))
         elif event.type() == QEvent.MouseButtonPress:
