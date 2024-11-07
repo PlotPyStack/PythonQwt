@@ -202,10 +202,11 @@ class CpuStat:
 
     def __lookup(self):
         if os.path.exists("/proc/stat"):
-            for line in open("/proc/stat"):
-                words = line.split()
-                if words[0] == "cpu" and len(words) >= 5:
-                    return [float(w) for w in words[1:]]
+            with open("/proc/stat") as file:
+                for line in file:
+                    words = line.split()
+                    if words[0] == "cpu" and len(words) >= 5:
+                        return [float(w) for w in words[1:]]
         else:
             result = CpuStat.dummyValues[CpuStat.counter]
             CpuStat.counter += 1
