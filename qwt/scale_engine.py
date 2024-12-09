@@ -674,10 +674,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
             linearInterval = linearInterval.limited(LOG_MIN, LOG_MAX)
 
             if linearInterval.maxValue() / linearInterval.minValue() < logBase:
-                if stepSize < 0.0:
-                    stepSize = -math.log(abs(stepSize), logBase)
-                else:
-                    stepSize = math.log(stepSize, logBase)
+                stepSize = 0.0
                 return x1, x2, stepSize
 
         logRef = 1.0
