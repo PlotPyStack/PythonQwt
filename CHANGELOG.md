@@ -1,5 +1,10 @@
 # PythonQwt Releases
 
+## Version 0.14.2
+
+- Merged [PR #89](https://github.com/PlotPyStack/PythonQwt/pull/89): fixed call to `ScaleEngine.autoScale` in `QwtPlot.updateAxes` (returned values were not used) - thanks to @nicoddemus
+- Merged [PR #90](https://github.com/PlotPyStack/PythonQwt/pull/90): updated `QwtLinearScaleEngine.autoScale` method implementation to the latest Qwt version - thanks to @nicoddemus
+
 ## Version 0.14.1
 
 - Handled `RuntimeError` when running `test_eventfilter.py` on Ubuntu 22.04 (Python 3.12, PyQt5)
