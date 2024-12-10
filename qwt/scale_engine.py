@@ -674,6 +674,8 @@ class QwtLogScaleEngine(QwtScaleEngine):
             linearInterval = linearInterval.limited(LOG_MIN, LOG_MAX)
 
             if linearInterval.maxValue() / linearInterval.minValue() < logBase:
+                # The min / max interval is too short to be represented as a log scale. 
+                # Set the step to 0, so that a new step is calculated and a linear scale is used.
                 stepSize = 0.0
                 return x1, x2, stepSize
 
