@@ -954,7 +954,7 @@ class QwtPlot(QFrame):
                 d.isValid = False
                 minValue = intv_i.minValue()
                 maxValue = intv_i.maxValue()
-                d.scaleEngine.autoScale(d.maxMajor, minValue, maxValue, stepSize)
+                minValue, maxValue, stepSize = d.scaleEngine.autoScale(d.maxMajor, minValue, maxValue, stepSize)
             if not d.isValid:
                 d.scaleDiv = d.scaleEngine.divideScale(
                     minValue, maxValue, d.maxMajor, d.maxMinor, stepSize
