@@ -1560,9 +1560,9 @@ class QwtPlot(QFrame):
                 if self.__data.legend.parent() is not self:
                     self.__data.legend.setParent(self)
 
-                self.blockSignals(True)
+                self.legendDataChanged.disconnect(self.updateLegendItems)
                 self.updateLegend()
-                self.blockSignals(False)
+                self.legendDataChanged.connect(self.updateLegendItems)
 
                 lpos = self.__data.layout.legendPosition()
 
