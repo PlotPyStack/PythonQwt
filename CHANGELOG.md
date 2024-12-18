@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.14.3
+
+- Removed `QwtPlotItem.setIcon` and `QwtPlotItem.icon` methods (introduced in 0.9.0 but not used in PythonQwt)
+
 ## Version 0.14.2
 
 - Merged [PR #89](https://github.com/PlotPyStack/PythonQwt/pull/89): fixed call to `ScaleEngine.autoScale` in `QwtPlot.updateAxes` (returned values were not used) - thanks to @nicoddemus

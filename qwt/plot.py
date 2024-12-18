@@ -954,7 +954,9 @@ class QwtPlot(QFrame):
                 d.isValid = False
                 minValue = intv_i.minValue()
                 maxValue = intv_i.maxValue()
-                minValue, maxValue, stepSize = d.scaleEngine.autoScale(d.maxMajor, minValue, maxValue, stepSize)
+                minValue, maxValue, stepSize = d.scaleEngine.autoScale(
+                    d.maxMajor, minValue, maxValue, stepSize
+                )
             if not d.isValid:
                 d.scaleDiv = d.scaleEngine.divideScale(
                     minValue, maxValue, d.maxMajor, d.maxMinor, stepSize
@@ -1706,7 +1708,6 @@ class QwtPlotItem_PrivateData(QObject):
         self.yAxis = QwtPlot.yLeft
         self.legendIconSize = QSize(8, 8)
         self.title = None  # QwtText
-        self.icon = None
 
 
 class QwtPlotItem(object):
@@ -1914,29 +1915,6 @@ class QwtPlotItem(object):
             :py:meth:`setTitle()`
         """
         return self.__data.title
-
-    def setIcon(self, icon):
-        """
-        Set item icon
-
-        :param icon: Icon
-        :type icon: QIcon
-
-        .. seealso::
-
-            :py:meth:`icon()`
-        """
-        self.__data.icon = icon
-
-    def icon(self):
-        """
-        :return: Icon of the item
-
-        .. seealso::
-
-            :py:meth:`setIcon()`
-        """
-        return self.__data.icon
 
     def setItemAttribute(self, attribute, on=True):
         """
