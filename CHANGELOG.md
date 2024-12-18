@@ -2,6 +2,7 @@
 
 ## Version 0.14.3
 
+- Merged [PR #91](https://github.com/PlotPyStack/PythonQwt/pull/91): Fix: legend now showing up when enabled later - thanks to @nicoddemus
 - Removed `QwtPlotItem.setIcon` and `QwtPlotItem.icon` methods (introduced in 0.9.0 but not used in PythonQwt)
 
 ## Version 0.14.2
