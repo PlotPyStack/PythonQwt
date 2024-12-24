@@ -142,6 +142,7 @@ class CurveBenchmark1(QMainWindow):
         self.text = BMText(self)
         self.tabs.addTab(self.text, "Contents")
         self.resize(*self.SIZE)
+        self.durations = []
 
         # Force window to show up and refresh (for test purpose only)
         self.show()
@@ -160,7 +161,9 @@ class CurveBenchmark1(QMainWindow):
         # Force widget to refresh (for test purpose only)
         QApplication.processEvents()
 
-        time_str = "Elapsed time: %d ms" % ((time.time() - t0) * 1000)
+        duration = (time.time() - t0) * 1000
+        self.durations.append(duration)
+        time_str = "Elapsed time: %d ms" % duration
         widget.text.setText(time_str)
         self.text.append("<br><i>%s:</i><br>%s" % (description, time_str))
         print("[%s] %s" % (utils.get_lib_versions(), time_str))

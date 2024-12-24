@@ -10,6 +10,8 @@ SHOW = True  # Show test in GUI-based test launcher
 
 import time
 
+import numpy as np
+
 # Local imports
 from qwt.tests import test_curvebenchmark1 as cb
 from qwt.tests import utils
@@ -47,6 +49,9 @@ class LoadTest(cb.CurveBenchmark1):
                 symtext,
             )
             self.process_iteration(title, description, widget, t0)
+        print("")
+        time_str = "Average elapsed time: %d ms" % np.mean(self.durations)
+        print("[%s] %s" % (utils.get_lib_versions(), time_str))
 
 
 def test_loadtest():
