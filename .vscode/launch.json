@@ -6,14 +6,14 @@
     "configurations": [
         {
             "name": "Python : Test launcher",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/qwt/tests/__init__.py",
             "console": "integratedTerminal"
         },
         {
             "name": "Python : Current file",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal"
