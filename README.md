@@ -20,10 +20,12 @@ See documentation [online](https://pythonqwt.readthedocs.io/en/latest/) or [PDF]
 ## Sample
 
 ```python
-import qwt
 import numpy as np
+from qtpy import QtWidgets as QW
 
-app = qwt.qt.QtGui.QApplication([])
+import qwt
+
+app = QW.QApplication([])
 
 # Create plot widget
 plot = qwt.QwtPlot("Trigonometric functions")
