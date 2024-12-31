@@ -588,7 +588,7 @@ class QwtPlot(QFrame):
     def axisMargin(self, axisId):
         """
         :param int axisId: Axis index
-        :return: Margin in % of the canvas size
+        :return: Relative margin of the axis, as a fraction of the full axis range
 
         .. seealso::
 
@@ -871,15 +871,17 @@ class QwtPlot(QFrame):
 
     def setAxisMargin(self, axisId, margin):
         """
-        Set the margin of the scale widget
+        Set the relative margin of the axis, as a fraction of the full axis range
 
         :param int axisId: Axis index
-        :param float margin: Margin in % of the canvas size
+        :param float margin: Relative margin (float between 0 and 1)
 
         .. seealso::
 
             :py:meth:`axisMargin()`
         """
+        if not isinstance(margin, float) or margin < 0.0 or margin > 1.0:
+            raise ValueError("margin must be a float between 0 and 1")
         if self.axisValid(axisId):
             d = self.__axisData[axisId]
             if margin != d.margin:
@@ -946,16 +948,12 @@ class QwtPlot(QFrame):
             minValue = d.minValue
             maxValue = d.maxValue
             stepSize = d.stepSize
-            if d.margin is not None:
-                intv_i = intv[axisId].extend_fraction(d.margin)
-            else:
-                intv_i = intv[axisId]
-            if d.doAutoScale and intv_i.isValid():
+            if d.doAutoScale and intv[axisId].isValid():
                 d.isValid = False
-                minValue = intv_i.minValue()
-                maxValue = intv_i.maxValue()
+                minValue = intv[axisId].minValue()
+                maxValue = intv[axisId].maxValue()
                 minValue, maxValue, stepSize = d.scaleEngine.autoScale(
-                    d.maxMajor, minValue, maxValue, stepSize
+                    d.maxMajor, minValue, maxValue, stepSize, d.margin
                 )
             if not d.isValid:
                 d.scaleDiv = d.scaleEngine.divideScale(

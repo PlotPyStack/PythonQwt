@@ -37,8 +37,8 @@ from qwt.scale_div import QwtScaleDiv
 from qwt.transform import QwtLogTransform, QwtTransform
 
 DBL_MAX = sys.float_info.max
-LOG_MIN = 1.0e-100
-LOG_MAX = 1.0e100
+LOG_MIN = 1.0e-150
+LOG_MAX = 1.0e150
 
 
 def qwtLogInterval(base, interval):
@@ -198,7 +198,7 @@ class QwtScaleEngine(object):
         self.__data = QwtScaleEngine_PrivateData()
         self.setBase(base)
 
-    def autoScale(self, maxNumSteps, x1, x2, stepSize):
+    def autoScale(self, maxNumSteps, x1, x2, stepSize, relative_margin=0.0):
         """
         Align and divide an interval
 
@@ -206,6 +206,7 @@ class QwtScaleEngine(object):
         :param float x1: First limit of the interval (In/Out)
         :param float x2: Second limit of the interval (In/Out)
         :param float stepSize: Step size
+        :param float relative_margin: Margin as a fraction of the interval width
         :return: tuple (x1, x2, stepSize)
         """
         pass
@@ -473,7 +474,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
     def __init__(self, base=10):
         super(QwtLinearScaleEngine, self).__init__(base)
 
-    def autoScale(self, maxNumSteps, x1, x2, stepSize):
+    def autoScale(self, maxNumSteps, x1, x2, stepSize, relative_margin=0.0):
         """
         Align and divide an interval
 
@@ -481,12 +482,19 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         :param float x1: First limit of the interval (In/Out)
         :param float x2: Second limit of the interval (In/Out)
         :param float stepSize: Step size
+        :param float relative_margin: Margin as a fraction of the interval width
         :return: tuple (x1, x2, stepSize)
 
         .. seealso::
 
             :py:meth:`setAttribute()`
         """
+        # Apply the relative margin (fraction of the interval width) in linear space:
+        if relative_margin > 0.0:
+            margin = (x2 - x1) * relative_margin
+            x1 -= margin
+            x2 += margin
+
         interval = QwtInterval(x1, x2)
         interval = interval.normalized()
         interval.setMinValue(interval.minValue() - self.lowerMargin())
@@ -640,7 +648,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
         super(QwtLogScaleEngine, self).__init__(base)
         self.setTransformation(QwtLogTransform())
 
-    def autoScale(self, maxNumSteps, x1, x2, stepSize):
+    def autoScale(self, maxNumSteps, x1, x2, stepSize, relative_margin=0.0):
         """
         Align and divide an interval
 
@@ -648,6 +656,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
         :param float x1: First limit of the interval (In/Out)
         :param float x2: Second limit of the interval (In/Out)
         :param float stepSize: Step size
+        :param float relative_margin: Margin as a fraction of the interval width
         :return: tuple (x1, x2, stepSize)
 
         .. seealso::
@@ -657,11 +666,18 @@ class QwtLogScaleEngine(QwtScaleEngine):
         if x1 > x2:
             x1, x2 = x2, x1
         logBase = self.base()
+
+        # Apply the relative margin (fraction of the interval width) in logarithmic
+        # space, and convert back to linear space.
+        if relative_margin is not None:
+            log_margin = math.log(x2 / x1, logBase) * relative_margin
+            x1 /= math.pow(logBase, log_margin)
+            x2 *= math.pow(logBase, log_margin)
+
         interval = QwtInterval(
             x1 / math.pow(logBase, self.lowerMargin()),
             x2 * math.pow(logBase, self.upperMargin()),
         )
-        interval = interval.limited(LOG_MIN, LOG_MAX)
         if interval.maxValue() / interval.minValue() < logBase:
             linearScaler = QwtLinearScaleEngine()
             linearScaler.setAttributes(self.attributes())
@@ -674,7 +690,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
             linearInterval = linearInterval.limited(LOG_MIN, LOG_MAX)
 
             if linearInterval.maxValue() / linearInterval.minValue() < logBase:
-                # The min / max interval is too short to be represented as a log scale. 
+                # The min / max interval is too short to be represented as a log scale.
                 # Set the step to 0, so that a new step is calculated and a linear scale is used.
                 stepSize = 0.0
                 return x1, x2, stepSize

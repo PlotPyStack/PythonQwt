@@ -2,6 +2,7 @@
 
 ## Version 0.14.3
 
+- Fixed [Issue #94](https://github.com/PlotPyStack/PythonQwt/issues/94) - Different logarithmic scale behavior when compared to Qwt
 - Merged [PR #91](https://github.com/PlotPyStack/PythonQwt/pull/91): Fix: legend now showing up when enabled later - thanks to @nicoddemus
 - Removed `QwtPlotItem.setIcon` and `QwtPlotItem.icon` methods (introduced in 0.9.0 but not used in PythonQwt)
 
