@@ -670,6 +670,8 @@ class QwtLogScaleEngine(QwtScaleEngine):
         # Apply the relative margin (fraction of the interval width) in logarithmic
         # space, and convert back to linear space.
         if relative_margin is not None:
+            x1 = min(max([x1, LOG_MIN]), LOG_MAX)
+            x2 = min(max([x2, LOG_MIN]), LOG_MAX)
             log_margin = math.log(x2 / x1, logBase) * relative_margin
             x1 /= math.pow(logBase, log_margin)
             x2 *= math.pow(logBase, log_margin)
