@@ -198,7 +198,7 @@ class QwtScaleEngine(object):
         self.__data = QwtScaleEngine_PrivateData()
         self.setBase(base)
 
-    def autoScale(self, maxNumSteps, x1, x2, stepSize, relative_margin=0.0):
+    def autoScale(self, maxNumSteps, x1, x2, stepSize, relativeMargin=0.0):
         """
         Align and divide an interval
 
@@ -206,7 +206,7 @@ class QwtScaleEngine(object):
         :param float x1: First limit of the interval (In/Out)
         :param float x2: Second limit of the interval (In/Out)
         :param float stepSize: Step size
-        :param float relative_margin: Margin as a fraction of the interval width
+        :param float relativeMargin: Margin as a fraction of the interval width
         :return: tuple (x1, x2, stepSize)
         """
         pass
@@ -474,7 +474,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
     def __init__(self, base=10):
         super(QwtLinearScaleEngine, self).__init__(base)
 
-    def autoScale(self, maxNumSteps, x1, x2, stepSize, relative_margin=0.0):
+    def autoScale(self, maxNumSteps, x1, x2, stepSize, relativeMargin=0.0):
         """
         Align and divide an interval
 
@@ -482,7 +482,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         :param float x1: First limit of the interval (In/Out)
         :param float x2: Second limit of the interval (In/Out)
         :param float stepSize: Step size
-        :param float relative_margin: Margin as a fraction of the interval width
+        :param float relativeMargin: Margin as a fraction of the interval width
         :return: tuple (x1, x2, stepSize)
 
         .. seealso::
@@ -490,8 +490,8 @@ class QwtLinearScaleEngine(QwtScaleEngine):
             :py:meth:`setAttribute()`
         """
         # Apply the relative margin (fraction of the interval width) in linear space:
-        if relative_margin > 0.0:
-            margin = (x2 - x1) * relative_margin
+        if relativeMargin > 0.0:
+            margin = (x2 - x1) * relativeMargin
             x1 -= margin
             x2 += margin
 
@@ -648,7 +648,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
         super(QwtLogScaleEngine, self).__init__(base)
         self.setTransformation(QwtLogTransform())
 
-    def autoScale(self, maxNumSteps, x1, x2, stepSize, relative_margin=0.0):
+    def autoScale(self, maxNumSteps, x1, x2, stepSize, relativeMargin=0.0):
         """
         Align and divide an interval
 
@@ -656,7 +656,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
         :param float x1: First limit of the interval (In/Out)
         :param float x2: Second limit of the interval (In/Out)
         :param float stepSize: Step size
-        :param float relative_margin: Margin as a fraction of the interval width
+        :param float relativeMargin: Margin as a fraction of the interval width
         :return: tuple (x1, x2, stepSize)
 
         .. seealso::
@@ -669,10 +669,10 @@ class QwtLogScaleEngine(QwtScaleEngine):
 
         # Apply the relative margin (fraction of the interval width) in logarithmic
         # space, and convert back to linear space.
-        if relative_margin is not None:
+        if relativeMargin is not None:
             x1 = min(max([x1, LOG_MIN]), LOG_MAX)
             x2 = min(max([x2, LOG_MIN]), LOG_MAX)
-            log_margin = math.log(x2 / x1, logBase) * relative_margin
+            log_margin = math.log(x2 / x1, logBase) * relativeMargin
             x1 /= math.pow(logBase, log_margin)
             x2 *= math.pow(logBase, log_margin)
 
