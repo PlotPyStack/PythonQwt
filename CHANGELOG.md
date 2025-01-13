@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.14.4
+
+- Fixed canvas rectangle type in `drawItems` method call in `QwtPlot.drawCanvas` (was causing a hard crash when printing to PDF a canvas with upstream `PlotPy` project)
+
 ## Version 0.14.3
 
 - Fixed [Issue #94](https://github.com/PlotPyStack/PythonQwt/issues/94) - Different logarithmic scale behavior when compared to Qwt

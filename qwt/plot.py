@@ -1391,7 +1391,7 @@ class QwtPlot(QFrame):
             :py:meth:`QwtPlotItem.getCanvasMarginHint()`
         """
         maps = [self.canvasMap(axisId) for axisId in self.AXES]
-        self.drawItems(painter, self.__data.canvas.contentsRect(), maps)
+        self.drawItems(painter, QRectF(self.__data.canvas.contentsRect()), maps)
 
     def drawItems(self, painter, canvasRect, maps):
         """
