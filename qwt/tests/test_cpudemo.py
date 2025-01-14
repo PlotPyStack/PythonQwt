@@ -11,7 +11,7 @@ SHOW = True  # Show test in GUI-based test launcher
 import os
 
 import numpy as np
-from qtpy.QtCore import QRect, QRectF, Qt, QTime
+from qtpy.QtCore import QRectF, Qt, QTime
 from qtpy.QtGui import QBrush, QColor
 from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 
@@ -225,7 +225,7 @@ class CpuPieMarker(QwtPlotMarker):
 
     def draw(self, painter, xMap, yMap, rect):
         margin = 5
-        pieRect = QRect()
+        pieRect = QRectF()
         pieRect.setX(rect.x() + margin)
         pieRect.setY(rect.y() + margin)
         pieRect.setHeight(int(yMap.transform(80.0)))
