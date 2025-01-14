@@ -11,7 +11,7 @@ SHOW = True  # Show test in GUI-based test launcher
 import os
 
 import numpy as np
-from qtpy.QtCore import QRect, Qt, QTime
+from qtpy.QtCore import QRect, QRectF, Qt, QTime
 from qtpy.QtGui import QBrush, QColor
 from qtpy.QtWidgets import QLabel, QVBoxLayout, QWidget
 
@@ -263,7 +263,7 @@ class Background(QwtPlotItem):
 
     def draw(self, painter, xMap, yMap, rect):
         c = QColor(Qt.white)
-        r = QRect(rect)
+        r = QRectF(rect)
 
         for i in range(100, 0, -10):
             r.setBottom(int(yMap.transform(i - 10)))
