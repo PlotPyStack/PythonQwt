@@ -393,7 +393,7 @@ class QwtPainterClass(object):
         if widget.testAttribute(Qt.WA_StyledBackground):
             opt = QStyleOption()
             opt.initFrom(widget)
-            opt.rect = rect
+            opt.rect = rect.toRect()
             widget.style().drawPrimitive(QStyle.PE_Widget, opt, painter, widget)
         else:
             brush = widget.palette().brush(widget.backgroundRole())
