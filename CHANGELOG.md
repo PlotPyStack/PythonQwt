@@ -1,5 +1,10 @@
 # PythonQwt Releases
 
+## Version 0.14.5
+
+- Merged [PR #98](https://github.com/PlotPyStack/PythonQwt/pull/98): Fix legend still being visible after removed
+- Merged [PR #99](https://github.com/PlotPyStack/PythonQwt/pull/99): Fix `QRectF` to `QRect` cast in `QwtPainterClass.drawBackground`
+
 ## Version 0.14.4
 
 - Fixed canvas rectangle type in `drawItems` method call in `QwtPlot.drawCanvas` (was causing a hard crash when printing to PDF a canvas with upstream `PlotPy` project)
