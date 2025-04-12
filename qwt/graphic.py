@@ -139,20 +139,20 @@ class PathInfo(object):
             rect = transform.mapRect(self.__boundingRect)
         else:
             rect = transform.mapRect(self.__pointRect)
-            l = abs(self.__pointRect.left() - self.__boundingRect.left())
-            r = abs(self.__pointRect.right() - self.__boundingRect.right())
-            t = abs(self.__pointRect.top() - self.__boundingRect.top())
-            b = abs(self.__pointRect.bottom() - self.__boundingRect.bottom())
-            rect.adjust(-l, -t, r, b)
+            left_diff = abs(self.__pointRect.left() - self.__boundingRect.left())
+            right_diff = abs(self.__pointRect.right() - self.__boundingRect.right())
+            top_diff = abs(self.__pointRect.top() - self.__boundingRect.top())
+            bottom_diff = abs(self.__pointRect.bottom() - self.__boundingRect.bottom())
+            rect.adjust(-left_diff, -top_diff, right_diff, bottom_diff)
         return rect
 
     def scaleFactorX(self, pathRect, targetRect, scalePens):
         if pathRect.width() <= 0.0:
             return 0.0
         p0 = self.__pointRect.center()
-        l = abs(pathRect.left() - p0.x())
+        left_diff = abs(pathRect.left() - p0.x())
         r = abs(pathRect.right() - p0.x())
-        w = 2.0 * min([l, r]) * targetRect.width() / pathRect.width()
+        w = 2.0 * min([left_diff, r]) * targetRect.width() / pathRect.width()
         if scalePens and self.__scalablePen:
             sx = w / self.__boundingRect.width()
         else:

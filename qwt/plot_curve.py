@@ -16,6 +16,7 @@ QwtPlotCurve
 import math
 import os
 
+import numpy as np
 from qtpy.QtCore import QLineF, QPointF, QRectF, QSize, Qt
 from qtpy.QtGui import QBrush, QColor, QPainter, QPen, QPolygonF
 
@@ -39,8 +40,6 @@ if QT_API == "pyside6":
     import ctypes
 
     import shiboken6 as shiboken
-
-import numpy as np
 
 
 def qwtUpdateLegendIconSize(curve):

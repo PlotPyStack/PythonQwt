@@ -69,6 +69,7 @@ target-version = "py39"                        # Assume Python 3.9.
 select = ["E", "F", "W", "I", "NPY201"]
 ignore = [
     "E203", # space before : (needed for how black formats slicing)
+    "E501", # line too long
 ]
 
 [tool.ruff.format]
