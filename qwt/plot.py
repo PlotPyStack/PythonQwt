@@ -1553,6 +1553,7 @@ class QwtPlot(QFrame):
         self.__data.layout.setLegendPosition(pos, ratio)
         if legend != self.__data.legend:
             if self.__data.legend and self.__data.legend.parent() is self:
+                self.__data.legend.setParent(None)
                 del self.__data.legend
             self.__data.legend = legend
             if self.__data.legend:
