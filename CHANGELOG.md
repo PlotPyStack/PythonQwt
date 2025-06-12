@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.14.6
+
+- Fixed [Issue #100](https://github.com/PlotPyStack/PythonQwt/issues/100) - TypeError in `QwtSymbol.drawSymbol` method due to outdated `renderSymbols` call
+
 ## Version 0.14.5
 
 - Merged [PR #98](https://github.com/PlotPyStack/PythonQwt/pull/98): Fix legend still being visible after removed

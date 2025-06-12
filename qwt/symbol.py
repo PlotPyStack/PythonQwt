@@ -1104,8 +1104,7 @@ class QwtSymbol(object):
             painter.scale(ratio, ratio)
             isPinPointEnabled = self.__data.isPinPointEnabled
             self.__data.isPinPointEnabled = False
-            pos = QPointF()
-            self.renderSymbols(painter, pos, 1)
+            self.renderSymbols(painter, [QPointF()])
             self.__data.isPinPointEnabled = isPinPointEnabled
             painter.restore()
 
