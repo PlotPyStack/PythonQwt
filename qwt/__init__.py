@@ -55,7 +55,7 @@ from qwt.symbol import QwtSymbol as QSbl  # see deprecated section
 from qwt.text import QwtText  # noqa: F401
 from qwt.toqimage import array_to_qimage as toQImage  # noqa: F401
 
-__version__ = "0.14.5"
+__version__ = "0.14.6"
 QWT_VERSION_STR = "6.1.5"
 
 
@@ -132,28 +132,28 @@ class QwtSymbol(QSbl):
 class QwtPlotGrid(QPG):
     def majPen(self):
         warnings.warn(
-            "`majPen` has been removed in Qwt6: " "please use `majorPen` instead",
+            "`majPen` has been removed in Qwt6: please use `majorPen` instead",
             RuntimeWarning,
         )
         return self.majorPen()
 
     def minPen(self):
         warnings.warn(
-            "`minPen` has been removed in Qwt6: " "please use `minorPen` instead",
+            "`minPen` has been removed in Qwt6: please use `minorPen` instead",
             RuntimeWarning,
         )
         return self.minorPen()
 
     def setMajPen(self, *args):
         warnings.warn(
-            "`setMajPen` has been removed in Qwt6: " "please use `setMajorPen` instead",
+            "`setMajPen` has been removed in Qwt6: please use `setMajorPen` instead",
             RuntimeWarning,
         )
         return self.setMajorPen(*args)
 
     def setMinPen(self, *args):
         warnings.warn(
-            "`setMinPen` has been removed in Qwt6: " "please use `setMinorPen` instead",
+            "`setMinPen` has been removed in Qwt6: please use `setMinorPen` instead",
             RuntimeWarning,
         )
         return self.setMinorPen(*args)
