@@ -3,6 +3,7 @@
 ## Version 0.14.6
 
 - Fixed [Issue #100](https://github.com/PlotPyStack/PythonQwt/issues/100) - TypeError in `QwtSymbol.drawSymbol` method due to outdated `renderSymbols` call
+- Fixed [Issue #101](https://github.com/PlotPyStack/PythonQwt/issues/101) - `RuntimeWarning: overflow encountered in cast` when plotting `numpy.float32` curve data
 
 ## Version 0.14.5
 
