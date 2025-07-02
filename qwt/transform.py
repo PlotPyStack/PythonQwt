@@ -169,7 +169,8 @@ class QwtLogTransform(QwtTransform):
         :param float value: Value to be bounded
         :return: Value modified
         """
-        return np.clip(float(value), self.LogMin, self.LogMax)
+        bval = np.clip(np.asarray(value, dtype=np.float64), self.LogMin, self.LogMax)
+        return bval.item() if bval.ndim == 0 else bval
 
     def transform(self, value):
         """
