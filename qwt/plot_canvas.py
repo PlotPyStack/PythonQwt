@@ -75,7 +75,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
             # Pyside
             if isinstance(rects, (QRect, QRectF)):
                 self.border.list = [rects]
-            elif all(isinstance(rects, (QRect, QRectF)):
+            elif all(isinstance(r, (QRect, QRectF) for r in rects):
                 if isinstance(rects, list):
                     self.border.rectList += rects
                 else:
