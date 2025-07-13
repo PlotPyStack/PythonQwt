@@ -14,6 +14,7 @@ QwtPlotCanvas
 """
 
 import os
+from collections.abc import Sequence
 
 from qtpy.QtCore import QEvent, QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt
 from qtpy.QtGui import (
@@ -33,8 +34,6 @@ from qtpy.QtWidgets import QFrame, QStyle, QStyleOption, QStyleOptionFrame
 
 from qwt.null_paintdevice import QwtNullPaintDevice
 from qwt.painter import QwtPainter
-
-QT_API = os.environ["QT_API"]
 
 
 class Border(object):
@@ -71,19 +70,15 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
             self.__origin = state.brushOrigin()
 
     def drawRects(self, rects, count):
-        if QT_API.startswith("pyside"):
-            # Pyside
-            if isinstance(rects, (QRect, QRectF)):
-                self.border.rectList = [rects]
-            elif isinstance(rects, list):
-                self.border.rectList += rects
-            else:
-                for i in range(count):
-                    self.border.rectList += [rects.getRect().index(i)]
+        if isinstance(rects, (QRect, QRectF)):
+            self.border.rectList = [QRectF(rects)]
+        elif isinstance(rects, Sequence):
+            self.border.rectList.extend(QRectF(rects[i]) for i in range(count))
         else:
-            # PyQt
-            for i in range(count):
-                self.border.rectList += [rects[i]]
+            raise TypeError(
+                "drawRects() expects a QRect, QRectF or a sequence of them, "
+                f"but got {type(rects).__name__}"
+            )
 
     def drawPath(self, path):
         rect = QRectF(QPointF(0.0, 0.0), self.__size)
