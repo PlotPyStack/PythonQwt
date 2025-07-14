@@ -13,7 +13,6 @@ QwtPlotCanvas
    :members:
 """
 
-import os
 from collections.abc import Sequence
 
 from qtpy.QtCore import QEvent, QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt
