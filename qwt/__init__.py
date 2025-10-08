@@ -49,7 +49,11 @@ from qwt.plot_series import (  # noqa: F401
 )
 from qwt.scale_div import QwtScaleDiv  # noqa: F401
 from qwt.scale_draw import QwtAbstractScaleDraw, QwtScaleDraw  # noqa: F401
-from qwt.scale_engine import QwtLinearScaleEngine, QwtLogScaleEngine  # noqa: F401
+from qwt.scale_engine import (  # noqa: F401
+    QwtDateTimeScaleEngine,
+    QwtLinearScaleEngine,
+    QwtLogScaleEngine,
+)
 from qwt.scale_map import QwtScaleMap  # noqa: F401
 from qwt.symbol import QwtSymbol as QSbl  # see deprecated section
 from qwt.text import QwtText  # noqa: F401

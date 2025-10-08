@@ -906,3 +906,175 @@ class QwtLogScaleEngine(QwtScaleEngine):
             x2 = interval.maxValue()
 
         return qwtPowInterval(self.base(), QwtInterval(x1, x2))
+
+
+class QwtDateTimeScaleEngine(QwtLinearScaleEngine):
+    """
+    A scale engine for datetime scales that creates intelligent time-based tick intervals.
+
+    This engine calculates tick intervals that correspond to meaningful time units
+    (seconds, minutes, hours, days, weeks, months, years) rather than arbitrary
+    numerical spacing.
+    """
+
+    # Time intervals in seconds
+    TIME_INTERVALS = [
+        1,  # 1 second
+        5,  # 5 seconds
+        10,  # 10 seconds
+        15,  # 15 seconds
+        30,  # 30 seconds
+        60,  # 1 minute
+        2 * 60,  # 2 minutes
+        5 * 60,  # 5 minutes
+        10 * 60,  # 10 minutes
+        15 * 60,  # 15 minutes
+        30 * 60,  # 30 minutes
+        60 * 60,  # 1 hour
+        2 * 60 * 60,  # 2 hours
+        3 * 60 * 60,  # 3 hours
+        6 * 60 * 60,  # 6 hours
+        12 * 60 * 60,  # 12 hours
+        24 * 60 * 60,  # 1 day
+        2 * 24 * 60 * 60,  # 2 days
+        7 * 24 * 60 * 60,  # 1 week
+        2 * 7 * 24 * 60 * 60,  # 2 weeks
+        30 * 24 * 60 * 60,  # 1 month (approx)
+        3 * 30 * 24 * 60 * 60,  # 3 months (approx)
+        6 * 30 * 24 * 60 * 60,  # 6 months (approx)
+        365 * 24 * 60 * 60,  # 1 year (approx)
+    ]
+
+    def __init__(self, base=10):
+        super(QwtDateTimeScaleEngine, self).__init__(base)
+
+    def divideScale(self, x1, x2, maxMajorSteps, maxMinorSteps, stepSize=0.0):
+        """
+        Calculate a scale division for a datetime interval
+
+        :param float x1: First interval limit (Unix timestamp)
+        :param float x2: Second interval limit (Unix timestamp)
+        :param int maxMajorSteps: Maximum for the number of major steps
+        :param int maxMinorSteps: Maximum number of minor steps
+        :param float stepSize: Step size. If stepSize == 0.0, calculates intelligent datetime step
+        :return: Calculated scale division
+        """
+        interval = QwtInterval(x1, x2).normalized()
+        if interval.width() <= 0:
+            return QwtScaleDiv()
+
+        # If stepSize is provided and > 0, use parent implementation
+        if stepSize > 0.0:
+            return super(QwtDateTimeScaleEngine, self).divideScale(
+                x1, x2, maxMajorSteps, maxMinorSteps, stepSize
+            )
+
+        # Calculate intelligent datetime step size
+        duration = interval.width()  # Duration in seconds
+
+        # Find the best time interval for the given duration and max steps
+        best_step = self._find_best_time_step(duration, maxMajorSteps)
+
+        # Use the calculated datetime step
+        scaleDiv = QwtScaleDiv()
+        if best_step > 0.0:
+            ticks = self.buildTicks(interval, best_step, maxMinorSteps)
+            scaleDiv = QwtScaleDiv(interval, ticks)
+
+        if x1 > x2:
+            scaleDiv.invert()
+
+        return scaleDiv
+
+    def _find_best_time_step(self, duration, max_steps):
+        """
+        Find the best time interval step for the given duration and maximum steps.
+
+        :param float duration: Total duration in seconds
+        :param int max_steps: Maximum number of major ticks
+        :return: Best step size in seconds
+        """
+        if max_steps < 1:
+            max_steps = 1
+
+        # Calculate the target step size
+        target_step = duration / max_steps
+
+        # Find the time interval that is closest to our target
+        best_step = self.TIME_INTERVALS[0]
+        min_error = abs(target_step - best_step)
+
+        for interval in self.TIME_INTERVALS:
+            error = abs(target_step - interval)
+            if error < min_error:
+                min_error = error
+                best_step = interval
+            # If the interval is getting much larger than target, stop
+            elif interval > target_step * 2:
+                break
+
+        return float(best_step)
+
+    def buildMinorTicks(self, ticks, maxMinorSteps, stepSize):
+        """
+        Calculate minor ticks for datetime intervals
+
+        :param list ticks: List of tick arrays
+        :param int maxMinorSteps: Maximum number of minor steps
+        :param float stepSize: Major tick step size
+        """
+        if maxMinorSteps < 1:
+            return
+
+        # For datetime, create intelligent minor tick intervals
+        minor_step = self._get_minor_step(stepSize, maxMinorSteps)
+
+        if minor_step <= 0:
+            return
+
+        major_ticks = ticks[QwtScaleDiv.MajorTick]
+        if len(major_ticks) < 2:
+            return
+
+        minor_ticks = []
+
+        # Generate minor ticks between each pair of major ticks
+        for i in range(len(major_ticks) - 1):
+            start = major_ticks[i]
+            end = major_ticks[i + 1]
+
+            # Add minor ticks between start and end
+            current = start + minor_step
+            while current < end:
+                minor_ticks.append(current)
+                current += minor_step
+
+        ticks[QwtScaleDiv.MinorTick] = minor_ticks
+
+    def _get_minor_step(self, major_step, max_minor_steps):
+        """
+        Calculate appropriate minor tick step size for datetime intervals
+
+        :param float major_step: Major tick step size in seconds
+        :param int max_minor_steps: Maximum number of minor steps
+        :return: Minor tick step size in seconds
+        """
+        # Define sensible minor tick divisions for different time scales
+        if major_step >= 365 * 24 * 60 * 60:  # 1 year or more
+            return 30 * 24 * 60 * 60  # 1 month
+        elif major_step >= 30 * 24 * 60 * 60:  # 1 month or more
+            return 7 * 24 * 60 * 60  # 1 week
+        elif major_step >= 7 * 24 * 60 * 60:  # 1 week or more
+            return 24 * 60 * 60  # 1 day
+        elif major_step >= 24 * 60 * 60:  # 1 day or more
+            return 6 * 60 * 60  # 6 hours
+        elif major_step >= 60 * 60:  # 1 hour or more
+            return 15 * 60  # 15 minutes
+        elif major_step >= 10 * 60:  # 10 minutes or more
+            return 2 * 60  # 2 minutes
+        elif major_step >= 60:  # 1 minute or more
+            return 15  # 15 seconds
+        elif major_step >= 10:  # 10 seconds or more
+            return 2  # 2 seconds
+        else:  # Less than 10 seconds
+            return major_step / max(max_minor_steps, 2)
