@@ -1049,11 +1049,11 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             # Check if rotation is a multiple of 90 degrees (within tolerance)
             normalized_rotation = rotation % 360
             is_90_degree_multiple = (
-                abs(normalized_rotation) < 1e-6 or
-                abs(normalized_rotation - 90) < 1e-6 or
-                abs(normalized_rotation - 180) < 1e-6 or
-                abs(normalized_rotation - 270) < 1e-6 or
-                abs(normalized_rotation - 360) < 1e-6
+                abs(normalized_rotation) < 1e-6
+                or abs(normalized_rotation - 90) < 1e-6
+                or abs(normalized_rotation - 180) < 1e-6
+                or abs(normalized_rotation - 270) < 1e-6
+                or abs(normalized_rotation - 360) < 1e-6
             )
 
             if is_90_degree_multiple:
@@ -1066,7 +1066,9 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
                 painter.restore()
             else:
                 # Use pixmap-based rendering for arbitrary angles (aligned but slightly blurry)
-                self._drawRotatedTextWithAlignment(painter, lbl, pos, labelSize, rotation)
+                self._drawRotatedTextWithAlignment(
+                    painter, lbl, pos, labelSize, rotation
+                )
         else:
             # Use standard approach for non-rotated text
             transform = self.labelTransformation(pos, labelSize)
