@@ -31,7 +31,7 @@ from qtpy.QtCore import (
     Qt,
     qFuzzyCompare,
 )
-from qtpy.QtGui import QFontMetrics, QPalette, QTransform
+from qtpy.QtGui import QFont, QFontMetrics, QPalette, QTransform
 
 from qwt._math import qwtRadians
 from qwt.scale_div import QwtScaleDiv
@@ -760,6 +760,15 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         :param float value: Value
         :return: Position, where to paint a label
         """
+        # For backward compatibility, use a default font metrics approach
+        # when rotation is involved
+        if abs(self.labelRotation()) > 1e-6:
+            # We need font information for proper rotation-aware positioning
+            # Use QFontMetrics with a default font as fallback
+            default_font = QFont()
+            return self._labelPositionWithFont(default_font, value)
+
+        # Original implementation for non-rotated labels
         tval = self.scaleMap().transform(value)
         dist = self.spacing()
         if self.hasComponent(QwtAbstractScaleDraw.Backbone):
@@ -783,6 +792,80 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             py = self.__data.pos.y() - dist
 
         return QPointF(px, py)
+
+    def _labelPositionWithFont(self, font, value):
+        """
+        Find the position where to paint a label, taking rotation into account.
+
+        :param QFont font: Font used for the label
+        :param float value: Value
+        :return: Position where to paint a label
+        """
+        tval = self.scaleMap().transform(value)
+        dist = self.spacing()
+        if self.hasComponent(QwtAbstractScaleDraw.Backbone):
+            dist += max([1, self.penWidth()])
+        if self.hasComponent(QwtAbstractScaleDraw.Ticks):
+            dist += self.tickLength(QwtScaleDiv.MajorTick)
+
+        # Add rotation-aware offset
+        dist += self._rotatedLabelOffset(font, value)
+
+        px = 0
+        py = 0
+        if self.alignment() == self.RightScale:
+            px = self.__data.pos.x() + dist
+            py = tval
+        elif self.alignment() == self.LeftScale:
+            px = self.__data.pos.x() - dist
+            py = tval
+        elif self.alignment() == self.BottomScale:
+            px = tval
+            py = self.__data.pos.y() + dist
+        elif self.alignment() == self.TopScale:
+            px = tval
+            py = self.__data.pos.y() - dist
+
+        return QPointF(px, py)
+
+    def _rotatedLabelOffset(self, font, value):
+        """
+        Calculate the additional offset needed for a rotated label
+        to avoid overlap with the scale backbone and ticks.
+
+        :param QFont font: Font used for the label
+        :param float value: Value for which to calculate the offset
+        :return: Additional offset distance
+        """
+        rotation = self.labelRotation()
+        if abs(rotation) < 1e-6:  # No rotation, no additional offset needed
+            return 0.0
+
+        lbl, labelSize = self.tickLabel(font, value)
+        if lbl.isEmpty():
+            return 0.0
+
+        # Convert rotation to radians
+        angle = qwtRadians(rotation)
+        cos_a = abs(math.cos(angle))
+        sin_a = abs(math.sin(angle))
+
+        # Calculate the rotated bounding box dimensions
+        width = labelSize.width()
+        height = labelSize.height()
+        rotated_width = width * cos_a + height * sin_a
+        rotated_height = width * sin_a + height * cos_a
+
+        # Calculate additional offset based on scale alignment
+        additional_offset = 0.0
+        if self.alignment() in (self.LeftScale, self.RightScale):
+            # For vertical scales, consider the horizontal extent of rotated label
+            additional_offset = max(0, (rotated_width - width) * 0.5)
+        else:  # TopScale, BottomScale
+            # For horizontal scales, consider the vertical extent of rotated label
+            additional_offset = max(0, (rotated_height - height) * 0.5)
+
+        return additional_offset
 
     def drawTick(self, painter, value, len_):
         """
@@ -957,7 +1040,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         lbl, labelSize = self.tickLabel(painter.font(), value)
         if lbl is None or lbl.isEmpty():
             return
-        pos = self.labelPosition(value)
+        pos = self._labelPositionWithFont(painter.font(), value)
         transform = self.labelTransformation(pos, labelSize)
         painter.save()
         painter.setWorldTransform(transform, True)
@@ -982,7 +1065,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         lbl, labelSize = self.tickLabel(font, value)
         if lbl.isEmpty():
             return QRect()
-        pos = self.labelPosition(value)
+        pos = self._labelPositionWithFont(font, value)
         transform = self.labelTransformation(pos, labelSize)
         return transform.mapRect(QRect(QPoint(0, 0), labelSize.toSize()))
 
@@ -1038,7 +1121,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         lbl, labelSize = self.tickLabel(font, value)
         if not lbl or lbl.isEmpty():
             return QRectF(0.0, 0.0, 0.0, 0.0)
-        pos = self.labelPosition(value)
+        pos = self._labelPositionWithFont(font, value)
         transform = self.labelTransformation(pos, labelSize)
         br = transform.mapRect(QRectF(QPointF(0, 0), labelSize))
         br.translate(-pos.x(), -pos.y())

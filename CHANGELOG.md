@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.14.7
+
+- Fixed label positioning for rotated scale labels - labels are now properly positioned to account for their rotated bounding box, preventing overlap with scale backbone and ticks
+
 ## Version 0.14.6
 
 - Fixed [Issue #100](https://github.com/PlotPyStack/PythonQwt/issues/100) - TypeError in `QwtSymbol.drawSymbol` method due to outdated `renderSymbols` call
