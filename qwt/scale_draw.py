@@ -28,10 +28,11 @@ from qtpy.QtCore import (
     QPointF,
     QRect,
     QRectF,
+    QSize,
     Qt,
     qFuzzyCompare,
 )
-from qtpy.QtGui import QFont, QFontMetrics, QPalette, QTransform
+from qtpy.QtGui import QFont, QFontMetrics, QPainter, QPalette, QPixmap, QTransform
 
 from qwt._math import qwtRadians
 from qwt.scale_div import QwtScaleDiv
@@ -1041,10 +1042,117 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if lbl is None or lbl.isEmpty():
             return
         pos = self._labelPositionWithFont(painter.font(), value)
-        transform = self.labelTransformation(pos, labelSize)
+
+        # For rotated text, choose rendering method based on rotation angle
+        rotation = self.labelRotation()
+        if abs(rotation) > 1e-6:
+            # Check if rotation is a multiple of 90 degrees (within tolerance)
+            normalized_rotation = rotation % 360
+            is_90_degree_multiple = (
+                abs(normalized_rotation) < 1e-6 or
+                abs(normalized_rotation - 90) < 1e-6 or
+                abs(normalized_rotation - 180) < 1e-6 or
+                abs(normalized_rotation - 270) < 1e-6 or
+                abs(normalized_rotation - 360) < 1e-6
+            )
+
+            if is_90_degree_multiple:
+                # Use direct rendering for 90-degree multiples (crisp)
+                transform = self.labelTransformation(pos, labelSize)
+                painter.save()
+                painter.setRenderHint(QPainter.TextAntialiasing, True)
+                painter.setWorldTransform(transform, True)
+                lbl.draw(painter, QRect(QPoint(0, 0), labelSize.toSize()))
+                painter.restore()
+            else:
+                # Use pixmap-based rendering for arbitrary angles (aligned but slightly blurry)
+                self._drawRotatedTextWithAlignment(painter, lbl, pos, labelSize, rotation)
+        else:
+            # Use standard approach for non-rotated text
+            transform = self.labelTransformation(pos, labelSize)
+            painter.save()
+            painter.setRenderHint(QPainter.TextAntialiasing, True)
+            painter.setWorldTransform(transform, True)
+            lbl.draw(painter, QRect(QPoint(0, 0), labelSize.toSize()))
+            painter.restore()
+
+    def _drawRotatedTextWithAlignment(self, painter, lbl, pos, labelSize, rotation):
+        """
+        Draw rotated text with improved character alignment by rendering to an
+        intermediate pixmap and then rotating the pixmap instead of applying
+        transformation to text.
+        :param QPainter painter: Painter
+        :param QwtText lbl: Label text object
+        :param QPointF pos: Position where to paint the label
+        :param QSizeF labelSize: Size of the label
+        :param float rotation: Rotation angle in degrees
+        """
+        # Create a pixmap to render the text without rotation first
+        text_size = labelSize.toSize()
+        if text_size.width() <= 0 or text_size.height() <= 0:
+            return
+
+        # Add some padding to prevent edge clipping
+        padding = 2
+        pixmap_size = text_size + QSize(padding * 2, padding * 2)
+        pixmap = QPixmap(pixmap_size)
+        pixmap.fill(Qt.transparent)
+
+        # Render the text to the pixmap without any rotation
+        pixmap_painter = QPainter(pixmap)
+        pixmap_painter.setRenderHint(QPainter.TextAntialiasing, True)
+
+        # Set font and color from QwtText
+        if lbl.testPaintAttribute(QwtText.PaintUsingTextFont):
+            pixmap_painter.setFont(lbl.font())
+        else:
+            pixmap_painter.setFont(painter.font())
+
+        if (
+            lbl.testPaintAttribute(QwtText.PaintUsingTextColor)
+            and lbl.color().isValid()
+        ):
+            pixmap_painter.setPen(lbl.color())
+        else:
+            pixmap_painter.setPen(painter.pen())
+
+        # Draw text on pixmap without rotation for perfect character alignment
+        text_rect = QRect(padding, padding, text_size.width(), text_size.height())
+        lbl.draw(pixmap_painter, text_rect)
+        pixmap_painter.end()
+
+        # Now draw the pixmap with rotation
         painter.save()
-        painter.setWorldTransform(transform, True)
-        lbl.draw(painter, QRect(QPoint(0, 0), labelSize.toSize()))
+
+        # Get alignment flags for positioning
+        flags = self.labelAlignment()
+        if flags == 0:
+            flags = self.Flags[self.alignment()]
+
+        # Calculate alignment offsets
+        if flags & Qt.AlignLeft:
+            x_offset = -labelSize.width()
+        elif flags & Qt.AlignRight:
+            x_offset = 0.0
+        else:
+            x_offset = -(0.5 * labelSize.width())
+
+        if flags & Qt.AlignTop:
+            y_offset = -labelSize.height()
+        elif flags & Qt.AlignBottom:
+            y_offset = 0
+        else:
+            y_offset = -(0.5 * labelSize.height())
+
+        # Apply transformation and draw the pre-rendered pixmap
+        painter.translate(pos.x(), pos.y())
+        painter.rotate(rotation)
+        painter.translate(x_offset - padding, y_offset - padding)
+
+        # Use smooth pixmap transform for better quality
+        painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
+        painter.drawPixmap(0, 0, pixmap)
+
         painter.restore()
 
     def boundingLabelRect(self, font, value):
