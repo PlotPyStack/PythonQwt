@@ -195,7 +195,7 @@ class CpuStat:
         return 100.0 * userDelta / totalDelta, 100.0 * systemDelta / totalDelta
 
     def upTime(self):
-        result = QTime()
+        result = QTime(0, 0, 0)
         for item in self.procValues:
             result = result.addSecs(int(0.01 * item))
         return result
