@@ -333,6 +333,13 @@ class QwtPlainTextEngine(QwtTextEngine):
         :param str text: Text to be rendered
         """
         painter.save()
+
+        # Get and configure font for better rendering of rotated text
+        font = painter.font()
+        # Disable hinting to avoid character misalignment in rotated text
+        font.setHintingPreference(QFont.PreferNoHinting)
+        painter.setFont(font)
+
         qwtUnscaleFont(painter)
         painter.drawText(rect, flags, text)
         painter.restore()

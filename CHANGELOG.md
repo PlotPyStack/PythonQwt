@@ -1,5 +1,9 @@
 # PythonQwt Releases
 
+## Version 0.14.7
+
+- Improved font rendering for rotated text in `QwtPlainTextEngine.draw` method: disabled font hinting to avoid character misalignment in rotated text
+
 ## Version 0.14.6
 
 - Fixed [Issue #100](https://github.com/PlotPyStack/PythonQwt/issues/100) - TypeError in `QwtSymbol.drawSymbol` method due to outdated `renderSymbols` call
