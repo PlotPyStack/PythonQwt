@@ -2,6 +2,7 @@
 
 ## Version 0.14.7
 
+- Added support for `QwtDateTimeScaleDraw` and `QwtDateTimeScaleEngine` for datetime axis support (see `QwtDateTimeScaleDraw` and `QwtDateTimeScaleEngine` classes in the `qwt` module)
 - Improved font rendering for rotated text in `QwtPlainTextEngine.draw` method: disabled font hinting to avoid character misalignment in rotated text
 
 ## Version 0.14.6

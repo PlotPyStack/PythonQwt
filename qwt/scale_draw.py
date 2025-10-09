@@ -20,6 +20,7 @@ QwtScaleDraw
 """
 
 import math
+from datetime import datetime
 
 from qtpy.QtCore import (
     QLineF,
@@ -1218,3 +1219,62 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             sm.setPaintInterval(pos.y() + len_, pos.y())
         else:
             sm.setPaintInterval(pos.x(), pos.x() + len_)
+
+
+class QwtDateTimeScaleDraw(QwtScaleDraw):
+    """Scale draw for datetime axis
+
+    This class formats axis labels as date/time strings from Unix timestamps.
+
+    Args:
+        format: Format string for datetime display (default: "%Y-%m-%d %H:%M:%S").
+                Uses Python datetime.strftime() format codes.
+        spacing: Spacing between labels (default: 4)
+
+    Examples:
+        >>> # Create a datetime scale with default format
+        >>> scale = QwtDateTimeScaleDraw()
+
+        >>> # Create a datetime scale with custom format (time only)
+        >>> scale = QwtDateTimeScaleDraw(format="%H:%M:%S")
+
+        >>> # Create a datetime scale with date only
+        >>> scale = QwtDateTimeScaleDraw(format="%Y-%m-%d", spacing=4)
+    """
+
+    def __init__(self, format: str = "%Y-%m-%d %H:%M:%S", spacing: int = 4) -> None:
+        super().__init__()
+        self._format = format
+        self.setSpacing(spacing)
+
+    def get_format(self) -> str:
+        """Get the current datetime format string
+
+        Returns:
+            str: Format string
+        """
+        return self._format
+
+    def set_format(self, format: str) -> None:
+        """Set the datetime format string
+
+        Args:
+            format: Format string for datetime display
+        """
+        self._format = format
+
+    def label(self, value: float) -> QwtText:
+        """Convert a timestamp value to a formatted date/time label
+
+        Args:
+            value: Unix timestamp (seconds since epoch)
+
+        Returns:
+            QwtText: Formatted label
+        """
+        try:
+            dt = datetime.fromtimestamp(value)
+            return QwtText(dt.strftime(self._format))
+        except (ValueError, OSError):
+            # Handle invalid timestamps
+            return QwtText("")
