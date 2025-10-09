@@ -2,9 +2,8 @@
 
 ## Version 0.14.7
 
-- Fixed label positioning for rotated scale labels - labels are now properly positioned to account for their rotated bounding box, preventing overlap with scale backbone and ticks
-- Improved text rendering quality for rotated scale labels by enabling enhanced antialiasing and smooth rendering hints
-- Implemented hybrid rendering approach for rotated text: uses crisp direct rendering for 90-degree multiples (0°, 90°, 180°, 270°) and pixmap-based rendering for arbitrary angles to balance text quality and character alignment
+- Added support for `QwtDateTimeScaleDraw` and `QwtDateTimeScaleEngine` for datetime axis support (see `QwtDateTimeScaleDraw` and `QwtDateTimeScaleEngine` classes in the `qwt` module)
+- Improved font rendering for rotated text in `QwtPlainTextEngine.draw` method: disabled font hinting to avoid character misalignment in rotated text
 
 ## Version 0.14.6
 

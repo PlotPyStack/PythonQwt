@@ -20,6 +20,7 @@ QwtScaleDraw
 """
 
 import math
+from datetime import datetime
 
 from qtpy.QtCore import (
     QLineF,
@@ -28,11 +29,10 @@ from qtpy.QtCore import (
     QPointF,
     QRect,
     QRectF,
-    QSize,
     Qt,
     qFuzzyCompare,
 )
-from qtpy.QtGui import QFont, QFontMetrics, QPainter, QPalette, QPixmap, QTransform
+from qtpy.QtGui import QFontMetrics, QPalette, QTransform
 
 from qwt._math import qwtRadians
 from qwt.scale_div import QwtScaleDiv
@@ -761,15 +761,6 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         :param float value: Value
         :return: Position, where to paint a label
         """
-        # For backward compatibility, use a default font metrics approach
-        # when rotation is involved
-        if abs(self.labelRotation()) > 1e-6:
-            # We need font information for proper rotation-aware positioning
-            # Use QFontMetrics with a default font as fallback
-            default_font = QFont()
-            return self._labelPositionWithFont(default_font, value)
-
-        # Original implementation for non-rotated labels
         tval = self.scaleMap().transform(value)
         dist = self.spacing()
         if self.hasComponent(QwtAbstractScaleDraw.Backbone):
@@ -793,80 +784,6 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             py = self.__data.pos.y() - dist
 
         return QPointF(px, py)
-
-    def _labelPositionWithFont(self, font, value):
-        """
-        Find the position where to paint a label, taking rotation into account.
-
-        :param QFont font: Font used for the label
-        :param float value: Value
-        :return: Position where to paint a label
-        """
-        tval = self.scaleMap().transform(value)
-        dist = self.spacing()
-        if self.hasComponent(QwtAbstractScaleDraw.Backbone):
-            dist += max([1, self.penWidth()])
-        if self.hasComponent(QwtAbstractScaleDraw.Ticks):
-            dist += self.tickLength(QwtScaleDiv.MajorTick)
-
-        # Add rotation-aware offset
-        dist += self._rotatedLabelOffset(font, value)
-
-        px = 0
-        py = 0
-        if self.alignment() == self.RightScale:
-            px = self.__data.pos.x() + dist
-            py = tval
-        elif self.alignment() == self.LeftScale:
-            px = self.__data.pos.x() - dist
-            py = tval
-        elif self.alignment() == self.BottomScale:
-            px = tval
-            py = self.__data.pos.y() + dist
-        elif self.alignment() == self.TopScale:
-            px = tval
-            py = self.__data.pos.y() - dist
-
-        return QPointF(px, py)
-
-    def _rotatedLabelOffset(self, font, value):
-        """
-        Calculate the additional offset needed for a rotated label
-        to avoid overlap with the scale backbone and ticks.
-
-        :param QFont font: Font used for the label
-        :param float value: Value for which to calculate the offset
-        :return: Additional offset distance
-        """
-        rotation = self.labelRotation()
-        if abs(rotation) < 1e-6:  # No rotation, no additional offset needed
-            return 0.0
-
-        lbl, labelSize = self.tickLabel(font, value)
-        if lbl.isEmpty():
-            return 0.0
-
-        # Convert rotation to radians
-        angle = qwtRadians(rotation)
-        cos_a = abs(math.cos(angle))
-        sin_a = abs(math.sin(angle))
-
-        # Calculate the rotated bounding box dimensions
-        width = labelSize.width()
-        height = labelSize.height()
-        rotated_width = width * cos_a + height * sin_a
-        rotated_height = width * sin_a + height * cos_a
-
-        # Calculate additional offset based on scale alignment
-        additional_offset = 0.0
-        if self.alignment() in (self.LeftScale, self.RightScale):
-            # For vertical scales, consider the horizontal extent of rotated label
-            additional_offset = max(0, (rotated_width - width) * 0.5)
-        else:  # TopScale, BottomScale
-            # For horizontal scales, consider the vertical extent of rotated label
-            additional_offset = max(0, (rotated_height - height) * 0.5)
-
-        return additional_offset
 
     def drawTick(self, painter, value, len_):
         """
@@ -1041,120 +958,11 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         lbl, labelSize = self.tickLabel(painter.font(), value)
         if lbl is None or lbl.isEmpty():
             return
-        pos = self._labelPositionWithFont(painter.font(), value)
-
-        # For rotated text, choose rendering method based on rotation angle
-        rotation = self.labelRotation()
-        if abs(rotation) > 1e-6:
-            # Check if rotation is a multiple of 90 degrees (within tolerance)
-            normalized_rotation = rotation % 360
-            is_90_degree_multiple = (
-                abs(normalized_rotation) < 1e-6
-                or abs(normalized_rotation - 90) < 1e-6
-                or abs(normalized_rotation - 180) < 1e-6
-                or abs(normalized_rotation - 270) < 1e-6
-                or abs(normalized_rotation - 360) < 1e-6
-            )
-
-            if is_90_degree_multiple:
-                # Use direct rendering for 90-degree multiples (crisp)
-                transform = self.labelTransformation(pos, labelSize)
-                painter.save()
-                painter.setRenderHint(QPainter.TextAntialiasing, True)
-                painter.setWorldTransform(transform, True)
-                lbl.draw(painter, QRect(QPoint(0, 0), labelSize.toSize()))
-                painter.restore()
-            else:
-                # Use pixmap-based rendering for arbitrary angles (aligned but slightly blurry)
-                self._drawRotatedTextWithAlignment(
-                    painter, lbl, pos, labelSize, rotation
-                )
-        else:
-            # Use standard approach for non-rotated text
-            transform = self.labelTransformation(pos, labelSize)
-            painter.save()
-            painter.setRenderHint(QPainter.TextAntialiasing, True)
-            painter.setWorldTransform(transform, True)
-            lbl.draw(painter, QRect(QPoint(0, 0), labelSize.toSize()))
-            painter.restore()
-
-    def _drawRotatedTextWithAlignment(self, painter, lbl, pos, labelSize, rotation):
-        """
-        Draw rotated text with improved character alignment by rendering to an
-        intermediate pixmap and then rotating the pixmap instead of applying
-        transformation to text.
-        :param QPainter painter: Painter
-        :param QwtText lbl: Label text object
-        :param QPointF pos: Position where to paint the label
-        :param QSizeF labelSize: Size of the label
-        :param float rotation: Rotation angle in degrees
-        """
-        # Create a pixmap to render the text without rotation first
-        text_size = labelSize.toSize()
-        if text_size.width() <= 0 or text_size.height() <= 0:
-            return
-
-        # Add some padding to prevent edge clipping
-        padding = 2
-        pixmap_size = text_size + QSize(padding * 2, padding * 2)
-        pixmap = QPixmap(pixmap_size)
-        pixmap.fill(Qt.transparent)
-
-        # Render the text to the pixmap without any rotation
-        pixmap_painter = QPainter(pixmap)
-        pixmap_painter.setRenderHint(QPainter.TextAntialiasing, True)
-
-        # Set font and color from QwtText
-        if lbl.testPaintAttribute(QwtText.PaintUsingTextFont):
-            pixmap_painter.setFont(lbl.font())
-        else:
-            pixmap_painter.setFont(painter.font())
-
-        if (
-            lbl.testPaintAttribute(QwtText.PaintUsingTextColor)
-            and lbl.color().isValid()
-        ):
-            pixmap_painter.setPen(lbl.color())
-        else:
-            pixmap_painter.setPen(painter.pen())
-
-        # Draw text on pixmap without rotation for perfect character alignment
-        text_rect = QRect(padding, padding, text_size.width(), text_size.height())
-        lbl.draw(pixmap_painter, text_rect)
-        pixmap_painter.end()
-
-        # Now draw the pixmap with rotation
+        pos = self.labelPosition(value)
+        transform = self.labelTransformation(pos, labelSize)
         painter.save()
-
-        # Get alignment flags for positioning
-        flags = self.labelAlignment()
-        if flags == 0:
-            flags = self.Flags[self.alignment()]
-
-        # Calculate alignment offsets
-        if flags & Qt.AlignLeft:
-            x_offset = -labelSize.width()
-        elif flags & Qt.AlignRight:
-            x_offset = 0.0
-        else:
-            x_offset = -(0.5 * labelSize.width())
-
-        if flags & Qt.AlignTop:
-            y_offset = -labelSize.height()
-        elif flags & Qt.AlignBottom:
-            y_offset = 0
-        else:
-            y_offset = -(0.5 * labelSize.height())
-
-        # Apply transformation and draw the pre-rendered pixmap
-        painter.translate(pos.x(), pos.y())
-        painter.rotate(rotation)
-        painter.translate(x_offset - padding, y_offset - padding)
-
-        # Use smooth pixmap transform for better quality
-        painter.setRenderHint(QPainter.SmoothPixmapTransform, True)
-        painter.drawPixmap(0, 0, pixmap)
-
+        painter.setWorldTransform(transform, True)
+        lbl.draw(painter, QRect(QPoint(0, 0), labelSize.toSize()))
         painter.restore()
 
     def boundingLabelRect(self, font, value):
@@ -1175,7 +983,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         lbl, labelSize = self.tickLabel(font, value)
         if lbl.isEmpty():
             return QRect()
-        pos = self._labelPositionWithFont(font, value)
+        pos = self.labelPosition(value)
         transform = self.labelTransformation(pos, labelSize)
         return transform.mapRect(QRect(QPoint(0, 0), labelSize.toSize()))
 
@@ -1231,7 +1039,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         lbl, labelSize = self.tickLabel(font, value)
         if not lbl or lbl.isEmpty():
             return QRectF(0.0, 0.0, 0.0, 0.0)
-        pos = self._labelPositionWithFont(font, value)
+        pos = self.labelPosition(value)
         transform = self.labelTransformation(pos, labelSize)
         br = transform.mapRect(QRectF(QPointF(0, 0), labelSize))
         br.translate(-pos.x(), -pos.y())
@@ -1411,3 +1219,62 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             sm.setPaintInterval(pos.y() + len_, pos.y())
         else:
             sm.setPaintInterval(pos.x(), pos.x() + len_)
+
+
+class QwtDateTimeScaleDraw(QwtScaleDraw):
+    """Scale draw for datetime axis
+
+    This class formats axis labels as date/time strings from Unix timestamps.
+
+    Args:
+        format: Format string for datetime display (default: "%Y-%m-%d %H:%M:%S").
+                Uses Python datetime.strftime() format codes.
+        spacing: Spacing between labels (default: 4)
+
+    Examples:
+        >>> # Create a datetime scale with default format
+        >>> scale = QwtDateTimeScaleDraw()
+
+        >>> # Create a datetime scale with custom format (time only)
+        >>> scale = QwtDateTimeScaleDraw(format="%H:%M:%S")
+
+        >>> # Create a datetime scale with date only
+        >>> scale = QwtDateTimeScaleDraw(format="%Y-%m-%d", spacing=4)
+    """
+
+    def __init__(self, format: str = "%Y-%m-%d %H:%M:%S", spacing: int = 4) -> None:
+        super().__init__()
+        self._format = format
+        self.setSpacing(spacing)
+
+    def get_format(self) -> str:
+        """Get the current datetime format string
+
+        Returns:
+            str: Format string
+        """
+        return self._format
+
+    def set_format(self, format: str) -> None:
+        """Set the datetime format string
+
+        Args:
+            format: Format string for datetime display
+        """
+        self._format = format
+
+    def label(self, value: float) -> QwtText:
+        """Convert a timestamp value to a formatted date/time label
+
+        Args:
+            value: Unix timestamp (seconds since epoch)
+
+        Returns:
+            QwtText: Formatted label
+        """
+        try:
+            dt = datetime.fromtimestamp(value)
+            return QwtText(dt.strftime(self._format))
+        except (ValueError, OSError):
+            # Handle invalid timestamps
+            return QwtText("")

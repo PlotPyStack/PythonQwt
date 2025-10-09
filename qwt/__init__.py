@@ -48,7 +48,11 @@ from qwt.plot_series import (  # noqa: F401
     QwtSeriesStore,
 )
 from qwt.scale_div import QwtScaleDiv  # noqa: F401
-from qwt.scale_draw import QwtAbstractScaleDraw, QwtScaleDraw  # noqa: F401
+from qwt.scale_draw import (  # noqa: F401
+    QwtAbstractScaleDraw,
+    QwtDateTimeScaleDraw,
+    QwtScaleDraw,
+)
 from qwt.scale_engine import (  # noqa: F401
     QwtDateTimeScaleEngine,
     QwtLinearScaleEngine,
