@@ -13,6 +13,28 @@ from qwt.tests.utils import TestEnvironment
 os.environ[TestEnvironment.UNATTENDED_ENV] = "1"
 
 
+def pytest_addoption(parser):
+    """Add custom command line options to pytest."""
+    # See this StackOverflow answer for more information: https://t.ly/9anqz
+    parser.addoption(
+        "--repeat", action="store", help="Number of times to repeat each test"
+    )
+    parser.addoption(
+        "--show-windows",
+        action="store_true",
+        default=False,
+        help="Display Qt windows during tests (disables QT_QPA_PLATFORM=offscreen)",
+    )
+
+
+def pytest_configure(config):
+    """Configure pytest based on command line options."""
+    if config.option.durations is None:
+        config.option.durations = 10  # Default to showing 10 slowest tests
+    if not config.getoption("--show-windows"):
+        os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
+
 def pytest_report_header(config):
     """Add additional information to the pytest report header."""
     qtbindings_version = qtpy.PYSIDE_VERSION
@@ -22,14 +44,6 @@ def pytest_report_header(config):
         f"PythonQwt {qwt.__version__} [closest Qwt version: {qwt.QWT_VERSION_STR}]",
         f"{qtpy.API_NAME} {qtbindings_version} [Qt version: {qtpy.QT_VERSION}]",
     ]
-
-
-def pytest_addoption(parser):
-    """Add custom command line options to pytest."""
-    # See this StackOverflow answer for more information: https://t.ly/9anqz
-    parser.addoption(
-        "--repeat", action="store", help="Number of times to repeat each test"
-    )
 
 
 def pytest_generate_tests(metafunc):
