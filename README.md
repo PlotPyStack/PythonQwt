@@ -33,8 +33,8 @@ plot.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.BottomLegend)
 
 # Create two curves and attach them to plot
 x = np.linspace(-10, 10, 500)
-qwt.QwtPlotCurve.make(x, np.cos(x), "Cosinus", plot, linecolor="red", antialiased=True)
-qwt.QwtPlotCurve.make(x, np.sin(x), "Sinus", plot, linecolor="blue", antialiased=True)
+qwt.QwtPlotCurve.make(x, np.cos(x), "Cosine", plot, linecolor="red", antialiased=True)
+qwt.QwtPlotCurve.make(x, np.sin(x), "Sine", plot, linecolor="blue", antialiased=True)
 
 # Resize and show plot
 plot.resize(600, 300)

@@ -132,8 +132,8 @@ class QwtPlot(QFrame):
         x = np.linspace(-10, 10, 500)
         plot = qwt.QwtPlot("Trigonometric functions")
         plot.insertLegend(qwt.QwtLegend(), qwt.QwtPlot.BottomLegend)
-        qwt.QwtPlotCurve.make(x, np.cos(x), "Cosinus", plot, linecolor="red", antialiased=True)
-        qwt.QwtPlotCurve.make(x, np.sin(x), "Sinus", plot, linecolor="blue", antialiased=True)
+        qwt.QwtPlotCurve.make(x, np.cos(x), "Cosine", plot, linecolor="red", antialiased=True)
+        qwt.QwtPlotCurve.make(x, np.sin(x), "Sine", plot, linecolor="blue", antialiased=True)
         plot.resize(600, 300)
         plot.show()
 
@@ -2137,7 +2137,7 @@ class QwtPlotItem(object):
         import warnings
 
         warnings.warn(
-            "`setAxis` has been removed in Qwt6: " "please use `setAxes` instead",
+            "`setAxis` has been removed in Qwt6: please use `setAxes` instead",
             RuntimeWarning,
         )
         self.setAxes(xAxis, yAxis)
