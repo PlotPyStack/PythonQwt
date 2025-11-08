@@ -273,7 +273,7 @@ class QwtNullPaintDevice(QPaintDevice):
                 / self.metric(QPaintDevice.PdmDpiY)
             )
         else:
-            value = 0
+            value = super(QwtNullPaintDevice, self).metric(deviceMetric)
         return value
 
     def drawRects(self, rects, rectCount):
