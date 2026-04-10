@@ -1,4 +1,4 @@
-﻿{
+{
     // See https://go.microsoft.com/fwlink/?LinkId=733558
     // for the documentation about the tasks.json format
     "version": "2.0.0",
@@ -180,13 +180,13 @@
             "label": "📊 Coverage full",
             "type": "shell",
             "windows": {
-                "command": "${command:python.interpreterPath} -m coverage combine; if ($?) { ${command:python.interpreterPath} -m coverage html; if ($?) { start htmlcov\\index.html } }",
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine; if ($?) { ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html; if ($?) { start htmlcov\\index.html } }",
             },
             "linux": {
-                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && xdg-open htmlcov/index.html",
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && xdg-open htmlcov/index.html",
             },
             "osx": {
-                "command": "${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} -m coverage html && open htmlcov/index.html",
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && open htmlcov/index.html",
             },
             "options": {
                 "cwd": "${workspaceFolder}",
@@ -255,18 +255,21 @@
         {
             "label": "Build documentation",
             "type": "shell",
-            "command": "cmd",
+            "windows": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m sphinx -b html doc build/doc; if ($?) { start build\\doc\\index.html }"
+            },
+            "linux": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m sphinx -b html doc build/doc && xdg-open build/doc/index.html"
+            },
+            "osx": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m sphinx -b html doc build/doc && open build/doc/index.html"
+            },
             "options": {
-                "cwd": "scripts",
+                "cwd": "${workspaceFolder}",
                 "env": {
-                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1"
                 }
             },
-            "args": [
-                "/c",
-                "build_doc.bat"
-            ],
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -284,18 +287,21 @@
         {
             "label": "Build Python packages",
             "type": "shell",
-            "command": "cmd",
+            "windows": {
+                "command": "if (Test-Path MANIFEST) { Remove-Item MANIFEST }; ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build; if (Test-Path PythonQwt.egg-info) { Remove-Item -Recurse -Force PythonQwt.egg-info }"
+            },
+            "linux": {
+                "command": "rm -f MANIFEST && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build && rm -rf PythonQwt.egg-info"
+            },
+            "osx": {
+                "command": "rm -f MANIFEST && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build && rm -rf PythonQwt.egg-info"
+            },
             "options": {
-                "cwd": "scripts",
+                "cwd": "${workspaceFolder}",
                 "env": {
-                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1"
                 }
             },
-            "args": [
-                "/c",
-                "build_dist.bat"
-            ],
             "problemMatcher": [],
             "group": {
                 "kind": "build",
