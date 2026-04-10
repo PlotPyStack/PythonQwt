@@ -106,12 +106,13 @@ def resolve_python(project_root: Path) -> str:
     winpy_base = os.environ.get("WINPYDIRBASE")
     if winpy_base and Path(winpy_base).is_dir():
         # Search for python.exe in the WinPython directory structure
-        # (e.g. WINPYDIRBASE/python-3.11.5.amd64/python.exe)
-        for candidate in sorted(Path(winpy_base).glob("python-*/python.exe")):
-            if candidate.is_file():
-                resolved = str(candidate.absolute())
-                print(f"  🐍 Using WINPYDIRBASE (legacy): {resolved}")
-                return resolved
+        # Patterns: python-3.11.5.amd64/python.exe (old) or python/python.exe (new)
+        for pattern in ("python-*/python.exe", "python/python.exe"):
+            for candidate in sorted(Path(winpy_base).glob(pattern)):
+                if candidate.is_file():
+                    resolved = str(candidate.absolute())
+                    print(f"  🐍 Using WINPYDIRBASE (legacy): {resolved}")
+                    return resolved
         # Also try direct python.exe in the base directory
         direct = Path(winpy_base) / "python.exe"
         if direct.is_file():
@@ -156,8 +157,9 @@ def load_env_file(env_path: str | None = None) -> None:
             if not line or line.startswith("#") or "=" not in line:
                 continue
             key, value = line.split("=", 1)
-            os.environ[key.strip()] = value.strip()
-            print(f"  Loaded variable: {key.strip()}={value.strip()}")
+            value = value.strip().strip('"').strip("'")
+            os.environ[key.strip()] = value
+            print(f"  Loaded variable: {key.strip()}={value}")
 
 
 def execute_command(command: list[str], python_exe: str) -> int:
