@@ -4,51 +4,135 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run Coverage",
-            "type": "shell",
-            "command": "cmd",
+            "label": "🧽 Ruff Formatter",
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "/c",
-                "run_coverage.bat"
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "ruff",
+                "format",
             ],
             "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
-                }
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true,
+                },
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
+                "clear": true,
                 "echo": true,
-                "reveal": "always",
                 "focus": false,
                 "panel": "dedicated",
+                "reveal": "always",
                 "showReuseMessage": true,
-                "clear": true
-            }
+            },
+            "type": "shell",
         },
         {
-            "label": "Run pytest",
-            "type": "shell",
-            "command": "cmd",
+            "label": "🔦 Ruff Linter",
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "/c",
-                "run_pytest.bat"
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "ruff",
+                "check",
+                "--fix",
             ],
             "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
-                }
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true,
+                },
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell",
+        },
+        {
+            "label": "🧽🔦 Ruff",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "🧽 Ruff Formatter",
+                "🔦 Ruff Linter",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false,
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell",
+        },
+        {
+            "label": "🔦 Pylint",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "pylint",
+                "qwt",
+                // "--disable=R0801,C0103,C0114,C0115,C0116,W0612,W0613",
+                "--disable=fixme,C,R,W",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell",
+        },
+        {
+            "label": "🚀 Pytest",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "pytest",
+                "--ff",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "UNATTENDED": "1",
+                },
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
             },
             "presentation": {
                 "echo": true,
@@ -56,27 +140,84 @@
                 "focus": false,
                 "panel": "dedicated",
                 "showReuseMessage": true,
-                "clear": true
-            }
+                "clear": true,
+            },
+            "type": "shell",
+        },
+        {
+            "label": "🧪 Coverage tests",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "coverage",
+                "run",
+                "-m",
+                "pytest",
+                "qwt",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "UNATTENDED": "1",
+                },
+                "statusbar": {
+                    "hide": true,
+                },
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true,
+            },
+            "presentation": {
+                "panel": "dedicated",
+            },
+            "problemMatcher": [],
+        },
+        {
+            "label": "📊 Coverage full",
+            "type": "shell",
+            "windows": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine; if ($?) { ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html; if ($?) { start htmlcov\\index.html } }",
+            },
+            "linux": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && xdg-open htmlcov/index.html",
+            },
+            "osx": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && open htmlcov/index.html",
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "presentation": {
+                "panel": "dedicated",
+            },
+            "problemMatcher": [],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "🧪 Coverage tests",
+            ],
         },
         {
             "label": "Take screenshots",
             "type": "shell",
-            "command": "cmd",
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "/c",
-                "take_screenshots.bat"
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "scripts/take_screenshots.py",
             ],
             "options": {
-                "cwd": "scripts",
+                "cwd": "${workspaceFolder}",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
-                }
+                },
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
                 "echo": true,
@@ -84,8 +225,8 @@
                 "focus": false,
                 "panel": "dedicated",
                 "showReuseMessage": true,
-                "clear": true
-            }
+                "clear": true,
+            },
         },
         {
             "label": "Clean Up",
@@ -112,78 +253,23 @@
             }
         },
         {
-            "label": "Run Pylint",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "run_pylint.bat",
-                // "--disable=R0801,C0103,C0114,C0115,C0116,W0612,W0613",
-                "--disable=fixme,C,R,W",
-            ],
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
-        },
-        {
-            "label": "Run Ruff",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "run_ruff.bat",
-            ],
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
-                    "UNATTENDED": "1"
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
-        },
-        {
             "label": "Build documentation",
             "type": "shell",
-            "command": "cmd",
+            "windows": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m sphinx -b html doc build/doc; if ($?) { start build\\doc\\index.html }"
+            },
+            "linux": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m sphinx -b html doc build/doc && xdg-open build/doc/index.html"
+            },
+            "osx": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m sphinx -b html doc build/doc && open build/doc/index.html"
+            },
             "options": {
-                "cwd": "scripts",
+                "cwd": "${workspaceFolder}",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                     "UNATTENDED": "1"
                 }
             },
-            "args": [
-                "/c",
-                "build_doc.bat"
-            ],
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -201,18 +287,21 @@
         {
             "label": "Build Python packages",
             "type": "shell",
-            "command": "cmd",
+            "windows": {
+                "command": "if (Test-Path MANIFEST) { Remove-Item MANIFEST }; ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build; if (Test-Path PythonQwt.egg-info) { Remove-Item -Recurse -Force PythonQwt.egg-info }"
+            },
+            "linux": {
+                "command": "rm -f MANIFEST && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build && rm -rf PythonQwt.egg-info"
+            },
+            "osx": {
+                "command": "rm -f MANIFEST && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build && rm -rf PythonQwt.egg-info"
+            },
             "options": {
-                "cwd": "scripts",
+                "cwd": "${workspaceFolder}",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
                     "UNATTENDED": "1"
                 }
             },
-            "args": [
-                "/c",
-                "build_dist.bat"
-            ],
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -238,7 +327,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1"
                 }
             },

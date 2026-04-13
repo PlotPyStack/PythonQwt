@@ -7,6 +7,12 @@ doctmp/
 
 # Visual Studio Code
 .env
+.venv*
+.*venv*
+
+#AI instructions
+*.ai
+*.ai*
 
 # Created by https://www.gitignore.io/api/python
 

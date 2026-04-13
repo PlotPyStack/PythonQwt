@@ -144,8 +144,7 @@ class BodePlot(QwtPlot):
             yvalue=-20.0,
             align=Qt.AlignRight | Qt.AlignBottom,
             label=QwtText.make(
-                "[1-(\u03c9/\u03c9<sub>0</sub>)<sup>2</sup>+2j\u03c9/Q]"
-                "<sup>-1</sup>",
+                "[1-(\u03c9/\u03c9<sub>0</sub>)<sup>2</sup>+2j\u03c9/Q]<sup>-1</sup>",
                 color=Qt.white,
                 borderradius=2,
                 borderpen=QPen(Qt.lightGray, 5),
