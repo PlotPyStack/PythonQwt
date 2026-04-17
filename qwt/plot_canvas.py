@@ -787,7 +787,7 @@ class QwtPlotCanvas(QFrame):
         import warnings
 
         warnings.warn(
-            "`invalidatePaintCache` has been removed: " "please use `replot` instead",
+            "`invalidatePaintCache` has been removed: please use `replot` instead",
             RuntimeWarning,
         )
         self.replot()

@@ -30,9 +30,9 @@ class RelativeMarginDemo(QW.QWidget):
                 def_margin = plot.axisMargin(qwt.QwtPlot.yLeft)
                 scale_str = "lin/lin" if not log_scale else "log/lin"
                 if relative_margin is None:
-                    margin_str = f"default ({def_margin*100:.0f}%)"
+                    margin_str = f"default ({def_margin * 100:.0f}%)"
                 else:
-                    margin_str = f"{relative_margin*100:.0f}%"
+                    margin_str = f"{relative_margin * 100:.0f}%"
                 plot.setTitle(f"{scale_str}, margin: {margin_str}")
                 if relative_margin is not None:
                     plot.setAxisMargin(qwt.QwtPlot.yLeft, relative_margin)
