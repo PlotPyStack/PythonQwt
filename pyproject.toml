@@ -28,9 +28,10 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 requires-python = ">=3.9, <4"
-dependencies = ["NumPy>=1.19", "QtPy>=1.9"]
+dependencies = ["NumPy>=1.21", "QtPy>=1.9"]
 dynamic = ["version"]
 
 [project.urls]
@@ -41,7 +42,7 @@ Documentation = "https://PythonQwt.readthedocs.io/en/latest/"
 PythonQwt-tests = "qwt.tests:run"
 
 [project.optional-dependencies]
-dev = ["build", "ruff", "pylint", "Coverage"]
+dev = ["build", "ruff", "pylint", "Coverage", "pre-commit"]
 doc = ["PyQt5", "sphinx>6", "python-docs-theme"]
 test = ["pytest", "pytest-xvfb"]
 

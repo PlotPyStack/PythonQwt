@@ -15,6 +15,10 @@ Requirements:
 Installation
 ------------
 
+From PyPI:
+
+    `pip install PythonQwt`
+
 From the source package:
 
     `python -m build`

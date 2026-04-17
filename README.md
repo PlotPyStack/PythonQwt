@@ -57,7 +57,7 @@ tests.run()
 or from the command line:
 
 ```bash
-PythonQwt
+PythonQwt-tests
 ```
 
 Tests may also be executed in unattended mode:
@@ -70,9 +70,9 @@ PythonQwt-tests --mode unattended
 
 The `qwt` package is a pure Python implementation of `Qwt` C++ library with the following limitations.
 
-The following `Qwt` classes won't be reimplemented in `qwt` because more powerful features already exist in `guiqwt`: `QwtPlotZoomer`, `QwtCounter`, `QwtEventPattern`, `QwtPicker`, `QwtPlotPicker`.
+The following `Qwt` classes won't be reimplemented in `qwt` because more powerful features already exist in `PlotPy`: `QwtPlotZoomer`, `QwtCounter`, `QwtEventPattern`, `QwtPicker`, `QwtPlotPicker`.
 
-Only the following plot items are currently implemented in `qwt` (the only plot items needed by `guiqwt`): `QwtPlotItem` (base class), `QwtPlotItem`, `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
+Only the following plot items are currently implemented in `qwt` (the only plot items needed by `PlotPy`): `QwtPlotItem` (base class), `QwtPlotGrid`, `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
 
 See "Overview" section in [documentation](https://pythonqwt.readthedocs.io/en/latest/) for more details on API limitations when comparing to Qwt.
 
@@ -95,14 +95,14 @@ Compatibility table:
 
 | PythonQwt version | PyQt5 | PyQt6 | PySide2 | PySide6 |
 |-------------------|-------|-------|---------|---------|
-| 0.16 and earlier  | ✅    | ⚠️    | ❌     | ⚠️      |
+| 0.15 and earlier  | ✅    | ⚠️    | ❌     | ⚠️      |
 | Latest            | ✅    | ✅    | ❌     | ✅      |
 
 ### Requirements
 
 - Python >=3.9
-- QtPy >= 1.3 (and a Python-to-Qt binding library, see above)
-- NumPy >= 1.5
+- QtPy >= 1.9 (and a Python-to-Qt binding library, see above)
+- NumPy >= 1.21
 
 ### Optional dependencies
 
@@ -110,6 +110,12 @@ Compatibility table:
 - sphinx (for documentation generation)
 
 ### Installation
+
+From PyPI:
+
+```bash
+pip install PythonQwt
+```
 
 From the source package:
 

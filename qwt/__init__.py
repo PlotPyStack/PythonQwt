@@ -22,8 +22,8 @@ External resources:
     * Project page on GitHub: `GitHubPage`_
     * Bug reports and feature requests: `GitHub`_
 
-.. _PyPI: https://pypi.python.org/pypi/PythonQwt
-.. _GitHubPage: http://pierreraybaut.github.io/PythonQwt
+.. _PyPI: https://pypi.org/project/PythonQwt/
+.. _GitHubPage: https://github.com/PlotPyStack/PythonQwt
 .. _GitHub: https://github.com/PlotPyStack/PythonQwt
 """
 

@@ -25,16 +25,16 @@ The `qwt` package is a pure Python implementation of `Qwt` C++ library
 with the following limitations.
 
 The following `Qwt` classes won't be reimplemented in `qwt` because more
-powerful features already exist in `guiqwt` (and in the forthcoming `plotpy` library,
-resulting of the merge of `guidata` and `guiqwt`): `QwtPlotZoomer`,
+powerful features already exist in `PlotPy`:
+`QwtPlotZoomer`,
 `QwtCounter`, `QwtEventPattern`, `QwtPicker`, `QwtPlotPicker`.
 
 Only the following plot items are currently implemented in `qwt` (the
-only plot items needed by `guiqwt` and `plotpy`): `QwtPlotItem` (base class),
-`QwtPlotItem`, `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
+only plot items needed by `PlotPy`): `QwtPlotItem` (base class),
+`QwtPlotGrid`, `QwtPlotMarker`, `QwtPlotSeriesItem` and `QwtPlotCurve`.
 
 The `HistogramItem` object implemented in PyQwt's HistogramDemo.py is not
-available here (a similar item is already implemented in `guiqwt`/`plotpy`). As a
+available here (a similar item is already implemented in `PlotPy`). As a
 consequence, the following classes are not implemented: `QwtPlotHistogram`,
 `QwtIntervalSeriesData`, `QwtIntervalSample`.
 
@@ -69,7 +69,7 @@ entire curve is still painted (in other words, when working with large
 amount of data, there is no performance gain when zooming in).
 
 The curve fitter feature is not implemented because powerful curve fitting
-features are already implemented in `guiqwt`/`plotpy`.
+features are already implemented in `PlotPy`.
 
 Other API compatibility issues with `Qwt`:
 
