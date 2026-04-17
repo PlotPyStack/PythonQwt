@@ -144,6 +144,65 @@
             "type": "shell",
         },
         {
+            "label": "🧪 Coverage tests",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "coverage",
+                "run",
+                "-m",
+                "pytest",
+                "qwt",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "COVERAGE_PROCESS_START": "${workspaceFolder}/.coveragerc",
+                },
+                "statusbar": {
+                    "hide": true,
+                },
+            },
+            "group": {
+                "kind": "test",
+                "isDefault": true,
+            },
+            "presentation": {
+                "panel": "dedicated",
+            },
+            "problemMatcher": [],
+        },
+        {
+            "label": "📊 Coverage full",
+            "type": "shell",
+            "windows": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine; if ($?) { ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html; if ($?) { start htmlcov\\index.html } }",
+            },
+            "linux": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && xdg-open htmlcov/index.html",
+            },
+            "osx": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && open htmlcov/index.html",
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "COVERAGE_PROCESS_START": "${workspaceFolder}/.coveragerc",
+                },
+            },
+            "presentation": {
+                "panel": "dedicated",
+            },
+            "problemMatcher": [],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "🧪 Coverage tests",
+            ],
+        },
+        {
             "label": "Take screenshots",
             "type": "shell",
             "command": "cmd",
