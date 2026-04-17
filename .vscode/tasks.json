@@ -4,51 +4,134 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Run Coverage",
-            "type": "shell",
-            "command": "cmd",
+            "label": "🧽 Ruff Formatter",
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "/c",
-                "run_coverage.bat"
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "ruff",
+                "format",
             ],
             "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
-                }
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true,
+                },
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
+                "clear": true,
                 "echo": true,
-                "reveal": "always",
                 "focus": false,
                 "panel": "dedicated",
+                "reveal": "always",
                 "showReuseMessage": true,
-                "clear": true
-            }
+            },
+            "type": "shell",
         },
         {
-            "label": "Run pytest",
-            "type": "shell",
-            "command": "cmd",
+            "label": "🔦 Ruff Linter",
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "/c",
-                "run_pytest.bat"
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "ruff",
+                "check",
+                "--fix",
             ],
             "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
-                }
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true,
+                },
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell",
+        },
+        {
+            "label": "🧽🔦 Ruff",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "🧽 Ruff Formatter",
+                "🔦 Ruff Linter",
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false,
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell",
+        },
+        {
+            "label": "🔦 Pylint",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "pylint",
+                "qwt",
+                "--disable=fixme,C,R,W",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell",
+        },
+        {
+            "label": "🚀 Pytest",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "pytest",
+                "--ff",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "UNATTENDED": "1",
+                },
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
             },
             "presentation": {
                 "echo": true,
@@ -56,8 +139,9 @@
                 "focus": false,
                 "panel": "dedicated",
                 "showReuseMessage": true,
-                "clear": true
-            }
+                "clear": true,
+            },
+            "type": "shell",
         },
         {
             "label": "Take screenshots",
@@ -71,7 +155,7 @@
                 "cwd": "scripts",
                 "env": {
                     "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
+                    "PYTHON": "${command:python.interpreterPath}"
                 }
             },
             "group": {
@@ -112,71 +196,13 @@
             }
         },
         {
-            "label": "Run Pylint",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "run_pylint.bat",
-                // "--disable=R0801,C0103,C0114,C0115,C0116,W0612,W0613",
-                "--disable=fixme,C,R,W",
-            ],
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}"
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
-        },
-        {
-            "label": "Run Ruff",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "run_ruff.bat",
-            ],
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
-                    "UNATTENDED": "1"
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
-        },
-        {
             "label": "Build documentation",
             "type": "shell",
             "command": "cmd",
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1"
                 }
             },
@@ -205,7 +231,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1"
                 }
             },
@@ -238,7 +264,7 @@
             "options": {
                 "cwd": "scripts",
                 "env": {
-                    "PYTHON": "${env:PPSTACK_PYTHONEXE}",
+                    "PYTHON": "${command:python.interpreterPath}",
                     "UNATTENDED": "1"
                 }
             },

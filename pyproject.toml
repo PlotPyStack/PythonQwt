@@ -12,12 +12,11 @@ readme = "README.md"
 license = { file = "LICENSE" }
 classifiers = [
     "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
     "Topic :: Scientific/Engineering :: Visualization",
     "Topic :: Software Development :: Widget Sets",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities",
-    "Topic :: Scientific/Engineering",
-    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
     "Topic :: Software Development :: User Interfaces",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",

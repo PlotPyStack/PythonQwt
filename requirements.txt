@@ -1,0 +1,8 @@
+numpy
+QtPy
+PyQt5
+pre-commit
+pylint
+pytest
+pytest-xvfb
+ruff
