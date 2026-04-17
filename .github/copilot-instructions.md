@@ -33,22 +33,12 @@ qwt/
 
 ### Running Commands
 
-Use batch scripts in `scripts/`:
+**Always use `scripts/run_with_env.py`** to load `.env` before running Python commands:
 
 ```powershell
-scripts\run_pytest.bat        # Run tests
-scripts\run_ruff.bat          # Format and lint
-scripts\run_pylint.bat        # Pylint checks
-scripts\run_coverage.bat      # Coverage report
-scripts\take_screenshots.bat  # Generate doc images
-```
-
-Or directly:
-
-```powershell
-python -m pytest qwt --ff
-python -m ruff format
-python -m ruff check --fix
+python scripts/run_with_env.py python -m pytest --ff
+python scripts/run_with_env.py python -m ruff format
+python scripts/run_with_env.py python -m ruff check --fix
 ```
 
 ### Running Test Launcher

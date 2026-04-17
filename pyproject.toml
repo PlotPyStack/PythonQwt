@@ -41,7 +41,7 @@ Documentation = "https://PythonQwt.readthedocs.io/en/latest/"
 PythonQwt-tests = "qwt.tests:run"
 
 [project.optional-dependencies]
-dev = ["ruff", "pylint", "Coverage"]
+dev = ["build", "ruff", "pylint", "Coverage"]
 doc = ["PyQt5", "sphinx>6", "python-docs-theme"]
 test = ["pytest", "pytest-xvfb"]
 

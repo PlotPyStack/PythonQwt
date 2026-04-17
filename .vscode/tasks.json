@@ -203,138 +203,94 @@
             ],
         },
         {
-            "label": "Take screenshots",
+            "label": "📷 Take test screenshots",
             "type": "shell",
-            "command": "cmd",
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "/c",
-                "take_screenshots.bat"
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "qwt/tests/__init__.py",
+                "--mode",
+                "screenshots",
             ],
             "options": {
-                "cwd": "scripts",
-                "env": {
-                    "UNATTENDED": "1",
-                    "PYTHON": "${command:python.interpreterPath}"
-                }
-            },
-            "group": {
-                "kind": "build",
-                "isDefault": true
+                "cwd": "${workspaceFolder}",
             },
             "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
+                "clear": true,
                 "panel": "dedicated",
-                "showReuseMessage": true,
-                "clear": true
-            }
-        },
-        {
-            "label": "Clean Up",
-            "type": "shell",
-            "command": "cmd",
-            "args": [
-                "/c",
-                "clean_up.bat"
-            ],
-            "options": {
-                "cwd": "scripts"
             },
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": false
-            }
-        },
-        {
-            "label": "Build documentation",
-            "type": "shell",
-            "command": "cmd",
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "PYTHON": "${command:python.interpreterPath}",
-                    "UNATTENDED": "1"
-                }
-            },
-            "args": [
-                "/c",
-                "build_doc.bat"
-            ],
             "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": true
-            }
         },
         {
-            "label": "Build Python packages",
+            "label": "📷 Take doc screenshots",
             "type": "shell",
-            "command": "cmd",
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "PYTHON": "${command:python.interpreterPath}",
-                    "UNATTENDED": "1"
-                }
-            },
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "/c",
-                "build_dist.bat"
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "doc/plot_example.py",
             ],
-            "problemMatcher": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
+            "options": {
+                "cwd": "${workspaceFolder}",
             },
             "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": true
+                "panel": "dedicated",
             },
+            "problemMatcher": [],
+        },
+        {
+            "label": "📷 Take symbol screenshots",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "doc/symbol_path_example.py",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "presentation": {
+                "panel": "dedicated",
+            },
+            "problemMatcher": [],
+        },
+        {
+            "label": "📷 Take screenshots",
             "dependsOrder": "sequence",
             "dependsOn": [
-                "Clean Up",
-            ]
-        },
-        {
-            "label": "Run test venv",
-            "type": "shell",
-            "command": "cmd",
-            "options": {
-                "cwd": "scripts",
-                "env": {
-                    "PYTHON": "${command:python.interpreterPath}",
-                    "UNATTENDED": "1"
-                }
-            },
-            "args": [
-                "/c",
-                "run_test_venv.bat"
+                "📷 Take test screenshots",
+                "📷 Take doc screenshots",
+                "📷 Take symbol screenshots",
             ],
-            "problemMatcher": [],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
+            },
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated",
+            },
+        },
+        {
+            "label": "🧹 Clean Up",
+            "type": "shell",
+            "windows": {
+                "command": "Get-ChildItem -Recurse -Directory -Filter __pycache__ | Remove-Item -Recurse -Force; Remove-Item -Recurse -Force -ErrorAction SilentlyContinue build, dist, PythonQwt.egg-info, MANIFEST, htmlcov, .coverage, coverage.xml, sitecustomize.py; Remove-Item -Force -ErrorAction SilentlyContinue .coverage.*",
+            },
+            "linux": {
+                "command": "find . -type d -name __pycache__ -exec rm -rf {} + ; rm -rf build dist PythonQwt.egg-info MANIFEST htmlcov .coverage coverage.xml sitecustomize.py .coverage.*",
+            },
+            "osx": {
+                "command": "find . -type d -name __pycache__ -exec rm -rf {} + ; rm -rf build dist PythonQwt.egg-info MANIFEST htmlcov .coverage coverage.xml sitecustomize.py .coverage.*",
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
             },
             "presentation": {
                 "echo": true,
@@ -342,8 +298,83 @@
                 "focus": false,
                 "panel": "shared",
                 "showReuseMessage": true,
-                "clear": true
+                "clear": false,
             },
         },
-    ]
+        {
+            "label": "📚 Build documentation",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "sphinx",
+                "build",
+                "doc",
+                "${workspaceFolder}/build/doc",
+                "-b",
+                "html",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
+            },
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+        },
+        {
+            "label": "🌐 Open HTML doc",
+            "type": "shell",
+            "windows": {
+                "command": "start build/doc/index.html",
+            },
+            "linux": {
+                "command": "xdg-open build/doc/index.html",
+            },
+            "osx": {
+                "command": "open build/doc/index.html",
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "problemMatcher": [],
+        },
+        {
+            "label": "📦 Build package",
+            "type": "shell",
+            "command": "${command:python.interpreterPath}",
+            "args": [
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "build",
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": false,
+            },
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated",
+            },
+            "problemMatcher": [],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "🧹 Clean Up",
+            ],
+        },
+    ],
 }

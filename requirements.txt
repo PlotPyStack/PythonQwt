@@ -6,6 +6,7 @@ pylint
 pytest
 pytest-xvfb
 coverage
+build
 ruff
 sphinx
 python-docs-theme
