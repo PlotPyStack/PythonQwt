@@ -7,3 +7,5 @@ pytest
 pytest-xvfb
 coverage
 ruff
+sphinx
+python-docs-theme
