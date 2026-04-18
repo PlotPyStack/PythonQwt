@@ -594,7 +594,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         numTicks = int(math.ceil(abs(stepSize / minStep)) - 1)
         medIndex = -1
         if numTicks % 2:
-            medIndex = numTicks / 2
+            medIndex = numTicks // 2
         for val in ticks[QwtScaleDiv.MajorTick]:
             for k in range(numTicks):
                 val += minStep
@@ -837,7 +837,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
 
             mediumTickIndex = -1
             if numSteps > 2 and numSteps % 2 == 0:
-                mediumTickIndex = numSteps / 2
+                mediumTickIndex = numSteps // 2
 
             for v in ticks[QwtScaleDiv.MajorTick]:
                 s = logBase / numSteps
@@ -872,7 +872,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
 
             mediumTickIndex = -1
             if numTicks > 2 and numTicks % 2:
-                mediumTickIndex = numTicks / 2
+                mediumTickIndex = numTicks // 2
 
             minFactor = max([math.pow(logBase, minStep), float(logBase)])
 
