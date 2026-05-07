@@ -7,7 +7,7 @@
 ### Technology Stack
 
 - **Python**: 3.9+
-- **Core**: NumPy (≥1.19), QtPy (≥1.9)
+- **Core**: NumPy (≥1.21), QtPy (≥1.9)
 - **GUI**: Qt via QtPy (PyQt5/PyQt6/PySide6)
 - **Testing**: pytest
 - **Linting**: Ruff, Pylint
@@ -33,28 +33,18 @@ qwt/
 
 ### Running Commands
 
-Use batch scripts in `scripts/`:
+**Always use `scripts/run_with_env.py`** to load `.env` before running Python commands:
 
 ```powershell
-scripts\run_pytest.bat        # Run tests
-scripts\run_ruff.bat          # Format and lint
-scripts\run_pylint.bat        # Pylint checks
-scripts\run_coverage.bat      # Coverage report
-scripts\take_screenshots.bat  # Generate doc images
-```
-
-Or directly:
-
-```powershell
-python -m pytest qwt --ff
-python -m ruff format
-python -m ruff check --fix
+python scripts/run_with_env.py python -m pytest --ff
+python scripts/run_with_env.py python -m ruff format
+python scripts/run_with_env.py python -m ruff check --fix
 ```
 
 ### Running Test Launcher
 
 ```powershell
-PythonQwt                           # GUI test launcher
+PythonQwt-tests                           # GUI test launcher
 PythonQwt-tests --mode unattended   # Headless tests
 ```
 
@@ -107,8 +97,12 @@ curve = qwt.QwtPlotCurve.make(
     linewidth=2,             # Line width
     linestyle=Qt.DashLine,   # Qt line style
     antialiased=True,        # Anti-aliasing
-    marker=qwt.QwtSymbol.Ellipse,  # Marker symbol
-    markersize=8,            # Marker size
+    symbol=qwt.QwtSymbol(    # Marker symbol (QwtSymbol instance)
+        qwt.QwtSymbol.Ellipse,
+        QBrush(Qt.yellow),
+        QPen(Qt.red, 2),
+        QSize(8, 8),
+    ),
 )
 ```
 
@@ -122,9 +116,12 @@ curve = qwt.QwtPlotCurve.make(
 | `QwtPlotGrid` | Grid lines |
 | `QwtLegend` | Legend widget |
 | `QwtSymbol` | Marker symbols |
-| `QwtScaleEngine` | Scale calculations |
+| `QwtLinearScaleEngine` | Linear scale calculations |
+| `QwtLogScaleEngine` | Logarithmic scale calculations |
 | `QwtScaleMap` | Scale transformations |
 | `QwtText` | Rich text labels |
+| `QwtDateTimeScaleDraw` | Datetime axis tick labels |
+| `QwtDateTimeScaleEngine` | Datetime scale divisions |
 
 ### Scale Configuration
 
@@ -186,7 +183,7 @@ def setData(self, x, y):
 |------|---------|
 | `qwt/plot.py` | QwtPlot implementation |
 | `qwt/plot_curve.py` | QwtPlotCurve with `make()` factory |
-| `qwt/scale_engine.py` | Linear/log scale engines |
+| `qwt/scale_engine.py` | Linear/log/datetime scale engines |
 | `qwt/scale_map.py` | Scale transformations |
 | `qwt/symbol.py` | QwtSymbol definitions |
 | `qwt/tests/__init__.py` | Test launcher |

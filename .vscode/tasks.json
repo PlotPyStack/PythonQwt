@@ -49,12 +49,18 @@
                 "statusbar": {
                     "hide": true,
                 },
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true,
+                },
             },
             "group": {
                 "kind": "build",
                 "isDefault": true,
+                "isDefault": true,
             },
             "presentation": {
+                "clear": true,
                 "clear": true,
                 "echo": true,
                 "focus": false,
@@ -80,6 +86,7 @@
                 "echo": true,
                 "focus": false,
                 "panel": "dedicated",
+                "reveal": "always",
                 "reveal": "always",
                 "showReuseMessage": true,
             },
@@ -133,12 +140,14 @@
             "group": {
                 "kind": "build",
                 "isDefault": true,
+                "isDefault": true,
             },
             "presentation": {
+                "clear": true,
                 "echo": true,
-                "reveal": "always",
                 "focus": false,
                 "panel": "dedicated",
+                "reveal": "always",
                 "showReuseMessage": true,
                 "clear": true,
             },
@@ -220,37 +229,42 @@
                 "isDefault": true,
             },
             "presentation": {
+                "clear": true,
                 "echo": true,
-                "reveal": "always",
                 "focus": false,
                 "panel": "dedicated",
+                "reveal": "always",
                 "showReuseMessage": true,
                 "clear": true,
             },
         },
         {
-            "label": "Clean Up",
-            "type": "shell",
-            "command": "cmd",
+            "label": "🔦 Pylint",
+            "command": "${command:python.interpreterPath}",
             "args": [
-                "/c",
-                "clean_up.bat"
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "pylint",
+                "qwt",
+                "--disable=fixme,C,R,W",
             ],
             "options": {
-                "cwd": "scripts"
+                "cwd": "${workspaceFolder}",
             },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
+                "clear": true,
                 "echo": true,
-                "reveal": "always",
                 "focus": false,
-                "panel": "shared",
+                "panel": "dedicated",
+                "reveal": "always",
                 "showReuseMessage": true,
-                "clear": false
-            }
+            },
+            "type": "shell",
         },
         {
             "label": "Build documentation",
@@ -266,14 +280,48 @@
             },
             "options": {
                 "cwd": "${workspaceFolder}",
+                "cwd": "${workspaceFolder}",
                 "env": {
                     "UNATTENDED": "1"
                 }
             },
             "problemMatcher": [],
+        },
+        {
+            "label": "📷 Take screenshots",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "📷 Take test screenshots",
+                "📷 Take doc screenshots",
+                "📷 Take symbol screenshots",
+            ],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
+            },
+            "presentation": {
+                "clear": true,
+                "panel": "dedicated",
+            },
+        },
+        {
+            "label": "🧹 Clean Up",
+            "type": "shell",
+            "windows": {
+                "command": "Get-ChildItem -Recurse -Directory -Filter __pycache__ | Remove-Item -Recurse -Force; Remove-Item -Recurse -Force -ErrorAction SilentlyContinue build, dist, PythonQwt.egg-info, MANIFEST, htmlcov, .coverage, coverage.xml, sitecustomize.py; Remove-Item -Force -ErrorAction SilentlyContinue .coverage.*",
+            },
+            "linux": {
+                "command": "find . -type d -name __pycache__ -exec rm -rf {} + ; rm -rf build dist PythonQwt.egg-info MANIFEST htmlcov .coverage coverage.xml sitecustomize.py .coverage.*",
+            },
+            "osx": {
+                "command": "find . -type d -name __pycache__ -exec rm -rf {} + ; rm -rf build dist PythonQwt.egg-info MANIFEST htmlcov .coverage coverage.xml sitecustomize.py .coverage.*",
+            },
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
             },
             "presentation": {
                 "echo": true,
@@ -281,11 +329,11 @@
                 "focus": false,
                 "panel": "shared",
                 "showReuseMessage": true,
-                "clear": true
-            }
+                "clear": false,
+            },
         },
         {
-            "label": "Build Python packages",
+            "label": "📚 Build documentation",
             "type": "shell",
             "windows": {
                 "command": "if (Test-Path MANIFEST) { Remove-Item MANIFEST }; ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build; if (Test-Path PythonQwt.egg-info) { Remove-Item -Recurse -Force PythonQwt.egg-info }"
@@ -305,25 +353,29 @@
             "problemMatcher": [],
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": true,
             },
             "presentation": {
+                "clear": true,
                 "echo": true,
-                "reveal": "always",
                 "focus": false,
-                "panel": "shared",
+                "panel": "dedicated",
+                "reveal": "always",
                 "showReuseMessage": true,
-                "clear": true
             },
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "Clean Up",
-            ]
         },
         {
-            "label": "Run test venv",
+            "label": "🌐 Open HTML doc",
             "type": "shell",
-            "command": "cmd",
+            "windows": {
+                "command": "start build/doc/index.html",
+            },
+            "linux": {
+                "command": "xdg-open build/doc/index.html",
+            },
+            "osx": {
+                "command": "open build/doc/index.html",
+            },
             "options": {
                 "cwd": "scripts",
                 "env": {
@@ -332,22 +384,27 @@
                 }
             },
             "args": [
-                "/c",
-                "run_test_venv.bat"
+                "scripts/run_with_env.py",
+                "${command:python.interpreterPath}",
+                "-m",
+                "build",
             ],
-            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}",
+            },
             "group": {
                 "kind": "build",
-                "isDefault": true
+                "isDefault": false,
             },
             "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared",
-                "showReuseMessage": true,
-                "clear": true
+                "clear": true,
+                "panel": "dedicated",
             },
+            "problemMatcher": [],
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "🧹 Clean Up",
+            ],
         },
-    ]
+    ],
 }

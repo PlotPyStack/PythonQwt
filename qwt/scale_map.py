@@ -217,8 +217,12 @@ class QwtScaleMap(object):
         if self.__transform:
             self.__ts1 = self.__transform.transform(self.__ts1)
             ts2 = self.__transform.transform(ts2)
-        self.__cnv = 1.0
-        if self.__ts1 != ts2:
+        if self.__ts1 == ts2:
+            # Degenerate scale: collapse every value to ``p1`` (matches the
+            # symmetric guard in ``invTransform_scalar`` and the C++ Qwt
+            # behaviour).
+            self.__cnv = 0.0
+        else:
             self.__cnv = (self.__p2 - self.__p1) / (ts2 - self.__ts1)
 
     def transform(self, *args):
@@ -245,13 +249,18 @@ class QwtScaleMap(object):
 
             :py:meth:`invTransform()`
         """
-        if len(args) == 1:
-            # Scalar transform
-            return self.transform_scalar(args[0])
-        elif len(args) == 3 and isinstance(args[2], QPointF):
+        nargs = len(args)
+        if nargs == 1:
+            # Scalar transform: inline the fast path for the dominant case
+            # (avoids one Python call frame per tick label).
+            s = args[0]
+            if self.__transform:
+                s = self.__transform.transform(s)
+            return self.__p1 + (s - self.__ts1) * self.__cnv
+        elif nargs == 3 and isinstance(args[2], QPointF):
             xMap, yMap, pos = args
             return QPointF(xMap.transform(pos.x()), yMap.transform(pos.y()))
-        elif len(args) == 3 and isinstance(args[2], QRectF):
+        elif nargs == 3 and isinstance(args[2], QRectF):
             xMap, yMap, rect = args
             x1 = xMap.transform(rect.left())
             x2 = xMap.transform(rect.right())
@@ -269,7 +278,7 @@ class QwtScaleMap(object):
                 y1 = 0.0
             if qwtFuzzyCompare(y2, 0.0, y2 - y1) == 0:
                 y2 = 0.0
-            return QRectF(x1, y1, x2 - x1 + 1, y2 - y1 + 1)
+            return QRectF(x1, y1, x2 - x1, y2 - y1)
         else:
             raise TypeError(
                 "%s().transform() takes 1 or 3 argument(s) (%s "
@@ -292,8 +301,8 @@ class QwtScaleMap(object):
         elif isinstance(args[2], QRectF):
             xMap, yMap, rect = args
             x1 = xMap.invTransform(rect.left())
-            x2 = xMap.invTransform(rect.right() - 1)
+            x2 = xMap.invTransform(rect.right())
             y1 = yMap.invTransform(rect.top())
-            y2 = yMap.invTransform(rect.bottom() - 1)
+            y2 = yMap.invTransform(rect.bottom())
             r = QRectF(x1, y1, x2 - x1, y2 - y1)
             return r.normalized()

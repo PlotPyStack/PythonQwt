@@ -6,19 +6,19 @@ Examples
 The test launcher
 -----------------
 
-A lot of examples are available in the ``qwt.test`` module ::
+A lot of examples are available in the ``qwt.tests`` module ::
 
     from qwt import tests
     tests.run()
 
-The two lines above execute the ``PythonQwt`` test launcher:
+The two lines above execute the ``PythonQwt-tests`` test launcher:
 
 .. image:: /../qwt/tests/data/testlauncher.png
 
-GUI-based test launcher can be executed from the command line thanks to the 
-``PythonQwt`` test script.
+GUI-based test launcher can be executed from the command line thanks to the
+``PythonQwt-tests`` test script.
 
-Unit tests may be executed from the commande line thanks to the console-based script 
+Unit tests may be executed from the command line thanks to the console-based script
 ``PythonQwt-tests``: ``PythonQwt-tests --mode unattended``.
 
 Tests
@@ -26,11 +26,11 @@ Tests
 
 
 
-Here are some examples from the `qwt.test` module:
+Here are some examples from the `qwt.tests` module:
 
 .. toctree::
     :maxdepth: 2
-    
+
     bodedemo
     cartesian
     cpudemo

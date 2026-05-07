@@ -16,7 +16,6 @@
     },
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
-    "python.defaultInterpreterPath": "${env:PPSTACK_PYTHONEXE}",
     "editor.formatOnSave": true,
     "python.analysis.autoFormatStrings": true,
     "python.testing.unittestEnabled": false,

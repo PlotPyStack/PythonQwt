@@ -85,3 +85,12 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# Local benchmark venvs (issue #93)
+.venvs/
+
+# Performance investigation artifacts (see scripts/README.md)
+shots/
+profile.out
+*.prof_stats
+*.lprof

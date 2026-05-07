@@ -1,5 +1,30 @@
 # PythonQwt Releases
 
+## Version 0.16.0
+
+### Performance
+
+- Major performance optimizations addressing [Issue #93](https://github.com/PlotPyStack/PythonQwt/issues/93) (rendering performance degradation with Qt 6, also benefitting Qt 5):
+  - `QwtText`: removed unnecessary `QObject` inheritance and added a font key cache to avoid expensive `QFont` hashing on every text rendering operation
+  - `QwtText`: cached Qt alignment and text format flags as plain integers to bypass `PyQt6` enum overhead in hot paths
+  - `QwtText`: enabled font key caching fast path for Qt 6, kept disabled for Qt 5 to preserve consistent text rendering
+  - `QwtGraphic` and `QwtPainterCommand`: cached Qt flags as integers to reduce per-command overhead, especially under PyQt6
+  - `QwtScaleDraw`, `QwtScaleEngine`, `QwtScaleMap` and `QwtScaleDiv`: micro-optimizations on the tick computation and coordinate transform code paths
+- Added benchmarking and visual regression scripts under `scripts/` (`bench_qt.ps1`, `bench_plotpy_loadtest.py`, `profile_loadtest.py`, `lineprofile_loadtest.py`, `capture_screenshots.py`, `diff_screenshots.py`) to measure and validate rendering performance and correctness
+
+### Bug fixes
+
+- Merged [PR #105](https://github.com/PlotPyStack/PythonQwt/pull/105): fixed legend icon being rendered incorrectly - thanks to @Adrian-B-Moreira
+- Fixed `QPaintDevice` warnings on `DevicePixelRatio` and `DevicePixelRatioScaled` metrics in `QwtNullPaintDevice`
+- Fixed integer division in `QwtScaleEngine` so that medium ticks are actually produced (previously, the medium tick step was truncated to zero in some configurations)
+- Fixed `QwtScaleMap` rectangle transform and degenerate scale handling (when source or destination interval has zero width)
+
+### Other changes
+
+- Internal refactor: removed unnecessary `QObject` inheritance from `QwtText` (`QwtText` instances are no longer `QObject` subclasses; this is an internal change with no impact on the public plotting API, but downstream code relying on Qt signals/slots on `QwtText` instances should be adapted)
+- Development workflow: replaced legacy `.bat` scripts with a unified `scripts/run_with_env.py` environment loader, refactored VS Code tasks, added coverage tasks and CI gating of PyPI deployment on the test suite passing
+- Documentation: updated README, Sphinx documentation, dependencies and added AI coding agent instructions
+
 ## Version 0.15.0
 
 - Added support for `QwtDateTimeScaleDraw` and `QwtDateTimeScaleEngine` for datetime axis support (see `QwtDateTimeScaleDraw` and `QwtDateTimeScaleEngine` classes in the `qwt` module)

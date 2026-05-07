@@ -24,7 +24,6 @@ from datetime import datetime
 
 from qtpy.QtCore import (
     QLineF,
-    QObject,
     QPoint,
     QPointF,
     QRect,
@@ -39,11 +38,34 @@ from qwt.scale_div import QwtScaleDiv
 from qwt.scale_map import QwtScaleMap
 from qwt.text import QwtText
 
+# Plain-int aliases for Qt alignment flags. Qt6 exposes alignment flags as
+# IntEnum members and bitwise operations on them go through Python's
+# enum machinery (`__and__`/`__call__`), which is one of the dominant costs
+# of label layout. Casting to int once and using these constants makes the
+# bitwise tests in `labelTransformation` ~10x cheaper without changing
+# semantics.
+_ALIGN_LEFT = int(Qt.AlignLeft)
+_ALIGN_RIGHT = int(Qt.AlignRight)
+_ALIGN_TOP = int(Qt.AlignTop)
+_ALIGN_BOTTOM = int(Qt.AlignBottom)
 
-class QwtAbstractScaleDraw_PrivateData(QObject):
+
+class QwtAbstractScaleDraw_PrivateData(object):
+    # See QwtText_PrivateData: ``QObject`` inheritance is unused and the
+    # base class' ``__init__`` is a measurable cost in tick-heavy renders.
+    __slots__ = (
+        "spacing",
+        "penWidth",
+        "minExtent",
+        "components",
+        "tick_length",
+        "tick_lighter_factor",
+        "map",
+        "scaleDiv",
+        "labelCache",
+    )
+
     def __init__(self):
-        QObject.__init__(self)
-
         self.spacing = 4
         self.penWidth = 0
         self.minExtent = 0.0
@@ -470,12 +492,25 @@ class QwtAbstractScaleDraw(object):
         self.__data.labelCache.clear()
 
 
-class QwtScaleDraw_PrivateData(QObject):
-    def __init__(self):
-        QObject.__init__(self)
+class QwtScaleDraw_PrivateData(object):
+    # See QwtText_PrivateData: ``QObject`` inheritance is unused and the
+    # base class' ``__init__`` is a measurable cost in tick-heavy renders.
+    __slots__ = (
+        "len",
+        "alignment",
+        "orientation",
+        "labelAlignment",
+        "labelRotation",
+        "labelAutoSize",
+        "pos",
+    )
 
+    def __init__(self):
         self.len = 0
         self.alignment = QwtScaleDraw.BottomScale
+        # Cached orientation - kept in sync by ``QwtScaleDraw.setAlignment``
+        # so that the very hot ``orientation()`` accessor avoids any test.
+        self.orientation = Qt.Horizontal
         self.labelAlignment = 0
         self.labelRotation = 0.0
         self.labelAutoSize = True
@@ -554,6 +589,11 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             :py:meth:`alignment()`
         """
         self.__data.alignment = align
+        # Keep cached orientation in sync (see ``orientation()``).
+        if align == self.BottomScale or align == self.TopScale:
+            self.__data.orientation = Qt.Horizontal
+        else:
+            self.__data.orientation = Qt.Vertical
 
     def orientation(self):
         """
@@ -568,10 +608,8 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
 
             :py:meth:`alignment()`
         """
-        if self.__data.alignment in (self.TopScale, self.BottomScale):
-            return Qt.Horizontal
-        elif self.__data.alignment in (self.LeftScale, self.RightScale):
-            return Qt.Vertical
+        # Pre-computed by ``setAlignment`` - this method is called per tick.
+        return self.__data.orientation
 
     def getBorderDistHint(self, font):
         """
@@ -597,17 +635,19 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         if len(ticks) == 0:
             return start, end
 
+        scale_map = self.scaleMap()
+        transform = scale_map.transform
         minTick = ticks[0]
-        minPos = self.scaleMap().transform(minTick)
+        minPos = transform(minTick)
         maxTick = minTick
         maxPos = minPos
 
         for tick in ticks:
-            tickPos = self.scaleMap().transform(tick)
+            tickPos = transform(tick)
             if tickPos < minPos:
                 minTick = tick
                 minPos = tickPos
-            if tickPos > self.scaleMap().transform(maxTick):
+            if tickPos > maxPos:
                 maxTick = tick
                 maxPos = tickPos
 
@@ -615,16 +655,16 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         e = 0.0
         if self.orientation() == Qt.Vertical:
             s = -self.labelRect(font, minTick).top()
-            s -= abs(minPos - round(self.scaleMap().p2()))
+            s -= abs(minPos - round(scale_map.p2()))
 
             e = self.labelRect(font, maxTick).bottom()
-            e -= abs(maxPos - self.scaleMap().p1())
+            e -= abs(maxPos - scale_map.p1())
         else:
             s = -self.labelRect(font, minTick).left()
-            s -= abs(minPos - self.scaleMap().p1())
+            s -= abs(minPos - scale_map.p1())
 
             e = self.labelRect(font, maxTick).right()
-            e -= abs(maxPos - self.scaleMap().p2())
+            e -= abs(maxPos - scale_map.p2())
 
         return max(math.ceil(s), 0), max(math.ceil(e), 0)
 
@@ -763,27 +803,22 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         """
         tval = self.scaleMap().transform(value)
         dist = self.spacing()
-        if self.hasComponent(QwtAbstractScaleDraw.Backbone):
-            dist += max([1, self.penWidth()])
-        if self.hasComponent(QwtAbstractScaleDraw.Ticks):
+        hasComponent = self.hasComponent
+        if hasComponent(QwtAbstractScaleDraw.Backbone):
+            dist += max(1, self.penWidth())
+        if hasComponent(QwtAbstractScaleDraw.Ticks):
             dist += self.tickLength(QwtScaleDiv.MajorTick)
 
-        px = 0
-        py = 0
-        if self.alignment() == self.RightScale:
-            px = self.__data.pos.x() + dist
-            py = tval
-        elif self.alignment() == self.LeftScale:
-            px = self.__data.pos.x() - dist
-            py = tval
-        elif self.alignment() == self.BottomScale:
-            px = tval
-            py = self.__data.pos.y() + dist
-        elif self.alignment() == self.TopScale:
-            px = tval
-            py = self.__data.pos.y() - dist
-
-        return QPointF(px, py)
+        alignment = self.alignment()
+        pos = self.__data.pos
+        if alignment == self.RightScale:
+            return QPointF(pos.x() + dist, tval)
+        if alignment == self.LeftScale:
+            return QPointF(pos.x() - dist, tval)
+        if alignment == self.BottomScale:
+            return QPointF(tval, pos.y() + dist)
+        # TopScale
+        return QPointF(tval, pos.y() - dist)
 
     def drawTick(self, painter, value, len_):
         """
@@ -1007,17 +1042,19 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         flags = self.labelAlignment()
         if flags == 0:
             flags = self.Flags[self.alignment()]
+        # Cast to plain int once to avoid the per-bit Qt6 enum overhead.
+        flags = int(flags)
 
-        if flags & Qt.AlignLeft:
+        if flags & _ALIGN_LEFT:
             x = -size.width()
-        elif flags & Qt.AlignRight:
+        elif flags & _ALIGN_RIGHT:
             x = 0.0
         else:
             x = -(0.5 * size.width())
 
-        if flags & Qt.AlignTop:
+        if flags & _ALIGN_TOP:
             y = -size.height()
-        elif flags & Qt.AlignBottom:
+        elif flags & _ALIGN_BOTTOM:
             y = 0
         else:
             y = -(0.5 * size.height())
@@ -1039,6 +1076,31 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         lbl, labelSize = self.tickLabel(font, value)
         if not lbl or lbl.isEmpty():
             return QRectF(0.0, 0.0, 0.0, 0.0)
+        # Fast path: when the label is not rotated, the contribution of
+        # ``pos`` cancels out (transform.translate(pos) followed by
+        # br.translate(-pos)). This avoids ``labelPosition``,
+        # ``labelTransformation`` and ``QTransform.mapRect`` entirely - all
+        # of which are dominant costs in tick-heavy layouts.
+        if self.labelRotation() == 0.0:
+            flags = self.labelAlignment()
+            if flags == 0:
+                flags = self.Flags[self.alignment()]
+            flags = int(flags)
+            w = labelSize.width()
+            h = labelSize.height()
+            if flags & _ALIGN_LEFT:
+                x = -w
+            elif flags & _ALIGN_RIGHT:
+                x = 0.0
+            else:
+                x = -0.5 * w
+            if flags & _ALIGN_TOP:
+                y = -h
+            elif flags & _ALIGN_BOTTOM:
+                y = 0.0
+            else:
+                y = -0.5 * h
+            return QRectF(x, y, w, h)
         pos = self.labelPosition(value)
         transform = self.labelTransformation(pos, labelSize)
         br = transform.mapRect(QRectF(QPointF(0, 0), labelSize))

@@ -101,7 +101,12 @@ autodoc_member_order = "bysource"
 
 # The theme to use for HTML and HTML Help pages.  Major themes that come with
 # Sphinx are currently 'default' and 'sphinxdoc'.
-html_theme = "default"
+try:
+    import python_docs_theme  # noqa: F401
+
+    html_theme = "python_docs_theme"
+except ImportError:
+    html_theme = "default"
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

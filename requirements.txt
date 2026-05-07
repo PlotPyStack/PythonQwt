@@ -1,0 +1,12 @@
+numpy
+QtPy
+PyQt5
+pre-commit
+pylint
+pytest
+pytest-xvfb
+coverage
+build
+ruff
+sphinx
+python-docs-theme

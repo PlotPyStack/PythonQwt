@@ -26,7 +26,23 @@ from qtpy.QtGui import (
 )
 
 from qwt.null_paintdevice import QwtNullPaintDevice
-from qwt.painter_command import QwtPainterCommand
+from qwt.painter_command import QwtPainterCommand, _flag_int
+
+# See painter_command.py for the rationale: cache the QPaintEngine.DirtyXxx
+# flags as plain ints so the State-replay branch below does plain int bitwise
+# tests instead of going through Python's enum.Flag.__and__ on PyQt6.
+_DIRTY_PEN = _flag_int(QPaintEngine.DirtyPen)
+_DIRTY_BRUSH = _flag_int(QPaintEngine.DirtyBrush)
+_DIRTY_BRUSH_ORIGIN = _flag_int(QPaintEngine.DirtyBrushOrigin)
+_DIRTY_FONT = _flag_int(QPaintEngine.DirtyFont)
+_DIRTY_BACKGROUND = _flag_int(QPaintEngine.DirtyBackground)
+_DIRTY_TRANSFORM = _flag_int(QPaintEngine.DirtyTransform)
+_DIRTY_CLIP_ENABLED = _flag_int(QPaintEngine.DirtyClipEnabled)
+_DIRTY_CLIP_REGION = _flag_int(QPaintEngine.DirtyClipRegion)
+_DIRTY_CLIP_PATH = _flag_int(QPaintEngine.DirtyClipPath)
+_DIRTY_HINTS = _flag_int(QPaintEngine.DirtyHints)
+_DIRTY_COMPOSITION_MODE = _flag_int(QPaintEngine.DirtyCompositionMode)
+_DIRTY_OPACITY = _flag_int(QPaintEngine.DirtyOpacity)
 
 
 def qwtHasScalablePen(painter):
@@ -83,35 +99,36 @@ def qwtExecCommand(painter, cmd, renderHints, transform, initialTransform):
         painter.drawImage(data.rect, data.image, data.subRect, data.flags)
     elif cmd.type() == QwtPainterCommand.State:
         data = cmd.stateData()
-        if data.flags & QPaintEngine.DirtyPen:
+        flags = _flag_int(data.flags)
+        if flags & _DIRTY_PEN:
             painter.setPen(data.pen)
-        if data.flags & QPaintEngine.DirtyBrush:
+        if flags & _DIRTY_BRUSH:
             painter.setBrush(data.brush)
-        if data.flags & QPaintEngine.DirtyBrushOrigin:
+        if flags & _DIRTY_BRUSH_ORIGIN:
             painter.setBrushOrigin(data.brushOrigin)
-        if data.flags & QPaintEngine.DirtyFont:
+        if flags & _DIRTY_FONT:
             painter.setFont(data.font)
-        if data.flags & QPaintEngine.DirtyBackground:
+        if flags & _DIRTY_BACKGROUND:
             painter.setBackgroundMode(data.backgroundMode)
             painter.setBackground(data.backgroundBrush)
-        if data.flags & QPaintEngine.DirtyTransform:
+        if flags & _DIRTY_TRANSFORM:
             painter.setTransform(data.transform)
-        if data.flags & QPaintEngine.DirtyClipEnabled:
+        if flags & _DIRTY_CLIP_ENABLED:
             painter.setClipping(data.isClipEnabled)
-        if data.flags & QPaintEngine.DirtyClipRegion:
+        if flags & _DIRTY_CLIP_REGION:
             painter.setClipRegion(data.clipRegion, data.clipOperation)
-        if data.flags & QPaintEngine.DirtyClipPath:
+        if flags & _DIRTY_CLIP_PATH:
             painter.setClipPath(data.clipPath, data.clipOperation)
-        if data.flags & QPaintEngine.DirtyHints:
+        if flags & _DIRTY_HINTS:
             for hint in (
                 QPainter.Antialiasing,
                 QPainter.TextAntialiasing,
                 QPainter.SmoothPixmapTransform,
             ):
                 painter.setRenderHint(hint, bool(data.renderHints & hint))
-        if data.flags & QPaintEngine.DirtyCompositionMode:
+        if flags & _DIRTY_COMPOSITION_MODE:
             painter.setCompositionMode(data.compositionMode)
-        if data.flags & QPaintEngine.DirtyOpacity:
+        if flags & _DIRTY_OPACITY:
             painter.setOpacity(data.opacity)
 
 

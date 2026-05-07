@@ -324,11 +324,10 @@ class QwtScaleEngine(object):
         """
         if not interval.isValid():
             return False
-        eps = abs(1.0e-6 * interval.width())
-        if interval.minValue() - value > eps or value - interval.maxValue() > eps:
-            return False
-        else:
-            return True
+        min_v = interval.minValue()
+        max_v = interval.maxValue()
+        eps = abs(1.0e-6 * (max_v - min_v))
+        return not (min_v - value > eps or value - max_v > eps)
 
     def strip(self, ticks, interval):
         """
@@ -340,9 +339,17 @@ class QwtScaleEngine(object):
         """
         if not interval.isValid() or not ticks:
             return []
-        if self.contains(interval, ticks[0]) and self.contains(interval, ticks[-1]):
+        # Inline ``contains`` to avoid one Python call per tick: ``strip`` is
+        # called by buildTicks for every layout pass and is one of the
+        # dominant costs in tick-heavy plots.
+        min_v = interval.minValue()
+        max_v = interval.maxValue()
+        eps = abs(1.0e-6 * (max_v - min_v))
+        lo = min_v - eps
+        hi = max_v + eps
+        if lo <= ticks[0] and ticks[-1] <= hi:
             return ticks
-        return [tick for tick in ticks if self.contains(interval, tick)]
+        return [tick for tick in ticks if lo <= tick <= hi]
 
     def buildInterval(self, value):
         """
@@ -594,7 +601,7 @@ class QwtLinearScaleEngine(QwtScaleEngine):
         numTicks = int(math.ceil(abs(stepSize / minStep)) - 1)
         medIndex = -1
         if numTicks % 2:
-            medIndex = numTicks / 2
+            medIndex = numTicks // 2
         for val in ticks[QwtScaleDiv.MajorTick]:
             for k in range(numTicks):
                 val += minStep
@@ -837,7 +844,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
 
             mediumTickIndex = -1
             if numSteps > 2 and numSteps % 2 == 0:
-                mediumTickIndex = numSteps / 2
+                mediumTickIndex = numSteps // 2
 
             for v in ticks[QwtScaleDiv.MajorTick]:
                 s = logBase / numSteps
@@ -872,7 +879,7 @@ class QwtLogScaleEngine(QwtScaleEngine):
 
             mediumTickIndex = -1
             if numTicks > 2 and numTicks % 2:
-                mediumTickIndex = numTicks / 2
+                mediumTickIndex = numTicks // 2
 
             minFactor = max([math.pow(logBase, minStep), float(logBase)])
 

@@ -12,12 +12,11 @@ readme = "README.md"
 license = { file = "LICENSE" }
 classifiers = [
     "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
     "Topic :: Scientific/Engineering :: Visualization",
     "Topic :: Software Development :: Widget Sets",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Utilities",
-    "Topic :: Scientific/Engineering",
-    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
     "Topic :: Software Development :: User Interfaces",
     "Operating System :: MacOS",
     "Operating System :: Microsoft :: Windows",
@@ -32,7 +31,7 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
 ]
 requires-python = ">=3.9, <4"
-dependencies = ["NumPy>=1.19", "QtPy>=1.9"]
+dependencies = ["NumPy>=1.21", "QtPy>=1.9"]
 dynamic = ["version"]
 
 [project.urls]
@@ -43,7 +42,7 @@ Documentation = "https://PythonQwt.readthedocs.io/en/latest/"
 PythonQwt-tests = "qwt.tests:run"
 
 [project.optional-dependencies]
-dev = ["ruff", "pylint", "Coverage", "build"]
+dev = ["build", "ruff", "pylint", "Coverage", "pre-commit"]
 doc = ["PyQt5", "sphinx>6", "python-docs-theme"]
 test = ["pytest", "pytest-xvfb"]
 

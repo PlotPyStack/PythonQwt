@@ -22,8 +22,8 @@ External resources:
     * Project page on GitHub: `GitHubPage`_
     * Bug reports and feature requests: `GitHub`_
 
-.. _PyPI: https://pypi.python.org/pypi/PythonQwt
-.. _GitHubPage: http://pierreraybaut.github.io/PythonQwt
+.. _PyPI: https://pypi.org/project/PythonQwt/
+.. _GitHubPage: https://github.com/PlotPyStack/PythonQwt
 .. _GitHub: https://github.com/PlotPyStack/PythonQwt
 """
 
@@ -63,7 +63,7 @@ from qwt.symbol import QwtSymbol as QSbl  # see deprecated section
 from qwt.text import QwtText  # noqa: F401
 from qwt.toqimage import array_to_qimage as toQImage  # noqa: F401
 
-__version__ = "0.15.0"
+__version__ = "0.16.0"
 QWT_VERSION_STR = "6.1.5"
 
 

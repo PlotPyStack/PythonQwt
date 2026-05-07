@@ -235,9 +235,11 @@ class QwtScaleDiv(object):
         :param float value: Value
         :return: True/False
         """
-        min_ = min([self.__lowerBound, self.__upperBound])
-        max_ = max([self.__lowerBound, self.__upperBound])
-        return value >= min_ and value <= max_
+        lb = self.__lowerBound
+        ub = self.__upperBound
+        if lb <= ub:
+            return lb <= value <= ub
+        return ub <= value <= lb
 
     def invert(self):
         """
