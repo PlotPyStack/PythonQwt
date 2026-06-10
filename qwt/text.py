@@ -557,26 +557,11 @@ class QwtRichTextEngine(QwtTextEngine):
         return 0, 0, 0, 0
 
 
-class QwtText_PrivateData(object):
-    # ``QObject`` was previously used as the base class but no Qt signals
-    # or events are ever emitted from ``_PrivateData`` containers and the
-    # ``QObject.__init__`` call dominates ``QwtText.__init__`` (it is the
-    # single most expensive line for tick-label-heavy renders, see
-    # https://github.com/PlotPyStack/PythonQwt/issues/93).
-    __slots__ = (
-        "renderFlags",
-        "borderRadius",
-        "borderPen",
-        "backgroundBrush",
-        "paintAttributes",
-        "layoutAttributes",
-        "textEngine",
-        "text",
-        "font",
-        "color",
-    )
+class QwtText_PrivateData(QObject):
+    # QObject base class restored for Qt parent/child ownership semantics.
 
     def __init__(self):
+        QObject.__init__(self)
         self.renderFlags = Qt.AlignCenter
         self.borderRadius = 0
         self.borderPen = Qt.NoPen

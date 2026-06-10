@@ -24,6 +24,7 @@ from datetime import datetime
 
 from qtpy.QtCore import (
     QLineF,
+    QObject,
     QPoint,
     QPointF,
     QRect,
@@ -50,22 +51,11 @@ _ALIGN_TOP = int(Qt.AlignTop)
 _ALIGN_BOTTOM = int(Qt.AlignBottom)
 
 
-class QwtAbstractScaleDraw_PrivateData(object):
-    # See QwtText_PrivateData: ``QObject`` inheritance is unused and the
-    # base class' ``__init__`` is a measurable cost in tick-heavy renders.
-    __slots__ = (
-        "spacing",
-        "penWidth",
-        "minExtent",
-        "components",
-        "tick_length",
-        "tick_lighter_factor",
-        "map",
-        "scaleDiv",
-        "labelCache",
-    )
+class QwtAbstractScaleDraw_PrivateData(QObject):
+    # QObject base class restored for Qt parent/child ownership semantics.
 
     def __init__(self):
+        QObject.__init__(self)
         self.spacing = 4
         self.penWidth = 0
         self.minExtent = 0.0
@@ -492,20 +482,11 @@ class QwtAbstractScaleDraw(object):
         self.__data.labelCache.clear()
 
 
-class QwtScaleDraw_PrivateData(object):
-    # See QwtText_PrivateData: ``QObject`` inheritance is unused and the
-    # base class' ``__init__`` is a measurable cost in tick-heavy renders.
-    __slots__ = (
-        "len",
-        "alignment",
-        "orientation",
-        "labelAlignment",
-        "labelRotation",
-        "labelAutoSize",
-        "pos",
-    )
+class QwtScaleDraw_PrivateData(QObject):
+    # QObject base class restored for Qt parent/child ownership semantics.
 
     def __init__(self):
+        QObject.__init__(self)
         self.len = 0
         self.alignment = QwtScaleDraw.BottomScale
         # Cached orientation - kept in sync by ``QwtScaleDraw.setAlignment``
