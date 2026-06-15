@@ -1,5 +1,13 @@
 # PythonQwt Releases
 
+## Version 0.16.1
+
+### Bug fixes
+
+- Fixed [Issue #107](https://github.com/PlotPyStack/PythonQwt/issues/107): corrected a Windows crash/access violation that could occur in long-running sessions creating and rendering large amounts of data, due to GDI handle exhaustion caused by object lifetime and cache growth
+- Preserved the rendering performance improvements introduced in 0.16.0 while restoring safer Qt object ownership for internal text/scale-draw private data and adding defensive limits to font-metrics caches
+
+
 ## Version 0.16.0
 
 ### Performance
