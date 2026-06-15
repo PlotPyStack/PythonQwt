@@ -59,7 +59,7 @@ version = { attr = "qwt.__version__" }
 addopts = "qwt"
 
 [tool.ruff]
-exclude = [".git", ".vscode", "build", "dist"]
+exclude = [".git", ".vscode", "build", "dist","venv*",".venv*"]
 line-length = 88                               # Same as Black.
 indent-width = 4                               # Same as Black.
 target-version = "py39"                        # Assume Python 3.9.

@@ -7,6 +7,12 @@ doctmp/
 
 # Visual Studio Code
 .env
+.venv*
+.*venv*
+
+#AI instructions
+*.ai
+*.ai*
 
 # Created by https://www.gitignore.io/api/python
 
@@ -36,6 +42,16 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Environments
+.env*
+.envrc
+.venv*
+env*/
+venv*/
+ENV/
+env.bak/
+venv.bak/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

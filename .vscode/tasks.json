@@ -49,12 +49,18 @@
                 "statusbar": {
                     "hide": true,
                 },
+                "cwd": "${workspaceFolder}",
+                "statusbar": {
+                    "hide": true,
+                },
             },
             "group": {
                 "kind": "build",
                 "isDefault": true,
+                "isDefault": true,
             },
             "presentation": {
+                "clear": true,
                 "clear": true,
                 "echo": true,
                 "focus": false,
@@ -81,6 +87,7 @@
                 "focus": false,
                 "panel": "dedicated",
                 "reveal": "always",
+                "reveal": "always",
                 "showReuseMessage": true,
             },
             "type": "shell",
@@ -94,6 +101,7 @@
                 "-m",
                 "pylint",
                 "qwt",
+                // "--disable=R0801,C0103,C0114,C0115,C0116,W0612,W0613",
                 "--disable=fixme,C,R,W",
             ],
             "options": {
@@ -132,12 +140,14 @@
             "group": {
                 "kind": "build",
                 "isDefault": true,
+                "isDefault": true,
             },
             "presentation": {
+                "clear": true,
                 "echo": true,
-                "reveal": "always",
                 "focus": false,
                 "panel": "dedicated",
+                "reveal": "always",
                 "showReuseMessage": true,
                 "clear": true,
             },
@@ -160,7 +170,7 @@
             "options": {
                 "cwd": "${workspaceFolder}",
                 "env": {
-                    "COVERAGE_PROCESS_START": "${workspaceFolder}/.coveragerc",
+                    "UNATTENDED": "1",
                 },
                 "statusbar": {
                     "hide": true,
@@ -189,9 +199,6 @@
             },
             "options": {
                 "cwd": "${workspaceFolder}",
-                "env": {
-                    "COVERAGE_PROCESS_START": "${workspaceFolder}/.coveragerc",
-                },
             },
             "presentation": {
                 "panel": "dedicated",
@@ -203,56 +210,80 @@
             ],
         },
         {
-            "label": "📷 Take test screenshots",
+            "label": "Take screenshots",
             "type": "shell",
             "command": "${command:python.interpreterPath}",
             "args": [
                 "scripts/run_with_env.py",
                 "${command:python.interpreterPath}",
-                "qwt/tests/__init__.py",
-                "--mode",
-                "screenshots",
+                "scripts/take_screenshots.py",
             ],
             "options": {
                 "cwd": "${workspaceFolder}",
+                "env": {
+                    "UNATTENDED": "1",
+                },
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true,
             },
             "presentation": {
                 "clear": true,
+                "echo": true,
+                "focus": false,
                 "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+                "clear": true,
             },
-            "problemMatcher": [],
         },
         {
-            "label": "📷 Take doc screenshots",
-            "type": "shell",
+            "label": "🔦 Pylint",
             "command": "${command:python.interpreterPath}",
             "args": [
                 "scripts/run_with_env.py",
                 "${command:python.interpreterPath}",
-                "doc/plot_example.py",
+                "-m",
+                "pylint",
+                "qwt",
+                "--disable=fixme,C,R,W",
             ],
             "options": {
                 "cwd": "${workspaceFolder}",
             },
-            "presentation": {
-                "panel": "dedicated",
+            "group": {
+                "kind": "build",
+                "isDefault": true,
             },
-            "problemMatcher": [],
+            "presentation": {
+                "clear": true,
+                "echo": true,
+                "focus": false,
+                "panel": "dedicated",
+                "reveal": "always",
+                "showReuseMessage": true,
+            },
+            "type": "shell",
         },
         {
-            "label": "📷 Take symbol screenshots",
+            "label": "Build documentation",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": [
-                "scripts/run_with_env.py",
-                "${command:python.interpreterPath}",
-                "doc/symbol_path_example.py",
-            ],
+            "windows": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m sphinx -b html doc build/doc; if ($?) { start build\\doc\\index.html }"
+            },
+            "linux": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m sphinx -b html doc build/doc && xdg-open build/doc/index.html"
+            },
+            "osx": {
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m sphinx -b html doc build/doc && open build/doc/index.html"
+            },
             "options": {
                 "cwd": "${workspaceFolder}",
-            },
-            "presentation": {
-                "panel": "dedicated",
+                "cwd": "${workspaceFolder}",
+                "env": {
+                    "UNATTENDED": "1"
+                }
             },
             "problemMatcher": [],
         },
@@ -304,21 +335,22 @@
         {
             "label": "📚 Build documentation",
             "type": "shell",
-            "command": "${command:python.interpreterPath}",
-            "args": [
-                "scripts/run_with_env.py",
-                "${command:python.interpreterPath}",
-                "-m",
-                "sphinx",
-                "build",
-                "doc",
-                "${workspaceFolder}/build/doc",
-                "-b",
-                "html",
-            ],
+            "windows": {
+                "command": "if (Test-Path MANIFEST) { Remove-Item MANIFEST }; ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build; if (Test-Path PythonQwt.egg-info) { Remove-Item -Recurse -Force PythonQwt.egg-info }"
+            },
+            "linux": {
+                "command": "rm -f MANIFEST && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build && rm -rf PythonQwt.egg-info"
+            },
+            "osx": {
+                "command": "rm -f MANIFEST && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m build && rm -rf PythonQwt.egg-info"
+            },
             "options": {
                 "cwd": "${workspaceFolder}",
+                "env": {
+                    "UNATTENDED": "1"
+                }
             },
+            "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true,
@@ -345,14 +377,12 @@
                 "command": "open build/doc/index.html",
             },
             "options": {
-                "cwd": "${workspaceFolder}",
+                "cwd": "scripts",
+                "env": {
+                    "PYTHON": "${command:python.interpreterPath}",
+                    "UNATTENDED": "1"
+                }
             },
-            "problemMatcher": [],
-        },
-        {
-            "label": "📦 Build package",
-            "type": "shell",
-            "command": "${command:python.interpreterPath}",
             "args": [
                 "scripts/run_with_env.py",
                 "${command:python.interpreterPath}",

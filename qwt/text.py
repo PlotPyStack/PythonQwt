@@ -234,6 +234,7 @@ _FONT_KEY_CACHE: dict = {}  # id(font) -> tuple_key (fast path)
 _FONT_TUPLE_CACHE: dict = {}  # tuple_key -> tuple_key (interning, also acts
 #                              as the "have we seen this logical font" set)
 _FONT_KEY_CACHE_LIMIT = 1024
+_FM_CACHE_LIMIT = 256  # max QFontMetrics/QFontMetricsF entries per engine
 
 
 def _font_tuple_key(font):
@@ -317,6 +318,8 @@ class QwtPlainTextEngine(QwtTextEngine):
         try:
             return self._fm_cache[fid]
         except KeyError:
+            if len(self._fm_cache) >= _FM_CACHE_LIMIT:
+                self._fm_cache.clear()
             return self._fm_cache.setdefault(fid, QFontMetrics(font))
 
     def fontmetrics_f(self, font):
@@ -324,6 +327,8 @@ class QwtPlainTextEngine(QwtTextEngine):
         try:
             return self._fm_cache_f[fid]
         except KeyError:
+            if len(self._fm_cache_f) >= _FM_CACHE_LIMIT:
+                self._fm_cache_f.clear()
             return self._fm_cache_f.setdefault(fid, QFontMetricsF(font))
 
     def heightForWidth(self, font, flags, text, width):
@@ -359,6 +364,8 @@ class QwtPlainTextEngine(QwtTextEngine):
         ascent = ASCENTCACHE.get(fontKey)
         if ascent is not None:
             return ascent
+        if len(ASCENTCACHE) >= _FM_CACHE_LIMIT:
+            ASCENTCACHE.clear()
         return ASCENTCACHE.setdefault(fontKey, self.findAscent(font))
 
     def findAscent(self, font):
@@ -411,6 +418,8 @@ class QwtPlainTextEngine(QwtTextEngine):
         if cached is None:
             fm = self.fontmetrics(font)
             cached = (0, 0, fm.ascent() - self.effectiveAscent(font), fm.descent())
+            if len(self._margins_cache) >= _FM_CACHE_LIMIT:
+                self._margins_cache.clear()
             self._margins_cache[fkey] = cached
         self._margins_last_id = font_id
         self._margins_last_value = cached
@@ -557,26 +566,11 @@ class QwtRichTextEngine(QwtTextEngine):
         return 0, 0, 0, 0
 
 
-class QwtText_PrivateData(object):
-    # ``QObject`` was previously used as the base class but no Qt signals
-    # or events are ever emitted from ``_PrivateData`` containers and the
-    # ``QObject.__init__`` call dominates ``QwtText.__init__`` (it is the
-    # single most expensive line for tick-label-heavy renders, see
-    # https://github.com/PlotPyStack/PythonQwt/issues/93).
-    __slots__ = (
-        "renderFlags",
-        "borderRadius",
-        "borderPen",
-        "backgroundBrush",
-        "paintAttributes",
-        "layoutAttributes",
-        "textEngine",
-        "text",
-        "font",
-        "color",
-    )
+class QwtText_PrivateData(QObject):
+    # QObject base class restored for Qt parent/child ownership semantics.
 
     def __init__(self):
+        QObject.__init__(self)
         self.renderFlags = Qt.AlignCenter
         self.borderRadius = 0
         self.borderPen = Qt.NoPen
