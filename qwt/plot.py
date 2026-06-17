@@ -1008,7 +1008,12 @@ class QwtPlot(QFrame):
         return QFrame.event(self, event)
 
     def eventFilter(self, obj, event):
-        if obj is self.__data.canvas:
+        try:
+            canvas = self.__data.canvas
+        except AttributeError:
+            # The plot is being destroyed: Python attributes already cleared
+            return QFrame.eventFilter(self, obj, event)
+        if obj is canvas:
             if event.type() == QEvent.Resize:
                 self.updateCanvasMargins()
             elif event.type() == 178:  # QEvent.ContentsRectChange:
@@ -1196,7 +1201,12 @@ class QwtPlot(QFrame):
         """
         :return: Return a minimum size hint
         """
-        hint = self.__data.layout.minimumSizeHint(self)
+        try:
+            layout = self.__data.layout
+        except AttributeError:
+            # The plot is being destroyed: Python attributes already cleared
+            return QSize()
+        hint = layout.minimumSizeHint(self)
         hint += QSize(2 * self.frameWidth(), 2 * self.frameWidth())
         return hint
 

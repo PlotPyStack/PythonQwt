@@ -46,6 +46,7 @@ QwtRichTextEngine
 import math
 import os
 import struct
+from collections import OrderedDict
 
 from qtpy.QtCore import QObject, QRectF, QSize, QSizeF, Qt
 from qtpy.QtGui import (
@@ -208,67 +209,50 @@ class QwtTextEngine(object):
         pass
 
 
-ASCENTCACHE = {}
+ASCENTCACHE = OrderedDict()
 
-# Module-level cache: ``id(font) -> tuple_key`` (fast path) and
-# ``tuple_key -> tuple_key`` (slow path). The tuple key is built from a
-# handful of QFont attributes that uniquely identify the *logical* font for
-# metrics purposes. Tick-rendering uses very few distinct fonts in practice
-# so both dicts stay tiny.
+_FM_CACHE_LIMIT = 256  # max QFontMetrics / QFontMetricsF / ascent entries
+
+
+# Single-slot, leak-free memo for ``QFont.key()``.
 #
-# This replaces the previous ``id(font) -> font.key()`` design. Two reasons:
+# ``QFont.key()`` is the only correct, binding-stable identity for metrics
+# caching, but it is a relatively costly sip call (~1 us on PyQt5, ~1.6 us on
+# PyQt6) and it is queried once per tick label. The previous implementation
+# memoized it in an ``id(font) -> (font, key)`` dict which kept a *strong
+# reference* to every distinct QFont wrapper it saw (up to 1024). That is a
+# genuine memory / GDI-handle leak that the bounded ``.clear()`` only masked
+# (see the issue #93 segfault regression).
 #
-# 1. ``QFont.key()`` is a sip dispatch that costs ~3.3 us/call on PyQt5 and
-#    ~9.3 us/call on PyQt6 -- it became the single biggest residual hotspot
-#    in ``QwtText.textSize`` on PyQt6.
-# 2. PyQt6 returns a fresh Python wrapper around the same QFont on most
-#    calls, so ``id(font)`` changes between calls and the id-keyed fast path
-#    misses ~92% of the time. The tuple-key second level recovers the hits
-#    those misses would have produced, without paying for ``font.key()``.
-#
-# The tuple key uses ``(family, pixelSize-or-pointSizeF, weight, italic,
-# stretch, styleStrategy)``. This is what determines ``QFontMetrics`` output
-# in practice; if two QFonts share these values they share metrics.
-
-_FONT_KEY_CACHE: dict = {}  # id(font) -> tuple_key (fast path)
-_FONT_TUPLE_CACHE: dict = {}  # tuple_key -> tuple_key (interning, also acts
-#                              as the "have we seen this logical font" set)
-_FONT_KEY_CACHE_LIMIT = 1024
-_FM_CACHE_LIMIT = 256  # max QFontMetrics/QFontMetricsF entries per engine
-
-
-def _font_tuple_key(font):
-    """Build a hashable tuple identifying the logical font."""
-    px = font.pixelSize()
-    return (
-        font.family(),
-        px if px > 0 else font.pointSizeF(),
-        font.weight(),
-        font.italic(),
-        font.stretch(),
-        font.styleStrategy(),
-    )
+# This single-slot memo keeps at most ONE QFont alive (bounded => not a leak)
+# while still skipping the repeated ``font.key()`` call for the very common
+# case of the same painter font being reused across an entire scale-draw pass.
+# Retaining that one font is precisely what makes the ``id()`` comparison safe
+# against id reuse. On a miss the real ``font.key()`` is recomputed, so the
+# result is always lossless and correct.
+_LAST_FONT = None
+_LAST_FONT_ID = None
+_LAST_FONT_KEY = None
 
 
 def font_key_cached(font):
-    """Return a hashable cache key uniquely identifying ``font`` for metrics.
+    """Return ``font.key()`` using a single-slot, leak-free memo.
 
-    The returned value is **not** ``QFont.key()`` -- it is a tuple computed
-    from a handful of QFont attributes. It is safe to use as a dict key for
-    metrics caches (callers in this module always compare by ``==`` only).
+    The returned value is the genuine ``QFont.key()`` string and is safe to use
+    as a dict key for metrics caches. At most one ``QFont`` is ever retained.
+
+    :param QFont font: Font
+    :return: ``font.key()``
     """
+    global _LAST_FONT, _LAST_FONT_ID, _LAST_FONT_KEY
     fid = id(font)
-    entry = _FONT_KEY_CACHE.get(fid)
-    if entry is not None:
-        return entry[1]
-    tkey = _font_tuple_key(font)
-    # Intern: reuse the same tuple object across all id() variants so dict
-    # lookups in caller-side caches benefit from object-identity hash hits.
-    interned = _FONT_TUPLE_CACHE.setdefault(tkey, tkey)
-    if len(_FONT_KEY_CACHE) >= _FONT_KEY_CACHE_LIMIT:
-        _FONT_KEY_CACHE.clear()
-    _FONT_KEY_CACHE[fid] = (font, interned)
-    return interned
+    if fid == _LAST_FONT_ID:
+        return _LAST_FONT_KEY
+    key = font.key()
+    _LAST_FONT = font
+    _LAST_FONT_ID = fid
+    _LAST_FONT_KEY = key
+    return key
 
 
 def get_screen_resolution():
@@ -305,13 +289,9 @@ class QwtPlainTextEngine(QwtTextEngine):
 
     def __init__(self):
         self.qrectf_max = QRectF(0, 0, QWIDGETSIZE_MAX, QWIDGETSIZE_MAX)
-        self._fm_cache = {}
-        self._fm_cache_f = {}
-        self._margins_cache = {}
-        # Fast path: when textMargins is called repeatedly with the same
-        # QFont instance, skip the (expensive) font.key() Qt call.
-        self._margins_last_id = -1
-        self._margins_last_value = None
+        self._fm_cache = OrderedDict()
+        self._fm_cache_f = OrderedDict()
+        self._margins_cache = OrderedDict()
 
     def fontmetrics(self, font):
         fid = font_key_cached(font)
@@ -319,8 +299,10 @@ class QwtPlainTextEngine(QwtTextEngine):
             return self._fm_cache[fid]
         except KeyError:
             if len(self._fm_cache) >= _FM_CACHE_LIMIT:
-                self._fm_cache.clear()
-            return self._fm_cache.setdefault(fid, QFontMetrics(font))
+                self._fm_cache.popitem(last=False)
+            fm = QFontMetrics(font)
+            self._fm_cache[fid] = fm
+            return fm
 
     def fontmetrics_f(self, font):
         fid = font_key_cached(font)
@@ -328,8 +310,10 @@ class QwtPlainTextEngine(QwtTextEngine):
             return self._fm_cache_f[fid]
         except KeyError:
             if len(self._fm_cache_f) >= _FM_CACHE_LIMIT:
-                self._fm_cache_f.clear()
-            return self._fm_cache_f.setdefault(fid, QFontMetricsF(font))
+                self._fm_cache_f.popitem(last=False)
+            fm = QFontMetricsF(font)
+            self._fm_cache_f[fid] = fm
+            return fm
 
     def heightForWidth(self, font, flags, text, width):
         """
@@ -359,14 +343,15 @@ class QwtPlainTextEngine(QwtTextEngine):
         return rect.size()
 
     def effectiveAscent(self, font):
-        global ASCENTCACHE
         fontKey = font_key_cached(font)
         ascent = ASCENTCACHE.get(fontKey)
         if ascent is not None:
             return ascent
         if len(ASCENTCACHE) >= _FM_CACHE_LIMIT:
-            ASCENTCACHE.clear()
-        return ASCENTCACHE.setdefault(fontKey, self.findAscent(font))
+            ASCENTCACHE.popitem(last=False)
+        ascent = self.findAscent(font)
+        ASCENTCACHE[fontKey] = ascent
+        return ascent
 
     def findAscent(self, font):
         dummy = "E"
@@ -409,20 +394,14 @@ class QwtPlainTextEngine(QwtTextEngine):
         :param QFont font: Font of the text
         :return: tuple (left, right, top, bottom) representing margins
         """
-        # Fast path: same QFont object as the previous call.
-        font_id = id(font)
-        if font_id == self._margins_last_id:
-            return self._margins_last_value
         fkey = font_key_cached(font)
         cached = self._margins_cache.get(fkey)
         if cached is None:
             fm = self.fontmetrics(font)
             cached = (0, 0, fm.ascent() - self.effectiveAscent(font), fm.descent())
             if len(self._margins_cache) >= _FM_CACHE_LIMIT:
-                self._margins_cache.clear()
+                self._margins_cache.popitem(last=False)
             self._margins_cache[fkey] = cached
-        self._margins_last_id = font_id
-        self._margins_last_value = cached
         return cached
 
     def draw(self, painter, rect, flags, text):
@@ -588,12 +567,10 @@ class QwtText_LayoutCache(object):
     def __init__(self):
         self.textSize = None
         self.fontKey = None
-        self.fontId = -1
 
     def invalidate(self):
         self.textSize = None
         self.fontKey = None
-        self.fontId = -1
 
 
 class QwtText(object):
@@ -1108,22 +1085,17 @@ class QwtText(object):
         """
         font = self.usedFont(defaultFont)
         cache = self.__layoutCache
-        font_id = id(font)
-        if cache.textSize is not None and cache.fontId == font_id:
-            sz = QSizeF(cache.textSize)
-        else:
-            fkey = font_key_cached(font)
-            if (
-                cache.textSize is None
-                or not cache.textSize.isValid()
-                or cache.fontKey != fkey
-            ):
-                cache.textSize = self.__data.textEngine.textSize(
-                    font, self.__data.renderFlags, self.__data.text
-                )
-                cache.fontKey = fkey
-            cache.fontId = font_id
-            sz = QSizeF(cache.textSize)
+        fkey = font_key_cached(font)
+        if (
+            cache.textSize is None
+            or not cache.textSize.isValid()
+            or cache.fontKey != fkey
+        ):
+            cache.textSize = self.__data.textEngine.textSize(
+                font, self.__data.renderFlags, self.__data.text
+            )
+            cache.fontKey = fkey
+        sz = QSizeF(cache.textSize)
         if self.__data.layoutAttributes & self.MinimumLayout:
             (left, right, top, bottom) = self.__data.textEngine.textMargins(font)
             sz -= QSizeF(left + right, top + bottom)
