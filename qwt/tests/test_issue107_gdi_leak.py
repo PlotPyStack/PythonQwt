@@ -48,6 +48,20 @@ def test_gdi_leak_stability():
     if not env.unattended:
         pytest.skip("This test is for CI/unattended mode only")
 
+    # Close any top-level widgets left alive by previous tests in the shared
+    # QApplication. This test aggressively drives ``deleteLater()`` +
+    # ``processEvents()`` in-process; processing deferred deletions while stale
+    # widgets from earlier tests are still pending triggers a Qt teardown
+    # fast-fail (0xC0000409) on Windows. Starting from a clean widget set makes
+    # the test robust inside the full suite (it already passes in isolation).
+    app = QW.QApplication.instance() or QW.QApplication([])
+    for widget in list(app.topLevelWidgets()):
+        widget.close()
+        widget.deleteLater()
+    app.processEvents()
+    app.sendPostedEvents(None, QC.QEvent.DeferredDelete)
+    app.processEvents()
+
     n_cycles = 50
     for i in range(n_cycles):
         run_stress_cycle()
