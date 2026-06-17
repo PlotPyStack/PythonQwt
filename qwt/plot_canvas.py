@@ -13,6 +13,7 @@ QwtPlotCanvas
    :members:
 """
 
+import weakref
 from collections.abc import Sequence
 
 from qtpy.QtCore import QEvent, QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt
@@ -442,7 +443,12 @@ class QwtPlotCanvas(QFrame):
 
     def __init__(self, plot=None):
         super(QwtPlotCanvas, self).__init__(plot)
-        self.__plot = plot
+        # Store the parent plot as a WEAK reference to avoid a
+        # ``plot <-> canvas`` reference cycle (the plot already owns the canvas
+        # through Qt's parent/child relationship). A strong back-reference here
+        # would keep the plot alive until the cyclic garbage collector runs,
+        # delaying the release of native GDI handles on Windows.
+        self.__plot = None if plot is None else weakref.ref(plot)
         self.setFrameStyle(QFrame.Panel | QFrame.Sunken)
         self.setLineWidth(2)
         self.__data = QwtPlotCanvas_PrivateData()
@@ -456,7 +462,8 @@ class QwtPlotCanvas(QFrame):
         """
         :return: Parent plot widget
         """
-        return self.__plot
+        ref = self.__plot
+        return None if ref is None else ref()
 
     def setPaintAttribute(self, attribute, on=True):
         """
@@ -695,7 +702,9 @@ class QwtPlotCanvas(QFrame):
             else:
                 #                print('**DEBUG: QwtPlotCanvas.drawCanvas')
                 painter.setClipRect(self.contentsRect(), Qt.IntersectClip)
-        self.plot().drawCanvas(painter)
+        plot = self.plot()
+        if plot is not None:
+            plot.drawCanvas(painter)
         painter.restore()
         if withBackground and hackStyledBackground:
             #  Now paint the border on top

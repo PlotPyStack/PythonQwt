@@ -20,6 +20,7 @@ QwtPlotItem
 """
 
 import math
+import weakref
 
 import numpy as np
 from qtpy.QtCore import QEvent, QObject, QRectF, QSize, Qt, Signal
@@ -1815,16 +1816,23 @@ class QwtPlotItem(object):
 
             :py:meth:`detach()`
         """
-        if plot is self.__data.plot:
+        if plot is self.plot():
             return
 
-        if self.__data.plot:
-            self.__data.plot.attachItem(self, False)
+        current = self.plot()
+        if current is not None:
+            current.attachItem(self, False)
 
-        self.__data.plot = plot
+        # Store the parent plot as a WEAK reference: an item must not keep its
+        # plot (and the plot's GDI-backed child widgets) alive. A strong
+        # back-reference here forms a ``plot <-> item`` reference cycle that can
+        # only be reclaimed by the cyclic garbage collector, which delays the
+        # release of native GDI handles and can lead to GDI-handle exhaustion
+        # on Windows when many plots are created and destroyed.
+        self.__data.plot = None if plot is None else weakref.ref(plot)
 
-        if self.__data.plot:
-            self.__data.plot.attachItem(self, True)
+        if plot is not None:
+            plot.attachItem(self, True)
 
     def detach(self):
         """
@@ -1854,7 +1862,8 @@ class QwtPlotItem(object):
         """
         :return: attached plot
         """
-        return self.__data.plot
+        ref = self.__data.plot
+        return None if ref is None else ref()
 
     def z(self):
         """
@@ -1881,11 +1890,12 @@ class QwtPlotItem(object):
             :py:meth:`z()`, :py:meth:`QwtPlotDict.itemList()`
         """
         if self.__data.z != z:
-            if self.__data.plot:
-                self.__data.plot.attachItem(self, False)
+            plot = self.plot()
+            if plot is not None:
+                plot.attachItem(self, False)
             self.__data.z = z
-            if self.__data.plot:
-                self.__data.plot.attachItem(self, True)
+            if plot is not None:
+                plot.attachItem(self, True)
             self.itemChanged()
 
     def setTitle(self, title):
@@ -2091,8 +2101,9 @@ class QwtPlotItem(object):
 
             :py:meth:`QwtPlot.legendChanged()`, :py:meth:`QwtPlot.autoRefresh()`
         """
-        if self.__data.plot:
-            self.__data.plot.autoRefresh()
+        plot = self.plot()
+        if plot is not None:
+            plot.autoRefresh()
 
     def legendChanged(self):
         """
@@ -2102,8 +2113,9 @@ class QwtPlotItem(object):
 
             :py:meth:`QwtPlot.updateLegend()`, :py:meth:`itemChanged()`
         """
-        if self.testItemAttribute(QwtPlotItem.Legend) and self.__data.plot:
-            self.__data.plot.updateLegend(self)
+        plot = self.plot()
+        if self.testItemAttribute(QwtPlotItem.Legend) and plot is not None:
+            plot.updateLegend(self)
 
     def setAxes(self, xAxis, yAxis):
         """
