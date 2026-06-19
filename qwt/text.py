@@ -567,10 +567,20 @@ class QwtText_LayoutCache(object):
     def __init__(self):
         self.textSize = None
         self.fontKey = None
+        # ``id(font)`` fast path for ``QwtText.textSize``. ``font`` keeps a
+        # strong reference to the cached font so its id cannot be reused by a
+        # different object while cached (guards against a stale-size false hit).
+        # This is a per-instance, single-slot cache: it retains at most one
+        # QFont per QwtText and is released with the QwtText, so unlike the old
+        # unbounded module-level font cache it cannot leak.
+        self.fontId = -1
+        self.font = None
 
     def invalidate(self):
         self.textSize = None
         self.fontKey = None
+        self.fontId = -1
+        self.font = None
 
 
 class QwtText(object):
@@ -1085,17 +1095,27 @@ class QwtText(object):
         """
         font = self.usedFont(defaultFont)
         cache = self.__layoutCache
-        fkey = font_key_cached(font)
-        if (
-            cache.textSize is None
-            or not cache.textSize.isValid()
-            or cache.fontKey != fkey
-        ):
-            cache.textSize = self.__data.textEngine.textSize(
-                font, self.__data.renderFlags, self.__data.text
-            )
-            cache.fontKey = fkey
-        sz = QSizeF(cache.textSize)
+        # Fast path: same font *object* as the previous call on this text.
+        # ``cache.font`` keeps that font alive, so the id comparison is safe
+        # against id reuse, and we skip the (relatively costly) ``font.key()``
+        # call performed by ``font_key_cached``.
+        font_id = id(font)
+        if cache.textSize is not None and cache.fontId == font_id:
+            sz = QSizeF(cache.textSize)
+        else:
+            fkey = font_key_cached(font)
+            if (
+                cache.textSize is None
+                or not cache.textSize.isValid()
+                or cache.fontKey != fkey
+            ):
+                cache.textSize = self.__data.textEngine.textSize(
+                    font, self.__data.renderFlags, self.__data.text
+                )
+                cache.fontKey = fkey
+            cache.fontId = font_id
+            cache.font = font
+            sz = QSizeF(cache.textSize)
         if self.__data.layoutAttributes & self.MinimumLayout:
             (left, right, top, bottom) = self.__data.textEngine.textMargins(font)
             sz -= QSizeF(left + right, top + bottom)
