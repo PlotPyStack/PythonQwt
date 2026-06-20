@@ -591,7 +591,6 @@ class QwtPlotCanvas(QFrame):
         if (
             self.testPaintAttribute(self.BackingStore)
             and self.__data.backingStore is not None
-            and not self.__data.backingStore.isNull()
         ):
             bs = self.__data.backingStore
             pixelRatio = bs.devicePixelRatio()
@@ -615,6 +614,10 @@ class QwtPlotCanvas(QFrame):
                     if self.frameWidth() > 0:
                         self.drawBorder(p)
                     p.end()
+                # Store the regenerated pixmap back: the C++ original uses a
+                # reference into the stored pixmap, whereas the rebinding above
+                # only updates the local variable.
+                self.__data.backingStore = bs
             painter.drawPixmap(0, 0, self.__data.backingStore)
         else:
             if self.testAttribute(Qt.WA_StyledBackground):

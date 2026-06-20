@@ -1,5 +1,12 @@
 # PythonQwt Releases
 
+## Version 0.16.3
+
+### Bug fixes
+
+- Fixed [Issue #109](https://github.com/PlotPyStack/PythonQwt/issues/109): the `QwtPlotCanvas.BackingStore` paint attribute was non-functional. After `invalidateBackingStore()` reset the buffer to an empty `QPixmap()`, `paintEvent` skipped the backing-store branch because of an extra `isNull()` guard, so the cache was never regenerated; the regenerated pixmap was also only bound to a local variable and never stored back. The double-buffering cache now refreshes and is reused as intended
+
+
 ## Version 0.16.2
 
 ### Bug fixes
