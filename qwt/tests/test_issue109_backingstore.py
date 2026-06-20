@@ -33,14 +33,22 @@ def _make_plot_with_backing_store():
 
 def test_backing_store_is_regenerated_after_replot():
     """The backing store must be repopulated when painting after a replot."""
+    # A live QApplication must exist before constructing any QWidget, otherwise
+    # Qt aborts the process. Tests run in a shared interpreter, but no test
+    # keeps a persistent Python reference to the application, so the singleton
+    # may be garbage-collected between tests (observed on Linux/PyQt5 in CI).
+    app = QW.QApplication.instance() or QW.QApplication([])
+
     plot, canvas = _make_plot_with_backing_store()
     plot.show()
-    plot.replot()  # invalidates the backing store
-    QW.QApplication.processEvents()
+    app.processEvents()  # lay the canvas out and paint it a first time
 
-    # Force a paint so the backing store branch runs.
-    canvas.repaint()
-    QW.QApplication.processEvents()
+    plot.replot()  # invalidates the backing store
+
+    # Force a paint so the backing store branch runs. ``grab()`` synchronously
+    # triggers ``paintEvent`` and works headless (QT_QPA_PLATFORM=offscreen),
+    # without depending on the event loop delivering a deferred repaint.
+    canvas.grab()
 
     bs = canvas.backingStore()
     assert bs is not None
@@ -51,7 +59,7 @@ def test_backing_store_is_regenerated_after_replot():
 
     plot.close()
     plot.deleteLater()
-    QW.QApplication.processEvents()
+    app.processEvents()
 
 
 if __name__ == "__main__":
