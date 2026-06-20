@@ -1,5 +1,22 @@
 # PythonQwt Releases
 
+## Version 0.16.2
+
+### Bug fixes
+
+- Fixed a `QFont`/GDI handle leak that release 0.16.1 only masked: the font-key cache retained a strong reference to every distinct `QFont` it had seen (up to 1024 entries), each pinning its underlying font engine and, on Windows GDI builds, an `HFONT` handle, accumulating towards the per-process GDI limit. The cache is now a single-slot, leak-free memo and the remaining metrics caches use proper LRU eviction instead of a clear-on-overflow that periodically rebuilt `QFontMetrics` results
+- Fixed delayed release of native GDI handles caused by Python reference cycles: `QwtPlotItem` and `QwtPlotCanvas` held strong back-references to their parent `QwtPlot`, so plots were only reclaimed by the cyclic garbage collector. These back-references are now weak, matching the C++ Qwt parent/child model, so a plot is freed by reference counting alone and could otherwise exhaust the ~10000 GDI-object limit on Windows under heavy create/destroy churn
+- Fixed noisy "Unhandled exception" `AttributeError` tracebacks at teardown on Python 3.14 / Qt 6: during widget destruction Qt still delivers events and calls size-hint methods on `QwtPlot` objects whose Python `__dict__` has already been cleared. Access to private instance data in `QwtPlot.eventFilter` and `QwtPlot.minimumSizeHint` is now guarded
+
+### Performance
+
+- Restored most of the text-layout performance lost to the GDI-leak fix by reinstating a bounded, leak-free `id(font)` fast path in `QwtText.textSize` (the layout cache holds a strong reference to its single cached font, so the font id cannot be reused)
+
+### Other changes
+
+- Added GDI-handle and font-cache telemetry/benchmark scripts under `scripts/` (`bench_gdi_loadtest.py`, `telemetry_fontcache.py`) and a pytest stress test (`qwt/tests/test_issue107_gdi_leak.py`) to detect resource leaks under repeated plot create/render/destroy cycles
+
+
 ## Version 0.16.1
 
 ### Bug fixes
