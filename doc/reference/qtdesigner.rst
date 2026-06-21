@@ -1,9 +1,9 @@
 Qt Designer
 ===========
 
-PythonQwt ships a Qt Designer plugin which makes the :class:`qwt.QwtPlot`
-widget available directly inside Qt Designer's widget box, in the "PythonQwt"
-group.
+PythonQwt ships a Qt Designer plugin which makes a 2D plotting widget
+(:class:`qwt.qtdesigner.QwtPlotWidget`, a thin :class:`qwt.QwtPlot` subclass)
+available directly inside Qt Designer's widget box, in the "PythonQwt" group.
 
 Installing the plugin
 ---------------------
@@ -34,7 +34,7 @@ Loading a ``.ui`` file at runtime
 ---------------------------------
 
 The :mod:`qwt.qtdesigner` module provides helper functions to load or compile
-``.ui`` files embedding :class:`qwt.QwtPlot` widgets:
+``.ui`` files embedding :class:`qwt.qtdesigner.QwtPlotWidget` widgets:
 
 .. code-block:: python
 

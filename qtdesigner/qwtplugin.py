@@ -8,16 +8,16 @@
 qwtplugin
 =========
 
-A :class:`qwt.QwtPlot` widget plugin for Qt Designer.
+A :class:`qwt.qtdesigner.QwtPlotWidget` plugin for Qt Designer (a thin
+:class:`qwt.QwtPlot` subclass exposing the standard Qt widget constructor).
 
-To make the ``QwtPlot`` widget available in Qt Designer, add the directory
-containing this file to the ``PYQTDESIGNERPATH`` environment variable, then
-start Qt Designer::
+To make the widget available in Qt Designer, add the directory containing this
+file to the ``PYQTDESIGNERPATH`` environment variable, then start Qt Designer::
 
     set PYQTDESIGNERPATH=<path to this directory>    # Windows
     export PYQTDESIGNERPATH=<path to this directory> # Linux/macOS
 
-The ``QwtPlot`` widget then appears in the "PythonQwt" group of the Qt Designer
+The ``QwtPlotWidget`` then appears in the "PythonQwt" group of the Qt Designer
 widget box.
 
 .. note::
@@ -30,8 +30,8 @@ from qwt.qtdesigner import create_qtdesigner_plugin
 
 Plugin = create_qtdesigner_plugin(
     group="PythonQwt",
-    module_name="qwt.plot",
-    class_name="QwtPlot",
+    module_name="qwt.qtdesigner",
+    class_name="QwtPlotWidget",
     tooltip="2D plotting widget",
     whatsthis="A 2D plotting widget based on PythonQwt",
 )

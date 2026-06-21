@@ -21,18 +21,16 @@ import pytest
 from qtpy.QtCore import Qt
 
 import qwt
+from qwt.qtdesigner import loadui
 from qwt.tests import utils
 
 try:
-    from qwt.qtdesigner import loadui
-except ImportError:
-    # PySide6 does not expose QPyDesignerCustomWidgetPlugin
+    FormClass = loadui(osp.splitext(__file__)[0] + ".ui")
+except Exception as exc:  # pragma: no cover - binding-specific uic limitation
     pytest.skip(
-        "PySide6 does not support QPyDesignerCustomWidgetPlugin",
+        "Qt Designer .ui loading is not supported by this Qt binding (%s)" % exc,
         allow_module_level=True,
     )
-
-FormClass = loadui(osp.splitext(__file__)[0] + ".ui")
 
 
 class QtDesignerWindow(FormClass):

@@ -15,15 +15,15 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QwtPlot" name="plotwidget"/>
+    <widget class="QwtPlotWidget" name="plotwidget"/>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QwtPlot</class>
+   <class>QwtPlotWidget</class>
    <extends>QFrame</extends>
-   <header>qwt.plot</header>
+   <header>qwt.qtdesigner</header>
   </customwidget>
  </customwidgets>
  <resources/>
