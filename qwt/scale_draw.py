@@ -607,7 +607,7 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
             * start: Start border distance
             * end: End border distance
         """
-        start, end = 0, 1.0
+        start, end = 0, 1
 
         if not self.hasComponent(QwtAbstractScaleDraw.Labels):
             return start, end
