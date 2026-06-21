@@ -5,18 +5,19 @@ Public API:
 
 .. toctree::
     :maxdepth: 2
-    
+
     plot
     scale
     symbol
     text
     toqimage
+    qtdesigner
 
 Private API:
 
 .. toctree::
     :maxdepth: 2
-    
+
     graphic
     interval
     plot_directpainter

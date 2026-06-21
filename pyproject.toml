@@ -50,7 +50,7 @@ test = ["pytest", "pytest-xvfb"]
 include = ["qwt*"]
 
 [tool.setuptools.package-data]
-"*" = ["*.png", "*.svg", "*.mo", "*.cfg", "*.toml"]
+"*" = ["*.png", "*.svg", "*.mo", "*.cfg", "*.toml", "*.ui"]
 
 [tool.setuptools.dynamic]
 version = { attr = "qwt.__version__" }

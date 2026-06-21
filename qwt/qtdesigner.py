@@ -1,0 +1,182 @@
+# -*- coding: utf-8 -*-
+#
+# Licensed under the terms of the Qwt License
+# Copyright (c) 2015 Pierre Raybaut, for the Qt Designer plugin helpers
+# (see LICENSE file for more details)
+
+"""
+Qt Designer
+-----------
+
+The :mod:`qwt.qtdesigner` module provides helper functions to integrate
+:mod:`qwt` widgets into Qt Designer:
+
+    * :py:func:`loadui`
+    * :py:func:`compileui`
+    * :py:func:`create_qtdesigner_plugin`
+
+.. note::
+
+    Qt Designer custom widget plugins rely on
+    :class:`QtDesigner.QPyDesignerCustomWidgetPlugin`, which is only available
+    with PyQt5/PyQt6. PySide6 does not expose this class.
+
+.. autofunction:: loadui
+
+.. autofunction:: compileui
+
+.. autofunction:: create_qtdesigner_plugin
+"""
+
+from __future__ import annotations
+
+import io
+
+from qtpy import QtGui as QG
+from qtpy import uic
+from qtpy.QtDesigner import QPyDesignerCustomWidgetPlugin
+
+
+def loadui(fname: str, replace_class: str | None = None):
+    """Return Widget or Window class from a Qt Designer ``.ui`` file.
+
+    When a promoted widget inherits from a class that is not known to the
+    ``uic`` parser (i.e. not a standard Qt widget), ``loadUiType`` fails to
+    resolve the widget hierarchy. Passing the offending base class name as
+    ``replace_class`` neutralizes it by substituting ``QFrame`` (the base
+    class of :class:`qwt.QwtPlot`) before the file is parsed.
+
+    For a plain :class:`qwt.QwtPlot` widget (which already inherits from
+    ``QFrame``), no replacement is required and ``replace_class`` can be left
+    to ``None``.
+
+    Args:
+        fname: Path to the ``.ui`` file
+        replace_class: Base class name to replace by ``QFrame``, or ``None``
+         to load the file unchanged
+
+    Returns:
+        The generated form class
+    """
+    with open(fname) as f:
+        uifile_text = f.read()
+    if replace_class is not None:
+        uifile_text = uifile_text.replace(replace_class, "QFrame")
+    ui, base_class = uic.loadUiType(io.StringIO(uifile_text))
+
+    class Form(base_class, ui):
+        """Form class generated from the ``.ui`` file"""
+
+        def __init__(self, parent=None):
+            super().__init__(parent)
+            self.setupUi(self)
+
+    return Form
+
+
+def compileui(fname: str, replace_class: str | None = None) -> None:
+    """Compile a Qt Designer ``.ui`` file into a Python module.
+
+    Args:
+        fname: Path to the ``.ui`` file
+        replace_class: Base class name to replace by ``QFrame``, or ``None``
+         to compile the file unchanged
+    """
+    with open(fname) as f:
+        uifile_text = f.read()
+    if replace_class is not None:
+        uifile_text = uifile_text.replace(replace_class, "QFrame")
+    with open(fname.replace(".ui", "_ui.py"), "w") as pyfile:
+        uic.compileUi(io.StringIO(uifile_text), pyfile, pyqt3_wrapper=True)
+
+
+def create_qtdesigner_plugin(
+    group: str,
+    module_name: str,
+    class_name: str,
+    icon: str | QG.QIcon | None = None,
+    tooltip: str = "",
+    whatsthis: str = "",
+):
+    """Return a custom Qt Designer plugin class.
+
+    Args:
+        group: Name of the group the widget belongs to in Qt Designer
+        module_name: Name of the module where the widget class is defined
+        class_name: Name of the widget class
+        icon: Icon shown in Qt Designer (path to an image file or
+         :class:`QtGui.QIcon` instance)
+        tooltip: Tool tip shown in Qt Designer
+        whatsthis: "What's this" help text shown in Qt Designer
+
+    Returns:
+        A :class:`QtDesigner.QPyDesignerCustomWidgetPlugin` subclass
+
+    Example::
+
+        Plugin = create_qtdesigner_plugin(
+            group="PythonQwt",
+            module_name="qwt.plot",
+            class_name="QwtPlot",
+        )
+    """
+    Widget = getattr(__import__(module_name, fromlist=[class_name]), class_name)
+
+    class CustomWidgetPlugin(QPyDesignerCustomWidgetPlugin):
+        """Qt Designer plugin for the ``%s`` widget""" % class_name
+
+        def __init__(self, parent=None):
+            QPyDesignerCustomWidgetPlugin.__init__(self)
+            self.initialized = False
+
+        def initialize(self, core):
+            """Initialize the plugin"""
+            if self.initialized:
+                return
+            self.initialized = True
+
+        def isInitialized(self):
+            """Return whether the plugin has been initialized"""
+            return self.initialized
+
+        def createWidget(self, parent):
+            """Return a new instance of the custom widget"""
+            return Widget(parent)
+
+        def name(self):
+            """Return the name of the custom widget class"""
+            return class_name
+
+        def group(self):
+            """Return the name of the group the widget belongs to"""
+            return group
+
+        def icon(self):
+            """Return the icon shown in Qt Designer"""
+            if isinstance(icon, QG.QIcon):
+                return icon
+            elif isinstance(icon, str):
+                return QG.QIcon(icon)
+            return QG.QIcon()
+
+        def toolTip(self):
+            """Return the tool tip shown in Qt Designer"""
+            return tooltip
+
+        def whatsThis(self):
+            """Return the "What's this" help text shown in Qt Designer"""
+            return whatsthis
+
+        def isContainer(self):
+            """Return whether the widget is a container"""
+            return False
+
+        def domXml(self):
+            """Return the XML used to define the widget in Qt Designer"""
+            return f'<widget class="{class_name}" name="{class_name.lower()}" />\n'
+
+        def includeFile(self):
+            """Return the module name where the widget class is defined"""
+            return module_name
+
+    return CustomWidgetPlugin
