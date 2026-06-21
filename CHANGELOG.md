@@ -5,6 +5,7 @@
 ### Bug fixes
 
 - Fixed [Issue #109](https://github.com/PlotPyStack/PythonQwt/issues/109): the `QwtPlotCanvas.BackingStore` paint attribute was non-functional. After `invalidateBackingStore()` reset the buffer to an empty `QPixmap()`, `paintEvent` skipped the backing-store branch because of an extra `isNull()` guard, so the cache was never regenerated; the regenerated pixmap was also only bound to a local variable and never stored back. The double-buffering cache now refreshes and is reused as intended
+- Fixed [Issue #88](https://github.com/PlotPyStack/PythonQwt/issues/88): `QwtPlot.setMouseTracking` was ignored. Because the plot's drawing area is occupied by the canvas widget, mouse move events are delivered to the canvas rather than to the `QwtPlot` frame, so enabling mouse tracking on the plot had no effect. `QwtPlot.setMouseTracking` now propagates its state to the canvas (and a canvas installed via `setCanvas` inherits the current state), so mouse move events are delivered even when no mouse button is pressed, as documented
 
 
 ## Version 0.16.2

@@ -997,8 +997,29 @@ class QwtPlot(QFrame):
         if canvas is not None:
             canvas.setParent(self)
             canvas.installEventFilter(self)
+            # Mouse move events occur over the canvas widget, not the plot frame
+            # itself, so the canvas must share the plot's mouse-tracking state
+            # for `QwtPlot.setMouseTracking` to behave as expected.
+            canvas.setMouseTracking(self.hasMouseTracking())
             if self.isVisible():
                 canvas.show()
+
+    def setMouseTracking(self, enable):
+        """
+        Enable or disable mouse tracking for the plot.
+
+        The plot's drawing area is occupied by the canvas widget, so mouse move
+        events over the plot are received by the canvas rather than the plot
+        itself. This override propagates the mouse-tracking state to the canvas
+        so that enabling tracking on the plot delivers mouse move events even
+        when no mouse button is pressed (see Issue #88).
+
+        :param bool enable: True to enable mouse tracking, False to disable it
+        """
+        super(QwtPlot, self).setMouseTracking(enable)
+        canvas = self.__data.canvas
+        if canvas is not None:
+            canvas.setMouseTracking(enable)
 
     def event(self, event):
         if event.type() == QEvent.LayoutRequest:
