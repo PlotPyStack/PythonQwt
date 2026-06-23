@@ -41,6 +41,8 @@ TEST_PATH = osp.abspath(osp.dirname(__file__))
 
 
 class TestEnvironment:
+    __test__ = False  # Tell pytest this is not a test class
+
     UNATTENDED_ARG = "unattended"
     SCREENSHOTS_ARG = "screenshots"
     UNATTENDED_ENV = "PYTHONQWT_UNATTENDED_TESTS"
