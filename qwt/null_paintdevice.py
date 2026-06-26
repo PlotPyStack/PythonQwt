@@ -275,7 +275,7 @@ class QwtNullPaintDevice(QPaintDevice):
         elif deviceMetric == QPaintDevice.PdmDevicePixelRatio:
             value = 1
         elif deviceMetric == QPaintDevice.PdmDevicePixelRatioScaled:
-            value = 1
+            value = 0x10000
         else:
             value = super(QwtNullPaintDevice, self).metric(deviceMetric)
         return value
