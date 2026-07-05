@@ -2,10 +2,20 @@
 
 ## Version 0.16.3
 
+### New features
+
+- Added a Qt Designer plugin for `QwtPlot` ([Issue #18](https://github.com/PlotPyStack/PythonQwt/issues/18)), restoring the Designer integration formerly provided by PyQwt's `pyqtdesignerplugins`: `QwtPlot` can now be used as a promoted widget in `.ui` files. Because PyQt6's `uic` instantiates promoted widgets as `QwtPlot(parent=...)`, which `QwtPlot`'s constructor rejected, the plugin promotes a thin `QwtPlotWidget` subclass exposing the standard `__init__(self, parent=None)` signature instead, leaving `QwtPlot` itself untouched
+
 ### Bug fixes
 
 - Fixed [Issue #109](https://github.com/PlotPyStack/PythonQwt/issues/109): the `QwtPlotCanvas.BackingStore` paint attribute was non-functional. After `invalidateBackingStore()` reset the buffer to an empty `QPixmap()`, `paintEvent` skipped the backing-store branch because of an extra `isNull()` guard, so the cache was never regenerated; the regenerated pixmap was also only bound to a local variable and never stored back. The double-buffering cache now refreshes and is reused as intended
 - Fixed [Issue #88](https://github.com/PlotPyStack/PythonQwt/issues/88): `QwtPlot.setMouseTracking` was ignored. Because the plot's drawing area is occupied by the canvas widget, mouse move events are delivered to the canvas rather than to the `QwtPlot` frame, so enabling mouse tracking on the plot had no effect. `QwtPlot.setMouseTracking` now propagates its state to the canvas (and a canvas installed via `setCanvas` inherits the current state), so mouse move events are delivered even when no mouse button is pressed, as documented
+- Fixed [Issue #110](https://github.com/PlotPyStack/PythonQwt/issues/110): the legend icon was rendered incorrectly because `QwtNullPaintDevice.metric` returned an unscaled value (`1`) for `PdmDevicePixelRatioScaled`, instead of the fixed-point scale factor Qt expects for a 1.0 device pixel ratio (`0x10000`) - thanks to @Adrian-B-Moreira
+- Fixed a `TypeError` raised in `QwtScaleWidget.minimumSizeHint` when an axis has its labels component disabled: `QwtScaleDraw.getBorderDistHint` returned a float border distance (`0, 1.0`) in that case, which propagated into a `QSize(length + 2, dim)` construction expecting integers
+
+### Other changes
+
+- Added a side-by-side plots example with a shared vertical scale, addressing [Issue #33](https://github.com/PlotPyStack/PythonQwt/issues/33) (`qwt/tests/test_issue33_sidebyside.py`)
 
 
 ## Version 0.16.2
