@@ -1,5 +1,11 @@
 # PythonQwt Releases
 
+## Unreleased
+
+### Requirements
+
+- Python 3.10 or later is now required. Python 3.9 users must keep an earlier compatible release.
+
 ## Version 0.16.3
 
 ### New features

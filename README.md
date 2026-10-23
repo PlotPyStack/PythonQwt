@@ -100,7 +100,7 @@ Compatibility table:
 
 ### Requirements
 
-- Python >=3.9
+- Python >=3.10
 - QtPy >= 1.9 (and a Python-to-Qt binding library, see above)
 - NumPy >= 1.21
 
