@@ -6,7 +6,7 @@
 
 ### Technology Stack
 
-- **Python**: 3.9+
+- **Python**: 3.10+
 - **Core**: NumPy (≥1.21), QtPy (≥1.9)
 - **GUI**: Qt via QtPy (PyQt5/PyQt6/PySide6)
 - **Testing**: pytest

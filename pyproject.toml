@@ -23,14 +23,13 @@ classifiers = [
     "Operating System :: OS Independent",
     "Operating System :: POSIX",
     "Operating System :: Unix",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
 ]
-requires-python = ">=3.9, <4"
+requires-python = ">=3.10, <4"
 dependencies = ["NumPy>=1.21", "QtPy>=1.9"]
 dynamic = ["version"]
 
@@ -62,7 +61,7 @@ addopts = "qwt"
 exclude = [".git", ".vscode", "build", "dist","venv*",".venv*"]
 line-length = 88                               # Same as Black.
 indent-width = 4                               # Same as Black.
-target-version = "py39"                        # Assume Python 3.9.
+target-version = "py310"                       # Assume Python 3.10.
 
 [tool.ruff.lint]
 # all rules can be found here: https://beta.ruff.rs/docs/rules/
