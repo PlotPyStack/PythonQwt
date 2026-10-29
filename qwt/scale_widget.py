@@ -15,7 +15,7 @@ QwtScaleWidget
 
 import math
 
-from qtpy.QtCore import QObject, QRectF, QSize, Qt, Signal
+from qtpy.QtCore import QObject, QPointF, QRectF, QSize, Qt, Signal
 from qtpy.QtGui import QPainter, QPalette
 from qtpy.QtWidgets import QSizePolicy, QStyle, QStyleOption, QWidget
 
@@ -339,6 +339,11 @@ class QwtScaleWidget(QWidget):
             if sd.scaleMap().transformation():
                 transform = sd.scaleMap().transformation().copy()
             scaleDraw.setTransformation(transform)
+            # The border distance hint computed by `layoutScale` depends on the
+            # scale geometry: without it, a zero-length scale gives the axis
+            # border distances differing from those used by the canvas maps.
+            scaleDraw.move(QPointF(sd.pos()))
+            scaleDraw.setLength(sd.length())
         self.__data.scaleDraw = scaleDraw
         self.layoutScale()
 

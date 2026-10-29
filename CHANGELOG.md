@@ -6,6 +6,10 @@
 
 - Python 3.10 or later is now required. Python 3.9 users must keep an earlier compatible release.
 
+### Bug fixes
+
+- Fixed [Issue #113](https://github.com/PlotPyStack/PythonQwt/issues/113): after replacing the scale draw of an axis (`QwtPlot.setAxisScaleDraw`), the axis ticks could be misaligned with the grid lines and plot items, until the next scale division change (e.g. after panning or zooming): a replot did not fix it. The new scale draw was laid out before getting the position and length of the previous one, so that the axis reserved space for its end labels that the canvas did not take into account. The new scale draw now takes the geometry of the previous one, and the axis stays aligned with the canvas
+
 ## Version 0.16.3
 
 ### New features
