@@ -23,6 +23,12 @@ QwtLogScaleEngine
 
 .. autoclass:: QwtLogScaleEngine
    :members:
+
+QwtDateTimeScaleEngine
+----------------------
+
+.. autoclass:: QwtDateTimeScaleEngine
+   :members:
 """
 
 import math

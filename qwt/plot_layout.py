@@ -746,9 +746,7 @@ class QwtPlotLayout(object):
 
         :param options: Options how to layout the legend
         :param QRectF rect: Bounding rectangle for title, footer, axes and canvas.
-        :return: tuple `(dimTitle, dimFooter, dimAxes)`
-
-        Returns:
+        :return: tuple `(dimTitle, dimFooter, dimAxes)`, where:
 
             * `dimTitle`: Expanded height of the title widget
             * `dimFooter`: Expanded height of the footer widget

@@ -207,12 +207,14 @@ class QwtLogTransform(QwtTransform):
 
 class QwtPowerTransform(QwtTransform):
     """
-    A transformation using `numpy.pow()`
+    A transformation using `numpy.power()`
 
     `QwtPowerTransform` preserves the sign of a value.
     F.e. a transformation with a factor of 2
     transforms a value of -3 to -9 and v.v. Thus `QwtPowerTransform`
     can be used for scales including negative values.
+
+    Values may be scalars or NumPy arrays (transformed element-wise).
     """
 
     def __init__(self, exponent):
@@ -223,33 +225,35 @@ class QwtPowerTransform(QwtTransform):
         """
         Transformation function
 
-        :param float value: Value
+        :param value: Value (scalar or NumPy array)
         :return: Modified value
 
         .. seealso::
 
             :py:meth:`invTransform()`
         """
-        if value < 0.0:
-            return -np.pow(-value, 1.0 / self.__exponent)
-        else:
-            return np.pow(value, 1.0 / self.__exponent)
+        return self.__signed_power(value, 1.0 / self.__exponent)
 
     def invTransform(self, value):
         """
         Inverse transformation function
 
-        :param float value: Value
+        :param value: Value (scalar or NumPy array)
         :return: Modified value
 
         .. seealso::
 
             :py:meth:`transform()`
         """
-        if value < 0.0:
-            return -np.pow(-value, self.__exponent)
-        else:
-            return np.pow(value, self.__exponent)
+        return self.__signed_power(value, self.__exponent)
+
+    @staticmethod
+    def __signed_power(value, exponent):
+        # Same as Qwt C++ (`value < 0.0 ? -pow(-value, e) : pow(value, e)`),
+        # element-wise for arrays: scalars give the same results as before
+        negative = np.less(value, 0.0)
+        result = np.power(np.where(negative, np.abs(value), value), exponent)
+        return np.where(negative, np.negative(result), result)[()]
 
     def copy(self):
         """

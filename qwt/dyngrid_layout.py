@@ -159,7 +159,7 @@ class QwtDynGridLayout(QLayout):
         if self.isEmpty():
             return
         self.__data.numColumns = self.columnsForWidth(rect.width())
-        self.__data.numRows = self.itemCount() / self.__data.numColumns
+        self.__data.numRows = self.itemCount() // self.__data.numColumns
         if self.itemCount() % self.__data.numColumns:
             self.__data.numRows += 1
         itemGeometries = self.layoutItems(rect, self.__data.numColumns)
@@ -314,7 +314,7 @@ class QwtDynGridLayout(QLayout):
                     colWidth[col] += space
                     xDelta -= space
         if expandV:
-            numRows = self.itemCount() / numColumns
+            numRows = self.itemCount() // numColumns
             if self.itemCount() % numColumns:
                 numRows += 1
             yDelta = rect.height() - hmargins - (numRows - 1) * self.spacing()

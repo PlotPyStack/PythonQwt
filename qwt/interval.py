@@ -296,7 +296,7 @@ class QwtInterval(object):
             if i1.borderFlags() & self.ExcludeMinimum:
                 i1, i2 = i2, i1
 
-        if i1.maxValue() < i2.maxValue():
+        if i1.maxValue() < i2.minValue():
             return QwtInterval()
 
         if i1.maxValue() == i2.minValue():
@@ -346,9 +346,9 @@ class QwtInterval(object):
         if i1.maxValue() > i2.minValue():
             return True
         elif i1.maxValue() == i2.minValue():
-            return (
+            return not (
                 i1.borderFlags() & self.ExcludeMaximum
-                and i2.borderFlags() & self.ExcludeMinimum
+                or i2.borderFlags() & self.ExcludeMinimum
             )
         return False
 

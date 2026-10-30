@@ -1,2 +1,4 @@
 graft doc
 include *.desktop
+include CHANGELOG.md
+include qtdesigner/*.py

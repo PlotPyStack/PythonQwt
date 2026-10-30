@@ -722,7 +722,7 @@ class QwtPlotRenderer(QObject):
             for idx, fmt in enumerate(imageFormats):
                 if idx > 0:
                     imageFilter += " "
-                imageFilter += "*." + str(fmt)
+                imageFilter += "*." + bytes(fmt).decode()
             imageFilter += ")"
             filter_ += [imageFilter]
         filename, _s = getsavefilename(
