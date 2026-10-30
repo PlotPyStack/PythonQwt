@@ -1,6 +1,6 @@
 # PythonQwt Releases
 
-## Unreleased
+## Version 0.17.0
 
 ### Requirements
 
