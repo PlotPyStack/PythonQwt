@@ -106,8 +106,8 @@ class QwtPlotGrid(QwtPlotItem):
         item.setPen(QPen(color, width, style))
         if mincolor is not None or minwidth is not None or minstyle is not None:
             mincolor = qcolor_from_str(mincolor, Qt.gray)
-            minwidth = 1.0 if width is None else minwidth
-            minstyle = Qt.DotLine if style is None else minstyle
+            minwidth = 1.0 if minwidth is None else float(minwidth)
+            minstyle = Qt.DotLine if minstyle is None else minstyle
             item.setMinorPen(QPen(mincolor, minwidth, minstyle))
         if enablemajor is not None:
             if isinstance(enablemajor, tuple) and len(enablemajor) == 2:

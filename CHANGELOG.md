@@ -11,6 +11,7 @@
 - Fixed [Issue #113](https://github.com/PlotPyStack/PythonQwt/issues/113): after replacing the scale draw of an axis (`QwtPlot.setAxisScaleDraw`), the axis ticks could be misaligned with the grid lines and plot items, until the next scale division change (e.g. after panning or zooming): a replot did not fix it. The new scale draw was laid out before getting the position and length of the previous one, so that the axis reserved space for its end labels that the canvas did not take into account. The new scale draw now takes the geometry of the previous one, and the axis stays aligned with the canvas
 - Fixed `QwtGraphic.toPixmap(size)`, `QwtGraphic.toImage()` and `QwtGraphic.toImage(size)`, which raised a `TypeError` (possibly aborting the process, as the painter was still active on the destroyed pixmap or image) instead of rendering the graphic: they now render it like `QwtGraphic.toPixmap()` ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed `QwtPlotMarker.legendIcon` for markers with a symbol, which raised an `AssertionError` or a `TypeError`: such markers can now be shown in a legend ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
+- Fixed `QwtPlotGrid.make`, which raised a `TypeError` when only some of the minor pen arguments (`mincolor`, `minwidth`, `minstyle`) were given: each of them is now honored, the missing ones taking their documented default value ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 
 ## Version 0.16.3
 

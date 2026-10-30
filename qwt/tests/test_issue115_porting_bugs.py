@@ -15,7 +15,14 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
-from qwt import QwtLegend, QwtPlot, QwtPlotItem, QwtPlotMarker, QwtSymbol
+from qwt import (
+    QwtLegend,
+    QwtPlot,
+    QwtPlotGrid,
+    QwtPlotItem,
+    QwtPlotMarker,
+    QwtSymbol,
+)
 from qwt.graphic import QwtGraphic
 
 RED = QG.QColor(QC.Qt.red)
@@ -140,6 +147,55 @@ def test_marker_with_symbol_in_legend():
     del app
 
 
+# ---------------------------------------------------------------------------
+# QwtPlotGrid.make
+# ---------------------------------------------------------------------------
+
+
+def _pen_attrs(pen):
+    return pen.color().name(), pen.widthF(), pen.style()
+
+
+@pytest.mark.parametrize(
+    "kwargs, expected",
+    (
+        ({"mincolor": "red"}, ("#ff0000", 1.0, QC.Qt.DotLine)),
+        ({"minwidth": 2}, ("#a0a0a4", 2.0, QC.Qt.DotLine)),
+        ({"minstyle": QC.Qt.DashLine}, ("#a0a0a4", 1.0, QC.Qt.DashLine)),
+        ({"mincolor": "red", "minwidth": 2}, ("#ff0000", 2.0, QC.Qt.DotLine)),
+        (
+            {"mincolor": "red", "minstyle": QC.Qt.DashLine},
+            ("#ff0000", 1.0, QC.Qt.DashLine),
+        ),
+        (
+            {"minwidth": 3.0, "minstyle": QC.Qt.SolidLine},
+            ("#a0a0a4", 3.0, QC.Qt.SolidLine),
+        ),
+        (
+            {"mincolor": "blue", "minwidth": 0, "minstyle": QC.Qt.DashDotLine},
+            ("#0000ff", 0.0, QC.Qt.DashDotLine),
+        ),
+    ),
+)
+def test_grid_make_minor_pen(kwargs, expected):
+    """QwtPlotGrid.make honors each minor pen argument, with documented defaults"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    grid = QwtPlotGrid.make(color="green", width=4, style=QC.Qt.DashLine, **kwargs)
+    assert _pen_attrs(grid.minorPen()) == expected
+    assert _pen_attrs(grid.majorPen()) == ("#00ff00", 4.0, QC.Qt.DashLine)
+    del app
+
+
+def test_grid_make_without_minor_pen():
+    """Without minor pen arguments, both pens are built from the major ones"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    grid = QwtPlotGrid.make(color="green", width=0, style=QC.Qt.SolidLine)
+    expected = ("#00ff00", 0.0, QC.Qt.SolidLine)
+    assert _pen_attrs(grid.majorPen()) == expected
+    assert _pen_attrs(grid.minorPen()) == expected
+    del app
+
+
 if __name__ == "__main__":
     for name in ("toPixmap", "toImage"):
         test_graphic_conversion_default_size(name)
@@ -148,4 +204,5 @@ if __name__ == "__main__":
     for size in (QC.QSize(8, 8), QC.QSizeF(8.0, 8.0)):
         test_marker_legend_icon_with_symbol(size)
     test_marker_with_symbol_in_legend()
+    test_grid_make_without_minor_pen()
     print("OK")
