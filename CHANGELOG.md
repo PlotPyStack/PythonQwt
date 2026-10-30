@@ -16,6 +16,7 @@
 - Fixed `QwtPlotDirectPainter.setAttribute`, which did not set or clear attributes as requested: enabling `AtomicPainter` twice disabled it, and `FullRepaint` or `CopyBackingStore` could not be disabled anymore once enabled ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed painting into a `QwtGraphic` with clipping enabled, which raised a `TypeError` on each paint operation (aborting the process with PyQt's default exception hook): clipped paint operations are now recorded, and the bounding rectangle of the graphic is clipped as in Qwt ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed the `QwtPainterCommand` copy constructor (`QwtPainterCommand(other)`), which raised an `AttributeError` for state commands and a `TypeError` (Qt objects cannot be pickled) for pixmap and image commands: commands of every type can now be copied, the copy being independent of the original ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
+- Fixed `QwtDynGridLayout` (used by `QwtLegend`), whose `numRows()` returned a float (e.g. `2.5` for 3 items on 2 columns) and which raised a `TypeError` when laying out its items with vertical expansion (`setExpandingDirections(Qt.Vertical)`) ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 
 ## Version 0.16.3
 

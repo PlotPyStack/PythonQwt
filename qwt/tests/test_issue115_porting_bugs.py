@@ -34,6 +34,7 @@ from qwt import (
     QwtScaleMap,
     QwtSymbol,
 )
+from qwt.dyngrid_layout import QwtDynGridLayout
 from qwt.graphic import QwtGraphic
 from qwt.painter_command import QwtPainterCommand
 from qwt.plot_curve import series_to_polyline
@@ -521,6 +522,51 @@ def test_painter_command_copy_replay():
     del app
 
 
+# ---------------------------------------------------------------------------
+# QwtDynGridLayout
+# ---------------------------------------------------------------------------
+
+
+def _make_grid_layout(count, max_columns):
+    widget = QW.QWidget()
+    layout = QwtDynGridLayout(widget)
+    layout.setMaxColumns(max_columns)
+    for index in range(count):
+        layout.addWidget(QW.QLabel(f"Item {index}"))
+    return widget, layout
+
+
+@pytest.mark.parametrize(
+    "count, max_columns, rows",
+    ((1, 1, 1), (3, 2, 2), (4, 2, 2), (5, 3, 2), (6, 1, 6), (7, 3, 3)),
+)
+def test_dyngrid_layout_rows(count, max_columns, rows):
+    """The number of rows of the layout is an integer"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    widget, layout = _make_grid_layout(count, max_columns)
+    layout.setGeometry(QC.QRect(0, 0, 2000, 2000))
+    assert layout.numColumns() == max_columns
+    assert layout.numRows() == rows
+    assert isinstance(layout.numRows(), int)
+    widget.close()
+    del app
+
+
+def test_dyngrid_layout_vertical_expanding():
+    """Rows are stretched to fill the layout height with vertical expansion"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    widget, layout = _make_grid_layout(3, 2)
+    layout.setExpandingDirections(QC.Qt.Vertical)
+    layout.setGeometry(QC.QRect(0, 0, 400, 300))
+    geometries = [layout.itemAt(index).geometry() for index in range(3)]
+    assert geometries[0].top() == geometries[1].top()
+    assert geometries[2].top() > geometries[0].bottom()
+    margins = layout.contentsMargins()
+    assert geometries[2].bottom() + 1 + margins.bottom() == 300
+    widget.close()
+    del app
+
+
 if __name__ == "__main__":
     for name in ("toPixmap", "toImage"):
         test_graphic_conversion_default_size(name)
@@ -539,4 +585,5 @@ if __name__ == "__main__":
     test_painter_command_copy()
     test_painter_command_copy_is_independent()
     test_painter_command_copy_replay()
+    test_dyngrid_layout_vertical_expanding()
     print("OK")
