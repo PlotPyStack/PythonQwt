@@ -16,7 +16,17 @@ QwtPlotCanvas
 import weakref
 from collections.abc import Sequence
 
-from qtpy.QtCore import QEvent, QObject, QPoint, QPointF, QRect, QRectF, QSize, Qt
+from qtpy.QtCore import (
+    QEvent,
+    QObject,
+    QPoint,
+    QPointF,
+    QRect,
+    QRectF,
+    QSize,
+    QSizeF,
+    Qt,
+)
 from qtpy.QtGui import (
     QBrush,
     QGradient,
@@ -81,7 +91,7 @@ class QwtStyleSheetRecorder(QwtNullPaintDevice):
             )
 
     def drawPath(self, path):
-        rect = QRectF(QPointF(0.0, 0.0), self.__size)
+        rect = QRectF(QPointF(0.0, 0.0), QSizeF(self.__size))
         if path.controlPointRect().contains(rect.center()):
             self.setCornerRects(path)
             self.alignCornerRects(rect)
@@ -188,9 +198,11 @@ def qwtCombinePathList(rect, pathList):
     if not pathList:
         return QPainterPath()
 
-    ordered = [None] * 8
+    rect = QRectF(rect)
+    ordered = [QPainterPath() for _i in range(8)]
     for subPath in pathList:
         index = -1
+        subPath = QPainterPath(subPath)
         br = subPath.controlPointRect()
         if br.center().x() < rect.center().x():
             if br.center().y() < rect.center().y():
@@ -199,7 +211,7 @@ def qwtCombinePathList(rect, pathList):
                 else:
                     index = 0
             else:
-                if abs(br.bottom() - rect.bottom) < abs(br.left() - rect.left()):
+                if abs(br.bottom() - rect.bottom()) < abs(br.left() - rect.left()):
                     index = 6
                 else:
                     index = 7
@@ -297,7 +309,8 @@ def qwtFillBackground(*args):
         else:
             clipRegion = widget.contentsRect()
         bgWidget = qwtBackgroundWidget(widget.parentWidget())
-        for rect in fillRects:
+        for fillRect in fillRects:
+            rect = QRectF(fillRect).toAlignedRect()
             if clipRegion.intersects(rect):
                 pm = QPixmap(rect.size())
                 QwtPainter.fillPixmap(

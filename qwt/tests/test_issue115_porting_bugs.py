@@ -37,6 +37,7 @@ from qwt import (
 from qwt.dyngrid_layout import QwtDynGridLayout
 from qwt.graphic import QwtGraphic
 from qwt.painter_command import QwtPainterCommand
+from qwt.plot_canvas import QwtPlotCanvas, qwtCombinePathList
 from qwt.plot_curve import series_to_polyline
 from qwt.transform import QwtPowerTransform
 
@@ -567,6 +568,73 @@ def test_dyngrid_layout_vertical_expanding():
     del app
 
 
+# ---------------------------------------------------------------------------
+# Canvas style sheets with rounded borders
+# ---------------------------------------------------------------------------
+
+
+def _curve_path(start, ctrl1, ctrl2, end):
+    path = QG.QPainterPath(QC.QPointF(*start))
+    path.cubicTo(QC.QPointF(*ctrl1), QC.QPointF(*ctrl2), QC.QPointF(*end))
+    return path
+
+
+@pytest.mark.parametrize("rect_type", (QC.QRect, QC.QRectF))
+def test_combine_path_list_incomplete_border(rect_type):
+    """Incomplete rounded borders are not combined (as in Qwt C++)"""
+    rect = rect_type(0, 0, 100, 100)
+    assert qwtCombinePathList(rect, []).isEmpty()
+    corner = _curve_path((0.0, 10.0), (0.0, 7.0), (0.0, 6.0), (0.0, 5.0))
+    assert qwtCombinePathList(rect, [corner]).isEmpty()
+
+
+def test_combine_path_list_rounded_corner():
+    """The sub-paths of a rounded corner are combined with the other corners"""
+    rect = QC.QRectF(0.0, 0.0, 100.0, 100.0)
+    left = _curve_path((0.0, 5.0), (0.0, 6.0), (0.0, 7.0), (0.0, 10.0))
+    top = _curve_path((5.0, 0.0), (6.0, 0.0), (7.0, 0.0), (10.0, 0.0))
+    references = [QG.QPainterPath(left), QG.QPainterPath(top)]
+    path = qwtCombinePathList(rect, [left, top])
+    assert not path.isEmpty()
+    assert path.boundingRect() == rect
+    # The sub-paths are reverted when needed, but the input ones are unchanged
+    assert [left, top] == references
+
+
+ROUNDED_STYLE_SHEETS = (
+    "border-radius: 10px; background-color: white;",
+    "border: 2px solid black; border-radius: 8px;",
+    "border: 1px solid gray; border-top-left-radius: 12px; background-color: white;",
+)
+
+
+@pytest.mark.parametrize("backing_store", (False, True), ids=("direct", "backing"))
+@pytest.mark.parametrize("style_sheet", ROUNDED_STYLE_SHEETS)
+def test_canvas_rounded_style_sheet(style_sheet, backing_store):
+    """A canvas style sheet with rounded borders is supported"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    plot = QwtPlot()
+    canvas = plot.canvas()
+    canvas.setPaintAttribute(QwtPlotCanvas.BackingStore, backing_store)
+    with _qt_exceptions() as errors:
+        canvas.setStyleSheet(style_sheet)
+        plot.resize(400, 300)
+        plot.show()
+        app.processEvents()
+        plot.replot()
+        image = canvas.grab().toImage()
+        border_path = canvas.borderPath(canvas.rect())
+    assert not errors, _format_exceptions(errors)
+    assert not border_path.isEmpty()
+    if "background-color: white" in style_sheet:
+        # Rounded top left corner: filled with the background of the plot
+        white = QG.QColor(QC.Qt.white).rgb()
+        assert image.pixelColor(0, 0).rgb() != white
+        assert image.pixelColor(image.width() // 2, image.height() // 2).rgb() == white
+    plot.close()
+    del app
+
+
 if __name__ == "__main__":
     for name in ("toPixmap", "toImage"):
         test_graphic_conversion_default_size(name)
@@ -586,4 +654,8 @@ if __name__ == "__main__":
     test_painter_command_copy_is_independent()
     test_painter_command_copy_replay()
     test_dyngrid_layout_vertical_expanding()
+    test_combine_path_list_rounded_corner()
+    for sheet in ROUNDED_STYLE_SHEETS:
+        for backing in (False, True):
+            test_canvas_rounded_style_sheet(sheet, backing)
     print("OK")
