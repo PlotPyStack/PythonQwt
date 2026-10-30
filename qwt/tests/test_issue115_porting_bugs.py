@@ -35,6 +35,7 @@ from qwt import (
     QwtSymbol,
 )
 from qwt.graphic import QwtGraphic
+from qwt.painter_command import QwtPainterCommand
 from qwt.plot_curve import series_to_polyline
 from qwt.transform import QwtPowerTransform
 
@@ -420,6 +421,106 @@ def test_direct_painter_atomic_painter_reset():
     del app
 
 
+# ---------------------------------------------------------------------------
+# QwtPainterCommand copy
+# ---------------------------------------------------------------------------
+
+COMMAND_TYPES = {
+    QwtPainterCommand.Path: "path",
+    QwtPainterCommand.Pixmap: "pixmapData",
+    QwtPainterCommand.Image: "imageData",
+    QwtPainterCommand.State: "stateData",
+}
+
+
+def _make_recorded_graphic():
+    """Return a graphic recording path, pixmap, image and state commands"""
+    pixmap = QG.QPixmap(4, 4)
+    pixmap.fill(QC.Qt.blue)
+    image = QG.QImage(4, 4, QG.QImage.Format_ARGB32)
+    image.fill(QC.Qt.green)
+    path = QG.QPainterPath()
+    path.addEllipse(QC.QRectF(0.0, 0.0, 20.0, 10.0))
+    graphic = QwtGraphic()
+    with _qt_exceptions() as errors:
+        painter = QG.QPainter(graphic)
+        painter.setRenderHint(QG.QPainter.Antialiasing)
+        painter.setPen(QG.QPen(RED, 2.0))
+        painter.setBrush(QG.QBrush(QC.Qt.yellow))
+        painter.setFont(QG.QFont("Arial", 12))
+        painter.setOpacity(0.8)
+        painter.setClipRect(QC.QRectF(0.0, 0.0, 30.0, 30.0))
+        painter.translate(1.0, 2.0)
+        painter.drawPath(path)
+        rect, subrect = QC.QRectF(5.0, 5.0, 4.0, 4.0), QC.QRectF(0.0, 0.0, 4.0, 4.0)
+        painter.drawPixmap(rect, pixmap, subrect)
+        painter.drawImage(rect.translated(7.0, 0.0), image, subrect)
+        painter.end()
+    assert not errors, _format_exceptions(errors)
+    return graphic
+
+
+def _comparable(value):
+    """Return a value which can be compared with `==`"""
+    if isinstance(value, QG.QPixmap):
+        return value.toImage()
+    return value
+
+
+def _command_data(command):
+    return getattr(command, COMMAND_TYPES[command.type()])()
+
+
+def test_painter_command_copy():
+    """Copying a painter command gives an equal command, for every type"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    commands = _make_recorded_graphic().commands()
+    assert {command.type() for command in commands} == set(COMMAND_TYPES)
+    for command in commands:
+        copied = QwtPainterCommand(command)
+        assert copied.type() == command.type()
+        data, copied_data = _command_data(command), _command_data(copied)
+        assert copied_data is not data
+        if command.type() == QwtPainterCommand.Path:
+            assert copied_data == data
+            continue
+        for name, value in vars(data).items():
+            copied_value = getattr(copied_data, name)
+            assert _comparable(copied_value) == _comparable(value), name
+    del app
+
+
+def test_painter_command_copy_is_independent():
+    """Modifying a copied painter command leaves the original unchanged"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    for command in _make_recorded_graphic().commands():
+        copied = QwtPainterCommand(command)
+        data, copied_data = _command_data(command), _command_data(copied)
+        if command.type() == QwtPainterCommand.Path:
+            reference = QG.QPainterPath(data)
+            copied_data.lineTo(100.0, 100.0)
+            assert data == reference
+        elif command.type() in (QwtPainterCommand.Pixmap, QwtPainterCommand.Image):
+            reference = QC.QRectF(data.rect)
+            copied_data.rect.setWidth(99.0)
+            assert data.rect == reference
+        elif copied_data.pen is not None:
+            reference = QG.QPen(data.pen)
+            copied_data.pen.setWidthF(9.0)
+            assert data.pen == reference
+    del app
+
+
+def test_painter_command_copy_replay():
+    """A graphic replaying copied commands renders like the original one"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    graphic = _make_recorded_graphic()
+    replayed = QwtGraphic()
+    replayed.setCommands([QwtPainterCommand(cmd) for cmd in graphic.commands()])
+    assert replayed.toImage() == graphic.toImage()
+    del app
+
+
 if __name__ == "__main__":
     for name in ("toPixmap", "toImage"):
         test_graphic_conversion_default_size(name)
@@ -435,4 +536,7 @@ if __name__ == "__main__":
     for attr in DIRECT_PAINTER_ATTRIBUTES:
         test_direct_painter_set_attribute(attr)
     test_direct_painter_atomic_painter_reset()
+    test_painter_command_copy()
+    test_painter_command_copy_is_independent()
+    test_painter_command_copy_replay()
     print("OK")

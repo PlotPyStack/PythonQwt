@@ -13,9 +13,44 @@ QwtPainterCommand
    :members:
 """
 
-import copy
+from qtpy.QtCore import QPointF, QRectF
+from qtpy.QtGui import (
+    QBrush,
+    QFont,
+    QImage,
+    QPaintEngine,
+    QPainterPath,
+    QPen,
+    QPixmap,
+    QRegion,
+    QTransform,
+)
 
-from qtpy.QtGui import QPaintEngine, QPainterPath
+# Qt value types stored in painter command data, copied with their copy
+# constructor (other stored values are immutable: enums, flags, numbers...)
+_QT_VALUE_TYPES = (
+    QBrush,
+    QFont,
+    QImage,
+    QPainterPath,
+    QPen,
+    QPixmap,
+    QPointF,
+    QRectF,
+    QRegion,
+    QTransform,
+)
+
+
+def _copy_data(data):
+    """Return a copy of painter command data, like the Qwt C++ copy
+    constructors of `PixmapData`, `ImageData` and `StateData`"""
+    result = data.__class__()
+    for name, value in vars(data).items():
+        if isinstance(value, _QT_VALUE_TYPES):
+            value = type(value)(value)
+        setattr(result, name, value)
+    return result
 
 
 def _flag_int(flag):
@@ -215,11 +250,11 @@ class QwtPainterCommand(object):
         if other.__type == self.Path:
             self.__path = QPainterPath(other.__path)
         elif other.__type == self.Pixmap:
-            self.__pixmapData = copy.deepcopy(other.__pixmapData)
+            self.__pixmapData = _copy_data(other.__pixmapData)
         elif other.__type == self.Image:
-            self.__imageData = copy.deepcopy(other.__imageData)
+            self.__imageData = _copy_data(other.__imageData)
         elif other.__type == self.State:
-            self.__stateData == copy.deepcopy(other.__stateData)
+            self.__stateData = _copy_data(other.__stateData)
 
     def reset(self):
         self.__type = self.Invalid
