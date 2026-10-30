@@ -21,6 +21,10 @@
 - Fixed the image formats listed by the file dialog of `QwtPlotRenderer.exportTo`, which read `*.b'bmp' *.b'png' ...` instead of `*.bmp *.png ...` ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed `QwtInterval.intersect` (and the `&` operator), which returned an invalid interval for partially overlapping intervals (e.g. `QwtInterval(0, 2) & QwtInterval(1, 3)` instead of `[1, 2]`), and `QwtInterval.intersects`, which gave the opposite result for intervals sharing a bound (e.g. `False` for `[0, 1]` and `[1, 2]`) ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 
+### Other changes
+
+- The source distribution now includes the Qt Designer plugin (`qtdesigner/qwtplugin.py`, see the "Qt Designer" section of the documentation) and this changelog ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
+
 ## Version 0.16.3
 
 ### New features
