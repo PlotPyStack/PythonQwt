@@ -12,6 +12,7 @@
 - Fixed `QwtGraphic.toPixmap(size)`, `QwtGraphic.toImage()` and `QwtGraphic.toImage(size)`, which raised a `TypeError` (possibly aborting the process, as the painter was still active on the destroyed pixmap or image) instead of rendering the graphic: they now render it like `QwtGraphic.toPixmap()` ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed `QwtPlotMarker.legendIcon` for markers with a symbol, which raised an `AssertionError` or a `TypeError`: such markers can now be shown in a legend ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed `QwtPlotGrid.make`, which raised a `TypeError` when only some of the minor pen arguments (`mincolor`, `minwidth`, `minstyle`) were given: each of them is now honored, the missing ones taking their documented default value ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
+- Fixed `QwtPowerTransform`, which raised a `ValueError` when drawing a curve on an axis with a power scale (curve data are mapped as NumPy arrays), and an `AttributeError` with NumPy < 2.0 (`numpy.pow` does not exist there): it now transforms scalars (with unchanged results) as well as NumPy arrays, with any supported NumPy version ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 
 ## Version 0.16.3
 

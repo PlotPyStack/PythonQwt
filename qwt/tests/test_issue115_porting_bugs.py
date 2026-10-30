@@ -10,6 +10,9 @@ Each test covers a difference between the Python port and the Qwt C++ code,
 which made the API raise an exception or ignore some of its arguments.
 """
 
+import math
+
+import numpy as np
 import pytest
 from qtpy import QtCore as QC
 from qtpy import QtGui as QG
@@ -17,13 +20,19 @@ from qtpy import QtWidgets as QW
 
 from qwt import (
     QwtLegend,
+    QwtLinearScaleEngine,
     QwtPlot,
+    QwtPlotCurve,
     QwtPlotGrid,
     QwtPlotItem,
     QwtPlotMarker,
+    QwtPlotRenderer,
+    QwtScaleMap,
     QwtSymbol,
 )
 from qwt.graphic import QwtGraphic
+from qwt.plot_curve import series_to_polyline
+from qwt.transform import QwtPowerTransform
 
 RED = QG.QColor(QC.Qt.red)
 
@@ -196,6 +205,105 @@ def test_grid_make_without_minor_pen():
     del app
 
 
+# ---------------------------------------------------------------------------
+# QwtPowerTransform
+# ---------------------------------------------------------------------------
+
+POWER_VALUES = (-9.0, -2.5, -1.0, 0.0, 0.25, 1.0, 4.0, 100.0)
+
+
+def _cpp_transform(value, exponent):
+    """Reference: QwtPowerTransform::transform of Qwt C++"""
+    if value < 0.0:
+        return -math.pow(-value, 1.0 / exponent)
+    return math.pow(value, 1.0 / exponent)
+
+
+def _cpp_inv_transform(value, exponent):
+    """Reference: QwtPowerTransform::invTransform of Qwt C++"""
+    if value < 0.0:
+        return -math.pow(-value, exponent)
+    return math.pow(value, exponent)
+
+
+@pytest.mark.parametrize("exponent", (2, 3.0, 0.5))
+def test_power_transform_scalars(exponent):
+    """Scalars are transformed as in Qwt C++, keeping their sign"""
+    transform = QwtPowerTransform(exponent)
+    for value in POWER_VALUES:
+        result = transform.transform(value)
+        assert np.ndim(result) == 0
+        assert result == pytest.approx(_cpp_transform(value, exponent))
+        result = transform.invTransform(value)
+        assert np.ndim(result) == 0
+        assert result == pytest.approx(_cpp_inv_transform(value, exponent))
+
+
+@pytest.mark.parametrize("exponent", (2, 3.0, 0.5))
+def test_power_transform_arrays(exponent):
+    """Arrays are transformed element-wise, and back"""
+    transform = QwtPowerTransform(exponent)
+    values = np.array(POWER_VALUES)
+    expected = [_cpp_transform(value, exponent) for value in POWER_VALUES]
+    np.testing.assert_allclose(transform.transform(values), expected)
+    expected = [_cpp_inv_transform(value, exponent) for value in POWER_VALUES]
+    np.testing.assert_allclose(transform.invTransform(values), expected)
+    roundtrip = transform.invTransform(transform.transform(values))
+    np.testing.assert_allclose(roundtrip, values, atol=1e-12)
+
+
+def test_power_transform_without_numpy_pow(monkeypatch):
+    """QwtPowerTransform does not need `numpy.pow` (added in NumPy 2.0)"""
+    monkeypatch.delattr(np, "pow", raising=False)
+    transform = QwtPowerTransform(2)
+    assert transform.transform(-9.0) == pytest.approx(-3.0)
+    assert transform.invTransform(-3.0) == pytest.approx(-9.0)
+
+
+def test_power_transform_scale_map():
+    """A scale map with a power transformation maps arrays like scalars"""
+    smap = QwtScaleMap()
+    smap.setTransformation(QwtPowerTransform(2))
+    smap.setScaleInterval(-100.0, 100.0)
+    smap.setPaintInterval(0.0, 400.0)
+    values = np.array(POWER_VALUES)
+    expected = [smap.transform(value) for value in POWER_VALUES]
+    np.testing.assert_allclose(smap.transform(values), expected)
+
+
+def test_power_transform_curve_rendering():
+    """A curve can be drawn on an axis with a power transformation"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    plot = QwtPlot()
+    plot.resize(400, 300)
+    engine = QwtLinearScaleEngine()
+    engine.setTransformation(QwtPowerTransform(2))
+    plot.setAxisScaleEngine(QwtPlot.yLeft, engine)
+    plot.setAxisScale(QwtPlot.yLeft, -100.0, 100.0)
+    x = np.linspace(-10.0, 10.0, 21)
+    curve = QwtPlotCurve.make(x, x * np.abs(x), plot=plot)
+    plot.replot()
+
+    xmap = plot.canvasMap(QwtPlot.xBottom)
+    ymap = plot.canvasMap(QwtPlot.yLeft)
+    polyline = series_to_polyline(xmap, ymap, curve.data(), 0, x.size - 1)
+    for index in range(x.size):
+        point = polyline[index]
+        sample = curve.data().sample(index)
+        assert point.x() == pytest.approx(xmap.transform(sample.x()))
+        assert point.y() == pytest.approx(ymap.transform(sample.y()))
+
+    image = QG.QImage(400, 300, QG.QImage.Format_ARGB32)
+    image.fill(QC.Qt.white)
+    painter = QG.QPainter(image)
+    try:
+        QwtPlotRenderer().render(plot, painter, QC.QRectF(0.0, 0.0, 400.0, 300.0))
+    finally:
+        painter.end()
+    plot.close()
+    del app
+
+
 if __name__ == "__main__":
     for name in ("toPixmap", "toImage"):
         test_graphic_conversion_default_size(name)
@@ -205,4 +313,6 @@ if __name__ == "__main__":
         test_marker_legend_icon_with_symbol(size)
     test_marker_with_symbol_in_legend()
     test_grid_make_without_minor_pen()
+    test_power_transform_scale_map()
+    test_power_transform_curve_rendering()
     print("OK")
