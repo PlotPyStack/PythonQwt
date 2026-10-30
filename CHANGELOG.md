@@ -24,6 +24,7 @@
 ### Other changes
 
 - The source distribution now includes the Qt Designer plugin (`qtdesigner/qwtplugin.py`, see the "Qt Designer" section of the documentation) and this changelog ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
+- Documentation: the reference of the `qwt.qtdesigner` module, whose docstrings follow the Google style, is now rendered properly (it produced formatting errors), and `QwtDateTimeScaleDraw` and `QwtDateTimeScaleEngine` are now documented ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 
 ## Version 0.16.3
 

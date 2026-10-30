@@ -17,6 +17,12 @@ QwtScaleDraw
 
 .. autoclass:: QwtScaleDraw
    :members:
+
+QwtDateTimeScaleDraw
+--------------------
+
+.. autoclass:: QwtDateTimeScaleDraw
+   :members:
 """
 
 import math
@@ -1294,7 +1300,7 @@ class QwtDateTimeScaleDraw(QwtScaleDraw):
         """Get the current datetime format string
 
         Returns:
-            str: Format string
+            Format string
         """
         return self._format
 
@@ -1313,7 +1319,7 @@ class QwtDateTimeScaleDraw(QwtScaleDraw):
             value: Unix timestamp (seconds since epoch)
 
         Returns:
-            QwtText: Formatted label
+            Formatted label
         """
         try:
             dt = datetime.fromtimestamp(value)
