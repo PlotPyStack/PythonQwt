@@ -18,6 +18,7 @@
 - Fixed the `QwtPainterCommand` copy constructor (`QwtPainterCommand(other)`), which raised an `AttributeError` for state commands and a `TypeError` (Qt objects cannot be pickled) for pixmap and image commands: commands of every type can now be copied, the copy being independent of the original ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed `QwtDynGridLayout` (used by `QwtLegend`), whose `numRows()` returned a float (e.g. `2.5` for 3 items on 2 columns) and which raised a `TypeError` when laying out its items with vertical expansion (`setExpandingDirections(Qt.Vertical)`) ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed canvas style sheets with rounded borders (e.g. `plot.canvas().setStyleSheet("border: 2px solid black; border-radius: 8px;")`), which raised a `TypeError` on each style change, resize and paint event (aborting the process with PyQt's default exception hook): the rounded border of the style sheet is now taken into account to clip the plot items and to fill the corners with the background of the parent widget, as in Qwt ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
+- Fixed the image formats listed by the file dialog of `QwtPlotRenderer.exportTo`, which read `*.b'bmp' *.b'png' ...` instead of `*.bmp *.png ...` ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 
 ## Version 0.16.3
 

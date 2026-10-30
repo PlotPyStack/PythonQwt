@@ -21,6 +21,7 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
+import qwt.plot_renderer
 from qwt import (
     QwtLegend,
     QwtLinearScaleEngine,
@@ -631,6 +632,33 @@ def test_canvas_rounded_style_sheet(style_sheet, backing_store):
         white = QG.QColor(QC.Qt.white).rgb()
         assert image.pixelColor(0, 0).rgb() != white
         assert image.pixelColor(image.width() // 2, image.height() // 2).rgb() == white
+    plot.close()
+    del app
+
+
+# ---------------------------------------------------------------------------
+# QwtPlotRenderer.exportTo
+# ---------------------------------------------------------------------------
+
+
+def test_renderer_export_to_image_filter(monkeypatch):
+    """The file dialog of exportTo lists the image formats properly"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    captured = []
+
+    def fake_getsavefilename(*args, **kwargs):
+        captured.append(args[3])  # filters
+        return "", ""  # dialog canceled
+
+    monkeypatch.setattr(qwt.plot_renderer, "getsavefilename", fake_getsavefilename)
+    plot = QwtPlot()
+    assert QwtPlotRenderer().exportTo(plot, "plot") is False
+    filters = captured[0].split(";;")
+    formats = QG.QImageWriter.supportedImageFormats()
+    expected = " ".join("*." + bytes(fmt).decode() for fmt in formats)
+    assert filters[-1] == f"Images ({expected})"
+    assert "*.png" in filters[-1].split()
+    assert "b'" not in captured[0]
     plot.close()
     del app
 
