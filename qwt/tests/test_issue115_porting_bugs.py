@@ -23,6 +23,7 @@ from qwt import (
     QwtLinearScaleEngine,
     QwtPlot,
     QwtPlotCurve,
+    QwtPlotDirectPainter,
     QwtPlotGrid,
     QwtPlotItem,
     QwtPlotMarker,
@@ -304,6 +305,69 @@ def test_power_transform_curve_rendering():
     del app
 
 
+# ---------------------------------------------------------------------------
+# QwtPlotDirectPainter.setAttribute
+# ---------------------------------------------------------------------------
+
+DIRECT_PAINTER_ATTRIBUTES = (
+    QwtPlotDirectPainter.AtomicPainter,
+    QwtPlotDirectPainter.FullRepaint,
+    QwtPlotDirectPainter.CopyBackingStore,
+)
+
+
+class _CountingDirectPainter(QwtPlotDirectPainter):
+    """Direct painter counting the calls to `reset`"""
+
+    def __init__(self):
+        super().__init__()
+        self.reset_count = 0
+
+    def reset(self):
+        self.reset_count += 1
+        super().reset()
+
+
+@pytest.mark.parametrize(
+    "attribute",
+    DIRECT_PAINTER_ATTRIBUTES,
+    ids=("AtomicPainter", "FullRepaint", "CopyBackingStore"),
+)
+def test_direct_painter_set_attribute(attribute):
+    """setAttribute sets or clears an attribute, as requested"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    painter = QwtPlotDirectPainter()
+    others = [attr for attr in DIRECT_PAINTER_ATTRIBUTES if attr != attribute]
+    for other in others:
+        painter.setAttribute(other, True)
+    assert not painter.testAttribute(attribute)
+    for on in (True, True, False, False, True):
+        painter.setAttribute(attribute, on)
+        assert bool(painter.testAttribute(attribute)) is on
+        assert all(painter.testAttribute(other) for other in others)
+    painter.setAttribute(attribute, False)
+    painter.setAttribute(attribute)  # `on` defaults to True
+    assert painter.testAttribute(attribute)
+    del app
+
+
+def test_direct_painter_atomic_painter_reset():
+    """Enabling AtomicPainter resets the painter, as in Qwt C++"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    painter = _CountingDirectPainter()
+    painter.setAttribute(QwtPlotDirectPainter.AtomicPainter, True)
+    assert painter.reset_count == 1
+    painter.setAttribute(QwtPlotDirectPainter.AtomicPainter, True)  # unchanged
+    assert painter.reset_count == 1
+    painter.setAttribute(QwtPlotDirectPainter.AtomicPainter, False)
+    assert painter.reset_count == 1
+    painter.setAttribute(QwtPlotDirectPainter.AtomicPainter, True)
+    assert painter.reset_count == 2
+    painter.setAttribute(QwtPlotDirectPainter.FullRepaint, True)
+    assert painter.reset_count == 2
+    del app
+
+
 if __name__ == "__main__":
     for name in ("toPixmap", "toImage"):
         test_graphic_conversion_default_size(name)
@@ -315,4 +379,7 @@ if __name__ == "__main__":
     test_grid_make_without_minor_pen()
     test_power_transform_scale_map()
     test_power_transform_curve_rendering()
+    for attr in DIRECT_PAINTER_ATTRIBUTES:
+        test_direct_painter_set_attribute(attr)
+    test_direct_painter_atomic_painter_reset()
     print("OK")

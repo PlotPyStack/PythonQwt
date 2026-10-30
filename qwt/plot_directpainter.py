@@ -119,12 +119,13 @@ class QwtPlotDirectPainter(QObject):
 
             :py:meth:`testAttribute()`
         """
-        if self.testAttribute(attribute) != on:
-            self.__data.attributes |= attribute
-        else:
-            self.__data.attributes &= ~attribute
-        if attribute == self.AtomicPainter and on:
-            self.reset()
+        if bool(self.testAttribute(attribute)) != on:
+            if on:
+                self.__data.attributes |= attribute
+            else:
+                self.__data.attributes &= ~attribute
+            if attribute == self.AtomicPainter and on:
+                self.reset()
 
     def testAttribute(self, attribute):
         """
