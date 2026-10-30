@@ -15,7 +15,7 @@ QwtGraphic
 
 import math
 
-from qtpy.QtCore import QObject, QPointF, QRect, QRectF, QSize, QSizeF, Qt
+from qtpy.QtCore import QObject, QPointF, QRectF, QSize, QSizeF, Qt
 from qtpy.QtGui import (
     QImage,
     QPaintEngine,
@@ -603,7 +603,7 @@ class QwtGraphic(QwtNullPaintDevice):
                 aspectRatioMode = args[-1]
             pixmap = QPixmap(size)
             pixmap.fill(Qt.transparent)
-            r = QRect(0, 0, size.width(), size.height())
+            r = QRectF(0.0, 0.0, size.width(), size.height())
             painter = QPainter(pixmap)
             self.render(painter, r, aspectRatioMode)
             painter.end()
@@ -652,7 +652,7 @@ class QwtGraphic(QwtNullPaintDevice):
             h = math.ceil(sz.height())
             image = QImage(w, h, QImage.Format_ARGB32)
             image.fill(0)
-            r = QRect(0, 0, sz.width(), sz.height())
+            r = QRectF(0.0, 0.0, sz.width(), sz.height())
             painter = QPainter(image)
             self.render(painter, r, Qt.KeepAspectRatio)
             painter.end()
@@ -664,9 +664,10 @@ class QwtGraphic(QwtNullPaintDevice):
                 aspectRatioMode = args[-1]
             image = QImage(size, QImage.Format_ARGB32_Premultiplied)
             image.fill(0)
-            r = QRect(0, 0, size.width(), size.height())
+            r = QRectF(0.0, 0.0, size.width(), size.height())
             painter = QPainter(image)
             self.render(painter, r, aspectRatioMode)
+            painter.end()
             return image
 
     def drawPath(self, path):
