@@ -757,7 +757,7 @@ class QwtGraphic(QwtNullPaintDevice):
         br = QRectF(rect)
         painter = self.paintEngine().painter()
         if painter and painter.hasClipping():
-            cr = painter.clipRegion().boundingRect()
+            cr = QRectF(painter.clipRegion().boundingRect())
             cr = painter.transform().mapRect(cr)
             br &= cr
         if self.__data.boundingRect.width() < 0:

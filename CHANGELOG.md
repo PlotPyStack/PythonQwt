@@ -14,6 +14,7 @@
 - Fixed `QwtPlotGrid.make`, which raised a `TypeError` when only some of the minor pen arguments (`mincolor`, `minwidth`, `minstyle`) were given: each of them is now honored, the missing ones taking their documented default value ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed `QwtPowerTransform`, which raised a `ValueError` when drawing a curve on an axis with a power scale (curve data are mapped as NumPy arrays), and an `AttributeError` with NumPy < 2.0 (`numpy.pow` does not exist there): it now transforms scalars (with unchanged results) as well as NumPy arrays, with any supported NumPy version ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 - Fixed `QwtPlotDirectPainter.setAttribute`, which did not set or clear attributes as requested: enabling `AtomicPainter` twice disabled it, and `FullRepaint` or `CopyBackingStore` could not be disabled anymore once enabled ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
+- Fixed painting into a `QwtGraphic` with clipping enabled, which raised a `TypeError` on each paint operation (aborting the process with PyQt's default exception hook): clipped paint operations are now recorded, and the bounding rectangle of the graphic is clipped as in Qwt ([Issue #115](https://github.com/PlotPyStack/PythonQwt/issues/115))
 
 ## Version 0.16.3
 

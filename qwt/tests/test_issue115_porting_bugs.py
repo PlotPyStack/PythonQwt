@@ -10,7 +10,10 @@ Each test covers a difference between the Python port and the Qwt C++ code,
 which made the API raise an exception or ignore some of its arguments.
 """
 
+import contextlib
 import math
+import sys
+import traceback
 
 import numpy as np
 import pytest
@@ -44,6 +47,26 @@ def _ensure_app():
     # interpreter, but no test keeps a persistent Python reference to the
     # application, so the singleton may be garbage-collected between tests.
     return QW.QApplication.instance() or QW.QApplication([])
+
+
+@contextlib.contextmanager
+def _qt_exceptions():
+    """Collect the exceptions raised in Qt virtual method overrides.
+
+    PyQt aborts the process on such exceptions when the default exception
+    hook is installed: collecting them makes the test fail instead.
+    """
+    errors = []
+    old_hook = sys.excepthook
+    sys.excepthook = lambda *exc_info: errors.append(exc_info)
+    try:
+        yield errors
+    finally:
+        sys.excepthook = old_hook
+
+
+def _format_exceptions(errors):
+    return "".join("".join(traceback.format_exception(*exc)) for exc in errors)
 
 
 # ---------------------------------------------------------------------------
@@ -112,6 +135,35 @@ def test_graphic_conversion_keep_aspect_ratio(method):
     assert _is_red(image, 20, 20)
     assert image.pixelColor(20, 2).alpha() == 0
     assert image.pixelColor(20, 37).alpha() == 0
+    del app
+
+
+def test_graphic_clipped_recording():
+    """Clipped paint operations are recorded, with a clipped bounding rect"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    pixmap = QG.QPixmap(4, 4)
+    pixmap.fill(QC.Qt.blue)
+    image = QG.QImage(4, 4, QG.QImage.Format_ARGB32)
+    image.fill(QC.Qt.green)
+    path = QG.QPainterPath()
+    path.addRect(QC.QRectF(0.0, 0.0, 20.0, 20.0))
+    subrect = QC.QRectF(0.0, 0.0, 4.0, 4.0)
+    graphic = QwtGraphic()
+    with _qt_exceptions() as errors:
+        painter = QG.QPainter(graphic)
+        painter.translate(5.0, 5.0)
+        painter.setClipRect(QC.QRectF(0.0, 0.0, 10.0, 10.0))
+        painter.setPen(QC.Qt.NoPen)
+        painter.setBrush(RED)
+        painter.drawPath(path)
+        painter.drawPixmap(QC.QRectF(0.0, 0.0, 4.0, 4.0), pixmap, subrect)
+        painter.drawImage(QC.QRectF(8.0, 8.0, 4.0, 4.0), image, subrect)
+        painter.end()
+    assert not errors, _format_exceptions(errors)
+    assert len(graphic.commands()) > 3
+    # Control points are not clipped, the bounding rectangle is
+    assert graphic.controlPointRect() == QC.QRectF(5.0, 5.0, 20.0, 20.0)
+    assert graphic.boundingRect() == QC.QRectF(5.0, 5.0, 10.0, 10.0)
     del app
 
 
@@ -373,6 +425,7 @@ if __name__ == "__main__":
         test_graphic_conversion_default_size(name)
         test_graphic_conversion_given_size(name)
         test_graphic_conversion_keep_aspect_ratio(name)
+    test_graphic_clipped_recording()
     for size in (QC.QSize(8, 8), QC.QSizeF(8.0, 8.0)):
         test_marker_legend_icon_with_symbol(size)
     test_marker_with_symbol_in_legend()
