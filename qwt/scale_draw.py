@@ -854,17 +854,29 @@ class QwtScaleDraw(QwtAbstractScaleDraw):
         """
         pos = self.__data.pos
         len_ = self.__data.len
-        off = 0.5 * self.penWidth()
-        if self.alignment() == self.LeftScale:
-            x = pos.x() - off
-            painter.drawLine(QLineF(x, pos.y(), x, pos.y() + len_))
-        elif self.alignment() == self.RightScale:
+        alignment = self.alignment()
+        vertical = alignment in (self.LeftScale, self.RightScale)
+        pw = self.penWidth()
+        if pw == 0:
+            # Hairline pen: `pos` is the edge of the backbone's device pixels,
+            # but at fractional device pixel ratios (e.g. 125% scaling) it may
+            # fall inside a device pixel, in which the line would be drawn:
+            # for bottom and right scales, this pixel is outside the widget,
+            # so the backbone was clipped. Draw it at the center of the first
+            # device pixel after `pos` instead (same result at integer ratios).
+            tr = painter.deviceTransform()
+            scale = 1.0
+            if not tr.isRotating():
+                scale = abs(tr.m11() if vertical else tr.m22()) or 1.0
+            off = 0.5 / scale
+        elif alignment in (self.LeftScale, self.TopScale):
+            off = -0.5 * pw
+        else:
+            off = 0.5 * pw
+        if vertical:
             x = pos.x() + off
             painter.drawLine(QLineF(x, pos.y(), x, pos.y() + len_))
-        elif self.alignment() == self.TopScale:
-            y = pos.y() - off
-            painter.drawLine(QLineF(pos.x(), y, pos.x() + len_, y))
-        elif self.alignment() == self.BottomScale:
+        else:
             y = pos.y() + off
             painter.drawLine(QLineF(pos.x(), y, pos.x() + len_, y))
 

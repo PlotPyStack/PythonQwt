@@ -1,5 +1,11 @@
 # PythonQwt Releases
 
+## Version 0.17.1
+
+### Bug fixes
+
+- Fixed the axis line (backbone) of bottom and right axes, which could be missing with a fractional screen scaling (e.g. 125% or 150%), depending on the position of the plot in the window: with the default hairline pen, this line was drawn on the edge of the axis widget, so that it could be rendered in the device pixel row (or column) just outside of the widget, where it was clipped. It is now drawn at the center of the first device pixel row (or column) of the axis, the rendering being unchanged with integer scale factors (e.g. 100% or 200%)
+
 ## Version 0.17.0
 
 ### Requirements
