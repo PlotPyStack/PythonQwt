@@ -23,6 +23,7 @@ from qtpy import QtWidgets as QW
 
 import qwt.plot_renderer
 from qwt import (
+    QwtInterval,
     QwtLegend,
     QwtLinearScaleEngine,
     QwtPlot,
@@ -663,6 +664,78 @@ def test_renderer_export_to_image_filter(monkeypatch):
     del app
 
 
+# ---------------------------------------------------------------------------
+# QwtInterval.intersect / QwtInterval.intersects
+# ---------------------------------------------------------------------------
+
+INC = QwtInterval.IncludeBorders
+EXC_MIN = QwtInterval.ExcludeMinimum
+EXC_MAX = QwtInterval.ExcludeMaximum
+
+# (interval 1, interval 2, expected intersection or None if invalid),
+# intervals being (min, max, border flags); expected values follow Qwt C++
+INTERSECT_CASES = (
+    ((0, 2, INC), (1, 3, INC), (1, 2, INC)),
+    ((1, 3, INC), (0, 2, INC), (1, 2, INC)),
+    ((0, 3, INC), (1, 2, INC), (1, 2, INC)),
+    ((0, 2, INC), (0, 2, INC), (0, 2, INC)),
+    ((0, 1, INC), (2, 3, INC), None),
+    ((0, 1, INC), (1, 2, INC), (1, 1, INC)),
+    ((0, 1, EXC_MAX), (1, 2, INC), None),
+    ((0, 1, INC), (1, 2, EXC_MIN), None),
+    ((0, 2, EXC_MIN), (1, 3, EXC_MAX), (1, 2, INC)),
+    ((0, 2, EXC_MAX), (1, 3, INC), (1, 2, EXC_MAX)),
+    ((0, 2, INC), (0, 1, EXC_MIN), (0, 1, EXC_MIN)),
+)
+
+
+def _interval(values):
+    return QwtInterval(*values)
+
+
+@pytest.mark.parametrize("values1, values2, expected", INTERSECT_CASES)
+def test_interval_intersect(values1, values2, expected):
+    """QwtInterval.intersect and `&` return the intersection of two intervals"""
+    interval1, interval2 = _interval(values1), _interval(values2)
+    for result in (interval1.intersect(interval2), interval1 & interval2):
+        if expected is None:
+            assert not result.isValid()
+        else:
+            assert result == _interval(expected)
+
+
+def test_interval_intersect_invalid():
+    """The intersection with an invalid interval is invalid"""
+    assert not QwtInterval().intersect(QwtInterval(0, 1)).isValid()
+    assert not QwtInterval(0, 1).intersect(QwtInterval()).isValid()
+
+
+@pytest.mark.parametrize(
+    "values1, values2, expected",
+    (
+        ((0, 2, INC), (1, 3, INC), True),
+        ((1, 3, INC), (0, 2, INC), True),
+        ((0, 3, INC), (1, 2, INC), True),
+        ((0, 1, INC), (2, 3, INC), False),
+        ((0, 1, INC), (1, 2, INC), True),
+        ((1, 2, INC), (0, 1, INC), True),
+        ((0, 1, EXC_MAX), (1, 2, INC), False),
+        ((0, 1, INC), (1, 2, EXC_MIN), False),
+        ((0, 1, EXC_MAX), (1, 2, EXC_MIN), False),
+    ),
+)
+def test_interval_intersects(values1, values2, expected):
+    """QwtInterval.intersects tells whether two intervals overlap"""
+    result = _interval(values1).intersects(_interval(values2))
+    assert result is expected
+
+
+def test_interval_intersects_invalid():
+    """An invalid interval does not intersect any interval"""
+    assert QwtInterval().intersects(QwtInterval(0, 1)) is False
+    assert QwtInterval(0, 1).intersects(QwtInterval()) is False
+
+
 if __name__ == "__main__":
     for name in ("toPixmap", "toImage"):
         test_graphic_conversion_default_size(name)
@@ -686,4 +759,8 @@ if __name__ == "__main__":
     for sheet in ROUNDED_STYLE_SHEETS:
         for backing in (False, True):
             test_canvas_rounded_style_sheet(sheet, backing)
+    for values1, values2, expected in INTERSECT_CASES:
+        test_interval_intersect(values1, values2, expected)
+    test_interval_intersect_invalid()
+    test_interval_intersects_invalid()
     print("OK")
