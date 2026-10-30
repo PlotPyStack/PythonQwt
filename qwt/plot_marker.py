@@ -13,7 +13,7 @@ QwtPlotMarker
    :members:
 """
 
-from qtpy.QtCore import QLineF, QObject, QPointF, QRect, QRectF, QSizeF, Qt
+from qtpy.QtCore import QLineF, QObject, QPointF, QRectF, QSizeF, Qt
 from qtpy.QtGui import QPainter, QPen
 
 from qwt.graphic import QwtGraphic
@@ -628,6 +628,6 @@ class QwtPlotMarker(QwtPlotItem):
                 x = 0.5 * size.width()
                 painter.drawLine(QLineF(x, 0.0, x, size.height()))
         if self.__data.symbol:
-            r = QRect(0, 0, size.width(), size.height())
+            r = QRectF(0.0, 0.0, size.width(), size.height())
             self.__data.symbol.drawSymbol(painter, r)
         return icon

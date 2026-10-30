@@ -15,6 +15,7 @@ from qtpy import QtCore as QC
 from qtpy import QtGui as QG
 from qtpy import QtWidgets as QW
 
+from qwt import QwtLegend, QwtPlot, QwtPlotItem, QwtPlotMarker, QwtSymbol
 from qwt.graphic import QwtGraphic
 
 RED = QG.QColor(QC.Qt.red)
@@ -97,9 +98,54 @@ def test_graphic_conversion_keep_aspect_ratio(method):
     del app
 
 
+# ---------------------------------------------------------------------------
+# QwtPlotMarker.legendIcon
+# ---------------------------------------------------------------------------
+
+
+def _make_symbol():
+    return QwtSymbol(
+        QwtSymbol.Rect, QG.QBrush(RED), QG.QPen(QC.Qt.NoPen), QC.QSize(8, 8)
+    )
+
+
+@pytest.mark.parametrize(
+    "size", (QC.QSize(8, 8), QC.QSizeF(8.0, 8.0)), ids=("QSize", "QSizeF")
+)
+def test_marker_legend_icon_with_symbol(size):
+    """The legend icon of a marker with a symbol shows the symbol"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    marker = QwtPlotMarker.make(xvalue=0.0, yvalue=0.0, symbol=_make_symbol())
+    icon = marker.legendIcon(0, size)
+    assert not icon.isNull()
+    assert _is_red(icon.toImage(), 4, 4)
+    del app
+
+
+def test_marker_with_symbol_in_legend():
+    """A marker with a symbol can be shown in a legend"""
+    app = _ensure_app()  # keep a reference alive for the duration of the test
+    plot = QwtPlot()
+    legend = QwtLegend()
+    plot.insertLegend(legend)
+    marker = QwtPlotMarker.make(
+        xvalue=1.0, yvalue=1.0, title="Marker", symbol=_make_symbol(), plot=plot
+    )
+    marker.setItemAttribute(QwtPlotItem.Legend, True)
+    plot.updateLegend(marker)
+    label = legend.legendWidget(marker)
+    assert label is not None
+    assert not label.icon().isNull()
+    plot.close()
+    del app
+
+
 if __name__ == "__main__":
     for name in ("toPixmap", "toImage"):
         test_graphic_conversion_default_size(name)
         test_graphic_conversion_given_size(name)
         test_graphic_conversion_keep_aspect_ratio(name)
+    for size in (QC.QSize(8, 8), QC.QSizeF(8.0, 8.0)):
+        test_marker_legend_icon_with_symbol(size)
+    test_marker_with_symbol_in_legend()
     print("OK")
