@@ -1,0 +1,158 @@
+# ============================================================================
+# Prepare and publish a PythonQwt release (procedure: RELEASING.md).
+#
+# Maintainers never create a GitHub release by hand. A release takes two
+# steps, each one running this workflow, which relies on the release actions
+# shared by the DataLab Platform projects
+# (https://github.com/DataLab-Platform/release-actions):
+#
+# 1. "Prepare vX.Y.Z" - a maintainer pushes a release tag:
+#      vX.Y.Z      final release, on `master`, __version__ = "X.Y.Z"
+#      vX.Y.Z-rcN  release candidate, on any branch, __version__ = "X.Y.ZrcN"
+#    The tag is checked (format, version, release notes, release branch, no
+#    release already published), the tests run, the distributions are built,
+#    and a DRAFT GitHub release is created with the wheel, the sdist,
+#    SHA256SUMS and build provenance attestations. Nothing is published yet:
+#    on failure, delete the tag, fix and tag again.
+#
+# 2. "Publish vX.Y.Z" - a maintainer reviews the draft release and publishes
+#    it. The files of the release are checked against SHA256SUMS and their
+#    attestations, then uploaded with Trusted Publishing to PyPI (final
+#    release) or TestPyPI (release candidate). A release created by hand has
+#    no such files: nothing is uploaded.
+#
+# Prerequisites (one-time, off-CI): Trusted Publishing for `PythonQwt` with
+# this workflow (`release.yml`), on PyPI with environment `pypi` and on
+# TestPyPI with environment `testpypi`.
+# ============================================================================
+name: Release
+
+run-name: >-
+  ${{ github.event_name == 'release' && 'Publish' || 'Prepare' }}
+  ${{ github.ref_name }}
+
+on:
+  push:
+    tags:
+      - "v[0-9]*.[0-9]*.[0-9]*"
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NOTES_FILE: CHANGELOG.md
+  NOTES_HEADING: "## Version {version}"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Step 1 - Prepare: check the tag before spending time on tests and builds.
+  # ---------------------------------------------------------------------------
+  check-tag:
+    name: Check the tag
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: DataLab-Platform/release-actions/check-tag@v1
+        with:
+          version-file: qwt/__init__.py
+          notes-file: ${{ env.NOTES_FILE }}
+          notes-heading: ${{ env.NOTES_HEADING }}
+          release-branch: master
+
+  test-pyqt5:
+    needs: check-tag
+    uses: ./.github/workflows/test-PyQt5.yml
+
+  test-pyqt6:
+    needs: check-tag
+    uses: ./.github/workflows/test-PyQt6.yml
+
+  test-pyside6:
+    needs: check-tag
+    uses: ./.github/workflows/test-PySide6.yml
+
+  build:
+    name: Build the distributions
+    needs: [test-pyqt5, test-pyqt6, test-pyside6]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.x"
+
+      - name: Build package
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      - uses: actions/upload-artifact@v6
+        with:
+          name: python-dists
+          path: dist/
+          retention-days: 30
+
+  draft-release:
+    name: Create the draft release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # create the draft release
+      id-token: write       # required by the build provenance attestation
+      attestations: write   # required by the build provenance attestation
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v7
+        with:
+          name: python-dists
+          path: dist
+
+      - uses: DataLab-Platform/release-actions/create-draft@v1
+        with:
+          name: PythonQwt
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+          notes-file: ${{ env.NOTES_FILE }}
+          notes-heading: ${{ env.NOTES_HEADING }}
+
+  # ---------------------------------------------------------------------------
+  # Step 2 - Publish: upload the checked files of the published release.
+  # ---------------------------------------------------------------------------
+  publish:
+    name: Publish to ${{ contains(github.ref_name, '-rc') && 'TestPyPI' || 'PyPI' }}
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ contains(github.ref_name, '-rc') && 'testpypi' || 'pypi' }}
+      url: ${{ contains(github.ref_name, '-rc') && 'https://test.pypi.org/p/PythonQwt' || 'https://pypi.org/p/PythonQwt' }}
+    permissions:
+      contents: read      # download the files of the release
+      attestations: read  # verify their build provenance
+      id-token: write     # Trusted Publishing
+    steps:
+      - id: release
+        uses: DataLab-Platform/release-actions/verify-release@v1
+        with:
+          files: |
+            pythonqwt-{version}-py3-none-any.whl
+            pythonqwt-{version}.tar.gz
+
+      - name: Upload to ${{ steps.release.outputs.prerelease == 'true' && 'TestPyPI' || 'PyPI' }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: ${{ steps.release.outputs.prerelease == 'true' && 'https://test.pypi.org/legacy/' || 'https://upload.pypi.org/legacy/' }}
+          # Makes re-running this job safe after a partial upload: the files
+          # were checked above.
+          skip-existing: true
