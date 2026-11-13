@@ -194,7 +194,7 @@ def execute_command(command: list[str], python_exe: str) -> int:
     return result
 
 
-def main() -> None:
+def main() -> int:
     """Main function to load environment variables and execute a command."""
     if len(sys.argv) < 2:
         print("Usage: python run_with_env.py <command> [args ...]")
@@ -207,4 +207,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
