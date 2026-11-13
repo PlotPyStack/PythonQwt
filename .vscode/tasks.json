@@ -189,25 +189,24 @@
             "label": "📊 Coverage full",
             "type": "shell",
             "windows": {
-                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine; if ($?) { ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html; if ($?) { start htmlcov\\index.html } }",
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage run -m pytest qwt; ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine; if ($?) { ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html; if ($?) { start htmlcov\\index.html } }",
             },
             "linux": {
-                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && xdg-open htmlcov/index.html",
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage run -m pytest qwt; ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && xdg-open htmlcov/index.html",
             },
             "osx": {
-                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && open htmlcov/index.html",
+                "command": "${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage run -m pytest qwt; ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage combine && ${command:python.interpreterPath} scripts/run_with_env.py ${command:python.interpreterPath} -m coverage html && open htmlcov/index.html",
             },
             "options": {
                 "cwd": "${workspaceFolder}",
+                "env": {
+                    "UNATTENDED": "1",
+                },
             },
             "presentation": {
                 "panel": "dedicated",
             },
             "problemMatcher": [],
-            "dependsOrder": "sequence",
-            "dependsOn": [
-                "🧪 Coverage tests",
-            ],
         },
         {
             "label": "Take screenshots",
